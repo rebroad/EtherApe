@@ -1,4 +1,3 @@
-# Generated automatically from Makefile.in by configure.
 # Makefile.in generated automatically by automake 1.4-p6 from Makefile.am
 
 # Copyright (C) 1994, 1995-8, 1999, 2001 Free Software Foundation, Inc.
@@ -16,6 +15,7 @@ SHELL = /bin/sh
 
 srcdir = .
 top_srcdir = ..
+
 prefix = /usr/local
 exec_prefix = ${prefix}
 
@@ -34,13 +34,13 @@ oldincludedir = /usr/include
 
 DESTDIR =
 
-pkgdatadir = $(datadir)/etherape
-pkglibdir = $(libdir)/etherape
-pkgincludedir = $(includedir)/etherape
+pkgdatadir = $(datadir)/
+pkglibdir = $(libdir)/
+pkgincludedir = $(includedir)/
 
 top_builddir = ..
 
-ACLOCAL = aclocal-1.4 -I macros
+ACLOCAL = aclocal-1.4
 AUTOCONF = autoconf
 AUTOMAKE = automake-1.4
 AUTOHEADER = autoheader
@@ -48,7 +48,7 @@ AUTOHEADER = autoheader
 INSTALL = /usr/bin/install -c
 INSTALL_PROGRAM = ${INSTALL} $(AM_INSTALL_PROGRAM_FLAGS)
 INSTALL_DATA = ${INSTALL} -m 644
-INSTALL_SCRIPT = ${INSTALL_PROGRAM}
+INSTALL_SCRIPT = ${INSTALL}
 transform = s,x,x,
 
 NORMAL_INSTALL = :
@@ -57,76 +57,38 @@ POST_INSTALL = :
 NORMAL_UNINSTALL = :
 PRE_UNINSTALL = :
 POST_UNINSTALL = :
-host_alias = i686-pc-linux-gnu
-host_triplet = i686-pc-linux-gnu
-AS = @AS@
-BUILD_INCLUDED_LIBINTL = no
+CATALOGS =  es.gmo fr.gmo nl.gmo tr.gmo
 CATOBJEXT = .gmo
 CC = gcc
+CPP = gcc -E
+CXX = g++
 DATADIRNAME = share
 DATAFILE_DIR = ${prefix}/etc
-DLLTOOL = @DLLTOOL@
-ECHO = echo
-EXEEXT = 
-GENCAT = gencat
-GLIBC21 = yes
+ETHERAPE_CFLAGS = -DORBIT2=1 -pthread -I/usr/include/libglade-2.0 -I/usr/include/gtk-2.0 -I/usr/include/libxml2 -I/usr/include/libxml2/libxml -I/usr/lib/gtk-2.0/include -I/usr/include/atk-1.0 -I/usr/include/pango-1.0 -I/usr/include/freetype2 -I/usr/include/glib-2.0 -I/usr/lib/glib-2.0/include -I/usr/include/libgnomeui-2.0 -I/usr/include/libgnome-2.0 -I/usr/include/libgnomecanvas-2.0 -I/usr/include/libart-2.0 -I/usr/include/gconf/2 -I/usr/include/libbonoboui-2.0 -I/usr/include/orbit-2.0 -I/usr/include/libbonobo-2.0 -I/usr/include/gnome-vfs-2.0 -I/usr/lib/gnome-vfs-2.0/include -I/usr/include/linc-1.0 -I/usr/include/bonobo-activation-2.0  
+ETHERAPE_LIBS = -Wl,--export-dynamic -pthread -L/usr/X11R6/lib -lglade-2.0 -lgnomeui-2 -lSM -lICE -lbonoboui-2 -lxml2 -lz -lgnomecanvas-2 -lgnome-2 -lart_lgpl_2 -lpangoft2-1.0 -lgtk-x11-2.0 -lgdk-x11-2.0 -latk-1.0 -lgdk_pixbuf-2.0 -lpangoxft-1.0 -lpangox-1.0 -lpango-1.0 -lbonobo-2 -lgconf-2 -lgnomevfs-2 -lbonobo-activation -lORBit-2 -lm -llinc -lgmodule-2.0 -ldl -lgobject-2.0 -lgthread-2.0 -lglib-2.0  
+GMOFILES =  es.gmo fr.gmo nl.gmo tr.gmo
 GMSGFMT = /usr/bin/msgfmt
-GNOMEGNORBA_LIBS = -rdynamic -lgnorba -lORBitCosNaming -lORBit -lIIOP -lORBitutil -lgnomeui -lart_lgpl -lgdk_imlib -lSM -lICE -lgtk -lgdk -lgmodule -ldl -lXi -lXext -lX11 -lgnome -lgnomesupport -lesd -laudiofile -lm -ldb -lglib
-GNOMEUI_LIBS = -rdynamic -ldb -lglade-gnome -lglade -lxml -lz -lgnomeui -lart_lgpl -lgdk_imlib -lSM -lICE -lgtk -lgdk -lgmodule -ldl -lXi -lXext -lX11 -lgnome -lgnomesupport -lesd -laudiofile -lm -ldb-3 -lglib
-GNOME_APPLETS_LIBS = 
-GNOME_CAPPLET_LIBS = 
-GNOME_CONFIG = /usr/bin/gnome-config
-GNOME_INCLUDEDIR = -I/usr/include/gnome-1.0 -DNEED_GNOMESUPPORT_H -I/usr/lib/gnome-libs/include -I/usr/include/glib-1.2 -I/usr/lib/glib/include -I/usr/include/orbit-1.0 -I/usr/include/gtk-1.2 -I/usr/X11R6/include
-GNOME_LIBDIR = -rdynamic -L/usr/lib -L/usr/X11R6/lib
-GNOME_LIBS = -lgnome -lgnomesupport -lesd -laudiofile -lm -ldb -lglib
-GNORBA_CFLAGS = -I/usr/include/gnome-1.0 -DNEED_GNOMESUPPORT_H -I/usr/lib/gnome-libs/include -I/usr/include/glib-1.2 -I/usr/lib/glib/include -I/usr/include/orbit-1.0 -I/usr/include/gtk-1.2 -I/usr/X11R6/include
-GNORBA_LIBS = -rdynamic -L/usr/lib -L/usr/X11R6/lib -lgnorba -lORBitCosNaming -lORBit -lIIOP -lORBitutil -lgnomeui -lart_lgpl -lgdk_imlib -lSM -lICE -lgtk -lgdk -lgmodule -ldl -lXi -lXext -lX11 -lgnome -lgnomesupport -lesd -laudiofile -lm -ldb -lglib
-GTKXMHTML_LIBS = -rdynamic -lgtkxmhtml -lXpm -ljpeg -lpng -lz -lSM -lICE -lgtk -lgdk -lgmodule -lglib -ldl -lXi -lXext -lX11 -lm
-GTK_CFLAGS = -I/usr/include/gtk-1.2 -I/usr/include/glib-1.2 -I/usr/lib/glib/include -I/usr/X11R6/include
-GTK_CONFIG = /usr/bin/gtk-config
-GTK_LIBS = -lSM -lICE -L/usr/lib -L/usr/X11R6/lib -lgtk -lgdk -rdynamic -lgmodule -lglib -ldl -lXi -lXext -lX11 -lm
-HAVE_LIB = @HAVE_LIB@
 INSTOBJEXT = .mo
-INTLBISON = bison
 INTLLIBS = 
-INTLOBJS = 
-INTL_LIBTOOL_SUFFIX_PREFIX = 
-LIB = @LIB@
-LIBGLADE_CFLAGS = -I/usr/include/libglade-1.0 -I/usr/include/gnome-xml
-LIBGLADE_LIBS = -rdynamic -L/usr/lib -L/usr/X11R6/lib -lglade-gnome -lglade -lxml -lz -lgnomeui -lart_lgpl -lgdk_imlib -lSM -lICE -lgtk -lgdk -lgmodule -ldl -lXi -lXext -lX11 -lgnome -lgnomesupport -lesd -laudiofile -lm -ldb-3 -lglib
-LIBICONV = 
-LIBINTL = 
-LIBTOOL = $(SHELL) $(top_builddir)/libtool
 LN_S = ln -s
-LTLIB = @LTLIB@
-LTLIBICONV = 
-LTLIBINTL = 
-MAKEINFO = /home/toledo/etherape/missing makeinfo
+MAKEINFO = /home/toledo/gnome2/etherape/missing makeinfo
 MKINSTALLDIRS = ./mkinstalldirs
-NSL_LIBS = 
-OBJDUMP = @OBJDUMP@
-OBJEXT = o
-ORBIT_CFLAGS = -I/usr/include/glib-1.2 -I/usr/lib/glib/include -I/usr/include/orbit-1.0
-ORBIT_CONFIG = /usr/bin/orbit-config
-ORBIT_IDL = /usr/bin/orbit-idl
-ORBIT_LIBS = -L/usr/lib -lORBitCosNaming -lORBit -lIIOP -lORBitutil -lglib -lm
-PACKAGE = etherape
-PACKAGE_PIXMAPS_DIR = /usr/share/pixmaps/etherape
+NSL_LIBS = @NSL_LIBS@
+PACKAGE = 
 PCAP_LIBS = -lpcap
+PKG_CONFIG = /usr/bin/pkg-config
+POFILES =  es.po fr.po nl.po tr.po
 POSUB = po
-PTHREAD_LIB = -lpthread
+PO_IN_DATADIR_FALSE = 
+PO_IN_DATADIR_TRUE = 
 RANLIB = ranlib
-SOCKET_LIBS = 
-STRIP = strip
-USE_INCLUDED_LIBINTL = no
+SOCKET_LIBS = @SOCKET_LIBS@
 USE_NLS = yes
-VERSION = 0.8.2
-XPM_LIBS = -lXpm
-ZVT_LIBS = -rdynamic -lzvt -lutil -lSM -lICE -lgdk_imlib -lgtk -lgdk -lgmodule -lglib -ldl -lXi -lXext -lX11 -lm
-cflags_set = yes
+VERSION = 
+WARN_CFLAGS = -Wall -Wunused -Wmissing-prototypes -Wmissing-declarations 
 cxxflags_set = @cxxflags_set@
 
-EXTRA_DIST = codeset.m4 gettext.m4 glibc21.m4 iconv.m4 intdiv0.m4 inttypes.m4 inttypes_h.m4 inttypes-pri.m4 isc-posix.m4 lcmessage.m4 lib-ld.m4 lib-link.m4 lib-prefix.m4 progtest.m4 stdint_h.m4 uintmax_t.m4 ulonglong.m4
+EXTRA_DIST = codeset.m4 gettext.m4 glibc21.m4 iconv.m4 intdiv0.m4 inttypes.m4 inttypes_h.m4 inttypes-pri.m4 isc-posix.m4 lcmessage.m4 lib-ld.m4 lib-link.m4 lib-prefix.m4 progtest.m4 stdint_h.m4 uintmax_t.m4 ulonglong.m4 gnome-gettext.m4
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../config.h
 CONFIG_CLEAN_FILES = 
@@ -214,7 +176,6 @@ clean-am:  clean-generic mostlyclean-am
 clean: clean-am
 
 distclean-am:  distclean-generic clean-am
-	-rm -f libtool
 
 distclean: distclean-am
 

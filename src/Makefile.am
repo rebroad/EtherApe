@@ -10,8 +10,8 @@ INCLUDES = \
 	-I$(top_srcdir)/intl \
 	-DGLADEDIR=\""$(gladedir)"\" \
 	-DCONFDIR=\""$(confdir)"\" \
-	$(GNOME_INCLUDEDIR) \
-	$(LIBGLADE_CFLAGS)
+	$(WARN_CFLAGS) \
+	$(ETHERAPE_CFLAGS) 
 
 bin_PROGRAMS = etherape
 
@@ -31,10 +31,10 @@ etherape_SOURCES = \
 	prot_types.h \
 	info_windows.c info_windows.h \
 	conversations.c conversations.h \
-	gnomesupport.h
+	datastructs.c datastructs.h
 
-etherape_LDADD = $(GNOME_LIBDIR) $(GNOMEUI_LIBS) $(INTLLIBS) $(PCAP_LIBS)
-etherape_LDFLAGS = -export-dynamic
+etherape_LDADD = $(ETHERAPE_LIBS) $(PCAP_LIBS) 
+etherape_LDFLAGS = 
 etherape_LINK = $(LIBTOOL) --mode=link $(CC) $(CFLAGS) $(LDFLAGS) -o $@
 
 .indent: $(etherape_SOURCES)
@@ -44,3 +44,6 @@ indent: .indent
 
 purge:
 	rm -f *~ *.bak
+
+splint:
+	splint $(INCLUDES) $(etherape_SOURCES)

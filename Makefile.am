@@ -1,8 +1,10 @@
 ## Process this file with automake to produce Makefile.in
 
 # $Id$
+SUBDIRS = src doc glade m4 po
 
-SUBDIRS = intl m4 po macros src doc glade
+# standard props
+DATADIR=.
 
 
 indent:
@@ -31,8 +33,6 @@ confdir = $(sysconfdir)/etherape
 conf_DATA =					\
 	services
 
-	
-	
 Developmentdir = $(datadir)/gnome/apps/Applications
 Development_DATA =			\
 	etherape.desktop
@@ -41,11 +41,13 @@ pixmapsdir = $(datadir)/pixmaps
 pixmaps_DATA =				\
 	etherape.png
 	
-
 purge:
 	rm -f *~ *.bak *.tar.gz
 	cd src && make purge
 
+splint:
+	cd src && make splint
+	
 EXTRA_DIST = config.rpath mkinstalldirs  \
 	README.thanks 		\
 	README.help		\

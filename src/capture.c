@@ -340,6 +340,7 @@ set_filter (gchar * filter_string, gchar * device)
 gboolean
 start_capture (void)
 {
+  GnomeCanvas *gc;
 
   if ((status != PAUSE) && (status != STOP))
     {
@@ -367,6 +368,11 @@ start_capture (void)
 					   NULL,
 					   (GDestroyNotify) cap_t_o_destroy);
     }
+
+  /* set the antialiasing */
+  gc = GNOME_CANVAS (glade_xml_get_widget (xml, "canvas1"));
+  if (gc)
+    gc->aa = pref.antialias;
 
   status = PLAY;
   return TRUE;
@@ -825,7 +831,7 @@ create_node (const guint8 * packet, const guint8 * node_id)
   /* We have already allocated memory for the id when we created the
    * packet. We will use that, and will free it when the node disappears
    * and not with the packet */
-  node->node_id = node_id;
+  node->node_id = (guint8 *) node_id;	/* cast away const */
 
   node->name = NULL;
   node->numeric_name = NULL;

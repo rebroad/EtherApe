@@ -1,3 +1,172 @@
+2003-04-06 07:08  bchiara
+
+	* glade/etherape.glade2, src/Makefile.am, src/datastructs.c,
+	src/datastructs.h, src/gnomesupport.h: 
+	Minor tweaks to build, added some support files
+
+2003-04-06 07:08  bchiara
+
+	* src/datastructs.h: file datastructs.h was initially added on
+	branch gnome2.
+
+2003-04-06 07:08  bchiara
+
+	* src/datastructs.c: file datastructs.c was initially added on
+	branch gnome2.
+
+2003-03-05 20:04  bchiara
+
+	* ChangeLog: 
+	update
+
+2003-03-05 19:58  bchiara
+
+	* configure.in: 
+	corrected release number
+
+2003-03-05 19:56  bchiara
+
+	* config.h.in, glade/etherape.glade2, src/diagram.c, src/dns.c,
+	src/dns.h, src/info_windows.c, src/info_windows.h, src/main.c,
+	src/menus.c, src/menus.h, src/preferences.c, src/preferences.h,
+	src/protocols.c: 
+	- protocol detail window now displays protocol color - added
+	missing app icon - converted deprecated gtk2/gnome2 calls
+
+2003-03-04 19:43  bchiara
+
+	* glade/etherape.glade2, src/protocols.c: 
+	Updated translator credits (about box) and fixed a small bug
+	affecting service parsing
+
+2003-03-01 20:28  bchiara
+
+	* configure.in: 
+	readded docs
+
+2003-03-01 19:49  bchiara
+
+	* m4/compiler-flags.m4: file compiler-flags.m4 was initially added
+	on branch gnome2.
+
+2003-03-01 19:49  bchiara
+
+	* Makefile.am, acconfig.h, configure.in, glade/etherape.glade1,
+	m4/Makefile.am, m4/compiler-flags.m4, m4/gnome-gettext.m4,
+	src/Makefile.am, src/info_windows.c: 
+	minor tweaks to build process
+
+2003-03-01 10:07  bchiara
+
+	* src/preferences.c: 
+	typo
+
+2003-03-01 08:12  bchiara
+
+	* src/: info_windows.c, preferences.c: 
+	small changes to help compiling etherape under Gnome 2.0
+
+2003-02-25 22:09  bchiara
+
+	* glade/etherape.glade2, src/globals.h, src/info_windows.c,
+	src/info_windows.h, src/menus.c, src/preferences.c, ChangeLog: 
+	Signal handling fixes
+
+2003-02-25 00:05  bchiara
+
+	* ChangeLog, glade/etherape.glade2, src/capture.c, src/diagram.c,
+	src/globals.h, src/info_windows.c, src/main.c, src/menus.c,
+	src/preferences.c: 
+	More info-windows fixes.  Added canvas antialiasing
+
+2003-02-23 13:38  toledo
+
+	* configure.in, src/Makefile.am: Correctly use ETHERAPE_CFLAGS and
+	ETHERAPE_LIBS in configure.in and Makefile.am
+
+2003-02-23 13:36  toledo
+
+	* m4/.cvsignore: file .cvsignore was initially added on branch
+	gnome2.
+
+2003-02-23 13:36  toledo
+
+	* m4/: .cvsignore, Makefile, Makefile.in: Added cvsignore to m4
+	directory
+
+2003-02-23 00:10  bchiara
+
+	* config.h.in, glade/etherape.glade2, m4/Makefile, m4/Makefile.in,
+	po/Makefile.in.in, src/capture.c, src/diagram.c, src/globals.h,
+	src/info_windows.c, src/info_windows.h, src/main.c, src/menus.c,
+	src/preferences.c: 
+	Protocol info window working, aligned indentation.
+
+2003-02-22 19:55  bchiara
+
+	* ChangeLog: 
+	Updated changelog with latest changes
+
+2003-02-22 19:28  bchiara
+
+	* config.h.in: 
+	gnome2 support - I forgot this file ...
+
+2003-02-22 09:53  bchiara
+
+	* ChangeLog: 
+	preliminary gnome2 support
+
+2003-02-22 09:36  bchiara
+
+	* glade/etherape.glade2: file etherape.glade2 was initially added
+	on branch gnome2.
+
+2003-02-22 09:36  bchiara
+
+	* Makefile.am, acconfig.h, autogen.sh, configure.in,
+	etherape.spec.in, glade/Makefile.am, glade/etherape.glade,
+	glade/etherape.glade1, glade/etherape.glade2, intl/ChangeLog,
+	intl/Makefile, intl/Makefile.in, intl/VERSION, intl/bindtextdom.c,
+	intl/config.charset, intl/dcgettext.c, intl/dcigettext.c,
+	intl/dcngettext.c, intl/dgettext.c, intl/dngettext.c,
+	intl/eval-plural.h, intl/explodename.c, intl/finddomain.c,
+	intl/gettext.c, intl/gettextP.h, intl/gmo.h, intl/hash-string.h,
+	intl/intl-compat.c, intl/l10nflist.c, intl/libgnuintl.h,
+	intl/loadinfo.h, intl/loadmsgcat.c, intl/localcharset.c,
+	intl/locale.alias, intl/localealias.c, intl/localename.c,
+	intl/ngettext.c, intl/os2compat.c, intl/os2compat.h, intl/osdep.c,
+	intl/plural-exp.c, intl/plural-exp.h, intl/plural.c, intl/plural.y,
+	intl/ref-add.sin, intl/ref-del.sin, intl/textdomain.c,
+	m4/Makefile.am, m4/gnome-gettext.m4, macros/.cvsignore,
+	macros/Makefile.am, macros/aclocal-include.m4, macros/autogen.sh,
+	macros/compiler-flags.m4, macros/curses.m4,
+	macros/gnome-bonobo-check.m4, macros/gnome-common.m4,
+	macros/gnome-fileutils.m4, macros/gnome-gettext.m4,
+	macros/gnome-ghttp-check.m4, macros/gnome-gnorba-check.m4,
+	macros/gnome-guile-checks.m4, macros/gnome-libgtop-check.m4,
+	macros/gnome-objc-checks.m4, macros/gnome-orbit-check.m4,
+	macros/gnome-print-check.m4, macros/gnome-pthread-check.m4,
+	macros/gnome-support.m4, macros/gnome-undelfs.m4,
+	macros/gnome-vfs.m4, macros/gnome-x-checks.m4,
+	macros/gnome-xml-check.m4, macros/gnome.m4, macros/linger.m4,
+	macros/need-declaration.m4, src/Makefile.am, src/capture.c,
+	src/diagram.c, src/dns.c, src/dns.h, src/globals.h,
+	src/info_windows.c, src/info_windows.h, src/main.c, src/main.h,
+	src/menus.c, src/menus.h, src/preferences.c, src/preferences.h,
+	src/util.c: 
+	Preliminary gnome2 support
+
+2003-02-22 09:36  bchiara
+
+	* glade/etherape.glade1: file etherape.glade1 was initially added
+	on branch gnome2.
+
+2003-02-22 09:36  bchiara
+
+	* m4/gnome-gettext.m4: file gnome-gettext.m4 was initially added on
+	branch gnome2.
+
 2002-10-04 18:39  bchiara
 
 	* src/: capture.c, protocols.c: 

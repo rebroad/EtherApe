@@ -22,6 +22,7 @@
 #endif
 
 #include "globals.h"
+#include "dns.h"
 #include "main.h"
 
 
@@ -57,8 +58,6 @@ main (int argc, char *argv[])
      N_("Don't show warnings"), NULL},
     {"node-color", 'N', POPT_ARG_STRING, &(pref.node_color), 0,
      N_("set the node color"), N_("color")},
-    {"link-color", 'L', POPT_ARG_STRING, &(pref.link_color), 0,
-     N_("set the link color"), N_("color")},
     {"text-color", 'T', POPT_ARG_STRING, &(pref.text_color), 0,
      N_("set the text color"), N_("color")},
 
@@ -77,8 +76,9 @@ main (int argc, char *argv[])
 
 
   /* We initiate the application and read command line options */
-  gnome_init_with_popt_table ("EtherApe", VERSION, argc, argv, optionsTable,
-			      0, NULL);
+  gnome_program_init ("EtherApe", VERSION, LIBGNOMEUI_MODULE, argc, argv,
+		      GNOME_PARAM_POPT_TABLE, optionsTable, 0, NULL);
+//r.g.                           GNOME_PROGRAM_STANDARD_PROPERTIES, NULL);
 
 
   /* We obtain application parameters 
@@ -95,12 +95,9 @@ main (int argc, char *argv[])
   pref.refresh_period = 800;	/* ms */
 
   /* TODO Besides the fact that this probably makes little sense nowadays
-   * (at least for node and link color) it probably leads to a segfault
+   * (at least for node color) it probably leads to a segfault
    * See how it is done for filter, for instance */
   pref.node_color = g_strdup ("brown");
-  pref.link_color = g_strdup ("tan");	/* TODO I think link_color is
-					 * actually never used anymore,
-					 * is it? */
   pref.text_color = g_strdup ("yellow");
   pref.node_limit = -1;
 
@@ -111,7 +108,8 @@ main (int argc, char *argv[])
   load_config ("/Etherape/");
 
   /* Command line */
-  poptcon = poptGetContext ("Etherape", argc, argv, optionsTable, 0);
+  poptcon =
+    poptGetContext ("Etherape", argc, (const char **) argv, optionsTable, 0);
   while (poptGetNextOpt (poptcon) > 0);
 
   if (cl_filter)
@@ -160,7 +158,8 @@ main (int argc, char *argv[])
   /* Glade */
 
   glade_gnome_init ();
-  xml = glade_xml_new (GLADEDIR "/" ETHERAPE_GLADE_FILE, NULL);
+
+  xml = glade_xml_new (GLADEDIR "/" ETHERAPE_GLADE_FILE, NULL, NULL);
   if (!xml)
     {
       g_error (_("We could not load the interface! (%s)"),
@@ -168,7 +167,6 @@ main (int argc, char *argv[])
       return 1;
     }
   glade_xml_signal_autoconnect (xml);
-
 
   app1 = glade_xml_get_widget (xml, "app1");
   diag_pref = glade_xml_get_widget (xml, "diag_pref");
@@ -179,10 +177,10 @@ main (int argc, char *argv[])
 
   /* Session handling */
   client = gnome_master_client ();
-  gtk_signal_connect (GTK_OBJECT (client), "save_yourself",
-		      GTK_SIGNAL_FUNC (save_session), argv[0]);
-  gtk_signal_connect (GTK_OBJECT (client), "die",
-		      GTK_SIGNAL_FUNC (session_die), NULL);
+  g_signal_connect (G_OBJECT (client), "save_yourself",
+		    GTK_SIGNAL_FUNC (save_session), argv[0]);
+  g_signal_connect (G_OBJECT (client), "die",
+		    GTK_SIGNAL_FUNC (session_die), NULL);
   gtk_widget_show (app1);
 
 
@@ -216,6 +214,9 @@ main (int argc, char *argv[])
   /* This other timeout makes sure that the info windows are updated */
   g_timeout_add (500, (GtkFunction) update_info_windows, NULL);
 
+  /* another timeout to handle DNS time */
+  g_timeout_add (10000, (GtkFunction) dns_tick, NULL);
+
   init_menus ();
 
   gui_start_capture ();
@@ -248,6 +249,8 @@ load_config (char *prefix)
   pref.nofade =
     gnome_config_get_bool_with_default ("Diagram/nofade=FALSE", &u);
   pref.cycle = gnome_config_get_bool_with_default ("Diagram/cycle=TRUE", &u);
+  pref.antialias =
+    gnome_config_get_bool_with_default ("Diagram/antialias=TRUE", &u);
   pref.node_timeout_time =
     gnome_config_get_float_with_default
     ("Diagram/node_timeout_time=3600000.0", &u);
@@ -359,6 +362,7 @@ save_config (char *prefix)
   gnome_config_set_bool ("Diagram/group_unk", pref.group_unk);
   gnome_config_set_bool ("Diagram/nofade", pref.nofade);
   gnome_config_set_bool ("Diagram/cycle", pref.cycle);
+  gnome_config_set_bool ("Diagram/antialias", pref.antialias);
   gnome_config_set_float ("Diagram/node_timeout_time",
 			  pref.node_timeout_time);
   gnome_config_set_float ("Diagram/gui_node_timeout_time",
@@ -380,12 +384,8 @@ save_config (char *prefix)
   gnome_config_set_int ("Diagram/stack_level", pref.stack_level);
   gnome_config_set_string ("Diagram/fontname", pref.fontname);
 
-  /* 
-   * TODO
-   * The definition of the third argument is "const gchar* const argv[]"
-   * If anybody knows how to cast my "gchar **" into that, please englighten me.
-   */
-  gnome_config_set_vector ("Diagram/colors", pref.n_colors, pref.colors);
+  gnome_config_set_vector ("Diagram/colors", pref.n_colors,
+			   (const gchar * const *) pref.colors);
 
   gnome_config_set_string ("General/version", VERSION);
 
@@ -400,7 +400,7 @@ save_config (char *prefix)
 static void
 set_debug_level (void)
 {
-  gchar *env_debug;
+  const gchar *env_debug;
   env_debug = g_getenv ("DEBUG");
 
   debug_mask = (G_LOG_LEVEL_MASK & ~(G_LOG_LEVEL_DEBUG | G_LOG_LEVEL_INFO));
@@ -437,10 +437,10 @@ session_die (GnomeClient * client, gpointer client_data)
 }				/* session_die */
 
 /* the gnome session manager may call this function */
-static gint
+static gboolean
 save_session (GnomeClient * client, gint phase, GnomeSaveStyle save_style,
-	      gint is_shutdown, GnomeInteractStyle interact_style,
-	      gint is_fast, gpointer client_data)
+	      gboolean is_shutdown, GnomeInteractStyle interact_style,
+	      gboolean is_fast, gpointer client_data)
 {
   gchar **argv;
   guint argc;

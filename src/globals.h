@@ -21,11 +21,15 @@
 #define ETHERAPE_GLOBALS_H
 
 #include <gnome.h>
+#include <glib.h>
+#include <libgnomecanvas/gnome-canvas.h>
+#include <libgnomeui/gnome-entry.h>
 #include <sys/time.h>
 #include <pcap.h>
 #include <glade/glade.h>
+#include <string.h>
 
-#define ETHERAPE_GLADE_FILE "etherape.glade"
+#define ETHERAPE_GLADE_FILE "etherape.glade2"	// glade 2 file
 #define STACK_SIZE 5		/* How many protocol levels to keep
 				 * track of (+1) */
 
@@ -285,7 +289,7 @@ GList *legend_protocols;
 struct
 {
 
-/* Genereral settings */
+/* General settings */
 
   gchar *input_file;		/* Capture file to read from */
   gboolean numeric;		/* Whether dns lookups are performed */
@@ -297,6 +301,7 @@ struct
   gboolean diagram_only;	/* Do not use text on the diagram */
   gboolean group_unk;		/* Whether to display as one every unkown port protocol */
   gboolean nofade;		/* Do not fade unused links */
+  gboolean antialias;		/* activate node antialiasing */
   gboolean cycle;		/* Weather to reuse colors that are assigned to certain
 				 * protocols */
   gboolean stationary;		/* Use alternative algorith for node placing */
@@ -311,8 +316,7 @@ struct
 				 * link width calculation */
   node_size_variable_t node_size_variable;	/* Default variable that sets the node
 						 * size */
-  gchar *node_color, *link_color, *text_color;	/* Default colors 
-						 * TODO do we need link_color anymore? */
+  gchar *node_color, *text_color;	/* Default colors */
   gchar *fontname;		/* Font to be used for text display */
   guint stack_level;		/* Which level of the protocol stack 
 				 * we will concentrate on */
@@ -348,6 +352,7 @@ gboolean dns;			/* Negation of numeric. Is used by dns.c */
 
 /* From main.c */
 void cleanup (int signum);
+void save_config (char *prefix);
 
 /* From capture.c */
 gchar *init_capture (void);
@@ -390,21 +395,18 @@ gchar *traffic_to_str (gdouble traffic, gboolean is_speed);
 /* From menus.c */
 void init_menus (void);
 void fatal_error_dialog (const gchar * message);
-void update_history (GnomeEntry * gentry, const gchar * str,
-		     gboolean is_fileentry);
 void gui_start_capture (void);
 void gui_pause_capture (void);
 gboolean gui_stop_capture (void);	/* gui_stop_capture might fail. For instance,
 					 * it can't run if diagram_update is running */
 
 /* From preferences.c */
-void load_color_clist (void);
+void load_color_list (void);
 
 /* From info_windows.c */
 void display_protocols_window (void);
 void create_node_info_window (canvas_node_t * canvas_node);
 guint update_info_windows (void);
-void update_protocols_window (void);
 void update_node_info_windows (void);
 
 /* From conversations.c */

@@ -50,13 +50,13 @@ init_diagram ()
   widget = glade_xml_get_widget (xml, "node_radius_slider");
   gtk_adjustment_set_value (GTK_RANGE (widget)->adjustment,
 			    log (pref.node_radius_multiplier) / log (10));
-  gtk_signal_emit_by_name (GTK_OBJECT (GTK_RANGE (widget)->adjustment),
-			   "changed");
+  g_signal_emit_by_name (G_OBJECT (GTK_RANGE (widget)->adjustment),
+			 "changed");
   widget = glade_xml_get_widget (xml, "link_width_slider");
   gtk_adjustment_set_value (GTK_RANGE (widget)->adjustment,
 			    log (pref.link_width_multiplier) / log (10));
-  gtk_signal_emit_by_name (GTK_OBJECT (GTK_RANGE (widget)->adjustment),
-			   "changed");
+  g_signal_emit_by_name (GTK_OBJECT (GTK_RANGE (widget)->adjustment),
+			 "changed");
   spin = GTK_SPIN_BUTTON (glade_xml_get_widget (xml, "averaging_spin"));
   gtk_spin_button_set_value (spin, pref.averaging_time);
   spin = GTK_SPIN_BUTTON (glade_xml_get_widget (xml, "refresh_spin"));
@@ -86,68 +86,66 @@ init_diagram ()
   widget = glade_xml_get_widget (xml, "stack_level_menu");
   gtk_option_menu_set_history (GTK_OPTION_MENU (widget), pref.stack_level);
   widget = glade_xml_get_widget (xml, "filter_gnome_entry");
-  gnome_entry_load_history (GNOME_ENTRY (widget));
   widget = glade_xml_get_widget (xml, "file_filter_entry");
-  gnome_entry_load_history (GNOME_ENTRY (widget));
   widget = glade_xml_get_widget (xml, "fileentry");
   widget = gnome_file_entry_gnome_entry (GNOME_FILE_ENTRY (widget));
-  gnome_entry_load_history (GNOME_ENTRY (widget));
 
-  load_color_clist ();		/* Updates the color preferences table with pref.colors */
+  load_color_list ();		/* Updates the color preferences table with pref.colors */
 
   /* Connects signals */
   widget = glade_xml_get_widget (xml, "node_radius_slider");
-  gtk_signal_connect (GTK_OBJECT (GTK_RANGE (widget)->adjustment),
-		      "value_changed",
-		      GTK_SIGNAL_FUNC
-		      (on_node_radius_slider_adjustment_changed), NULL);
+  g_signal_connect (G_OBJECT (GTK_RANGE (widget)->adjustment),
+		    "value_changed",
+		    GTK_SIGNAL_FUNC
+		    (on_node_radius_slider_adjustment_changed), NULL);
   widget = glade_xml_get_widget (xml, "link_width_slider");
-  gtk_signal_connect (GTK_OBJECT (GTK_RANGE (widget)->adjustment),
-		      "value_changed",
-		      GTK_SIGNAL_FUNC
-		      (on_link_width_slider_adjustment_changed), NULL);
+  g_signal_connect (G_OBJECT (GTK_RANGE (widget)->adjustment),
+		    "value_changed",
+		    GTK_SIGNAL_FUNC
+		    (on_link_width_slider_adjustment_changed), NULL);
   widget = glade_xml_get_widget (xml, "averaging_spin");
-  gtk_signal_connect (GTK_OBJECT (GTK_SPIN_BUTTON (widget)->adjustment),
-		      "value_changed",
-		      GTK_SIGNAL_FUNC
-		      (on_averaging_spin_adjustment_changed), NULL);
+  g_signal_connect (G_OBJECT (GTK_SPIN_BUTTON (widget)->adjustment),
+		    "value_changed",
+		    GTK_SIGNAL_FUNC
+		    (on_averaging_spin_adjustment_changed), NULL);
   widget = glade_xml_get_widget (xml, "refresh_spin");
-  gtk_signal_connect (GTK_OBJECT (GTK_SPIN_BUTTON (widget)->adjustment),
-		      "value_changed",
-		      GTK_SIGNAL_FUNC
-		      (on_refresh_spin_adjustment_changed),
-		      glade_xml_get_widget (xml, "canvas1"));
+  g_signal_connect (G_OBJECT (GTK_SPIN_BUTTON (widget)->adjustment),
+		    "value_changed",
+		    GTK_SIGNAL_FUNC
+		    (on_refresh_spin_adjustment_changed),
+		    glade_xml_get_widget (xml, "canvas1"));
   widget = glade_xml_get_widget (xml, "node_to_spin");
-  gtk_signal_connect (GTK_OBJECT (GTK_SPIN_BUTTON (widget)->adjustment),
-		      "value_changed",
-		      GTK_SIGNAL_FUNC
-		      (on_node_to_spin_adjustment_changed), NULL);
+  g_signal_connect (G_OBJECT (GTK_SPIN_BUTTON (widget)->adjustment),
+		    "value_changed",
+		    GTK_SIGNAL_FUNC
+		    (on_node_to_spin_adjustment_changed), NULL);
   widget = glade_xml_get_widget (xml, "gui_node_to_spin");
-  gtk_signal_connect (GTK_OBJECT (GTK_SPIN_BUTTON (widget)->adjustment),
-		      "value_changed",
-		      GTK_SIGNAL_FUNC
-		      (on_gui_node_to_spin_adjustment_changed), NULL);
+  g_signal_connect (G_OBJECT (GTK_SPIN_BUTTON (widget)->adjustment),
+		    "value_changed",
+		    GTK_SIGNAL_FUNC
+		    (on_gui_node_to_spin_adjustment_changed), NULL);
   widget = glade_xml_get_widget (xml, "link_to_spin");
-  gtk_signal_connect (GTK_OBJECT (GTK_SPIN_BUTTON (widget)->adjustment),
-		      "value_changed",
-		      GTK_SIGNAL_FUNC
-		      (on_link_to_spin_adjustment_changed), NULL);
+  g_signal_connect (G_OBJECT (GTK_SPIN_BUTTON (widget)->adjustment),
+		    "value_changed",
+		    GTK_SIGNAL_FUNC
+		    (on_link_to_spin_adjustment_changed), NULL);
   widget = glade_xml_get_widget (xml, "size_mode_menu");
-  gtk_signal_connect (GTK_OBJECT (GTK_OPTION_MENU (widget)->menu),
-		      "deactivate",
-		      GTK_SIGNAL_FUNC (on_size_mode_menu_selected), NULL);
+  g_signal_connect (G_OBJECT (GTK_OPTION_MENU (widget)->menu),
+		    "deactivate",
+		    GTK_SIGNAL_FUNC (on_size_mode_menu_selected), NULL);
   widget = glade_xml_get_widget (xml, "node_size_optionmenu");
-  gtk_signal_connect (GTK_OBJECT (GTK_OPTION_MENU (widget)->menu),
-		      "deactivate",
-		      GTK_SIGNAL_FUNC (on_node_size_optionmenu_selected),
-		      NULL);
+  g_signal_connect (G_OBJECT (GTK_OPTION_MENU (widget)->menu),
+		    "deactivate",
+		    GTK_SIGNAL_FUNC (on_node_size_optionmenu_selected), NULL);
   widget = glade_xml_get_widget (xml, "stack_level_menu");
-  gtk_signal_connect (GTK_OBJECT (GTK_OPTION_MENU (widget)->menu),
-		      "deactivate",
-		      GTK_SIGNAL_FUNC (on_stack_level_menu_selected), NULL);
+  g_signal_connect (G_OBJECT (GTK_OPTION_MENU (widget)->menu),
+		    "deactivate",
+		    GTK_SIGNAL_FUNC (on_stack_level_menu_selected), NULL);
 
   /* Sets canvas background to black */
   canvas = glade_xml_get_widget (xml, "canvas1");
+//r.g.  gc = GNOME_CANVAS(canvas);  
+
   gdk_color_parse ("black", &black_color);
   gdk_colormap_alloc_color (gdk_colormap_get_system (), &black_color,
 			    TRUE, TRUE);
@@ -374,14 +372,10 @@ check_new_protocol (protocol_t * protocol, GtkWidget * canvas)
   protocol_t *legend_protocol = NULL;
   GtkWidget *prot_table;
   GtkWidget *label;
-  GtkArg args[2];
   GtkStyle *style;
   gchar *color_string;
-  guint n_rows, n_columns;
+  guint n_rows = 1, n_columns = 1;
   static gboolean first = TRUE;
-
-  args[0].name = "n_rows";
-  args[1].name = "n_columns";
 
   /* First, we check whether the diagram already knows about this protocol,
    * checking whether it is shown on the legend. */
@@ -401,9 +395,9 @@ check_new_protocol (protocol_t * protocol, GtkWidget * canvas)
   /* It's not, so we build a new entry on the legend */
   /* First, we add a new row to the table */
   prot_table = glade_xml_get_widget (xml, "prot_table");
-  gtk_object_getv (GTK_OBJECT (prot_table), 2, args);
-  n_rows = args[0].d.int_data;
-  n_columns = args[0].d.int_data;
+  g_object_get (G_OBJECT (prot_table), "n_rows", &n_rows, "n_columns",
+		&n_columns, NULL);
+
   /* Glade won't let me define a 0 row table
    * I feel this is ugly, but it's late and I don't feel like
    * cleaning this up :-) */
@@ -417,8 +411,8 @@ check_new_protocol (protocol_t * protocol, GtkWidget * canvas)
   gtk_widget_ref (label);
   /* I'm not really sure what this exactly does. I just copied it from 
    * interface.c, but what I'm trying to do is set the name of the widget */
-  gtk_object_set_data_full (GTK_OBJECT (app1), protocol->name, label,
-			    (GtkDestroyNotify) gtk_widget_unref);
+  g_object_set_data_full (G_OBJECT (app1), protocol->name, label,
+			  (GtkDestroyNotify) gtk_widget_unref);
 
 
   gtk_widget_show (label);
@@ -428,7 +422,7 @@ check_new_protocol (protocol_t * protocol, GtkWidget * canvas)
 		    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
 		    (GtkAttachOptions) (GTK_EXPAND), 0, 0);
   gtk_table_resize (GTK_TABLE (prot_table), n_rows + 1, n_columns - 1);
-  gtk_container_queue_resize (GTK_CONTAINER (app1));
+  gtk_widget_queue_resize (GTK_WIDGET (app1));
 
 
   color_string = get_prot_color (protocol->name);
@@ -444,7 +438,7 @@ check_new_protocol (protocol_t * protocol, GtkWidget * canvas)
   style = gtk_style_new ();
   style->fg[GTK_STATE_NORMAL] = protocol->color;
   gtk_widget_set_style (label, style);
-  gtk_style_unref (style);
+  g_object_unref (style);
 
   /* We create a legend protocol and add it to the list, to keep count */
   legend_protocol = g_malloc (sizeof (protocol_t));
@@ -483,7 +477,7 @@ delete_gui_protocols (void)
 
   prot_table = glade_xml_get_widget (xml, "prot_table");
 
-  item = gtk_container_children (GTK_CONTAINER (prot_table));
+  item = gtk_container_get_children (GTK_CONTAINER (prot_table));
 
   while (item)
     {
@@ -504,7 +498,6 @@ get_prot_color (gchar * name)
   static gchar *color = NULL;
   static gchar *protocol = NULL;
   gint i = 0;
-
 
   /* Default is to assign the next color in cycle as long
    * as cycling assigned protocols is set.
@@ -574,7 +567,7 @@ check_new_node (guint8 * node_id, node_t * node, GtkWidget * canvas)
 							 gnome_canvas_group_get_type
 							 (), "x", 100.0, "y",
 							 100.0, NULL));
-      gtk_object_ref (GTK_OBJECT (group));
+      g_object_ref (G_OBJECT (group));
 
       new_canvas_node->node_item
 	= gnome_canvas_item_new (group,
@@ -583,26 +576,25 @@ check_new_node (guint8 * node_id, node_t * node, GtkWidget * canvas)
 				 "x2", 0.0,
 				 "y1", 0.0,
 				 "y2", 0.0,
-				 "fill_color",
-				 pref.node_color,
-				 "outline_color",
-				 "black", "width_pixels", 0, NULL);
-      gtk_object_ref (GTK_OBJECT (new_canvas_node->node_item));
+				 "fill_color", pref.node_color,
+				 "outline_color", "black",
+				 "width_pixels", 0, NULL);
+      g_object_ref (G_OBJECT (new_canvas_node->node_item));
       new_canvas_node->text_item =
-	gnome_canvas_item_new (group, GNOME_TYPE_CANVAS_TEXT, "text",
-			       node->name->str,
+	gnome_canvas_item_new (group, GNOME_TYPE_CANVAS_TEXT,
+			       "text", node->name->str,
 			       "x", 0.0,
 			       "y", 0.0,
 			       "anchor", GTK_ANCHOR_CENTER,
 			       "font", pref.fontname,
 			       "fill_color", pref.text_color, NULL);
-      gtk_object_ref (GTK_OBJECT (new_canvas_node->text_item));
+      g_object_ref (G_OBJECT (new_canvas_node->text_item));
       new_canvas_node->group_item = group;
 
       gnome_canvas_item_raise_to_top (GNOME_CANVAS_ITEM
 				      (new_canvas_node->text_item));
-      gtk_signal_connect (GTK_OBJECT (new_canvas_node->group_item), "event",
-			  (GtkSignalFunc) node_item_event, new_canvas_node);
+      g_signal_connect (G_OBJECT (new_canvas_node->group_item), "event",
+			(GtkSignalFunc) node_item_event, new_canvas_node);
 
       g_tree_insert (canvas_nodes,
 		     new_canvas_node->canvas_node_id, new_canvas_node);
@@ -634,12 +626,12 @@ update_canvas_nodes (guint8 * node_id, canvas_node_t * canvas_node,
 {
   node_t *node;
   gdouble node_size;
-  GtkArg args[1];
   GList *protocol_item;
   protocol_t *protocol = NULL;
   static clock_t start = 0;
   clock_t end;
   gdouble cpu_time_used;
+  char *nametmp = NULL;
 
   /* We don't need this anymore since now update_nodes is called in update_diagram */
 #if 0
@@ -657,19 +649,19 @@ update_canvas_nodes (guint8 * node_id, canvas_node_t * canvas_node,
       if (canvas_node->group_item)
 	{
 	  gtk_object_destroy (GTK_OBJECT (canvas_node->group_item));
-	  gtk_object_unref (GTK_OBJECT (canvas_node->group_item));
+	  g_object_unref (G_OBJECT (canvas_node->group_item));
 	  canvas_node->group_item = NULL;
 	}
       if (canvas_node->node_item)
 	{
 	  gtk_object_destroy (GTK_OBJECT (canvas_node->node_item));
-	  gtk_object_unref (GTK_OBJECT (canvas_node->node_item));
+	  g_object_unref (G_OBJECT (canvas_node->node_item));
 	  canvas_node->node_item = NULL;
 	}
       if (canvas_node->text_item)
 	{
 	  gtk_object_destroy (GTK_OBJECT (canvas_node->text_item));
-	  gtk_object_unref (GTK_OBJECT (canvas_node->text_item));
+	  g_object_unref (G_OBJECT (canvas_node->text_item));
 	  canvas_node->text_item = NULL;
 	}
 
@@ -748,9 +740,9 @@ update_canvas_nodes (guint8 * node_id, canvas_node_t * canvas_node,
   /*TODO why is it exactly that sometimes it is NULL? */
   if (canvas_node->text_item)
     {
-      args[0].name = "text";
-      gtk_object_getv (GTK_OBJECT (canvas_node->text_item), 1, args);
-      if (strcmp (args[0].d.string_data, node->name->str))
+      g_object_get (G_OBJECT (canvas_node->text_item), "text", &nametmp,
+		    NULL);
+      if (strcmp (nametmp, node->name->str))
 	{
 	  gnome_canvas_item_set (canvas_node->text_item,
 				 "text", node->name->str, NULL);
@@ -758,7 +750,7 @@ update_canvas_nodes (guint8 * node_id, canvas_node_t * canvas_node,
 	}
 
       /* Memprof is telling us that we have to free the string */
-      g_free (args[0].d.string_data);
+      g_free (nametmp);
     }
 
   /* Processor time check. If too much time has passed, update the GUI */
@@ -1024,12 +1016,6 @@ check_new_link (guint8 * link_id, link_t * link, GtkWidget * canvas)
   GnomeCanvasPoints *points;
   guint i = 0;
 
-  GtkArg args[2];
-  args[0].name = "x";
-  args[1].name = "y";
-
-
-
   if (!g_tree_lookup (canvas_links, link_id))
     {
       group = gnome_canvas_root (GNOME_CANVAS (canvas));
@@ -1049,7 +1035,7 @@ check_new_link (guint8 * link_id, link_t * link, GtkWidget * canvas)
 	= gnome_canvas_item_new (group,
 				 gnome_canvas_polygon_get_type (),
 				 "points", points, "fill_color", "tan", NULL);
-      gtk_object_ref (GTK_OBJECT (new_canvas_link->link_item));
+      g_object_ref (G_OBJECT (new_canvas_link->link_item));
 
 
       g_tree_insert (canvas_links,
@@ -1058,8 +1044,8 @@ check_new_link (guint8 * link_id, link_t * link, GtkWidget * canvas)
 
       gnome_canvas_points_unref (points);
 
-      gtk_signal_connect (GTK_OBJECT (new_canvas_link->link_item), "event",
-			  (GtkSignalFunc) link_item_event, new_canvas_link);
+      g_signal_connect (G_OBJECT (new_canvas_link->link_item), "event",
+			(GtkSignalFunc) link_item_event, new_canvas_link);
 
 
       g_log (G_LOG_DOMAIN, G_LOG_LEVEL_DEBUG,
@@ -1084,11 +1070,11 @@ update_canvas_links (guint8 * link_id, canvas_link_t * canvas_link,
   canvas_node_t *canvas_node;
   GList *protocol_item;
   protocol_t *protocol = NULL;
-  GtkArg args[2];
   gdouble link_size, versorx, versory, modulus;
   struct timeval diff;
   guint32 scaledColor;
   gdouble scale;
+  double dx, dy;		/* temporary */
 
 /* We used to run update_link here, but that was a major performance penalty, and now it is done in update_diagram */
   link = g_tree_lookup (links, link_id);
@@ -1100,7 +1086,7 @@ update_canvas_links (guint8 * link_id, canvas_link_t * canvas_link,
       if (canvas_link->link_item)
 	{
 	  gtk_object_destroy (GTK_OBJECT (canvas_link->link_item));
-	  gtk_object_unref (GTK_OBJECT (canvas_link->link_item));
+	  g_object_unref (G_OBJECT (canvas_link->link_item));
 	  canvas_link->link_item = NULL;
 	}
 
@@ -1127,8 +1113,6 @@ update_canvas_links (guint8 * link_id, canvas_link_t * canvas_link,
 	g_warning (_("Main link protocol not found in update_canvas_links"));
     }
 
-  args[0].name = "x";
-  args[1].name = "y";
 
   points = gnome_canvas_points_new (3);
 
@@ -1145,9 +1129,8 @@ update_canvas_links (guint8 * link_id, canvas_link_t * canvas_link,
       gnome_canvas_points_unref (points);
       return FALSE;
     }
-  gtk_object_getv (GTK_OBJECT (canvas_node->group_item), 2, args);
-  points->coords[0] = args[0].d.double_data;
-  points->coords[1] = args[1].d.double_data;
+  g_object_get (G_OBJECT (canvas_node->group_item), "x", &points->coords[0],
+		"y", &points->coords[1], NULL);
 
   /* We get coords from source node */
   canvas_node = g_tree_lookup (canvas_nodes, link_id);
@@ -1157,17 +1140,18 @@ update_canvas_links (guint8 * link_id, canvas_link_t * canvas_link,
       gnome_canvas_points_unref (points);
       return FALSE;
     }
-  gtk_object_getv (GTK_OBJECT (canvas_node->group_item), 2, args);
 
-  versorx = -(points->coords[1] - args[1].d.double_data);
-  versory = points->coords[0] - args[0].d.double_data;
+  g_object_get (G_OBJECT (canvas_node->group_item), "x", &dx, "y", &dy, NULL);
+  versorx = -(points->coords[1] - dy);
+  versory = points->coords[0] - dx;
+
   modulus = sqrt (pow (versorx, 2) + pow (versory, 2));
   link_size = get_link_size (link->average) / 2;
 
-  points->coords[2] = args[0].d.double_data + (versorx / modulus) * link_size;
-  points->coords[3] = args[1].d.double_data + (versory / modulus) * link_size;
-  points->coords[4] = args[0].d.double_data - (versorx / modulus) * link_size;
-  points->coords[5] = args[1].d.double_data - (versory / modulus) * link_size;
+  points->coords[2] = dx + (versorx / modulus) * link_size;
+  points->coords[3] = dy + (versory / modulus) * link_size;
+  points->coords[4] = dx - (versorx / modulus) * link_size;
+  points->coords[5] = dy - (versory / modulus) * link_size;
 
   /* TODO What if there never is a protocol?
    * I have to initialize canvas_link->color to a known value */
@@ -1376,7 +1360,8 @@ popup_to (struct popup_data *pd)
   GtkLabel *label;
   gchar *str;
 
-  xml_popup = glade_xml_new (GLADEDIR "/" ETHERAPE_GLADE_FILE, "node_popup");
+  xml_popup =
+    glade_xml_new (GLADEDIR "/" ETHERAPE_GLADE_FILE, "node_popup", NULL);
   glade_xml_signal_autoconnect (xml);
   pd->node_popup = glade_xml_get_widget (xml_popup, "node_popup");
 

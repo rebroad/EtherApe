@@ -1,7 +1,7 @@
 /* Etherape
  * Copyright (C) 2000 Juan Toledo
  * $Id$
- *
+ * 
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
@@ -17,33 +17,27 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#include <gtk/gtkbutton.h>
-#include <gtk/gtkclist.h>
-#include <gtk/gtkcheckmenuitem.h>
+#ifndef DATASTRUCT_H
+#define DATASTRUCT_H
 
-typedef struct
-{
-  guint8 *node_id;
-  GtkWidget *window;
-}
-node_info_window_t;
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
 
-typedef struct
-{
-  gchar *prot_name;
-  GtkWidget *window;
-}
-prot_info_window_t;
+/* clears the proto hash */
+void  protohash_clear(void);
 
+/* adds or replaces the protoname item */
+gboolean protohash_set(gchar *protoname, GdkColor protocolor);
 
-gboolean on_prot_table_button_press_event (GtkWidget * widget,
-					   GdkEventButton * event,
-					   gpointer user_data);
+/* returns the proto color if exists, NULL otherwise */
+GdkColor * protohash_get(gchar *protoname);
 
-gboolean on_node_info_delete_event (GtkWidget *, GdkEvent *, gpointer);
-gboolean on_prot_info_delete_event (GtkWidget *, GdkEvent *, gpointer);
-void toggle_protocols_window (void);
-gboolean on_prot_list_select_row (GtkTreeView * gv, gboolean arg1,
-				  gpointer ud);
-gboolean on_delete_protocol_window (GtkWidget * wdg, GdkEvent * e,
-				    gpointer ud);
+/* fills the hash from a pref vector */
+gboolean protohash_read_prefvect(gchar **colors, gint n_colors);
+
+/* fills the pref vector from the hash */
+gboolean protohash_write_prefvect();
+
+#endif 
+
