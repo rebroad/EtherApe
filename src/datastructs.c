@@ -23,6 +23,7 @@
 
 #include <glib.h>
 #include <gtk/gtk.h>
+#include <netdb.h>
 #include "datastructs.h"
 #include "appdata.h"
 #include "util.h"
@@ -373,123 +374,34 @@ static void services_fill_preferred(void)
     g_tree_foreach(udp_services, services_pref_trv, NULL);
   if (tcp_services)
     g_tree_foreach(tcp_services, services_pref_trv, NULL);
-}                                      
+}
 
-                                    /* TODO this is probably this single piece of code I am most ashamed of.
- * I should learn how to use flex or yacc and do this The Right Way (TM)*/
 void services_init(void)
 {
-  FILE *services = NULL;
-  gchar *line;
-  gchar **t1 = NULL, **t2 = NULL;
-  gchar *str;
+  struct servent *ent;
   port_service_t *port_service;
-  guint i;
-  char filename[PATH_MAX];
-  port_type_t port_number;	/* udp and tcp are the same */
 
   if (tcp_services)
     return; /* already loaded */
-  
-  safe_strncpy(filename, CONFDIR "/services", sizeof(filename));
-  if (!(services = fopen (filename, "r")))
-    {
-      safe_strncpy(filename, "/etc/services", sizeof(filename));
-      if (!(services = fopen (filename, "r")))
-	{
-	  g_my_critical (_
-			 ("Failed to open %s. No TCP or UDP services will be recognized"),
-			 filename);
-	  return;
-	}
-    }
-
-  g_my_info (_("Reading TCP and UDP services from %s"), filename);
 
   service_names = g_tree_new_full(services_name_cmp, NULL, NULL, services_tree_free);
   tcp_services = g_tree_new_full(services_port_cmp, NULL, NULL, services_tree_free);
   udp_services = g_tree_new_full(services_port_cmp, NULL, NULL, services_tree_free);
 
-  line = g_malloc (LINESIZE);
-  g_assert(line);
-
-  while (fgets (line, LINESIZE, services))
+  while ((ent = getservent()))
     {
-      if (line[0] != '#' && line[0] != ' ' && line[0] != '\n'
-	  && line[0] != '\t')
-	{
-	  gboolean error = FALSE;
-
-	  if (!g_strdelimit (line, " \t\n", ' '))
-	    error = TRUE;
-
-	  if (error || !(t1 = g_strsplit (line, " ", 0)))
-	    error = TRUE;
-	  if (!error && t1[0])
-            {
-              gchar *told = t1[0];
-              t1[0] = g_ascii_strup (told, -1);
-              g_free(told);
-            }
-	  for (i = 1; t1[i] && !strcmp ("", t1[i]); i++)
-	    ;
-
-	  if (!error && (str = t1[i]))
-	    if (!(t2 = g_strsplit (str, "/", 0)))
-	      error = TRUE;
-
-	  if (error || !t2 || !t2[0])
-	    error = TRUE;
-
-	  /* TODO The h here is not portable */
-	  if (error || !sscanf (t2[0], "%hd", &port_number)
-	      || (port_number < 1))
-	    error = TRUE;
-
-	  if (error || !t2[1])
-	    error = TRUE;
-
-	  if (error
-	      || (g_ascii_strcasecmp ("udp", t2[1]) && g_ascii_strcasecmp ("tcp", t2[1])
-		  && g_ascii_strcasecmp ("ddp", t2[1]) && g_ascii_strcasecmp ("sctp", t2[1])
-                  ))
-	    error = TRUE;
-
-	  if (error)
-	    g_warning (_("Unable to  parse line %s"), line);
-	  else
-	    {
-#if DEBUG
-	      g_my_debug ("Loading service %s %s %d", t2[1], t1[0],
-			  port_number);
-#endif
-	      if (!g_ascii_strcasecmp ("ddp", t2[1]))
-		g_my_info (_("DDP protocols not supported in %s"), line);
-	      else if (!g_ascii_strcasecmp ("sctp", t2[1]))
-		g_my_info (_("SCTP protocols not supported in %s"), line);
-              else
-                {
-                  /* map port to name, to two trees */
-		  port_service = port_service_new(port_number, t1[0]);
-                  if (!g_ascii_strcasecmp ("tcp", t2[1]))
-                    g_tree_replace(tcp_services, 
-                                   &(port_service->port), port_service);
-                  else if (!g_ascii_strcasecmp ("udp", t2[1]))
-                    g_tree_replace(udp_services,
-                                   &(port_service->port), port_service);
-		}
-	    }
-
-	  g_strfreev (t2);
-	  t2 = NULL;
-	  g_strfreev (t1);
-	  t1 = NULL;
-
-	}
+      if (g_ascii_strcasecmp(ent->s_proto, "tcp")
+          && g_ascii_strcasecmp(ent->s_proto, "udp"))
+        g_my_info(_("%s protocol not supported"), ent->s_proto);
+      else
+        {
+          port_service = port_service_new(ntohs(ent->s_port), ent->s_name);
+          g_tree_replace(ent->s_proto[0] == 't' ? tcp_services : udp_services,
+                         &port_service->port, port_service);
+        }
     }
 
-  fclose (services);
-  g_free (line);
+  endservent();
 
   /* now traverse port->name trees to fill the name->port tree */
   g_tree_foreach(udp_services, services_port_trv, service_names);
@@ -497,7 +409,7 @@ void services_init(void)
 
   /* and finally assign preferred services */
   services_fill_preferred();
-}				/* services_init */
+}
 
 void services_clear(void)
 {
