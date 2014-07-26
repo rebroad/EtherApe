@@ -202,6 +202,8 @@ static void start_threads()
 
 static void stop_threads()
 {
+  int i;
+
   /* take mutex, to make sure other thread will be waiting */
   pthread_mutex_lock(&resolvemtx);
 
@@ -209,6 +211,10 @@ static void stop_threads()
   request_stop_thread = 1;
   pthread_cond_broadcast(&resolvecond); /* wake all threads */
   pthread_mutex_unlock(&resolvemtx);
+
+  /* Now wait for them to actually finish */
+  for (i = 0; i < resolver_threads_num; i++)
+    pthread_join(resolver_threads[i], NULL);
 
   resolver_threads_num = 0;
 }
