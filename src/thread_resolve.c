@@ -53,6 +53,7 @@
 #include "common.h"
 #include "ip-cache.h"
 #include "thread_resolve.h"
+#include "util.h"
 
 #define ETHERAPE_THREAD_POOL_SIZE 6
 static pthread_t resolver_threads[ETHERAPE_THREAD_POOL_SIZE];
@@ -253,7 +254,7 @@ sendrequest_inverse (address_t *ip)
   /* signal the condition and release the mux */
   pthread_cond_signal(&resolvecond);
 
-  g_my_debug("Resolver: queued request \"%s\".", strlongip (&rp->ip));
+  g_my_debug("Resolver: queued request \"%s\".", address_to_str(&rp->ip));
 }
 
 /* called to activate the resolver */
@@ -288,22 +289,20 @@ const char *
 thread_lookup (address_t *ip)
 {
   const char *ipname;
-  int is_expired = 0;
 
   if (!ip)
       return "";
 
-  /* locks mutex */ 
+  /* locks mutex */
   pthread_mutex_lock(&resolvemtx);
-   
-  /* asks cache */
-  ipname = ipcache_getnameip(ip, &is_expired);
 
-  if (is_expired)
-      sendrequest_inverse (ip); /* request needed */ 
-    
+  /* asks cache */
+  ipname = ipcache_lookup(ip);
+
+  if (!ipname)
+      sendrequest_inverse (ip); /* request needed */
+
   /* release mutex and exit */
   pthread_mutex_unlock(&resolvemtx);
   return ipname;
 }
-

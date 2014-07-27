@@ -23,44 +23,34 @@
 
 /*  Prototypes for ip-cache.c  */
 
-enum IPCACHE_STATE
+#ifndef IP_CACHE_H
+#define IP_CACHE_H
+
+typedef enum
 {
-  IPCACHE_STATE_FINISHED,		/* query successful */
-  IPCACHE_STATE_FAILED,			/* query failed */
-  IPCACHE_STATE_PTRREQ			/* PTR query packet sent */
-} ;
+  ICS_RESOLVED,  /* Successfully resolved */
+  ICS_RESOLVING, /* Currently being resolved */
+  ICS_FAILED,    /* Resolution failed (e.g. NXDOMAIN) */
+} ipcache_state_t;
 
 struct ipcache_item
 {
-  /* these linked lists are used for hash table overflow */
-  struct ipcache_item *nextid;
-  struct ipcache_item *previousid;
-  struct ipcache_item *nextip;
-  struct ipcache_item *previousip;
-
-  /* linked list of struct for purging */
-  struct ipcache_item *next_active;
-  struct ipcache_item *previous_active;
-
-  unsigned long expire_tick;	/* when current_tick > expire_tick this node is expired */
-  unsigned long last_expire_tick;	/* used to escalate old timers ... */
-  char *fq_hostname;		/* fully qualified hostname */
-  address_t ip;			/* ip addr */
-  unsigned short id;			/* unique item id */
-  enum IPCACHE_STATE state;			/* current state */
+  address_t ip;			     /* the IP address this entry caches */
+  char *hostname;        /* hostname 'ip' resolved to */
+  ipcache_state_t state; /* state of this entry */
+  time_t expiry;         /* when this entry expires */
 };
 
-
 void ipcache_init (void);
-unsigned int ipcache_tick (void);	/* call this more or less every 10 secs */
-
-struct ipcache_item *ipcache_prepare_request(address_t *ip);
-const char *ipcache_getnameip(address_t *ip, int *is_expired);
-void ipcache_request_failed(struct ipcache_item *rp);
-void ipcache_request_succeeded(struct ipcache_item *rp, long ttl, char *ipname);
-struct ipcache_item *ipcache_findid (unsigned short id);
-long ipcache_active_entries(void);
 void ipcache_clear(void);
+
+long ipcache_active_entries(void);
+
+const char* ipcache_lookup(address_t *addr);
+struct ipcache_item *ipcache_prepare_request(address_t *ip);
+void ipcache_request_succeeded(struct ipcache_item *rp, long ttl, char *ipname);
+void ipcache_request_failed(struct ipcache_item *rp);
 
 char *strtdiff (char *d, size_t lend, long signeddiff);
 char *strlongip (address_t *ip);
+#endif

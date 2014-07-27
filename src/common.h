@@ -31,6 +31,9 @@
 #elif HAVE_TIME_H
 #include <time.h>
 #endif
+#ifdef HAVE_SYS_SOCKET_H
+#include <sys/socket.h>
+#endif
 #include <string.h>
 #include <stdlib.h>
 #include <pcap.h>
@@ -116,6 +119,14 @@ address_t;
 #define is_addr_lt(dst, src) (memcmp((dst), (src), sizeof(address_t))<0)
 #define is_addr_ge(dst, src) (memcmp((dst), (src), sizeof(address_t))>=0)
 #define is_addr_le(dst, src) (memcmp((dst), (src), sizeof(address_t))<=0)
+
+static inline int address_cmp(const address_t *a, const address_t *b)
+{
+  if (a->type != b->type)
+    return a->type - b->type;
+  else
+    return memcmp(a->addr8, b->addr8, address_len(a->type));
+}
 
 #define g_my_debug(format, args...)      g_log (G_LOG_DOMAIN, \
 						  G_LOG_LEVEL_DEBUG, \

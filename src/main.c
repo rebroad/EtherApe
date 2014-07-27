@@ -354,9 +354,6 @@ main (int argc, char *argv[])
   /* This other timeout makes sure that the info windows are updated */
   g_timeout_add (500, (GtkFunction) update_info_windows, NULL);
 
-  /* another timeout to handle IP-cache timeouts */
-  g_timeout_add (10000, (GtkFunction) ipcache_tick, NULL);
-
   init_names();
   init_eth_resolv();
 
