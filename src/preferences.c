@@ -122,7 +122,7 @@ void init_config(struct pref_struct *p)
   p->text_color=NULL;
   p->fontname=NULL;
   p->colors=NULL;
-  p->center_node = NULL;
+  p->centered_nodes = NULL;
 
   p->averaging_time=3000;
 }
@@ -165,8 +165,8 @@ void set_default_config(struct pref_struct *p)
   p->colors = protohash_compact(p->colors);
   protohash_read_prefvect(p->colors);
 
-  g_free(p->center_node);
-  p->center_node = g_strdup("");
+  g_free(p->centered_nodes);
+  p->centered_nodes = g_strdup("");
 }
 
 /* loads configuration from .gnome/Etherape */
@@ -200,7 +200,7 @@ void load_config(void)
   read_string_config(&pref.filter, gkey, "filter");
   read_string_config(&pref.fontname, gkey, "fontname");
   read_string_config(&pref.text_color, gkey, "text_color");
-  read_string_config(&pref.center_node, gkey, "center_node");
+  read_string_config(&pref.centered_nodes, gkey, "centered_nodes");
 
   read_boolean_config(&pref.diagram_only, gkey, "diagram_only");
   read_boolean_config(&pref.group_unk, gkey, "group_unk");
@@ -288,7 +288,7 @@ void save_config(void)
   g_key_file_set_string(gkey, pref_group, "filter", pref.filter);
   g_key_file_set_string(gkey, pref_group, "fontname", pref.fontname);
   g_key_file_set_string(gkey, pref_group, "text_color", pref.text_color);
-  g_key_file_set_string(gkey, pref_group, "center_node", pref.center_node);
+  g_key_file_set_string(gkey, pref_group, "centered_nodes", pref.centered_nodes);
 
   tmpstr = g_strjoinv(" ", pref.colors);
   g_key_file_set_string(gkey, pref_group, "colors", tmpstr);
@@ -332,7 +332,7 @@ duplicate_config(const struct pref_struct *src)
   t->text_color = NULL;
   t->fontname = NULL;
   t->colors = NULL;
-  t->center_node = NULL;
+  t->centered_nodes = NULL;
   copy_config(t, src);
 
   return t;
@@ -347,8 +347,8 @@ void free_config(struct pref_struct *t)
   t->text_color=NULL;
   g_free(t->fontname);
   t->fontname=NULL;
-  g_free(t->center_node);
-  t->center_node=NULL;
+  g_free(t->centered_nodes);
+  t->centered_nodes=NULL;
 
   g_strfreev(t->colors);
   t->colors = NULL;
@@ -375,7 +375,7 @@ void copy_config(struct pref_struct *tgt, const struct pref_struct *src)
   tgt->filter=g_strdup(src->filter);
   tgt->text_color=g_strdup(src->text_color);
   tgt->fontname=g_strdup(src->fontname);
-  tgt->center_node=g_strdup(src->center_node);
+  tgt->centered_nodes=g_strdup(src->centered_nodes);
   tgt->stack_level = src->stack_level;
   tgt->colors = g_strdupv(src->colors);
 

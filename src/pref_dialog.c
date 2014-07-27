@@ -261,7 +261,7 @@ on_preferences1_activate (GtkMenuItem * menuitem, gpointer user_data)
   cbox_add_select(cbox, pref.filter);
 
   cbox = GTK_COMBO_BOX_ENTRY(glade_xml_get_widget (appdata.xml, "center_combo"));
-  cbox_add_select(cbox, pref.center_node);
+  cbox_add_select(cbox, pref.centered_nodes);
 
   gtk_widget_show (diag_pref);
   gdk_window_raise (diag_pref->window);
@@ -458,10 +458,10 @@ static void on_center_node_changed(GtkComboBoxEntry * cbox, gpointer user_data)
 {
   gchar *str;
   str = gtk_combo_box_get_active_text(GTK_COMBO_BOX(cbox));
-  g_free(pref.center_node);
-  pref.center_node = g_strdup (str);
+  g_free(pref.centered_nodes);
+  pref.centered_nodes = g_strdup (str);
   g_free (str);
-  cbox_add_select(cbox, pref.center_node);
+  cbox_add_select(cbox, pref.centered_nodes);
 }
 
 void

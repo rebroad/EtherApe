@@ -21,6 +21,8 @@
 #include <config.h>
 #endif
 
+#include <arpa/inet.h>
+
 #include <gnome.h>
 
 #include "appdata.h"
@@ -36,6 +38,7 @@
 #include "conversations.h"
 #include "preferences.h"
 #include "export.h"
+#include "util.h"
 
 /* maximum node and link size */
 #define MAX_NODE_SIZE 5000
@@ -87,13 +90,40 @@ static gint canvas_link_update(link_id_t * link_id,
 				 canvas_link_t * canvas_link,
 				 GList ** delete_list);
 
-
-typedef struct 
+struct nodeset_spec
 {
-  GtkWidget * canvas;
+  enum
+    {
+      NS_HOSTNAME,
+      NS_CIDRRANGE,
+      NS_NONE,
+    } kind;
+
+  union
+  {
+    struct
+    {
+      address_t addr;
+      unsigned nbits;
+    } cidrrange;
+    const gchar* hostname;
+  };
+};
+
+struct node_ring
+{
   gfloat angle;
   guint node_i;
   guint n_nodes;
+};
+
+typedef struct
+{
+  GtkWidget * canvas;
+
+  struct node_ring outer;
+  struct node_ring center;
+
   gdouble xmin;
   gdouble ymin;
   gdouble xmax;
@@ -102,7 +132,7 @@ typedef struct
   gdouble y_rad_max;
   gdouble x_inner_rad_max;
   gdouble y_inner_rad_max;
-  
+  struct nodeset_spec centered_nodes;
 } reposition_node_t;
 
 
@@ -155,6 +185,9 @@ static gint traffic_compare (gconstpointer a, gconstpointer b);
 static gint reposition_canvas_nodes (node_id_t * node_id,
 				     canvas_node_t * canvas_node,
 				     reposition_node_t *data);
+static gint reposition_canvas_nodes_prep(node_id_t * node_id,
+                                         canvas_node_t * canvas_node,
+                                         reposition_node_t *data);
 static gint check_new_link (link_id_t * link_id,
 			    link_t * link, GtkWidget * canvas);
 static gdouble get_node_size (gdouble average);
@@ -355,9 +388,18 @@ diagram_update_nodes(GtkWidget * canvas)
     {
       reposition_node_t rdata;
       init_reposition(&rdata, canvas, displayed_nodes);
+
+      g_tree_foreach(canvas_nodes,
+                    (GTraverseFunc) reposition_canvas_nodes_prep,
+                    &rdata);
+
+      rdata.center.node_i = rdata.center.n_nodes;
+      rdata.outer.node_i = rdata.outer.n_nodes;
+
       g_tree_foreach(canvas_nodes,
                     (GTraverseFunc) reposition_canvas_nodes,
                     &rdata);
+
       need_reposition = FALSE;
       need_font_refresh = FALSE;
     }
@@ -918,6 +960,103 @@ traffic_compare (gconstpointer a, gconstpointer b)
 
 }				/* traffic_compare */
 
+/*
+ * Attempt to parse orig_specstr as an IP address or CIDR range
+ * (e.g. 192.168.1.0/24) in either v4 or v6 notation; if both fail, fall back
+ * to treating orig_specstr as a single hostname.
+ */
+static void parse_nodeset_spec(const gchar *orig_specstr,
+                               struct nodeset_spec *nodeset)
+{
+  gchar *addr_str;
+  gchar *pfxlen_str;
+  long pfxlen;
+  gchar *slash;
+  gchar *specstr = g_strdup(orig_specstr);
+
+  slash = strchr(specstr, '/');
+  if (slash)
+    {
+      /* Split prefix-length off from address */
+      *slash = '\0';
+      pfxlen_str = slash + 1;
+      if (strict_strtol(pfxlen_str, 10, &pfxlen) || pfxlen < 0)
+        pfxlen = -1;
+    }
+  else
+    pfxlen = -1;
+  addr_str = specstr;
+
+  if (inet_pton(AF_INET, addr_str, &nodeset->cidrrange.addr.addr_v4))
+    {
+      nodeset->kind = NS_CIDRRANGE;
+      nodeset->cidrrange.addr.type = AF_INET;
+      if (pfxlen >= 0 && pfxlen <= 32)
+          nodeset->cidrrange.nbits = pfxlen;
+      else
+          nodeset->cidrrange.nbits = 32;
+    }
+  else if (inet_pton(AF_INET6, addr_str, &nodeset->cidrrange.addr.addr_v6))
+    {
+      nodeset->kind = NS_CIDRRANGE;
+      nodeset->cidrrange.addr.type = AF_INET6;
+      if (pfxlen >= 0 && pfxlen <= 128)
+          nodeset->cidrrange.nbits = pfxlen;
+      else
+          nodeset->cidrrange.nbits = 128;
+    }
+  else if (*orig_specstr)
+    {
+      nodeset->kind = NS_HOSTNAME;
+      nodeset->hostname = orig_specstr;
+    }
+  else
+    nodeset->kind = NS_NONE;
+
+  g_free(specstr);
+}
+
+/* Like memcp(3), but bitwise (big-endian at the sub-byte level) */
+static int bitwise_memcmp(const void *a, const void *b, size_t nbits)
+{
+  int ret;
+  unsigned char a_last, b_last, mask;
+  size_t wholebytes = nbits / CHAR_BIT, rembits = nbits % CHAR_BIT;
+
+  ret = memcmp(a, b, wholebytes);
+  if (ret)
+    return ret;
+
+  mask = ~(rembits ? (1 << (CHAR_BIT - rembits)) - 1 : 0xFF);
+  a_last = *((unsigned char*)a + wholebytes) & mask;
+  b_last = *((unsigned char*)b + wholebytes) & mask;
+
+  return a_last - b_last;
+}
+
+/* Check if 'node' matches 'spec' */
+static int nodeset_match(const struct nodeset_spec *spec, const node_t *node)
+{
+  const address_t *nodeaddr;
+
+  if (spec->kind == NS_HOSTNAME
+      && (!strcmp(node->name->str, spec->hostname)
+          || !strcmp(node->numeric_name->str, spec->hostname)))
+    return 1;
+
+  if (node->node_id.node_type == IP)
+    nodeaddr = &node->node_id.addr.ip;
+  else if (node->node_id.node_type == TCP)
+    nodeaddr = &node->node_id.addr.tcp4.host;
+  else
+    return 0;
+
+  if (nodeaddr->type != spec->cidrrange.addr.type)
+    return 0;
+
+  return !bitwise_memcmp(nodeaddr->addr8, spec->cidrrange.addr.addr8,
+                         spec->cidrrange.nbits);
+}
 
 /* initialize reposition struct */
 static void init_reposition(reposition_node_t *data,
@@ -927,11 +1066,8 @@ static void init_reposition(reposition_node_t *data,
   gdouble text_compensation = 50;
 
   data->canvas = canvas;
-  data->angle = 0.0;
-  data->node_i = 0;
-  data->n_nodes = 0;
-  data->n_nodes = total_nodes;
-  data->node_i = total_nodes;
+  memset(&data->center, 0, sizeof(data->center));
+  memset(&data->outer, 0, sizeof(data->outer));
 
   gnome_canvas_get_scroll_region (GNOME_CANVAS (canvas),
 				  &data->xmin, &data->ymin, 
@@ -947,6 +1083,40 @@ static void init_reposition(reposition_node_t *data,
   data->y_rad_max = 0.9 * (data->ymax - data->ymin) / 2;
   data->x_inner_rad_max = data->x_rad_max / 2;
   data->y_inner_rad_max = data->y_rad_max / 2;
+
+  /* FIXME: would be nice to re-parse only when changed, not every reposition */
+  if (pref.centered_nodes)
+    parse_nodeset_spec(pref.centered_nodes, &data->centered_nodes);
+  else
+    data->centered_nodes.kind = NS_NONE;
+}
+
+/*
+ * A preparatory pass to count how many nodes are centered and how many are on
+ * the outer ring (and mark each appropriately).
+ */
+static gint reposition_canvas_nodes_prep(node_id_t *node_id,
+                                         canvas_node_t *canvas_node,
+                                         reposition_node_t *rdata)
+{
+  node_t *node;
+
+  if (!canvas_node->shown)
+    return FALSE;
+
+  node = nodes_catalog_find((const node_id_t*)&canvas_node->canvas_node_id);
+  if (node && nodeset_match(&rdata->centered_nodes, node))
+    {
+      canvas_node->centered = TRUE;
+      rdata->center.n_nodes++;
+    }
+  else
+    {
+      canvas_node->centered = FALSE;
+      rdata->outer.n_nodes++;
+    }
+
+  return FALSE;
 }
 
 /* Called from update_diagram if the global need_reposition
@@ -957,8 +1127,9 @@ static gint reposition_canvas_nodes(node_id_t * node_id,
                                     canvas_node_t * canvas_node,
                                     reposition_node_t *data)
 {
+  struct node_ring *ring;
+  gdouble center_x, center_y, oddAngle;
   gdouble x = 0, y = 0;
-  gdouble oddAngle;
 
   if (!canvas_node->shown)
     {
@@ -967,8 +1138,11 @@ static gint reposition_canvas_nodes(node_id_t * node_id,
       return FALSE;
     }
 
-  oddAngle = data->angle;
-  
+  ring = canvas_node->centered ? &data->center : &data->outer;
+
+  center_x = (data->xmax - data->xmin) / 2 + data->xmin;
+  center_y = (data->ymax - data->ymin) / 2 + data->ymin;
+
   /* TODO I've done all the stationary changes in a hurry
    * I should review it an tidy up all this stuff */
   if (pref.stationary)
@@ -1000,40 +1174,38 @@ static gint reposition_canvas_nodes(node_id_t * node_id,
     }
   else
     {
-      if (canvas_node->is_new && *pref.center_node) {
-        node_t * node;
-
-        /* center node specified, check to see if current node is centered */  
-        node = nodes_catalog_find((const node_id_t *)&canvas_node->canvas_node_id);
-        /* If it is one of the "centered" nodes change the coordinates */
-        if (node) {
-          if (!strcmp(node->name->str, pref.center_node) ||
-              !strcmp(node->numeric_name->str, pref.center_node)) {
-             canvas_node->centered = TRUE;
-          }
-        }
-      }
-
-      if (canvas_node->centered) {
-         /* centered node, reset coordinates */
-         x = ( data->xmax - data->xmin ) / 2 + data->xmin ;
-         y = ( data->ymax - data->ymin ) / 2 + data->ymin ;
-         data->angle -= 2 * M_PI / data->n_nodes;
-      }
-      else {
-        if (data->n_nodes % 2 == 0)	/* spacing is better when n_nodes is odd and Y is linear */
-            oddAngle = (data->angle * data->n_nodes) / (data->n_nodes + 1);
-        if (data->n_nodes > 7)
+      if (canvas_node->centered && data->center.n_nodes == 1)
         {
-          x = data->x_rad_max * cos (oddAngle);
-          y = data->y_rad_max * asin (sin (oddAngle)) / (M_PI / 2);
+          /* one centered node, reset coordinates */
+          x = center_x;
+          y = center_y;
+          ring->angle -= 2 * M_PI / ring->n_nodes;
         }
-        else
+      else
         {
-          x = data->x_rad_max * cos (data->angle);
-          y = data->y_rad_max * sin (data->angle);
+          if (ring->n_nodes % 2 == 0)	/* spacing is better when n_nodes is odd and Y is linear */
+            oddAngle = (ring->angle * ring->n_nodes) / (ring->n_nodes + 1);
+          else
+            oddAngle = ring->angle;
+
+          if (ring->n_nodes > 7)
+            {
+              x = data->x_rad_max * cos (oddAngle);
+              y = data->y_rad_max * asin (sin (oddAngle)) / (M_PI / 2);
+            }
+          else
+            {
+              x = data->x_rad_max * cos (ring->angle);
+              y = data->y_rad_max * sin (ring->angle);
+            }
+
+          if (canvas_node->centered && data->center.n_nodes > 1)
+            {
+              /* For the inner ring, just move it halfway closer the the center point. */
+              x = center_x + ((x - center_x) / 2.0);
+              y = center_y + ((y - center_y) / 2.0);
+            }
         }
-      }
     }
 
 
@@ -1066,14 +1238,14 @@ static gint reposition_canvas_nodes(node_id_t * node_id,
   gnome_canvas_item_show (canvas_node->node_item);
   gnome_canvas_item_request_update (canvas_node->node_item);
 
-  data->node_i--;
+  ring->node_i--;
 
-  if (data->node_i)
-    data->angle += 2 * M_PI / data->n_nodes;
+  if (ring->node_i)
+    ring->angle += 2 * M_PI / ring->n_nodes;
   else
     {
-      data->angle = 0.0;
-      data->n_nodes = 0;
+      ring->angle = 0.0;
+      ring->n_nodes = 0;
     }
 
   return FALSE;

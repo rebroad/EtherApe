@@ -394,6 +394,14 @@ type_to_str (const address_t * ad)
     }
 }				/* type_to_str */
 
+int
+strict_strtol(const char *str, int base, long *val)
+{
+  char *end;
+  *val = strtol(str, &end, base);
+  return (*str && !*end) ? 0 : EINVAL;
+}
+
 /************************************************
  *
  * xml helpers 

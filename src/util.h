@@ -53,6 +53,12 @@ extern "C"
   const gchar *address_to_str(const address_t * ad);
   const gchar *type_to_str(const address_t * ad);
 
+  /*
+   * strtol()-like that writes converted value to *val and returns an errno
+   * value (0 for success, non-zero for failure)
+   */
+  int strict_strtol(const char *str, int base, long *val);
+
   /* xml helpers */
   gchar *xmltag(const gchar *name, const gchar *fmt, ...);
 
