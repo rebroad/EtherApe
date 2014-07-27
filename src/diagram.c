@@ -273,6 +273,8 @@ void
 init_diagram (GladeXML *xml)
 {
   GtkWidget *canvas;
+  GtkWidget *viewport;
+  GtkStyle *style;
 
   /* Creates trees */
   canvas_nodes = g_tree_new_full ( (GCompareDataFunc)canvas_node_compare, 
@@ -281,11 +283,21 @@ init_diagram (GladeXML *xml)
                             NULL, NULL, (GDestroyNotify)canvas_link_delete);
 
   initialize_pref_controls();
-  
+
   /* Initialize background image */
   canvas = glade_xml_get_widget (appdata.xml, "canvas1");
   init_background_image(canvas);
-  
+
+  /* Make legend background color match main display background color */
+  style = gtk_style_new ();
+  style->bg[GTK_STATE_NORMAL] = bck_image.color;
+  style->base[GTK_STATE_NORMAL] = bck_image.color;
+
+  /* Set protocol legend background to black */
+  viewport = glade_xml_get_widget (appdata.xml, "legend_viewport");
+  gtk_widget_set_style (viewport, style);
+  gtk_style_set_background (viewport->style, viewport->window, GTK_STATE_NORMAL);
+
   /* Initialize the known_protocols table */
   delete_gui_protocols ();
 

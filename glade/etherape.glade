@@ -2460,7 +2460,7 @@ Daniel Nylander
                         <property name="hscrollbar_policy">never</property>
                         <property name="vscrollbar_policy">automatic</property>
                         <child>
-                          <widget class="GtkViewport" id="viewport1">
+                          <widget class="GtkViewport" id="legend_viewport">
                             <property name="visible">True</property>
                             <property name="resize_mode">queue</property>
                             <property name="shadow_type">none</property>
