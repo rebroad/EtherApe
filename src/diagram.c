@@ -1069,6 +1069,13 @@ static void init_reposition(reposition_node_t *data,
   memset(&data->center, 0, sizeof(data->center));
   memset(&data->outer, 0, sizeof(data->outer));
 
+  /*
+   * Offset the starting angle on the center ring so that when there are
+   * relatively few nodes displayed (e.g. 4 central and 4 outer) the links
+   * obscure things less (by not overlapping node labels and other links).
+   */
+  data->center.angle += M_PI / 4.0;
+
   gnome_canvas_get_scroll_region (GNOME_CANVAS (canvas),
 				  &data->xmin, &data->ymin, 
                                   &data->xmax, &data->ymax);
