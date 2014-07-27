@@ -462,6 +462,7 @@ static void on_center_node_changed(GtkComboBoxEntry * cbox, gpointer user_data)
   pref.centered_nodes = g_strdup (str);
   g_free (str);
   cbox_add_select(cbox, pref.centered_nodes);
+  ask_reposition(FALSE);
 }
 
 void
