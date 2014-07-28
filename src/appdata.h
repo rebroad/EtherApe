@@ -58,8 +58,9 @@ struct appdata_struct
   unsigned long n_packets;	/* Number of total packets received */
   glong total_mem_packets;      /* Number of packets currently in memory */
   gboolean request_dump;        /* if true, do an xml dump */
-} 
-appdata;
+};
+
+extern struct appdata_struct appdata;
 
 #define TOTAL_POSITION_ELEMENTS 1000
 #define MAX_POSITION_COLUMNS 10

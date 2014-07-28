@@ -30,6 +30,7 @@ static gboolean get_version_levels (const gchar * version_string,
 				    guint * patch);
 static gint version_compare (const gchar * a, const gchar * b);
 
+struct pref_struct pref;
 static const gchar *pref_group = "Diagram";
 
 /***************************************************************

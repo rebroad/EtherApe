@@ -45,6 +45,8 @@
 #define MAX_NODE_SIZE 5000
 #define MAX_LINK_SIZE (MAX_NODE_SIZE/4)
 
+gboolean already_updating;
+gboolean stop_requested;
 
 /***************************************************************************
  *

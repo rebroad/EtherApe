@@ -25,6 +25,8 @@
 
 #define ETHERAPE_GLADE_FILE "etherape.glade"	/* glade 3 file */
 
+struct appdata_struct appdata;
+
 void appdata_init(struct appdata_struct *p)
 {
   gettimeofday (&p->now, NULL);

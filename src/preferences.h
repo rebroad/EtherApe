@@ -87,8 +87,9 @@ struct pref_struct
   gdouble averaging_time;	/* Microseconds of time we consider to
 				 * calculate traffic averages */
   gchar *position;              /* Filename of a List of nodes and their positions */
-}
-pref;
+};
+
+extern struct pref_struct pref;
 
 /* preferences methods */
 void load_config(void);

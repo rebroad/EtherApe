@@ -19,10 +19,8 @@
 
 #include "appdata.h"
 
-
-
-gboolean already_updating;	/* True while an instance of update_diagram is running */
-gboolean stop_requested;	/* True if there is a pending stop request */
+extern gboolean already_updating; /* True while an instance of update_diagram is running */
+extern gboolean stop_requested; /* True if there is a pending stop request */
 
 guint update_diagram (GtkWidget * canvas);
 void init_diagram (GladeXML *xml);
