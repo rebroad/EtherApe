@@ -102,6 +102,11 @@ initialize_pref_controls(void)
 			    pref.link_node_ratio);
   g_signal_emit_by_name (GTK_OBJECT (GTK_RANGE (widget)->adjustment),
 			 "changed");
+  widget = glade_xml_get_widget (appdata.xml, "inner_ring_scale_slider");
+  gtk_adjustment_set_value (GTK_RANGE (widget)->adjustment,
+                            pref.inner_ring_scale);
+  g_signal_emit_by_name (GTK_OBJECT (GTK_RANGE (widget)->adjustment),
+			 "changed");
   spin = GTK_SPIN_BUTTON (glade_xml_get_widget (appdata.xml, "averaging_spin"));
   gtk_spin_button_set_value (spin, pref.averaging_time);
   spin = GTK_SPIN_BUTTON (glade_xml_get_widget (appdata.xml, "refresh_spin"));
@@ -179,6 +184,11 @@ initialize_pref_controls(void)
 		    "value_changed",
 		    GTK_SIGNAL_FUNC
 		    (on_link_width_slider_adjustment_changed), NULL);
+  widget = glade_xml_get_widget (appdata.xml, "inner_ring_scale_slider");
+  g_signal_connect (G_OBJECT (GTK_RANGE (widget)->adjustment),
+		    "value_changed",
+		    GTK_SIGNAL_FUNC
+		    (on_inner_ring_scale_slider_adjustment_changed), NULL);
   widget = glade_xml_get_widget (appdata.xml, "averaging_spin");
   g_signal_connect (G_OBJECT (GTK_SPIN_BUTTON (widget)->adjustment),
 		    "value_changed",
@@ -287,6 +297,16 @@ on_link_width_slider_adjustment_changed (GtkAdjustment * adj)
 	 _("Adjustment value: %g. Link-node ratio %g"),
 	 adj->value, pref.link_node_ratio);
 
+}
+
+void
+on_inner_ring_scale_slider_adjustment_changed (GtkAdjustment * adj)
+{
+  pref.inner_ring_scale = adj->value;
+  g_log (G_LOG_DOMAIN, G_LOG_LEVEL_DEBUG,
+         _("Adjustment value: %g. Inner ring scale %g"),
+         adj->value, pref.inner_ring_scale);
+  ask_reposition(FALSE);
 }
 
 void

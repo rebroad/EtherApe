@@ -150,6 +150,48 @@ Average pkt size (In+Out)
                   </packing>
                 </child>
                 <child>
+                  <widget class="GtkVBox" id="vbox8">
+                    <property name="visible">True</property>
+                    <property name="orientation">vertical</property>
+                    <child>
+                      <widget class="GtkLabel" id="label10">
+                        <property name="visible">True</property>
+                        <property name="xalign">0</property>
+                        <property name="label" translatable="yes">_Inner Ring Scale</property>
+                        <property name="use_underline">True</property>
+                      </widget>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">False</property>
+                        <property name="padding">2</property>
+                        <property name="position">0</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <widget class="GtkHScale" id="inner_ring_scale_slider">
+                        <property name="visible">True</property>
+                        <property name="can_focus">True</property>
+                        <property name="tooltip" translatable="yes">Inner ring radius as a fraction of outer ring size</property>
+                        <property name="adjustment">0.5 0.01 1 0.01 0.25 0</property>
+                        <property name="digits">2</property>
+                        <property name="draw_value">True</property>
+                        <property name="value_pos">right</property>
+                      </widget>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">False</property>
+                        <property name="position">1</property>
+                      </packing>
+                    </child>
+                  </widget>
+                  <packing>
+                    <property name="top_attach">6</property>
+                    <property name="bottom_attach">7</property>
+                    <property name="x_options">GTK_FILL</property>
+                    <property name="y_options">GTK_FILL</property>
+                  </packing>
+                </child>
+                <child>
                   <widget class="GtkVBox" id="vbox6">
                     <property name="visible">True</property>
                     <property name="orientation">vertical</property>

@@ -1209,8 +1209,8 @@ static gint reposition_canvas_nodes(node_id_t * node_id,
           if (canvas_node->centered && data->center.n_nodes > 1)
             {
               /* For the inner ring, just move it halfway closer the the center point. */
-              x = center_x + ((x - center_x) / 2.0);
-              y = center_y + ((y - center_y) / 2.0);
+              x = center_x + ((x - center_x) * pref.inner_ring_scale);
+              y = center_y + ((y - center_y) * pref.inner_ring_scale);
             }
         }
     }

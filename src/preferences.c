@@ -106,6 +106,7 @@ void init_config(struct pref_struct *p)
   p->stationary = FALSE;
   p->node_radius_multiplier = 0.0005;
   p->link_node_ratio = 1;
+  p->inner_ring_scale = 0.5;
   p->size_mode = LINEAR;
   p->node_size_variable = INST_OUTBOUND;
   p->stack_level = 0;
@@ -143,6 +144,7 @@ void set_default_config(struct pref_struct *p)
   p->averaging_time = 2000.0;
   p->node_radius_multiplier = 0.0005;
   p->link_node_ratio = 1.0;
+  p->inner_ring_scale = 0.5;
   p->refresh_period = 100;
   p->size_mode = LINEAR;
   p->node_size_variable = INST_OUTBOUND;
@@ -221,6 +223,7 @@ void load_config(void)
   read_double_config(&pref.averaging_time, gkey, "averaging_time");
   read_double_config(&pref.node_radius_multiplier, gkey, "node_radius_multiplier");
   read_double_config(&pref.link_node_ratio, gkey, "link_node_ratio");
+  read_double_config(&pref.inner_ring_scale, gkey, "inner_ring_scale");
 
   read_string_config(&tmpstr, gkey, "colors");
   if (tmpstr)
@@ -279,6 +282,8 @@ void save_config(void)
 			  pref.node_radius_multiplier);
   g_key_file_set_double(gkey, pref_group, "link_node_ratio",
 			  pref.link_node_ratio);
+  g_key_file_set_double(gkey, pref_group, "inner_ring_scale",
+                        pref.inner_ring_scale);
   g_key_file_set_integer(gkey, pref_group, "refresh_period", pref.refresh_period);
   g_key_file_set_integer(gkey, pref_group, "size_mode", pref.size_mode);
   g_key_file_set_integer(gkey, pref_group, "node_size_variable",
@@ -370,6 +375,7 @@ void copy_config(struct pref_struct *tgt, const struct pref_struct *src)
   tgt->stationary = src->stationary;
   tgt->node_radius_multiplier = src->node_radius_multiplier;
   tgt->link_node_ratio = src->link_node_ratio;
+  tgt->inner_ring_scale = src->inner_ring_scale;
   tgt->size_mode = src->size_mode;
   tgt->node_size_variable = src->node_size_variable;
   tgt->filter=g_strdup(src->filter);

@@ -38,6 +38,7 @@ struct pref_struct
 					 * value, the GUI uses the log10 of the
 					 * multiplier */
   gdouble link_node_ratio;	/* link width to node radius ratio */
+  gdouble inner_ring_scale; /* scale of inner ring in proportion to outer ring */
   size_mode_t size_mode;	/* Default mode for node size and
 				 * link width calculation */
   node_size_variable_t node_size_variable;	/* Default variable that sets the node
