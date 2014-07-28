@@ -17,10 +17,6 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#if 0
-#include "tcpudp.h"
-#endif
-
 /* ETHERNET */
 
 #ifndef __ETYPES_H__
