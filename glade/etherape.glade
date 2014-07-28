@@ -48,6 +48,8 @@
   <widget class="GtkDialog" id="diag_pref">
     <property name="title" translatable="yes">EtherApe: Preferences</property>
     <property name="type_hint">dialog</property>
+    <property name="window_position">center</property>
+    <property name="type_hint">dialog</property>
     <child internal-child="vbox">
       <widget class="GtkVBox" id="dialog-vbox2">
         <property name="visible">True</property>
@@ -1408,6 +1410,7 @@ Square Root</property>
     <property name="title" translatable="yes">Select color</property>
     <property name="resizable">False</property>
     <property name="type_hint">dialog</property>
+    <property name="window_position">center</property>
     <signal name="delete_event" handler="gtk_widget_hide"/>
     <child internal-child="color_selection">
       <widget class="GtkColorSelection" id="colorselection1">
@@ -1443,6 +1446,7 @@ Square Root</property>
   <widget class="GtkDialog" id="protocol_edit_dialog">
     <property name="title" translatable="yes">EtherApe: assign protocol</property>
     <property name="modal">True</property>
+    <property name="window_position">center</property>
     <property name="type_hint">dialog</property>
     <signal name="show" handler="on_protocol_edit_dialog_show"/>
     <child internal-child="vbox">
@@ -1933,6 +1937,7 @@ Square Root</property>
   <widget class="GtkAboutDialog" id="about1">
     <property name="border_width">5</property>
     <property name="type_hint">normal</property>
+    <property name="window_position">center</property>
     <property name="has_separator">False</property>
     <property name="program_name">EtherApe</property>
     <property name="copyright" translatable="yes">Copyright 2001-2013 Juan Toledo, Riccardo Ghetta</property>
