@@ -381,8 +381,7 @@ void services_init(void)
   struct servent *ent;
   port_service_t *port_service;
 
-  if (tcp_services)
-    return; /* already loaded */
+  g_assert(!service_names && !tcp_services && !udp_services);
 
   service_names = g_tree_new_full(services_name_cmp, NULL, NULL, services_tree_free);
   tcp_services = g_tree_new_full(services_port_cmp, NULL, NULL, services_tree_free);
