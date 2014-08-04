@@ -90,25 +90,16 @@ double subtract_times_ms (const struct timeval *a, const struct timeval *b)
  *
  **************************************************************************/
 /* init/delete of a packet_protos_t */
-packet_protos_t *packet_protos_init(void)
+packet_protos_t *new_packet_protos(void)
 {
-  guint i;
-  packet_protos_t *pt = g_malloc(sizeof(packet_protos_t));
-  g_assert(pt);
-  if (pt)
-    {
-      for (i = 0; i<=STACK_SIZE ; ++i)
-        pt->protonames[i] = NULL;
-    }
-  return pt;
+  return g_malloc0(sizeof(packet_protos_t));
 }
 
-void packet_protos_delete(packet_protos_t *pt)
+static void packet_protos_delete(packet_protos_t *pt)
 {
   guint i;
   for (i = 0; i<=STACK_SIZE ; ++i)
     g_free(pt->protonames[i]);
-  g_free(pt);
 }
 
 /* returns a newly allocated string with a dump of pt */
@@ -176,7 +167,7 @@ void packet_list_item_delete(packet_list_item_t *pli)
           if (pli->info->ref_count < 1)
             {
               /* packet now unused, delete it */
-              packet_protos_delete(pli->info->prot_desc);
+              packet_protos_delete(&pli->info->prot_desc);
               g_free (pli->info);
               pli->info = NULL;
 

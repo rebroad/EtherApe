@@ -78,22 +78,22 @@ protocol_stack_add_pkt(protostack_t *pstk, const packet_info_t * packet)
 
   for (i = 0; i <= STACK_SIZE; i++)
     {
-      if (!(packet->prot_desc->protonames[i]))
+      if (!(packet->prot_desc.protonames[i]))
         continue;
       
       protocol_item = g_list_find_custom (pstk->protostack[i],
-                                          packet->prot_desc->protonames[i],
+                                          packet->prot_desc.protonames[i],
                                           protocol_compare);
       if (protocol_item)
         protocol_info = protocol_item->data;
       else
 	{
           /* If there is yet not such protocol, create it */
-	  protocol_info = protocol_t_create(packet->prot_desc->protonames[i]);
+	  protocol_info = protocol_t_create(packet->prot_desc.protonames[i]);
 	  pstk->protostack[i] = g_list_prepend (pstk->protostack[i], protocol_info);
 	}
 
-      g_assert( !strcmp(protocol_info->name, packet->prot_desc->protonames[i]));
+      g_assert( !strcmp(protocol_info->name, packet->prot_desc.protonames[i]));
       basic_stats_add(&protocol_info->stats, packet->size);
     }
 }				/* add_protocol */
@@ -111,10 +111,10 @@ void protocol_stack_sub_pkt(protostack_t *pstk, const packet_info_t * packet)
     return;
 
   /* We remove protocol aggregate information */
-  while ((i <= STACK_SIZE) && packet->prot_desc->protonames[i])
+  while ((i <= STACK_SIZE) && packet->prot_desc.protonames[i])
     {
       item = g_list_find_custom (pstk->protostack[i],
-                                 packet->prot_desc->protonames[i],
+                                 packet->prot_desc.protonames[i],
                                  protocol_compare);
       if (!item)
         {
@@ -124,7 +124,7 @@ void protocol_stack_sub_pkt(protostack_t *pstk, const packet_info_t * packet)
         }
       protocol = item->data;
 
-      g_assert( !strcmp(protocol->name, packet->prot_desc->protonames[i]));
+      g_assert( !strcmp(protocol->name, packet->prot_desc.protonames[i]));
       basic_stats_sub(&protocol->stats, packet->size);
       i++;
     }

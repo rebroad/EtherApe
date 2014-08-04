@@ -38,11 +38,11 @@ packet_direction;
 typedef struct
 {
   gchar *protonames[STACK_SIZE + 1];
-} 
-packet_protos_t;
-/* init/delete of a packet_protos_t */
-packet_protos_t *packet_protos_init(void);
-void packet_protos_delete(packet_protos_t *pt);
+} packet_protos_t;
+
+/* create a new packet_protos_t */
+packet_protos_t *new_packet_protos(void);
+
 /* returns a newly allocated string with a dump of pt */
 gchar *packet_protos_dump(const packet_protos_t *pt);
 
@@ -51,7 +51,7 @@ typedef struct
 {
   guint size;			/* Size in bytes of the packet */
   struct timeval timestamp;	/* Time at which the packet was heard */
-  packet_protos_t *prot_desc;	/* Packet protocol tree */
+  packet_protos_t prot_desc;	/* Packet protocol tree */
   guint ref_count;		/* How many structures are referencing this 
 				 * packet. When the count reaches zero the packet
 				 * is deleted */

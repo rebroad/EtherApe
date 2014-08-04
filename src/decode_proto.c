@@ -95,10 +95,6 @@ typedef struct
 /* extracts the protocol stack from packet */
 static void get_packet_prot (decode_proto_t *dp);
 
-/* starts a new decode, allocating a new packet_protos_t */
-static void decode_proto_start(decode_proto_t *dp, 
-                               const guint8 *pkt, guint caplen);
-
 /* sets protoname at current level, and passes at next level */
 static void decode_proto_add(decode_proto_t *dp, const gchar *fmt, ...);
 
@@ -215,13 +211,14 @@ gboolean has_linklevel(void)
  * Implementation
  * ------------------------------------------------------------*/
 /* starts a new decode, allocating a new packet_protos_t */
-void decode_proto_start(decode_proto_t *dp, const guint8 *pkt, guint caplen)
+void decode_proto_start(decode_proto_t *dp, packet_protos_t *protos,
+                        const guint8 *pkt, guint caplen)
 {
   dp->original_packet = pkt;
   dp->original_len = caplen;
   dp->cur_packet = pkt;
   dp->cur_len = caplen;
-  dp->pr = packet_protos_init();
+  dp->pr = protos;
   dp->cur_level = 1; /* level zero is topmost protocol, will be filled later */
   node_id_clear(&dp->dst_node_id);
   node_id_clear(&dp->src_node_id);
@@ -258,56 +255,48 @@ static void add_offset(decode_proto_t *dp, guint offset)
 /* This function is called everytime there is a new packet in
  * the network interface. It then updates traffic information
  * for the appropriate nodes and links 
- * Receives both the captured (raw) size and the real packet size */
-void packet_acquired(guint8 * raw_packet, guint raw_size, guint pkt_size)
+ * Receives both the captured (raw) size and the original packet size */
+void packet_acquired(guint8 * cap_bytes, guint cap_size, guint orig_size)
 {
   packet_info_t *packet;
   link_id_t link_id;
   decode_proto_t decp;
 
-  g_assert (raw_packet != NULL);
   if (!lkentry || !lkentry->fun)
     {
       g_error(_("Data link entry not initialized"));
       return;  /* g_error() should abort, but just to be sure ... */
     }
 
-  decode_proto_start(&decp, raw_packet, raw_size);
-                                       
   /* create a packet structure to hold data */
-  packet = g_malloc (sizeof (packet_info_t));
-  g_assert(packet);
-  
-  packet->size = pkt_size;
+  packet = g_malloc(sizeof(packet_info_t));
+
+  packet->size = orig_size;
   packet->timestamp = appdata.now;
   packet->ref_count = 0;
+  memset(&packet->prot_desc, 0, sizeof(packet->prot_desc));
+
+  decode_proto_start(&decp, &packet->prot_desc, cap_bytes, cap_size);
 
   /* Get the protocol tree */
-  get_packet_prot (&decp);
-  if (!decp.pr)
-    {
-      /* fatal error, discard packet */
-      g_free(packet); 
-      return;
-    }
-  packet->prot_desc = decp.pr;
+  get_packet_prot(&decp);
 
   appdata.n_packets++;
   appdata.total_mem_packets++;
 
   /* Add this packet information to the src and dst nodes. If they
    * don't exist, create them */
-  add_node_packet (raw_packet, raw_size, packet, &decp.src_node_id, OUTBOUND);
-  add_node_packet (raw_packet, raw_size, packet, &decp.dst_node_id, INBOUND);
+  add_node_packet(cap_bytes, cap_size, packet, &decp.src_node_id, OUTBOUND);
+  add_node_packet(cap_bytes, cap_size, packet, &decp.dst_node_id, INBOUND);
 
   /* And now we update link traffic information for this packet */
-  if (node_id_compare (&decp.src_node_id, &decp.dst_node_id) < 1)
+  if (node_id_compare(&decp.src_node_id, &decp.dst_node_id) < 1)
     {
       /* src id <= dst id, direct packet */
       link_id.src = decp.src_node_id;
       link_id.dst = decp.dst_node_id;
       links_catalog_add_packet(&link_id, packet, OUTBOUND);
-    } 
+    }
   else
     {
       /* src id <= dst id, inverse packet */
@@ -351,7 +340,7 @@ add_node_packet (const guint8 * raw_packet,
 
   /* Update names list for this node */
   get_packet_names (&node->node_stats.stats_protos, raw_packet, raw_size,
-		    packet->prot_desc, direction, lkentry->dlt_linktype);
+		    &packet->prot_desc, direction, lkentry->dlt_linktype);
 
 }				/* add_node_packet */
 
