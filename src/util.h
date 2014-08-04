@@ -28,50 +28,40 @@
 
 #include "appdata.h"
 
-#ifdef __cplusplus
-extern "C"
-{
-#endif				/* __cplusplus */
-
 /* Returns the user's home directory, via the HOME environment
  * variable, or a default directory if HOME is not set */
-  const char *get_home_dir (void);
+const char *get_home_dir (void);
 
-  /* gets a list containing the names of available interfaces. Returns NULL 
-   * if there is an error, putting also an error message into err_str.
-   * The returned list MUST be freed with interface_list_free() */
-  GList *interface_list_create(GString *err_str);
-  void interface_list_free(GList * if_list);
+/* gets a list containing the names of available interfaces. Returns NULL 
+ * if there is an error, putting also an error message into err_str.
+ * The returned list MUST be freed with interface_list_free() */
+GList *interface_list_create(GString *err_str);
+void interface_list_free(GList * if_list);
 
-  char *safe_strncpy (char *dst, const char *src, size_t maxlen);
-  char *safe_strncat (char *dst, const char *src, size_t maxlen);
+char *safe_strncpy (char *dst, const char *src, size_t maxlen);
+char *safe_strncat (char *dst, const char *src, size_t maxlen);
 
-  /* utility functions */
-  const gchar *ipv4_to_str(const guint8 * ad);
-  const gchar *ether_to_str(const guint8 * ad);
-  const gchar *ipv6_to_str(const guint8 *ad);
-  const gchar *address_to_str(const address_t * ad);
-  const gchar *type_to_str(const address_t * ad);
+/* utility functions */
+const gchar *ipv4_to_str(const guint8 * ad);
+const gchar *ether_to_str(const guint8 * ad);
+const gchar *ipv6_to_str(const guint8 *ad);
+const gchar *address_to_str(const address_t * ad);
+const gchar *type_to_str(const address_t * ad);
 
-  /*
-   * strtol()-like that writes converted value to *val and returns an errno
-   * value (0 for success, non-zero for failure)
-   */
-  int strict_strtol(const char *str, int base, long *val);
+/*
+ * strtol()-like that writes converted value to *val and returns an errno
+ * value (0 for success, non-zero for failure)
+ */
+int strict_strtol(const char *str, int base, long *val);
 
-  /* xml helpers */
-  gchar *xmltag(const gchar *name, const gchar *fmt, ...);
+/* xml helpers */
+gchar *xmltag(const gchar *name, const gchar *fmt, ...);
 
 #if !defined(HAVE_G_QUEUE_INIT)
-  void compat_g_queue_init(GQueue *gq);
-  gchar *compat_gdk_color_to_string(const GdkColor *color);
+void compat_g_queue_init(GQueue *gq);
+gchar *compat_gdk_color_to_string(const GdkColor *color);
 #define g_queue_init compat_g_queue_init
 #define gdk_color_to_string compat_gdk_color_to_string
 #endif
 
-  
-#ifdef __cplusplus
-}
-#endif				/* __cplusplus */
-
-#endif				/* __UTIL_H__ */
+#endif /* __UTIL_H__ */
