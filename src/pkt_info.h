@@ -40,9 +40,6 @@ typedef struct
   gchar *protonames[STACK_SIZE + 1];
 } packet_protos_t;
 
-/* create a new packet_protos_t */
-packet_protos_t *new_packet_protos(void);
-
 /* returns a newly allocated string with a dump of pt */
 gchar *packet_protos_dump(const packet_protos_t *pt);
 

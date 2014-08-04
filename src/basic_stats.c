@@ -89,11 +89,6 @@ double subtract_times_ms (const struct timeval *a, const struct timeval *b)
  * packet_protos_t implementation
  *
  **************************************************************************/
-/* init/delete of a packet_protos_t */
-packet_protos_t *new_packet_protos(void)
-{
-  return g_malloc0(sizeof(packet_protos_t));
-}
 
 static void packet_protos_delete(packet_protos_t *pt)
 {
