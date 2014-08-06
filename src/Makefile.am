@@ -17,7 +17,7 @@ bin_PROGRAMS = etherape
 
 etherape_SOURCES = \
 	common.h \
-	resolv.c eth_resolv.h \
+	eth_resolv.c eth_resolv.h \
 	util.c util.h \
 	export.c export.h \
 	dns.c dns.h \
