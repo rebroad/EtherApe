@@ -37,6 +37,8 @@
 #include "menus.h"
 #include "capture.h"
 #include "datastructs.h"
+#include "dns.h"
+#include "eth_resolv.h"
 
 /***************************************************************************
  *
@@ -354,6 +356,8 @@ main (int argc, char *argv[])
   /* another timeout to handle IP-cache timeouts */
   g_timeout_add (10000, (GtkFunction) ipcache_tick, NULL);
 
+  init_eth_resolv();
+
   init_menus ();
   
   gui_start_capture ();
@@ -373,6 +377,7 @@ static void free_static_data(void)
   protohash_clear();
   ipcache_clear();
   services_clear();
+  cleanup_eth_resolv();
 }
 
 static void

@@ -279,7 +279,7 @@ static gboolean eth_name_common(apemode_t ethmode, name_add_t *nt)
 
   /* solved is not NULL only if the address is in ethers file */
   if (pref.name_res)
-    solved = get_ether_name (nt->node_id.addr.eth, TRUE);
+    solved = get_ether_name(nt->node_id.addr.eth);
   else
     solved = NULL;
 
