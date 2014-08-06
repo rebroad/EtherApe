@@ -39,6 +39,7 @@
 #include "datastructs.h"
 #include "dns.h"
 #include "eth_resolv.h"
+#include "names.h"
 
 /***************************************************************************
  *
@@ -356,6 +357,7 @@ main (int argc, char *argv[])
   /* another timeout to handle IP-cache timeouts */
   g_timeout_add (10000, (GtkFunction) ipcache_tick, NULL);
 
+  init_names();
   init_eth_resolv();
 
   init_menus ();
@@ -378,6 +380,7 @@ static void free_static_data(void)
   ipcache_clear();
   services_clear();
   cleanup_eth_resolv();
+  cleanup_names();
 }
 
 static void

@@ -20,6 +20,9 @@
 #include "appdata.h"
 #include "node.h"
 
+void init_names(void);
+void cleanup_names(void);
+
 void get_packet_names (protostack_t *pstk,
 		       const guint8 * packet,
 		       guint16 size,

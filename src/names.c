@@ -149,24 +149,27 @@ get_packet_names (protostack_t *pstk,
   decode_next(&nt);
 }				/* get_packet_names */
 
+static GTree *prot_functions = NULL;
+
+void init_names(void)
+{
+  guint i;
+
+  prot_functions = g_tree_new((GCompareFunc)strcmp);
+  for (i = 0; prot_functions_table[i].prot; i++)
+    g_tree_insert(prot_functions, prot_functions_table[i].prot,
+                  &prot_functions_table[i]);
+}
+
+void cleanup_names(void)
+{
+  g_tree_destroy(prot_functions);
+}
+
 /* increments the level and calls the next name decoding function, if any */
 static void decode_next(name_add_t *nt)
 {
-  static GTree *prot_functions = NULL;
   prot_function_t *next_func = NULL;
-  
-  if (!prot_functions)
-    {
-      /* initializes proto table */
-      guint i;
-      prot_functions = g_tree_new ((GCompareFunc) strcmp);
-      for (i = 0; prot_functions_table[i].prot != NULL ; ++i)
-	g_tree_insert (prot_functions,
-		       prot_functions_table[i].prot,
-		       &(prot_functions_table[i]));
-    }
-
-  g_assert(nt);
 
   /* whe decode al most STACK_SIZE levels */
   while (nt->decoder.level <= STACK_SIZE && 
