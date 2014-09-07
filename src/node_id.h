@@ -20,25 +20,22 @@
 #ifndef ETHERAPE_NODE_ID_H
 #define ETHERAPE_NODE_ID_H
 
-/* address union */
-typedef union __attribute__ ((packed))
-{
-  guint8 eth[6];                  /* ethernet address */
-  address_t ip;                   /* ipv4 and ipv6 address */
-  struct __attribute__ ((packed))
-  {
-    address_t host;            /* tcp/udp address */
-    guint16 port;            /* port number */
-  } tcp4;
-}
-node_addr_t;
-
 /* a node identification */
 typedef struct
 {
   apemode_t node_type;
-  node_addr_t addr;
+  union __attribute__((packed))
+  {
+    guint8 eth[6];
+    address_t ip;
+    struct __attribute__((packed))
+    {
+      address_t host;
+      guint16 port;
+    } tcp4;
+  } addr;
 } node_id_t;
+
 void node_id_clear(node_id_t *a);
 gint node_id_compare (const node_id_t *a, const node_id_t *b);
 /* returns a newly allocated string with a human-readable id */

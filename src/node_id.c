@@ -33,7 +33,7 @@
 
 void node_id_clear(node_id_t *a)
 {
-  memset(&a->addr, 0, sizeof(node_addr_t));
+  memset(a, 0, sizeof(*a));
   a->node_type = APEMODE_DEFAULT;
 }
 
@@ -58,11 +58,6 @@ node_id_compare (const node_id_t * na, const node_id_t * nb)
     {
     case APEMODE_DEFAULT:
       return 0; /* default has only one value */
-    case LINK6:
-      ga = na->addr.eth;
-      gb = nb->addr.eth;
-      i = sizeof(na->addr.eth);
-      break;
     case IP:
       ga = na->addr.ip.all8;
       gb = nb->addr.ip.all8;
@@ -75,9 +70,11 @@ node_id_compare (const node_id_t * na, const node_id_t * nb)
       break;
     default:
       g_error (_("Unsupported ape mode in node_id_compare"));
+      /* Fallthrough, default to compare-by-MAC */
+    case LINK6:
       ga = na->addr.eth;
       gb = nb->addr.eth;
-      i = sizeof(node_addr_t);
+      i = sizeof(na->addr.eth);
       break;
     }
 
