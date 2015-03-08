@@ -6,10 +6,10 @@
 
    Changes summary:
      * Optional central node, based on work of Javier Fernandez-Sanguino 
-       Peña.
+       PeÃ±a.
      * re-enabled full-screen mode, thanks to nrvale0
      * Updated spanish translation, thanks to Javier Fernandez-Sanguino 
-       Peña.
+       PeÃ±a.
      * Added German translation, and fixed typos, thanks to Chris Leick.
      * Updated documentation.
 
@@ -365,7 +365,7 @@
        antialiased diagram.
      * Gcc 3.2 compile support
      * Some bug and potential bug fixes
-     * New Turkish translation, by Gôrkem Cetin
+     * New Turkish translation, by GÃ´rkem Cetin
      * Several fixes to assure proper compilation with newer autotools
      * Resolved memory bug by limiting resolved names to 1024 entries and
        arranging them in a simple LRU cache
