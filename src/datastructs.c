@@ -446,7 +446,7 @@ port_service_t *port_service_new(port_type_t port, const gchar *name)
   g_assert(p);
   
   p->port = port; 
-  p->name = g_strdup(name);
+  p->name = g_ascii_strup(name, -1);
   p->preferred = FALSE;
   return p;
 }

@@ -14,8 +14,8 @@ indent:
 man_MANS = etherape.1
 
 confdir = $(sysconfdir)/etherape
-conf_DATA =					\
-	services
+conf_DATA =
+
 
 Developmentdir = $(datadir)/applications
 Development_DATA = etherape.desktop
@@ -50,12 +50,12 @@ EXTRA_DIST = config.rpath mkinstalldirs  \
 	debian/rules		\
 	debian/etherape.xpm	\
 	src/glade-strings	\
-	$(conf_DATA)		\
 	$(Development_DATA)	\
 	$(pixmaps_DATA)		\
 	$(man_MANS)		\
 	m4			\
-	gnome-doc-utils.make
+	gnome-doc-utils.make	\
+	$(conf_DATA)
 
 
 full-dist :
