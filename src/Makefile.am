@@ -6,7 +6,7 @@
 confdir = $(sysconfdir)/etherape
 gladedir   = $(datadir)/etherape/glade
 
-INCLUDES = \
+etherape_CPPFLAGS  = \
 	-I$(top_srcdir)/intl \
 	-DGLADEDIR=\""$(gladedir)"\" \
 	-DCONFDIR=\""$(confdir)"\" \
@@ -50,10 +50,7 @@ etherape_SOURCES = \
 etherape_LDADD = $(ETHERAPE_LIBS) $(PCAP_LIBS) 
 etherape_LDFLAGS = 
 
-AM_CPPFLAGS = \
-	$(ETHERAPE_CFLAGS)
-
-.indent: $(etherape_SOURCES)
+.indent: $(etherape_SOURCES) $(etherape_INCLUDES)
 	indent $? 
 	touch .indent
 indent: .indent 
@@ -62,4 +59,4 @@ purge:
 	rm -f *~ *.bak
 
 splint:
-	splint -I.. +posixlib +gnuextensions +charintliteral -nullassign $(INCLUDES) $(etherape_SOURCES)
+	splint -I.. +posixlib +gnuextensions +charintliteral -nullassign $(etherape_CPPFLAGS) $(etherape_SOURCES)
