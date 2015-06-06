@@ -1,5 +1,26 @@
                             Changelog for EtherApe
 
+  Overview of changes in EtherApe 0.9.14 ():
+   EtherApe now users the system /etc/services file instead of its own.
+   While this change make some customizations a bit harder, it guarantees an
+   up-to-date services file.
+   Note to packagers: /etc/etherape is not needed anymore.
+
+   Central node option now undestands CIDR notation, allowing for a central
+   ring of nodes.
+
+
+   Changes summary:
+     * autoconf updated to 2.69
+     * fixed incorrect WLAN control frames decoding
+     * fix UTF-8 encoding of several files, thanks to StrPt.
+     * read system services file instead of EtherApe one, thanks to Zev Weiss.
+     * fix race condition on exit, thanks to Zev Weiss
+     * central ring option, thanks to Zev Weiss
+     * tweaks to preference windows to better work with tiling managers,
+       thanks to Zev Weiss.
+
+
   Overview of changes in EtherApe 0.9.13 (Sun May 05, 2013):
    Central node option, useful for displaying routers or proxies.
    Translations and documentation updates, plus some fixes.
