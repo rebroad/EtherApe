@@ -310,16 +310,23 @@ set_debug_level (void)
   if (env_debug)
     {
       if (!g_ascii_strcasecmp(env_debug, "INFO"))
-	appdata.debug_mask = (G_LOG_LEVEL_MASK & ~G_LOG_LEVEL_DEBUG);
+        appdata.debug_mask = (G_LOG_LEVEL_MASK & ~G_LOG_LEVEL_DEBUG);
       else if (!g_ascii_strcasecmp(env_debug, "DEBUG"))
-	appdata.debug_mask = G_LOG_LEVEL_MASK;
+        appdata.debug_mask = G_LOG_LEVEL_MASK;
     }
+  else
+    appdata.debug_mask = (G_LOG_LEVEL_MASK & ~G_LOG_LEVEL_DEBUG);
 
+  // ugly workaround for changed g_log_default_handler behaviour
+  // unfortunately it can be controlled only by environment vars ...
+  // Silly change!
+  g_setenv("G_MESSAGES_DEBUG", "all", TRUE);
+        
   if (quiet)
     appdata.debug_mask = 0;
 
-  g_log_set_handler (NULL, G_LOG_LEVEL_MASK, (GLogFunc) log_handler, NULL);
-  g_my_debug ("debug_mask %d", appdata.debug_mask);
+  g_log_set_handler(NULL, G_LOG_LEVEL_MASK, (GLogFunc) log_handler, NULL);
+  g_my_debug("debug_mask %d", appdata.debug_mask);
 }
 
 static void
@@ -327,7 +334,7 @@ log_handler (gchar * log_domain,
 	     GLogLevelFlags mask, const gchar * message, gpointer user_data)
 {
   if (mask & appdata.debug_mask)
-    g_log_default_handler ("EtherApe", mask, message, user_data);
+    g_log_default_handler("EtherApe", mask, message, user_data);
 }
 
 /* the gnome session manager may call this function */
