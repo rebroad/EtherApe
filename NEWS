@@ -7,7 +7,9 @@
    Note to packagers: /etc/etherape is not needed anymore.
 
    Central node option now undestands CIDR notation, allowing for a central
-   ring of nodes.
+   ring of nodes, thanks to Zev Weiss.
+   Static background image, courtesy of Glenn Feunteun.
+   
 
 
    Changes summary:
@@ -19,6 +21,7 @@
      * central ring option, thanks to Zev Weiss
      * tweaks to preference windows to better work with tiling managers,
        thanks to Zev Weiss.
+     * static background image (Glenn Feunteun)
 
 
   Overview of changes in EtherApe 0.9.13 (Sun May 05, 2013):

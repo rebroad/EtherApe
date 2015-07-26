@@ -40,6 +40,7 @@ static void on_text_color_changed(GtkColorButton * wdg, gpointer data);
 static void on_text_font_changed(GtkFontButton * wdg, gpointer data);
 static void on_filter_entry_changed(GtkComboBoxEntry * cbox, gpointer user_data);
 static void on_center_node_changed(GtkComboBoxEntry * cbox, gpointer user_data);
+static void on_background_image_path_changed(GtkComboBoxEntry * cbox, gpointer user_data);
 static void cbox_add_select(GtkComboBoxEntry *cbox, const gchar *str);
 
 
@@ -58,6 +59,9 @@ confirm_changes(void)
 
   widget = glade_xml_get_widget (appdata.xml, "center_combo");
   on_center_node_changed (GTK_COMBO_BOX_ENTRY(widget), NULL);
+
+  widget = glade_xml_get_widget (appdata.xml, "bck_image_combo");
+  on_background_image_path_changed(GTK_COMBO_BOX_ENTRY(widget), NULL);
 
   if (colors_changed)
     {
@@ -158,6 +162,15 @@ initialize_pref_controls(void)
     }
 
   widget = glade_xml_get_widget (appdata.xml, "center_combo");
+  model = gtk_combo_box_get_model(GTK_COMBO_BOX(widget));
+  if (!model)
+    {
+      GtkListStore *list_store;
+      list_store=gtk_list_store_new (1, G_TYPE_STRING);
+      gtk_combo_box_set_model(GTK_COMBO_BOX(widget), GTK_TREE_MODEL(list_store));
+    }
+
+  widget = glade_xml_get_widget (appdata.xml, "bck_image_combo");
   model = gtk_combo_box_get_model(GTK_COMBO_BOX(widget));
   if (!model)
     {
@@ -272,6 +285,9 @@ on_preferences1_activate (GtkMenuItem * menuitem, gpointer user_data)
 
   cbox = GTK_COMBO_BOX_ENTRY(glade_xml_get_widget (appdata.xml, "center_combo"));
   cbox_add_select(cbox, pref.centered_nodes);
+
+  cbox = GTK_COMBO_BOX_ENTRY(glade_xml_get_widget (appdata.xml, "bck_image_combo"));
+  cbox_add_select(cbox, pref.bck_image_path);
 
   gtk_widget_show (diag_pref);
   gdk_window_raise (diag_pref->window);
@@ -490,6 +506,18 @@ on_numeric_toggle_toggled (GtkToggleButton * togglebutton, gpointer user_data)
 {
   pref.name_res = gtk_toggle_button_get_active (togglebutton);
 }				/* on_numeric_toggle_toggled */
+
+
+/* Changes the background image */
+static void on_background_image_path_changed(GtkComboBoxEntry * cbox, gpointer user_data)
+{
+  gchar *str;
+  str = gtk_combo_box_get_active_text(GTK_COMBO_BOX(cbox));
+  g_free(pref.bck_image_path);
+  pref.bck_image_path = g_strdup (str);
+  g_free (str);
+  cbox_add_select(cbox, pref.bck_image_path);
+}
 
 /* ----------------------------------------------------------
 

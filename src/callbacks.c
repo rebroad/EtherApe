@@ -40,6 +40,7 @@ on_canvas1_size_allocate (GtkWidget * widget,
 				  widget->allocation.height / 2);
   ask_reposition(FALSE);
   canvas = glade_xml_get_widget (appdata.xml, "canvas1");
+  resize_background_image(canvas);
   update_diagram (canvas);
 }
 

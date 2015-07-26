@@ -124,6 +124,7 @@ void init_config(struct pref_struct *p)
   p->fontname=NULL;
   p->colors=NULL;
   p->centered_nodes = NULL;
+  p->bck_image_path = NULL;
 
   p->averaging_time=3000;
 }
@@ -169,6 +170,9 @@ void set_default_config(struct pref_struct *p)
 
   g_free(p->centered_nodes);
   p->centered_nodes = g_strdup("");
+
+  g_free(p->bck_image_path);
+  p->bck_image_path = g_strdup("");
 }
 
 /* loads configuration from .gnome/Etherape */
@@ -203,6 +207,7 @@ void load_config(void)
   read_string_config(&pref.fontname, gkey, "fontname");
   read_string_config(&pref.text_color, gkey, "text_color");
   read_string_config(&pref.centered_nodes, gkey, "centered_nodes");
+  read_string_config(&pref.bck_image_path, gkey, "bck_image_path");
 
   read_boolean_config(&pref.diagram_only, gkey, "diagram_only");
   read_boolean_config(&pref.group_unk, gkey, "group_unk");
@@ -294,6 +299,7 @@ void save_config(void)
   g_key_file_set_string(gkey, pref_group, "fontname", pref.fontname);
   g_key_file_set_string(gkey, pref_group, "text_color", pref.text_color);
   g_key_file_set_string(gkey, pref_group, "centered_nodes", pref.centered_nodes);
+  g_key_file_set_string(gkey, pref_group, "bck_image_path", pref.bck_image_path);
 
   tmpstr = g_strjoinv(" ", pref.colors);
   g_key_file_set_string(gkey, pref_group, "colors", tmpstr);
@@ -338,6 +344,7 @@ duplicate_config(const struct pref_struct *src)
   t->fontname = NULL;
   t->colors = NULL;
   t->centered_nodes = NULL;
+  t->bck_image_path = NULL;
   copy_config(t, src);
 
   return t;
@@ -354,6 +361,8 @@ void free_config(struct pref_struct *t)
   t->fontname=NULL;
   g_free(t->centered_nodes);
   t->centered_nodes=NULL;
+  g_free(t->bck_image_path);
+  t->bck_image_path=NULL;
 
   g_strfreev(t->colors);
   t->colors = NULL;
@@ -382,6 +391,7 @@ void copy_config(struct pref_struct *tgt, const struct pref_struct *src)
   tgt->text_color=g_strdup(src->text_color);
   tgt->fontname=g_strdup(src->fontname);
   tgt->centered_nodes=g_strdup(src->centered_nodes);
+  tgt->bck_image_path = g_strdup(src->bck_image_path);
   tgt->stack_level = src->stack_level;
   tgt->colors = g_strdupv(src->colors);
 

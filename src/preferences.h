@@ -47,6 +47,7 @@ struct pref_struct
   gchar *text_color;		/* text color */
   gchar *fontname;		/* Font to be used for text display */
   gchar *centered_nodes;        /* Name/IP/CIDR-range of nodes to center (optional) */
+  gchar *bck_image_path;    /* Path to the background image (optional) */
   guint stack_level;		/* Which level of the protocol stack 
 				 * we will concentrate on */
 

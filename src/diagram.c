@@ -135,8 +135,22 @@ typedef struct
   struct nodeset_spec centered_nodes;
 } reposition_node_t;
 
+/***************************************************************************
+ *
+ * background_image_t definition and methods
+ *
+ **************************************************************************/
+ 
+typedef struct 
+{
+  GdkPixbuf         *image;
+  gchar             *path;
+  GnomeCanvasItem   *imageItem;
+  GnomeCanvasGroup  *group;
+  GdkColor          color;
+} background_image_t;
 
-
+static void init_background_image(GtkWidget *canvas); /* Init background_image_t */
 
 /***************************************************************************
  *
@@ -150,13 +164,10 @@ static GTree *canvas_nodes;	/* We don't use the nodes tree directly in order to
 				 * keep a list of CanvasItems, but we do not want to keep
 				 * that info on the nodes tree itself */
 static GTree *canvas_links;	/* See canvas_nodes */
-
 static guint known_protocols = 0;
-
-
+static background_image_t bck_image;
 static gboolean is_idle = FALSE;
 static guint displayed_nodes;
-static GdkColor black_color;
 static gboolean need_reposition = TRUE;	/* Force a diagram relayout */
 static gboolean need_font_refresh = TRUE;/* Force font refresh during layout */
 static gint diagram_timeout;	/* Descriptor of the diagram timeout function
@@ -171,6 +182,7 @@ static long canvas_obj_count = 0; /* counter of canvas objects */
  **************************************************************************/
 static void diagram_update_nodes(GtkWidget * canvas); /* updates ALL nodes */
 static void diagram_update_links(GtkWidget * canvas); /* updates ALL links */
+static void diagram_update_background_image(GtkWidget *canvas); /* updates background image */
 
 static void check_new_protocol (GtkWidget *prot_table, const protostack_t *pstk);
 static gint check_new_node (node_t * node, GtkWidget * canvas);
@@ -257,7 +269,6 @@ static void addref_canvas_obj(GObject *obj)
 void
 init_diagram (GladeXML *xml)
 {
-  GtkStyle *style;
   GtkWidget *canvas;
 
   /* Creates trees */
@@ -268,19 +279,10 @@ init_diagram (GladeXML *xml)
 
   initialize_pref_controls();
   
-  /* Sets canvas background to black */
+  /* Initialize background image */
   canvas = glade_xml_get_widget (appdata.xml, "canvas1");
-
-  gdk_color_parse ("black", &black_color);
-  gdk_colormap_alloc_color (gdk_colormap_get_system (), &black_color,
-			    TRUE, TRUE);
-  style = gtk_style_new ();
-  style->bg[GTK_STATE_NORMAL] = black_color;
-  style->base[GTK_STATE_NORMAL] = black_color;
-
-  gtk_widget_set_style (canvas, style);
-  gtk_style_set_background (canvas->style, canvas->window, GTK_STATE_NORMAL);
-
+  init_background_image(canvas);
+  
   /* Initialize the known_protocols table */
   delete_gui_protocols ();
 
@@ -289,6 +291,109 @@ init_diagram (GladeXML *xml)
   stop_requested = FALSE;
 }				/* init_diagram */
 
+/*
+* Initialize the bck_image structure
+* Create a new group and add it to the root group
+* Create a new GnomeCanvasPixbufItem and add it to the new group
+*/
+static void init_background_image(GtkWidget *canvas)
+{
+  GnomeCanvasGroup *group;
+  GError* error = NULL;
+
+  group = gnome_canvas_root (GNOME_CANVAS (canvas));
+  bck_image.group = GNOME_CANVAS_GROUP (gnome_canvas_item_new (group,
+					GNOME_TYPE_CANVAS_GROUP,
+					"x", 0.0, 
+                                        "y", 0.0, 
+					NULL));
+  addref_canvas_obj(G_OBJECT (group));
+
+  bck_image.imageItem = gnome_canvas_item_new(bck_image.group, 
+				  gnome_canvas_pixbuf_get_type(),
+				 "anchor", GTK_ANCHOR_NW,
+				 NULL);
+	
+  addref_canvas_obj(G_OBJECT (bck_image.imageItem));
+
+  bck_image.path = strdup("-"); // just to trigger update
+  
+  gdk_color_parse ("black", &(bck_image.color));
+  gdk_colormap_alloc_color (gdk_colormap_get_system (), &(bck_image.color),
+			    TRUE, TRUE);
+  
+  /**
+  * Have to set the scrolling region to the real allocated size of the canvas
+  * If not the image won't scale well in the resize_background_image function
+  * until the on_canvas1_size_allocate callback is called
+   */
+  gnome_canvas_set_scroll_region(GNOME_CANVAS(canvas), 
+    -(canvas->allocation.width)/2, -(canvas->allocation.height)/2, 
+    (canvas->allocation.width)/2, (canvas->allocation.height)/2);
+}
+
+/* 
+* Called by on_canvas1_size_allocate
+* Try to load image from path
+* if success image is scaled to the canvas size and printed
+* if error a black color image is made and printed
+*/
+void resize_background_image(GtkWidget *canvas)
+{
+  GError* error = NULL;
+  GdkPixbuf* temp_pixbuf;
+  GtkAllocation canvas_size;
+  
+  /* Get canvas dimensions */
+  canvas_size.width = canvas->allocation.width;
+  canvas_size.height = canvas->allocation.height;
+  
+  if(bck_image.image)
+    g_object_unref(G_OBJECT (bck_image.image));
+
+  if (pref.bck_image_path && strlen(pref.bck_image_path))
+    bck_image.image = gdk_pixbuf_new_from_file_at_scale(pref.bck_image_path, 
+                      canvas_size.width, canvas_size.height, FALSE, &error);
+  
+  if (!bck_image.image) { 
+    /* Can't load image from path, fill the pixbuf with black pixels instead */
+    /* In case of error bck_image.image == NULL -> create a new pixbuf */
+    if (pref.bck_image_path && error)
+       g_message(_("Loading of background image failed with error '%s'"),
+                   error->message);
+    bck_image.image = gdk_pixbuf_new(GDK_COLORSPACE_RGB, FALSE, 8, 
+                        canvas_size.width, canvas_size.height);
+    gdk_pixbuf_fill (bck_image.image, bck_image.color.pixel);
+  }
+  
+  gnome_canvas_item_set(bck_image.imageItem, 
+                        "pixbuf", bck_image.image,
+                        "x", (double)-canvas_size.width/2,
+                        "y", (double)-canvas_size.height/2,
+                        NULL);
+              
+  gnome_canvas_item_show(bck_image.imageItem);
+}
+
+/* 
+* Update the background image
+* Load new image if user selected another path in preferences
+* Place the background image behind the nodes and links
+*/
+static void diagram_update_background_image(GtkWidget *canvas)
+{
+  if (pref.bck_image_path && strcmp(bck_image.path, pref.bck_image_path)){  
+    /* Url modified, need to reload background now */
+    g_my_debug(_("New background image path: '%s'"), pref.bck_image_path);
+    g_free(bck_image.path);
+    bck_image.path = strdup(pref.bck_image_path);
+    resize_background_image(canvas);
+  }
+
+  /* Draw the background first */
+  gnome_canvas_item_lower_to_bottom(GNOME_CANVAS_ITEM(bck_image.group)); 
+  gnome_canvas_item_request_update(bck_image.imageItem);
+}
 
 void
 destroying_timeout (gpointer data)
@@ -482,6 +587,9 @@ guint update_diagram(GtkWidget * canvas)
   /* update links */
   diagram_update_links(canvas);
 
+  /* update background image */
+  diagram_update_background_image(canvas);
+  
   /* Update protocol information */
   protocol_summary_update_all();
 
