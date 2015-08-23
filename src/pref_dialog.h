@@ -48,9 +48,9 @@ void on_diagram_only_toggle_toggled (GtkToggleButton * togglebutton,
 				     gpointer user_data);
 void on_ok_pref_button_clicked (GtkButton * button, gpointer user_data);
 void on_cancel_pref_button_clicked (GtkButton * button, gpointer user_data);
-
 void on_group_unk_check_toggled (GtkToggleButton * togglebutton, gpointer);
 void on_numeric_toggle_toggled (GtkToggleButton * togglebutton, gpointer user_data);
+void on_background_image_path_selected (GtkFileChooserButton * filechooser, gpointer user_data);
 
 /* proto color tab callbacks */
 void on_color_add_button_clicked (GtkButton * button, gpointer user_data);

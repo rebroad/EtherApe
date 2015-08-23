@@ -15,7 +15,7 @@ Fabrice Bellet
   
 Gôrkem Cetin	<gorkem@gelecek.com.tr>
   Turkish translation
-  
+
 Laurent Deniel	<deniel@worldnet.fr>
   resolv.c
 
@@ -57,6 +57,9 @@ Eric Stewart
  
 Jasper Wallace	<jasper@pointless.net>
   pcap device autodetection
+
+Zev Weiss
+  central ring option
 
 Ted Wright	<ted.wright@grc.nasa.gov>
   non-overlapping display mode, link fading

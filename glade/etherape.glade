@@ -556,9 +556,9 @@ Square Root</property>
                       </packing>
                     </child>
                     <child>
-                      <widget class="GtkComboBoxEntry" id="bck_image_combo">
+                      <widget class="GtkFileChooserButton" id="bck_image_open">
                         <property name="visible">True</property>
-                        <property name="tooltip" translatable="yes">Background Image Path</property>
+                        <signal name="file-set" handler="on_background_image_path_selected"/>
                       </widget>
                       <packing>
                         <property name="position">1</property>
