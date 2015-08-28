@@ -348,8 +348,10 @@ void resize_background_image(GtkWidget *canvas)
   canvas_size.width = canvas->allocation.width;
   canvas_size.height = canvas->allocation.height;
   
-  if(bck_image.image)
+  if(bck_image.image) {
     g_object_unref(G_OBJECT (bck_image.image));
+    bck_image.image = NULL;
+  }
 
   if (pref.bck_image_path && strlen(pref.bck_image_path))
     bck_image.image = gdk_pixbuf_new_from_file_at_scale(pref.bck_image_path, 
