@@ -168,6 +168,11 @@ initialize_pref_controls(void)
 
   pref_to_color_list();		/* Updates the color preferences table with pref.colors */
 
+  if (pref.bck_image_path && *pref.bck_image_path) {
+    widget = glade_xml_get_widget(appdata.xml, "bck_image_open");
+    gtk_file_chooser_select_filename(GTK_FILE_CHOOSER(widget), pref.bck_image_path);
+  }
+
   /* Connects signals */
   widget = glade_xml_get_widget (appdata.xml, "diag_pref");
   g_signal_connect (G_OBJECT (widget),

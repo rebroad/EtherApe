@@ -22,7 +22,6 @@
 #endif
 #include <gtk/gtk.h>
 #include "preferences.h"
-//#include "appdata.h"
 #include "math.h"
 #include "datastructs.h"
 
