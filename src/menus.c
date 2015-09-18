@@ -48,7 +48,8 @@ init_menus (void)
   GString *err_str = g_string_new ("");
 
   interfaces = interface_list_create(err_str);
-  g_my_info (_("get_interface result: '%s'"), err_str->str);
+  if (err_str)
+     g_my_info (_("get_interface result: '%s'"), err_str->str);
   if (!interfaces)
     {
       g_my_info (_("No suitables interfaces for capture have been found"));
@@ -87,9 +88,10 @@ init_menus (void)
       interfaces = interfaces->next;
     }
 
-  g_my_info ("%s", info_string->str);
-  if (info_string)
+  if (info_string) {
+     g_my_info ("%s", info_string->str);
      g_string_free(info_string, TRUE);
+  }
 
   interface_list_free(interfaces);
 }				/* init_menus */
@@ -355,7 +357,7 @@ void
 on_help_activate (GtkMenuItem * menuitem, gpointer user_data)
 {
   GError *err = NULL;
-  gboolean success = FALSE;
+  gboolean success;
 
 #if GTK_CHECK_VERSION(2, 13, 1)
   success = gtk_show_uri (NULL, "ghelp:" PACKAGE_NAME, GDK_CURRENT_TIME, &err);

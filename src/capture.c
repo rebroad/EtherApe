@@ -165,21 +165,21 @@ gchar *init_capture (void)
         {
           snprintf (errorbuf, sizeof(errorbuf), 
                     _("File %s contains packets with unsupported "
-                      "link type %d, cannot replay"), 
+                      "link type %u, cannot replay"), 
                     appdata.input_file,
                     linktype);
         }
       else if (device)
         {
           snprintf (errorbuf, sizeof(errorbuf), 
-                    _("Device %s uses unsupported link type %d,"
+                    _("Device %s uses unsupported link type %u,"
                       "cannot capture. Please choose another interface."), 
                     device,
                     linktype);
         }
       else
         {
-          snprintf (errorbuf, sizeof(errorbuf), _("Unsupported link type %d"), 
+          snprintf (errorbuf, sizeof(errorbuf), _("Unsupported link type %u"), 
                     linktype);
         }
         return errorbuf;
