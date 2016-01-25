@@ -126,6 +126,7 @@ void init_config(struct pref_struct *p)
   p->bck_image_path = NULL;
 
   p->averaging_time=3000;
+  p->position = NULL;
 }
 
 void set_default_config(struct pref_struct *p)
@@ -404,6 +405,7 @@ void copy_config(struct pref_struct *tgt, const struct pref_struct *src)
 
   tgt->refresh_period = src->refresh_period;
   tgt->averaging_time = src->averaging_time;
+  tgt->position = g_strdup(src->position);
 }
 
 static gint

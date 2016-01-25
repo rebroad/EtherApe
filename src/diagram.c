@@ -24,6 +24,7 @@
 #include <arpa/inet.h>
 
 #include <gnome.h>
+#include <regex.h>
 
 #include "appdata.h"
 #include "diagram.h"
@@ -1186,6 +1187,13 @@ static void init_reposition(reposition_node_t *data,
    */
   data->center.angle += M_PI / 4.0;
 
+  if (total_nodes)
+    {
+      guint col;
+      for(col=0;col<=total_position_columns;col++) position_column_count[col]=1;
+    }
+
+
   gnome_canvas_get_scroll_region (GNOME_CANVAS (canvas),
 				  &data->xmin, &data->ymin, 
                                   &data->xmax, &data->ymax);
@@ -1289,6 +1297,39 @@ static gint reposition_canvas_nodes(node_id_t * node_id,
 	  y = data->y_rad_max * sin (s_angle);
 	}
     }
+  else if (pref.position)
+    {
+      char *nametmp = "";
+      guint i, col = 0;
+      gint reti;
+      if (canvas_node->text_item)
+	{
+	  g_object_get(G_OBJECT(canvas_node->text_item),"text", &nametmp, NULL);
+
+	  /* check against the items on our position */
+	  for (i = 0; i < total_position_elements; i++)
+	    {
+	      /* Need regex here */
+              reti= regexec(&position_elements[i],nametmp,0,NULL,0);
+	      if (!reti)
+		{
+		  col = position_column[i];
+		  break;
+		}
+	    }
+
+	  /* If we didn't match the given position list, then it is to the very right */
+	  if (i==total_position_elements) col=total_position_columns;
+	
+	}
+
+	x = (((data->xmax - data->xmin) / (total_position_columns+1)) * col) + data->xmin;
+	y = (((data->ymax - data->ymin) / (position_column_max_count[col]+1)) * position_column_count[col])+ (data->ymin);
+
+	position_column_count[col]++;
+	if (position_column_count[col] > position_column_max_count[col])
+	  position_column_max_count[col]=position_column_count[col];
+    }
   else
     {
       if (canvas_node->centered && data->center.n_nodes == 1)
@@ -1300,6 +1341,8 @@ static gint reposition_canvas_nodes(node_id_t * node_id,
         }
       else
         {
+          guint col;
+
           if (ring->n_nodes % 2 == 0)	/* spacing is better when n_nodes is odd and Y is linear */
             oddAngle = (ring->angle * ring->n_nodes) / (ring->n_nodes + 1);
           else
@@ -1322,6 +1365,9 @@ static gint reposition_canvas_nodes(node_id_t * node_id,
               x = center_x + ((x - center_x) * pref.inner_ring_scale);
               y = center_y + ((y - center_y) * pref.inner_ring_scale);
             }
+
+          for(col=0;col<=total_position_columns;col++)
+            position_column_max_count[col]=position_column_count[col];
         }
     }
 

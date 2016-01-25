@@ -101,6 +101,8 @@ main (int argc, char *argv[])
      N_("export to named file at end of replay"), N_("<file to export to>")},
     {"signal-export", 0, POPT_ARG_STRING, &export_file_signal, 0,
      N_("export to named file on receiving USR1"), N_("<file to export to>")},
+    {"position", 'P', POPT_ARG_STRING, &(pref.position), 0,
+    N_("Manually position nodes based on File"), N_("<list of nodes and their columns>")},
     {"stationary", 's', POPT_ARG_NONE, &(pref.stationary), 0,  
      N_("don't move nodes around (deprecated)"), NULL}, 
     {"node-limit", 'l', POPT_ARG_INT, &(appdata.node_limit), 0,
@@ -240,7 +242,75 @@ main (int argc, char *argv[])
     }
   else
       g_message("Invalid maximum delay %ld, ignored", madelay);
-  
+
+  if (pref.position)
+    {
+      gint c,reti;
+      FILE *position_p;
+      char tmpbuf[200],rbuf[100];
+      position_p=fopen(pref.position,"r");
+
+      total_position_columns=0;
+      while (1) {
+	/* Since the lines are simply and IP address for a FQDN, we should never have anything close to 200 chars 
+	 * If we do, we just toss the rest
+	 */
+	if (fgets(tmpbuf, sizeof(tmpbuf)-1, position_p) == NULL) 
+          break;
+
+	if (tmpbuf[strlen(tmpbuf)-1] != '\n')
+	  {
+	    /* We didn't get the complete line because it was presumably too long */
+	    while (fgetc(position_p) != '\n') 
+              ;
+	  }
+
+	c=sscanf(tmpbuf,"%99s %u",
+             rbuf,&position_column[total_position_elements]);
+
+	if (rbuf[0] == '#' || c == 0 ) 
+ 	  {
+	    /* comment line or empty line */
+	    continue;
+
+	  }
+	else if (c != 2)
+	  {
+	    fprintf(stderr,"ERROR: Couldn't find column number in position file at: %s\n",
+	    position_elements[total_position_elements]);
+	  }
+	else if (position_column[total_position_elements] > MAX_POSITION_COLUMNS)
+	  {
+	    fprintf(stderr,"ERROR: Column %d greater than %d at position element: %s\n",
+		position_column[total_position_elements],MAX_POSITION_COLUMNS,
+		position_elements[total_position_elements]);
+	  }
+	else
+	  {
+	    reti=regcomp(&position_elements[total_position_elements],rbuf,REG_ICASE|REG_NOSUB);
+	
+	    if (reti) 
+		fprintf(stderr,"Could not compile regex (%d) for pattern %s\n",total_position_elements,rbuf);
+	    else
+	      {
+	        if (position_column[total_position_elements] > total_position_columns)
+		    total_position_columns=position_column[total_position_elements];
+	        if (++total_position_elements >= TOTAL_POSITION_ELEMENTS) 
+                  break;
+	      }
+	  }
+      }
+      /* Add one column for the unspecified addresses that go in the rightmost column */
+      total_position_columns++;
+
+      /* Initialize the number of elements that would be in a column to 1.
+       * This is needed the very first time an element is displayed in a column.
+       */
+
+      for (c=0;c<=total_position_columns;c++) 
+        position_column_max_count[c]=1;
+    }
+
   /* Glade */
   glade_gnome_init ();
   glade_require("gnome");
