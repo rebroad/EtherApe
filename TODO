@@ -30,13 +30,9 @@ Issues in the source code
   * rewrite names handling. Do only packet extraction at capture time, name
     resolution at display time and only for the chosen address.
 
-  * use glib datastructs everywhere, instead of a mix of glib and in-house.
-
   * refactor stop handling; separate clearing data from updating. 
 
-  * Why am I using a global "interface" and a second "device"
-    in capture.c? Check that I can just use interface.
-
-  * Use a GArray instead of a fixed array for the protocols
-    stack.
+  * migrate from gnome-doc-utils to yelp-tools.
+    Note: works only for gnome3+, besides chances are it will change soon to 
+	  something-a-bit-different-but-incompatible anyway.
 

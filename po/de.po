@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: etherape 0.9.12\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-06-06 08:27+0200\n"
+"POT-Creation-Date: 2015-09-19 17:37+0200\n"
 "PO-Revision-Date: 2011-06-09 21:21+0200\n"
 "Last-Translator: Chris Leick <c.leick@vollbio.de>\n"
 "Language-Team: German <debian-l10n-german@lists.debian.org>\n"
@@ -110,7 +110,7 @@ msgstr "benutzt die genannte Libglade-Datei für Widgets"
 msgid "<glade file>"
 msgstr "<Glade-Datei>"
 
-#: src/main.c:140 src/menus.c:346
+#: src/main.c:140 src/menus.c:348
 msgid "-unknown-"
 msgstr "-unbekannt-"
 
@@ -167,24 +167,24 @@ msgid "%s opened for offline capture"
 msgstr "%s für Offline-Erfassung geöffnet"
 
 #: src/capture.c:167
-#, c-format
-msgid "File %s contains packets with unsupported link type %d, cannot replay"
+#, fuzzy, c-format
+msgid "File %s contains packets with unsupported link type %u, cannot replay"
 msgstr ""
 "Datei %s enthält Pakete mit dem nicht unterstützten Link-Typ %d, erneutes "
 "Abspielen nicht möglich"
 
 #: src/capture.c:175
-#, c-format
+#, fuzzy, c-format
 msgid ""
-"Device %s uses unsupported link type %d,cannot capture. Please choose "
+"Device %s uses unsupported link type %u,cannot capture. Please choose "
 "another interface."
 msgstr ""
 "Gerät %s benutzt den nicht unterstützten Link-Typ %d, Erfassen nicht "
 "möglich. Bitte benutzen Sie eine andere Schnittstelle."
 
 #: src/capture.c:182
-#, c-format
-msgid "Unsupported link type %d"
+#, fuzzy, c-format
+msgid "Unsupported link type %u"
 msgstr "Nicht unterstützer Link-Typ %d"
 
 #: src/capture.c:196
@@ -247,86 +247,86 @@ msgstr "Offline-Erfassung wird gestoppt"
 msgid "Capture device stopped or file closed"
 msgstr "Erfassungsgerät gestoppt oder Datei geschlossen"
 
-#: src/menus.c:51
+#: src/menus.c:52
 #, c-format
 msgid "get_interface result: '%s'"
 msgstr "Ergebnis von get_interface: »%s«"
 
-#: src/menus.c:54
+#: src/menus.c:55
 msgid "No suitables interfaces for capture have been found"
 msgstr "Es wurden keine zur Erfassung geeigneten Schnittstellen gefunden."
 
-#: src/menus.c:64
+#: src/menus.c:65
 msgid "Available interfaces for capture:"
 msgstr "Verfügbare Schnittstellen für die Erfassung:"
 
-#: src/menus.c:195
+#: src/menus.c:197
 #, c-format
 msgid "Capture interface set to %s in GUI"
 msgstr "Erfassungsschnittstelle in GUI auf %s gesetzt"
 
-#: src/menus.c:251
+#: src/menus.c:253
 #, c-format
 msgid "Mode set to %s in GUI"
 msgstr "Modus in GUI auf %s gesetzt"
 
-#: src/menus.c:390
+#: src/menus.c:392
 msgid "Status already PLAY at gui_start_capture"
 msgstr "Status bei gui_start_capture ist bereits PLAY"
 
-#: src/menus.c:437 src/menus.c:467
+#: src/menus.c:439 src/menus.c:469
 #, c-format
 msgid "Invalid mode: %d"
 msgstr "Ungültiger Modus: %d"
 
-#: src/menus.c:446
+#: src/menus.c:448
 msgid "Reading data from "
 msgstr "Daten werden gelesen von "
 
-#: src/menus.c:453 src/menus.c:608
+#: src/menus.c:455 src/menus.c:610
 msgid "default interface"
 msgstr "Standardschnittstelle"
 
 # http://de.wikipedia.org/wiki/OSI-Modell (Sicherungsschicht)
-#: src/menus.c:458
+#: src/menus.c:460
 msgid " in Data Link mode"
 msgstr " im Data-Link-Modus"
 
-#: src/menus.c:461
+#: src/menus.c:463
 msgid " in IP mode"
 msgstr " im IP-Modus"
 
-#: src/menus.c:464
+#: src/menus.c:466
 msgid " in TCP mode"
 msgstr " im TCP-Modus"
 
-#: src/menus.c:476
+#: src/menus.c:478
 msgid "Diagram started"
 msgstr "Diagramm gestartet"
 
-#: src/menus.c:510
+#: src/menus.c:512
 msgid "Paused"
 msgstr "Pausiert"
 
-#: src/menus.c:512
+#: src/menus.c:514
 msgid "Diagram paused"
 msgstr "Diagramm pausiert"
 
-#: src/menus.c:544
+#: src/menus.c:546
 #, c-format
 msgid "Replay from file '%s' completed."
 msgstr "Erneutes Abspielen von Datei »%s« abgeschlossen"
 
-#: src/menus.c:601
+#: src/menus.c:603
 msgid "Ready to capture from "
 msgstr "Bereit zur Erfassung von "
 
-#: src/menus.c:613
+#: src/menus.c:615
 msgid "Diagram stopped"
 msgstr "Diagramm gestoppt"
 
 # FIXME s/canvas:%d/canvas: %d/
-#: src/diagram.c:186
+#: src/diagram.c:231
 #, fuzzy, c-format
 msgid ""
 "Nodes: %d (on canvas: %d, shown: %u), Links: %d, Conversations: %ld, names "
@@ -338,39 +338,49 @@ msgstr ""
 "%ld, auf der Liste %ld). IP-Zwischenspeichereinträge %ld. "
 "Zeichenflächenobjekte: %ld. Aktualisiert: %u ms"
 
-#: src/diagram.c:405
+#: src/diagram.c:364
+#, c-format
+msgid "Loading of background image failed with error '%s'"
+msgstr ""
+
+#: src/diagram.c:389
+#, c-format
+msgid "New background image path: '%s'"
+msgstr ""
+
+#: src/diagram.c:554
 #, c-format
 msgid "SIGUSR1 received: exporting to %s"
 msgstr "SIGUSR1 empfangen: Export nach %s"
 
-#: src/diagram.c:570
+#: src/diagram.c:722
 #, c-format
 msgid "Unable to allocate color for new protocol %s"
 msgstr "Neuem Protokoll %s kann keine Farbe zugewiesen werden"
 
-#: src/diagram.c:665
+#: src/diagram.c:817
 msgid "Canvas node null"
 msgstr "Zeichenflächenknoten null"
 
-#: src/diagram.c:681
+#: src/diagram.c:833
 #, c-format
 msgid "Creating canvas_node: %s. Number of nodes %d"
 msgstr "canvas_node wird erzeugt: %s. Anzahl der Knoten %d"
 
-#: src/diagram.c:746
+#: src/diagram.c:898
 msgid "Unknown value or node_size_variable"
 msgstr "Wert oder node_size_variable unbekannt"
 
-#: src/diagram.c:1311
+#: src/diagram.c:1600
 msgid "Unknown value for link_size_variable"
 msgstr "Unbekannter Wert für link_size_variable"
 
-#: src/diagram.c:1350
+#: src/diagram.c:1639
 #, c-format
 msgid "Link main protocol: %s"
 msgstr "Link-Hauptprotokoll: %s"
 
-#: src/diagram.c:1353
+#: src/diagram.c:1642
 msgid "Link main protocol unknown"
 msgstr "Unbekanntes Link-Hauptprotokoll"
 
@@ -513,12 +523,12 @@ msgstr "Knoten »%s« wird zum Entfernen in die Warteschlange gestellt"
 msgid "Updated nodes. Active nodes %d"
 msgstr "Aktualisierte Knoten. Aktive Knoten %d"
 
-#: src/preferences.c:306
+#: src/preferences.c:316
 #, c-format
 msgid "Preferences saved to %s"
 msgstr "Einstellungen unter %s gespeichert"
 
-#: src/preferences.c:313
+#: src/preferences.c:323
 #, c-format
 msgid "Error saving preferences to '%s': %s"
 msgstr "Fehler beim Speichern der Einstellungen unter »%s«: %s"
@@ -539,24 +549,20 @@ msgid "%d/%d %d:%d"
 msgstr "%d/%d %d:%d"
 
 #: glade/etherape.glade:10
-msgid "Information"
-msgstr "Informationen"
-
-#: glade/etherape.glade:49
 msgid "EtherApe: Preferences"
 msgstr "EtherApe: Einstellungen"
 
-#: glade/etherape.glade:76
+#: glade/etherape.glade:39
 msgid "Protocol Stack _Level"
 msgstr "P_rotokollstapelebene"
 
-#: glade/etherape.glade:89
+#: glade/etherape.glade:52
 msgid "Set what level of the protocol stack is displayed in the legend"
 msgstr ""
 "Stellen Sie ein, welche Ebene des Protokollstapels in der Beschriftung "
 "angezeigt wird"
 
-#: glade/etherape.glade:90
+#: glade/etherape.glade:53
 msgid ""
 "Topmost recognized protocol\n"
 "Level 2 (Eg: ETH_II)\n"
@@ -570,17 +576,17 @@ msgstr ""
 "Ebene 4 (z.B.: TCP)\n"
 "Ebene 5 (z.B.: HTTP)"
 
-#: glade/etherape.glade:113
+#: glade/etherape.glade:76
 msgid "The statistic used to compute node and link sizes"
 msgstr ""
 "Die Statistik, die zum Berechnen der Knoten- und Link-Größen benutzt wird"
 
-#: glade/etherape.glade:115
+#: glade/etherape.glade:78
 msgid "Size _Variable"
 msgstr "Gr_ößenvariable"
 
 # FIXME instantaneous
-#: glade/etherape.glade:128
+#: glade/etherape.glade:91
 #, fuzzy
 msgid ""
 "Set the kind of instantaneous or accumulated traffic that the node radius "
@@ -589,7 +595,7 @@ msgstr ""
 "Die Art des momentanen oder angesammelten Verkehrs setzen, der den "
 "Knotenradius angibt."
 
-#: glade/etherape.glade:129
+#: glade/etherape.glade:92
 msgid ""
 "Instant. traffic (In+Out)\n"
 "Instant. traffic (Inbound)\n"
@@ -611,23 +617,31 @@ msgstr ""
 "summierter Pakete (ein+aus)\n"
 "durchschnittliche Paketgröße (ein+aus)\n"
 
-#: glade/etherape.glade:160
+#: glade/etherape.glade:123
+msgid "_Inner Ring Scale"
+msgstr ""
+
+#: glade/etherape.glade:137
+msgid "Inner ring radius as a fraction of outer ring size"
+msgstr ""
+
+#: glade/etherape.glade:165
 msgid "Link _Width - Node Radius Ratio"
 msgstr "Verhältnis Link-_Breite - Knotenradius"
 
-#: glade/etherape.glade:174
+#: glade/etherape.glade:179
 msgid "Ratio between link width and node radius"
 msgstr "Verhältnis zwischen Link-Breite und Knotenradius"
 
-#: glade/etherape.glade:200
+#: glade/etherape.glade:205
 msgid "Node _Radius Multiplier"
 msgstr "Knotenradius-_Multiplikator"
 
-#: glade/etherape.glade:241
+#: glade/etherape.glade:246
 msgid "Size _Mode"
 msgstr "Grö_ßenmodus"
 
-#: glade/etherape.glade:254
+#: glade/etherape.glade:259
 msgid ""
 "Choose how node radius and link width are calculated as a function of "
 "average traffic"
@@ -635,7 +649,7 @@ msgstr ""
 "Wählen Sie, wie der Knotenradius und die Link-Breite als Funktion des "
 "Durchschnittsverkehrs berechnet werden"
 
-#: glade/etherape.glade:255
+#: glade/etherape.glade:260
 msgid ""
 "Linear\n"
 "Logarithmic\n"
@@ -645,119 +659,123 @@ msgstr ""
 "Logarithmisch\n"
 "Quadratwurzel"
 
-#: glade/etherape.glade:277
+#: glade/etherape.glade:282
 msgid "_Hide node names"
 msgstr "Knotennamen _verstecken"
 
-#: glade/etherape.glade:281
+#: glade/etherape.glade:286
 msgid "Toggle whether the node names are displayed on top of the nodes"
 msgstr "Umschalten, ob die Knotennamen oben auf den Knoten angezeigt werden"
 
-#: glade/etherape.glade:294
+#: glade/etherape.glade:299
 msgid "_Group unknown ports"
 msgstr "_Unbekannte Ports zusammenfassen"
 
-#: glade/etherape.glade:324
+#: glade/etherape.glade:329
 msgid "_Name Resolution"
 msgstr "_Namensauflösung"
 
-#: glade/etherape.glade:328
+#: glade/etherape.glade:333
 msgid ""
 "Enable name resolution. If unchecked, all addresses are in numeric form."
 msgstr ""
 "Namensauflösung einschalten. Wenn dies nicht markiert ist, sind alle "
 "Adressen in numerischer Form."
 
-#: glade/etherape.glade:360
+#: glade/etherape.glade:365
 msgid "_Capture filter"
 msgstr "_Erfassungsfilter"
 
-#: glade/etherape.glade:372
+#: glade/etherape.glade:377
 msgid "Sets the capture filter"
 msgstr "Setzt den Erfassungsfilter"
 
-#: glade/etherape.glade:396
+#: glade/etherape.glade:401
 msgid "Node Label _Font"
 msgstr "_Schriftart der Knotenbeschriftung"
 
-#: glade/etherape.glade:410
+#: glade/etherape.glade:415
 msgid "Node Label Font"
 msgstr "Schriftart der Knotenbeschriftung"
 
-#: glade/etherape.glade:438
+#: glade/etherape.glade:443
 msgid "Node Label C_olor"
 msgstr "_Farbe der Knotenbeschriftung"
 
-#: glade/etherape.glade:451
+#: glade/etherape.glade:456
 msgid "Choose the color used to display node labels"
 msgstr ""
 "Wählen Sie die Farbe aus, die zu Anzeige der Knotenbeschriftungen benutzt "
 "wird"
 
-#: glade/etherape.glade:452
+#: glade/etherape.glade:457
 msgid "Pick a Color "
 msgstr "Wählen sie eine Farbe"
 
-#: glade/etherape.glade:477
+#: glade/etherape.glade:482
 msgid "C_entral Node"
 msgstr ""
 
-#: glade/etherape.glade:487
+#: glade/etherape.glade:492
 msgid "Optional central node"
 msgstr ""
 
-#: glade/etherape.glade:507 glade/etherape.glade:748 glade/etherape.glade:893
+#: glade/etherape.glade:512
+msgid "Background Image"
+msgstr ""
+
+#: glade/etherape.glade:544 glade/etherape.glade:785 glade/etherape.glade:930
 msgid "Diagram"
 msgstr "Diagramm"
 
-#: glade/etherape.glade:547
+#: glade/etherape.glade:584
 msgid "Add color"
 msgstr "Farbe hinzufügen"
 
-#: glade/etherape.glade:551
+#: glade/etherape.glade:588
 msgid ""
 "Add a new color to the list of colors that can be used to represent protocols"
 msgstr ""
 "Eine neue Farbe zu der Farbenliste hinzufügen, die benutzt werden kann, um "
 "Protokolle darzustellen"
 
-#: glade/etherape.glade:562
+#: glade/etherape.glade:599
 msgid "Remove color"
 msgstr "Farbe entfernen"
 
-#: glade/etherape.glade:576
+#: glade/etherape.glade:613
 msgid "Change color"
 msgstr "Farbe ändern"
 
-#: glade/etherape.glade:580
+#: glade/etherape.glade:617
 msgid "Changes selected row color"
 msgstr "Ändert die Farbe der ausgewählten Zeile"
 
-#: glade/etherape.glade:590
+#: glade/etherape.glade:627
 msgid "Edit protocol"
 msgstr "Protokoll bearbeiten"
 
-#: glade/etherape.glade:624
+#: glade/etherape.glade:661
 msgid "Colors"
 msgstr "Farben"
 
-#: glade/etherape.glade:653
+#: glade/etherape.glade:690
 msgid "Diagram Refresh _Period (ms)"
 msgstr "Diagramm_aktualisierungsperiode (ms)"
 
-#: glade/etherape.glade:666
+#: glade/etherape.glade:703
 msgid "Refresh diagram every this many miliseconds"
 msgstr "Diagramm wird nach so vielen Millisekunden aktualisiert"
 
-#: glade/etherape.glade:690
+#: glade/etherape.glade:727
 msgid "Averaging Time (ms)"
 msgstr "Durchschnittszeit (ms)"
 
-#: glade/etherape.glade:702
+#: glade/etherape.glade:739
 msgid "Packet information is averaged for this amount of time"
 msgstr "Paketinformation ist für diesen Zeitwert gemittelt"
 
-#: glade/etherape.glade:761
+#: glade/etherape.glade:798
 msgid ""
 "Remove this node from the diagram after this much time. 0 means never "
 "timeout."
@@ -765,22 +783,22 @@ msgstr ""
 "Diesen Knoten nach so viel Zeit aus dem Diagramm entfernen. 0 bedeutet, dass "
 "es keine Zeitüberschreitung gibt"
 
-#: glade/etherape.glade:785 glade/etherape.glade:930
+#: glade/etherape.glade:822 glade/etherape.glade:967
 msgid "Traffic Statistics"
 msgstr "Verkehrsstatistiken"
 
-#: glade/etherape.glade:797
+#: glade/etherape.glade:834
 msgid ""
 "Delete this node from memory after this much time. 0 means never timeout."
 msgstr ""
 "Diesen Knoten nach so viel Zeit aus dem Speicher löschen. 0 bedeutet, dass "
 "es keine Zeitüberschreitung gibt"
 
-#: glade/etherape.glade:821 glade/etherape.glade:966
+#: glade/etherape.glade:858 glade/etherape.glade:1003
 msgid "Protocol Statistics"
 msgstr "Protokollstatistiken"
 
-#: glade/etherape.glade:833 glade/etherape.glade:978
+#: glade/etherape.glade:870 glade/etherape.glade:1015
 msgid ""
 "Expire protocol statistics for a node after this much time. 0 means never "
 "timeout."
@@ -788,11 +806,11 @@ msgstr ""
 "Protokollstatistiken für einen Knoten nach so viel Zeit beenden. 0 bedeutet, "
 "dass es keine Zeitüberschreitung gibt"
 
-#: glade/etherape.glade:856
+#: glade/etherape.glade:893
 msgid "<i>Node Timeouts (s)</i>"
 msgstr "<i>Knoten-Zeitüberschreitungen (s)</i>"
 
-#: glade/etherape.glade:906
+#: glade/etherape.glade:943
 msgid ""
 "Remove this link from the diagram after this much time. 0 means never "
 "timeout."
@@ -800,136 +818,136 @@ msgstr ""
 "Diesen Link nach so viel Zeit aus dem Diagramm entfernen. 0 bedeutet, dass "
 "es keine Zeitüberschreitung gibt"
 
-#: glade/etherape.glade:942
+#: glade/etherape.glade:979
 msgid ""
 "Delete this link from memory after this much time. 0 means never timeout."
 msgstr ""
 "Diesen Link nach so viel Zeit aus dem Speicher löschen. 0 bedeutet, dass es "
 "keine Zeitüberschreitung gibt."
 
-#: glade/etherape.glade:1001
+#: glade/etherape.glade:1038
 msgid "<i>Link Timeouts (s)</i>"
 msgstr "<i>Link-Zeitüberschreitungen (s)</i>"
 
-#: glade/etherape.glade:1038
+#: glade/etherape.glade:1075
 msgid "Remove this protocol from memory after this much time. "
 msgstr "Dieses Protokoll nach so viel Zeit aus dem Speicher löschen."
 
-#: glade/etherape.glade:1081
+#: glade/etherape.glade:1118
 msgid "<i>Global Protocol Timeouts (s)</i>"
 msgstr "<i>Globale Protokoll-Zeitüberschreitungen (s)</i>"
 
-#: glade/etherape.glade:1102
+#: glade/etherape.glade:1139
 msgid "Timings"
 msgstr "Zeiteinteilungen"
 
-#: glade/etherape.glade:1124
+#: glade/etherape.glade:1161
 msgid "Save"
 msgstr "Speichern"
 
-#: glade/etherape.glade:1129
+#: glade/etherape.glade:1166
 msgid "Saves changes to preferences file"
 msgstr "Änderungen in Einstellungsdatei speichern"
 
-#: glade/etherape.glade:1146
+#: glade/etherape.glade:1183
 msgid "Confirm changes"
 msgstr "Änderungen bestätigen"
 
-#: glade/etherape.glade:1163
+#: glade/etherape.glade:1200
 msgid "Cancel changes"
 msgstr "Änderungen abbrechen"
 
-#: glade/etherape.glade:1184
+#: glade/etherape.glade:1221
 msgid "EtherApe: Protocols"
 msgstr "EtherApe: Protokolle"
 
-#: glade/etherape.glade:1220
+#: glade/etherape.glade:1257
 msgid "name"
 msgstr "Name"
 
-#: glade/etherape.glade:1242
+#: glade/etherape.glade:1279
 msgid "Last Heard: "
 msgstr "Zuletzt gehört:"
 
-#: glade/etherape.glade:1254
+#: glade/etherape.glade:1291
 msgid "label73"
 msgstr "label73"
 
-#: glade/etherape.glade:1287 glade/etherape.glade:1733
+#: glade/etherape.glade:1324 glade/etherape.glade:1772
 msgid "Instantaneous"
 msgstr "Augenblicklich"
 
-#: glade/etherape.glade:1300 glade/etherape.glade:1336
+#: glade/etherape.glade:1337 glade/etherape.glade:1373
 msgid "test label"
 msgstr "Testbeschriftung"
 
-#: glade/etherape.glade:1323 glade/etherape.glade:1745
+#: glade/etherape.glade:1360 glade/etherape.glade:1784
 msgid "Accumulated"
 msgstr "Angesammelt"
 
-#: glade/etherape.glade:1366
+#: glade/etherape.glade:1403
 msgid "Select color"
 msgstr "Farbe auswählen"
 
-#: glade/etherape.glade:1402
+#: glade/etherape.glade:1440
 msgid "EtherApe: assign protocol"
 msgstr "EtherApe: Protokoll zuordnen"
 
-#: glade/etherape.glade:1419
+#: glade/etherape.glade:1458
 #, fuzzy
 msgid "Type protocol name..."
 msgstr "Protokollnamen eintippen"
 
-#: glade/etherape.glade:1432
+#: glade/etherape.glade:1471
 msgid "Type the protocol name"
 msgstr "Den Protokollnamen eintippen"
 
-#: glade/etherape.glade:1433
+#: glade/etherape.glade:1472
 msgid "WWW"
 msgstr "WWW"
 
-#: glade/etherape.glade:1600
+#: glade/etherape.glade:1639
 msgid "Numeric Name:"
 msgstr "Numerischer Name:"
 
-#: glade/etherape.glade:1613
+#: glade/etherape.glade:1652
 msgid "Resolved Name:"
 msgstr "Aufgelöster Name:"
 
-#: glade/etherape.glade:1625
+#: glade/etherape.glade:1664
 msgid "node A"
 msgstr "Knoten A"
 
-#: glade/etherape.glade:1635
+#: glade/etherape.glade:1674
 msgid "node B"
 msgstr "Knoten B"
 
-#: glade/etherape.glade:1698
+#: glade/etherape.glade:1737
 msgid "Total"
 msgstr "Gesamt"
 
-#: glade/etherape.glade:1709
+#: glade/etherape.glade:1748
 msgid "Inbound"
 msgstr "Eingehend"
 
-#: glade/etherape.glade:1721
+#: glade/etherape.glade:1760
 msgid "Outbound"
 msgstr "Ausgehend"
 
-#: glade/etherape.glade:1809
+#: glade/etherape.glade:1848
 msgid "Average size"
 msgstr "Durchschnittsgröße"
 
-#: glade/etherape.glade:1896
+#: glade/etherape.glade:1936
 #, fuzzy
 msgid "Copyright 2001-2013 Juan Toledo, Riccardo Ghetta"
 msgstr "Copyright 2001-2011 Juan Toledo, Riccardo Ghetta"
 
-#: glade/etherape.glade:1897
+#: glade/etherape.glade:1937
 msgid "A Graphical Network Browser."
 msgstr "Ein grafischer Netzwerk-Browser"
 
-#: glade/etherape.glade:1919
+#: glade/etherape.glade:1959
 #, fuzzy
 msgid ""
 "Vincent van Adrighem <vincent@dirck.mine.nu>\n"
@@ -945,179 +963,182 @@ msgstr ""
 "Frederic Peters <fpeters@debian.org>\n"
 "Daniel Nylander\n"
 
-#: glade/etherape.glade:1954
+#: glade/etherape.glade:1994
 msgid "EtherApe"
 msgstr "EtherApe"
 
-#: glade/etherape.glade:1972
+#: glade/etherape.glade:2012
 msgid "_File"
 msgstr "_Datei:"
 
-#: glade/etherape.glade:1988
+#: glade/etherape.glade:2028
 msgid "Export node data as xml"
 msgstr "Knotendaten als XML exportieren"
 
-#: glade/etherape.glade:1989
+#: glade/etherape.glade:2029
 msgid "_export"
 msgstr "E_xport"
 
-#: glade/etherape.glade:2024
+#: glade/etherape.glade:2064
 msgid "_Capture"
 msgstr "Erfassun_g"
 
-#: glade/etherape.glade:2031
+#: glade/etherape.glade:2071
 msgid "_Mode"
 msgstr "M_odus"
 
-#: glade/etherape.glade:2040
+#: glade/etherape.glade:2080
 msgid "Set Link Layer (OSI level 2) mode"
 msgstr "Sicherungsschicht-Modus (OSI-Schicht 2) setzen"
 
-#: glade/etherape.glade:2041
+#: glade/etherape.glade:2081
 msgid "_Link Layer"
 msgstr "Si_cherungsschicht"
 
-#: glade/etherape.glade:2057
+#: glade/etherape.glade:2097
 msgid "Set IP mode"
 msgstr "IP-Modus setzen"
 
-#: glade/etherape.glade:2058
+#: glade/etherape.glade:2098
 msgid "_IP"
 msgstr "_IP"
 
-#: glade/etherape.glade:2070
+#: glade/etherape.glade:2110
 msgid "Set TCP mode"
 msgstr "TCP-Modus setzen"
 
-#: glade/etherape.glade:2071
+#: glade/etherape.glade:2111
 msgid "_TCP"
 msgstr "TC_P"
 
-#: glade/etherape.glade:2086
+#: glade/etherape.glade:2126
 msgid "_Interfaces"
 msgstr "Schnittste_llen"
 
-#: glade/etherape.glade:2103 glade/etherape.glade:2290
+#: glade/etherape.glade:2143 glade/etherape.glade:2330
 msgid "Start capture"
 msgstr "Erfassung starten"
 
-#: glade/etherape.glade:2114
+#: glade/etherape.glade:2154
 msgid "advances to next packet"
 msgstr "zu nächstem Paket fortschreiten"
 
-#: glade/etherape.glade:2126 glade/etherape.glade:2318
+#: glade/etherape.glade:2166 glade/etherape.glade:2358
 msgid "Pause capture"
 msgstr "Erfassung pausieren"
 
-#: glade/etherape.glade:2144 glade/etherape.glade:2333
+#: glade/etherape.glade:2184 glade/etherape.glade:2373
 msgid "Stop capture"
 msgstr "Erfassung stoppen"
 
-#: glade/etherape.glade:2164
+#: glade/etherape.glade:2204
 msgid "_View"
 msgstr "Ansic_ht"
 
-#: glade/etherape.glade:2172
+#: glade/etherape.glade:2212
 msgid "Show or hide the protocols window"
 msgstr "Das Protokollfenster anzeigen oder verstecken"
 
-#: glade/etherape.glade:2173
+#: glade/etherape.glade:2213
 msgid "_Protocols"
 msgstr "Proto_kolle"
 
-#: glade/etherape.glade:2181
+#: glade/etherape.glade:2221
 msgid "Show or hide the nodes window\t"
 msgstr "Das Knotenfenster anzeigen oder verstecken\t"
 
-#: glade/etherape.glade:2182
+#: glade/etherape.glade:2222
 msgid "_Nodes"
 msgstr "Kno_ten"
 
-#: glade/etherape.glade:2195
+#: glade/etherape.glade:2235
 msgid "Activate full screen mode"
 msgstr ""
 
-#: glade/etherape.glade:2196
+#: glade/etherape.glade:2236
 msgid "_Full Screen"
 msgstr ""
 
-#: glade/etherape.glade:2206
+#: glade/etherape.glade:2246
 msgid "Show or hide the toolbar"
 msgstr "Die Werkzeugleiste anzeigen oder verstecken"
 
-#: glade/etherape.glade:2207
+#: glade/etherape.glade:2247
 msgid "_Toolbar"
 msgstr "_Werkzeugleiste"
 
-#: glade/etherape.glade:2217
+#: glade/etherape.glade:2257
 msgid "Show or hide the legend"
 msgstr "Die Beschriftung anzeigen oder verstecken"
 
-#: glade/etherape.glade:2218
+#: glade/etherape.glade:2258
 msgid "_Legend"
 msgstr "Erkl_ärung"
 
-#: glade/etherape.glade:2228
+#: glade/etherape.glade:2268
 msgid "Show or hide the status bar"
 msgstr "Die Statusleiste anzeigen oder verstecken"
 
-#: glade/etherape.glade:2229
+#: glade/etherape.glade:2269
 msgid "_Status Bar"
 msgstr "Status_leiste"
 
-#: glade/etherape.glade:2242
+#: glade/etherape.glade:2282
 msgid "_Help"
 msgstr "_Hilfe"
 
-#: glade/etherape.glade:2291
+#: glade/etherape.glade:2331
 msgid "Start"
 msgstr "Start"
 
-#: glade/etherape.glade:2304
+#: glade/etherape.glade:2344
 msgid "Next"
 msgstr "Nächster"
 
-#: glade/etherape.glade:2319
+#: glade/etherape.glade:2359
 msgid "Pause"
 msgstr "Pause"
 
-#: glade/etherape.glade:2334
+#: glade/etherape.glade:2374
 msgid "Stop"
 msgstr "Stopp"
 
-#: glade/etherape.glade:2356
+#: glade/etherape.glade:2396
 msgid "Preferences (Ctrl-P)"
 msgstr "Einstellungen (Ctrl-P)"
 
-#: glade/etherape.glade:2357
+#: glade/etherape.glade:2397
 msgid "Pref."
 msgstr "Einst."
 
-#: glade/etherape.glade:2372
+#: glade/etherape.glade:2412
 msgid "Display the protocols window"
 msgstr "Protokollfenster anzeigen"
 
-#: glade/etherape.glade:2373
+#: glade/etherape.glade:2413
 msgid "Prot."
 msgstr "Prot."
 
-#: glade/etherape.glade:2386 glade/etherape.glade:2509
+#: glade/etherape.glade:2426 glade/etherape.glade:2549
 msgid "Nodes"
 msgstr "Knoten"
 
-#: glade/etherape.glade:2451
+#: glade/etherape.glade:2491
 msgid "Protocols"
 msgstr "Protokolle"
 
-#: glade/etherape.glade:2522
+#: glade/etherape.glade:2562
 msgid "_Show all nodes"
 msgstr "Alle Knoten an_zeigen"
 
-#: glade/etherape.glade:2527
+#: glade/etherape.glade:2567
 msgid "Controls display of nodes timed out from diagram, but still in memory"
 msgstr ""
 "Steuert die Anzeige von Knoten, deren Zeit im Diagramm überschritten war, "
 "die aber immer nocht im Speicher sind"
+
+#~ msgid "Information"
+#~ msgstr "Informationen"
 
 #~ msgid "Failed to open %s. No TCP or UDP services will be recognized"
 #~ msgstr ""

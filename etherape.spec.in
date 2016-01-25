@@ -1,9 +1,13 @@
 # Note that this is NOT a relocatable package
+# This specfile is a generic one aimed primarily at obs builds
 
 %define  RELEASE 1
 %define  rel     %{?CUSTOM_RELEASE} %{!?CUSTOM_RELEASE:%RELEASE}
 
 # define an appropriate suffix for the packages
+%if 0%{?mgaversion}
+%define sys	mga%{mga_release}
+%endif
 %if 0%{?mdkversion}
 %define sys	mdv%{mandriva_release}
 %endif
@@ -13,14 +17,17 @@
 %if 0%{?sles_version}
 %define sys	sles%{sles_version}
 %endif
-%if 0%{?fedora} 
-%define sys	fdv%{fedora}
+%if 0%{?fedora_version} 
+%define sys	fdv%{fedora_version}
 %endif
 %if 0%{?rhel_version}
 %define sys	rhel%{rhel_version}
 %endif
 %if 0%{?centos_version}
 %define sys	centos%{centos_version}
+%endif
+%if 0%{?scientificlinux_version}
+%define sys	sfl%{scientificlinux_version}
 %endif
 
 Name:           etherape
@@ -32,7 +39,7 @@ URL:            http://etherape.sourceforge.net/
 Source:         http://prdownloads.sourceforge.net/%{name}/%{name}-%{version}.tar.gz
 Autoreqprov:    on
 
-%if 0%{?fedora} || 0%{?rhel_version} || 0%{?centos_version}
+%if 0%{?fedora_version} || 0%{?rhel_version} || 0%{?centos_version} || 0%{?scientificlinux_version}
 Group:          Applications/System
 %else
 %if 0%{?suse_version} || 0%{?sles_version}
@@ -42,7 +49,7 @@ Group:          Monitoring
 %endif
 %endif
 
-#%if 0%{?fedora} || 0%{?rhel_version} || 0%{?centos_version}
+#%if 0%{?fedora_version} || 0%{?rhel_version} || 0%{?centos_version} || 0%{?scientificlinux_version}
 #BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 #%else
 BuildRoot:      %{_tmppath}/%{name}-%{version}
@@ -50,48 +57,108 @@ BuildRoot:      %{_tmppath}/%{name}-%{version}
 
 #Docdir: %{prefix}/doc
 
+# common requisites
 BuildRequires: libpcap-devel
 BuildRequires: gettext
 BuildRequires: autoconf
 BuildRequires: pkgconfig
-%if 0%{?centos_version} < 600
-BuildRequires: scrollkeeper
-%else
+BuildRequires: libtool
+
+# Mageia
+%if 0%{?mgaversion}
+BuildRequires: libglade2.0-devel
+BuildRequires: libgnomeui2-devel
+BuildRequires: desktop-file-utils
+BuildRequires: polkit-gnome
+BuildRequires: gettext-devel
+BuildRequires: gnome-doc-utils
 BuildRequires: rarian
 %endif
 
+# Mandriva
 %if 0%{?mdkversion}
 BuildRequires: libglade2.0-devel
 BuildRequires: libgnomeui2-devel
-BuildRequires: gnome-doc-utils
 BuildRequires: desktop-file-utils
-#%if 0%{?opensuse_bs}
-# only for suse build service
 BuildRequires: polkit-gnome
+BuildRequires: gettext-devel
+BuildRequires: gnome-doc-utils
+BuildRequires: rarian
 %if 0%{?mdkversion} <= 201000
 BuildRequires: pulseaudio-esound-compat
 %endif
-#%endif
-%else
-BuildRequires: libglade2-devel
-BuildRequires: libgnomeui-devel
 %endif
 
+# OpenSuSe - SLES
 %if 0%{?suse_version} || 0%{?sles_version}
-BuildRequires: pkgconfig
+BuildRequires: libglade2-devel
+BuildRequires: libgnomeui-devel
 BuildRequires: gnome-doc-utils-devel
+BuildRequires: gettext-tools
+BuildRequires: rarian
 BuildRequires: docbook_4
 BuildRequires: fdupes
 BuildRequires: update-desktop-files
 BuildRequires: sed
+%if 0%{?suse_version} > 1110 && 0%{?suse_version} != 1315
+BuildRequires: rarian-scrollkeeper-compat
 %endif
-%if 0%{?fedora} || 0%{?rhel_version} || 0%{?centos_version} 
+%endif
+
+# CentOS 
+%if 0%{?centos_version}
+BuildRequires: libglade2-devel
+BuildRequires: libgnomeui-devel
+BuildRequires: gettext-devel
 BuildRequires: gnome-doc-utils
+%if 0%{?centos_version} < 600
 BuildRequires: scrollkeeper
-%if 0%{?centos_version} && 0%{?centos_version} < 600
 BuildRequires(post): scrollkeeper
 BuildRequires(postun): scrollkeeper
+%else
+BuildRequires: rarian
+BuildRequires: rarian-compat
 %endif
+%endif
+
+# ScientificLinux
+%if 0%{?scientificlinux_version}
+BuildRequires: libglade2-devel
+BuildRequires: libgnomeui-devel
+BuildRequires: gettext-devel
+BuildRequires: gnome-doc-utils
+%if 0%{?scientificlinux_version} < 600
+BuildRequires: scrollkeeper
+BuildRequires(post): scrollkeeper
+BuildRequires(postun): scrollkeeper
+%else
+BuildRequires: rarian
+BuildRequires: rarian-compat
+%endif
+%endif
+
+# RHEL
+%if 0%{?rhel_version} 
+BuildRequires: libglade2-devel
+BuildRequires: libgnomeui-devel
+BuildRequires: gettext-devel
+BuildRequires: gnome-doc-utils
+%if 0%{?rhel_version} < 600
+BuildRequires: scrollkeeper
+%else
+BuildRequires: rarian
+BuildRequires: rarian-compat
+%endif
+%endif
+
+# Fedora
+%if 0%{?fedora_version}
+BuildRequires: libglade2-devel
+BuildRequires: libgnomeui-devel
+BuildRequires: gettext-devel
+BuildRequires: gnome-doc-utils
+BuildRequires: rarian
+BuildRequires: rarian-compat
 %endif
 
 %description
@@ -105,8 +172,11 @@ from a file as well as live from the network.
 
 %prep
 %setup -q
+%{__rm} -rf .hg
 %if 0%{?suse_version} || 0%{?sles_version}
+%if 0%{?suse_version} != 1315
 %__sed -ie "s#http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd#file:///usr/share/sgml/docbook/dtd/4.2/docbookx.dtd#" doc/C/etherape.xml
+%endif
 %__cat >> etherape.desktop.in << _EOF_
 X-KDE-SubstituteUID=true
 X-KDE-Username=root
@@ -115,15 +185,22 @@ _EOF_
 
 %build
 %if 0%{?suse_version} || 0%{?sles_version}
+gnome-doc-prepare --force --automake
+autoreconf -fi
 %configure --with-pic --disable-scrollkeeper
 # apparently opensuse has a broken xmllib configuration, missing an alias
 # for omf dtd
 %__sed -ie "s#--dtdvalid 'http://scrollkeeper.sourceforge.net/dtds/scrollkeeper-omf-1.0/scrollkeeper-omf.dtd'#--dtdvalidfpi \\\"-//OMF//DTD Scrollkeeper OMF Variant V1.0//EN\\\"#" doc/Makefile
 %else
-%if 0%{?fedora} || 0%{?rhel_version} || 0%{?centos_version}
-# fedora/redhat/centos use a different dtd ...
+%if 0%{?fedora_version} || 0%{?rhel_version} || 0%{?centos_version} || 0%{?scientificlinux_version}
+# fedora/redhat/centos/SFL use a different dtd ...
 gnome-doc-prepare --force --automake
-autoreconf
+%if 0%{?rhel_version}>550 || 0%{?centos_version}>550 || 0%{?scientificlinux_version}>550
+autoreconf -fi
+%else
+# using -fi on rhel5 and likes will fail build
+autoreconf 
+%endif
 %endif
 %configure --bindir=%{_sbindir}  --disable-scrollkeeper
 %endif
@@ -161,6 +238,12 @@ autoreconf
 %doc %{_datadir}/omf/%{name}
 %docdir %{_datadir}/gnome/help/%{name}
 %doc %{_datadir}/gnome/help/%{name}/**
+%if 0%{?suse_version} && 0%{?suse_version} > 1110 
+# on opensuse rarian doesn't create /usr/share/omf, so we must
+# declare ownership of /usr/share/omf
+%dir %{_datadir}/omf
+%endif
+
 
 %post
 %if 0%{?centos_version} && 0%{?centos_version} < 600
@@ -174,6 +257,10 @@ scrollkeeper-update -q || :
 
 
 %changelog
+
+* Sat Sep 19 2015 R.Ghetta <bchiara@users.sf.net> 0.9.14
+- updated for newer distributions
+
 * Sat Jun  6 2015 R.Ghetta <bchiara@users.sf.net>
 - remove custom services file
 

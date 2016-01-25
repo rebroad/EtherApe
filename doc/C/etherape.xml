@@ -3,7 +3,7 @@
 "http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd" [
   <!ENTITY appname          "EtherApe">
   <!ENTITY app "<application>EtherApe</application>">
-  <!ENTITY appversion   "0.9.11">
+  <!ENTITY appversion   "0.9.14">
   <!ENTITY manrevision  "0.5">
   <!ENTITY date "January 2010">
 ]>
