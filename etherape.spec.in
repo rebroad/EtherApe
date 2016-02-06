@@ -257,6 +257,8 @@ scrollkeeper-update -q || :
 
 
 %changelog
+* Sat Feb  6 2016 R.Ghetta <bchiara@users.sf.net> 0.9.14
+- fixes for newer distributions
 
 * Sat Sep 19 2015 R.Ghetta <bchiara@users.sf.net> 0.9.14
 - updated for newer distributions

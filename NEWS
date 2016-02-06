@@ -9,7 +9,7 @@
    Central node option now undestands CIDR notation, allowing for a central
    ring of nodes, thanks to Zev Weiss.
    Static background image, courtesy of Glenn Feunteun.
-   
+   Nodes can be optionally arranged as columns, thanks to David Goldfarb.
 
 
    Changes summary:
@@ -22,6 +22,7 @@
      * tweaks to preference windows to better work with tiling managers,
        thanks to Zev Weiss.
      * static background image (Glenn Feunteun)
+     * arrange nodes in 'columns' (David Goldfarb)
 
 
   Overview of changes in EtherApe 0.9.13 (Sun May 05, 2013):

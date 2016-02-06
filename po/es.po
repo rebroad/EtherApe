@@ -13,7 +13,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 0.9.12\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-09-19 17:37+0200\n"
+"POT-Creation-Date: 2016-02-06 08:40+0100\n"
 "PO-Revision-Date: 2011-06-01 02:13+0200\n"
 "Last-Translator: Javier Fernandez-Sanguino <jfs@debian.org>\n"
 "Language-Team: Spanish <es@li.org>\n"
@@ -67,69 +67,92 @@ msgstr "<fichero al que exportar>"
 msgid "export to named file on receiving USR1"
 msgstr "exportar al fichero indicado al recibir USR1"
 
-# src/main.c:53
 #: src/main.c:105
+msgid "Manually position nodes based on File"
+msgstr ""
+
+#: src/main.c:105
+msgid "<list of nodes and their columns>"
+msgstr ""
+
+# src/main.c:53
+#: src/main.c:107
 msgid "don't move nodes around (deprecated)"
 msgstr "no recolocar los nodos (obsoleto)"
 
 # src/main.c:55
-#: src/main.c:107
+#: src/main.c:109
 msgid "limits nodes displayed"
 msgstr "limita el número de nodos mostrados"
 
 # src/main.c:55
-#: src/main.c:107
+#: src/main.c:109
 msgid "<number of nodes>"
 msgstr "<número de nodos>"
 
 # src/main.c:39
-#: src/main.c:109
+#: src/main.c:111
 msgid "mode of operation"
 msgstr "modo de operación"
 
-#: src/main.c:109
+#: src/main.c:111
 msgid "<link|ip|tcp>"
 msgstr "<link|ip|tcp>"
 
 # src/main.c:47
-#: src/main.c:111
+#: src/main.c:113
 msgid "don't convert addresses to names"
 msgstr "no convertir las direcciones en nombres"
 
-#: src/main.c:113
+#: src/main.c:115
 msgid "Disable informational messages"
 msgstr "Deshabilitar mensajes informativos"
 
-#: src/main.c:115
+#: src/main.c:117
 msgid "minimum packet delay in ms for reading capture files [cli only]"
 msgstr "mínima demora de paquetes en ms al leer archivos de captura (sólo cli)"
 
-#: src/main.c:116 src/main.c:119
+#: src/main.c:118 src/main.c:121
 msgid "<delay>"
 msgstr "<demora>"
 
-#: src/main.c:118
+#: src/main.c:120
 msgid "maximum packet delay in ms for reading capture files [cli only]"
 msgstr "máxima de paquetes en ms al leer archivos de captura (sólo cli)"
 
-#: src/main.c:121
+#: src/main.c:123
 msgid "uses the named libglade file for widgets"
 msgstr "utiliza el archivo libglade indicado para los widgets"
 
 # src/main.c:43
-#: src/main.c:121
+#: src/main.c:123
 msgid "<glade file>"
 msgstr "<archivo glade>"
 
-#: src/main.c:140 src/menus.c:348
+#: src/main.c:142 src/menus.c:348
 msgid "-unknown-"
 msgstr "-desconocido-"
 
 # src/main.c:157
-#: src/main.c:208
+#: src/main.c:210
 msgid "Unrecognized mode. Do etherape --help for a list of modes"
 msgstr ""
 "Modo desconocido. Ejecute etherape --help para mostrar una lista de modos"
+
+#: src/main.c:257
+#, c-format
+msgid "Reading columns file '%s'"
+msgstr ""
+
+#: src/main.c:278
+#, c-format
+msgid "row %d: regexp/ip %s, column %u"
+msgstr ""
+
+#: src/main.c:315
+#, c-format
+msgid "Columns file read. Total columns %d"
+msgstr ""
 
 #: src/capture.c:110
 #, c-format
@@ -367,7 +390,7 @@ msgstr "Listo para capturar de "
 msgid "Diagram stopped"
 msgstr "Diagrama parado"
 
-#: src/diagram.c:231
+#: src/diagram.c:232
 #, fuzzy, c-format
 msgid ""
 "Nodes: %d (on canvas: %d, shown: %u), Links: %d, Conversations: %ld, names "
@@ -379,55 +402,55 @@ msgstr ""
 "en la lista %ld). Entradas de caché IP %ld. Objetos de canvas: %ld. "
 "Refresco: %u ms"
 
-#: src/diagram.c:364
+#: src/diagram.c:365
 #, c-format
 msgid "Loading of background image failed with error '%s'"
 msgstr ""
 
-#: src/diagram.c:389
+#: src/diagram.c:390
 #, c-format
 msgid "New background image path: '%s'"
 msgstr ""
 
-#: src/diagram.c:554
+#: src/diagram.c:555
 #, c-format
 msgid "SIGUSR1 received: exporting to %s"
 msgstr "Se recibió SIGUSR1: exportando a %s"
 
 # src/diagram.c:437
-#: src/diagram.c:722
+#: src/diagram.c:723
 #, c-format
 msgid "Unable to allocate color for new protocol %s"
 msgstr "No ha sido posible reservar un color para el nuevo protocolo %s"
 
-#: src/diagram.c:817
+#: src/diagram.c:818
 msgid "Canvas node null"
 msgstr "Modo «null» de canvas"
 
 # src/diagram.c:579
-#: src/diagram.c:833
+#: src/diagram.c:834
 #, c-format
 msgid "Creating canvas_node: %s. Number of nodes %d"
 msgstr "Creando nodo de diagrama: %s. Número de nodos: %d"
 
 # src/diagram.c:681
-#: src/diagram.c:898
+#: src/diagram.c:899
 msgid "Unknown value or node_size_variable"
 msgstr "Valor desconocido en node_size_variable"
 
 # src/diagram.c:681
-#: src/diagram.c:1600
+#: src/diagram.c:1646
 msgid "Unknown value for link_size_variable"
 msgstr "Valor desconocido en link_size_variable"
 
 # src/diagram.c:1227
-#: src/diagram.c:1639
+#: src/diagram.c:1685
 #, c-format
 msgid "Link main protocol: %s"
 msgstr "Protocolo principal del enlace: %s"
 
 # src/diagram.c:1230
-#: src/diagram.c:1642
+#: src/diagram.c:1688
 msgid "Link main protocol unknown"
 msgstr "Protocolo principal del enlace desconocido"
 
@@ -586,12 +609,12 @@ msgid "Updated nodes. Active nodes %d"
 msgstr "Nodos actualizados. Hay %d nodos activos"
 
 # src/main.c:386
-#: src/preferences.c:316
+#: src/preferences.c:317
 #, c-format
 msgid "Preferences saved to %s"
 msgstr "Preferencias guardadas en %s"
 
-#: src/preferences.c:323
+#: src/preferences.c:324
 #, c-format
 msgid "Error saving preferences to '%s': %s"
 msgstr "Error al guardar las preferencias a '%s': %s"

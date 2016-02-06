@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 0.8.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-09-19 17:37+0200\n"
+"POT-Creation-Date: 2016-02-06 08:40+0100\n"
 "PO-Revision-Date: 2001-08-10 12:57+02:00\n"
 "Last-Translator: Frederic Peters <fpeters@debian.org>\n"
 "Language-Team: None\n"
@@ -62,65 +62,88 @@ msgid "export to named file on receiving USR1"
 msgstr ""
 
 #: src/main.c:105
+msgid "Manually position nodes based on File"
+msgstr ""
+
+#: src/main.c:105
+msgid "<list of nodes and their columns>"
+msgstr ""
+
+#: src/main.c:107
 msgid "don't move nodes around (deprecated)"
 msgstr ""
 
-#: src/main.c:107
+#: src/main.c:109
 msgid "limits nodes displayed"
 msgstr ""
 
-#: src/main.c:107
+#: src/main.c:109
 msgid "<number of nodes>"
 msgstr ""
 
 # src/main.c:64
-#: src/main.c:109
+#: src/main.c:111
 msgid "mode of operation"
 msgstr "mode d'opération"
 
-#: src/main.c:109
+#: src/main.c:111
 msgid "<link|ip|tcp>"
 msgstr ""
 
 # src/main.c:58
-#: src/main.c:111
+#: src/main.c:113
 msgid "don't convert addresses to names"
 msgstr "ne pas convertir les adresses en noms"
 
-#: src/main.c:113
+#: src/main.c:115
 msgid "Disable informational messages"
 msgstr ""
 
-#: src/main.c:115
+#: src/main.c:117
 msgid "minimum packet delay in ms for reading capture files [cli only]"
 msgstr ""
 
-#: src/main.c:116 src/main.c:119
+#: src/main.c:118 src/main.c:121
 msgid "<delay>"
 msgstr ""
 
-#: src/main.c:118
+#: src/main.c:120
 msgid "maximum packet delay in ms for reading capture files [cli only]"
 msgstr ""
 
-#: src/main.c:121
+#: src/main.c:123
 msgid "uses the named libglade file for widgets"
 msgstr ""
 
 # src/main.c:70
-#: src/main.c:121
+#: src/main.c:123
 #, fuzzy
 msgid "<glade file>"
 msgstr "<filtre de capture>"
 
-#: src/main.c:140 src/menus.c:348
+#: src/main.c:142 src/menus.c:348
 msgid "-unknown-"
 msgstr ""
 
 # src/main.c:118
-#: src/main.c:208
+#: src/main.c:210
 msgid "Unrecognized mode. Do etherape --help for a list of modes"
 msgstr "Mode inconnu. Faites etherape --help pour la liste des modes"
+
+#: src/main.c:257
+#, c-format
+msgid "Reading columns file '%s'"
+msgstr ""
+
+#: src/main.c:278
+#, c-format
+msgid "row %d: regexp/ip %s, column %u"
+msgstr ""
+
+#: src/main.c:315
+#, c-format
+msgid "Columns file read. Total columns %d"
+msgstr ""
 
 #: src/capture.c:110
 #, c-format
@@ -336,7 +359,7 @@ msgstr "définir le filtre de capture"
 msgid "Diagram stopped"
 msgstr "Diagramme"
 
-#: src/diagram.c:231
+#: src/diagram.c:232
 #, c-format
 msgid ""
 "Nodes: %d (on canvas: %d, shown: %u), Links: %d, Conversations: %ld, names "
@@ -344,50 +367,50 @@ msgid ""
 "IP cache entries %ld. Canvas objs: %ld. Refreshed: %u ms"
 msgstr ""
 
-#: src/diagram.c:364
+#: src/diagram.c:365
 #, c-format
 msgid "Loading of background image failed with error '%s'"
 msgstr ""
 
-#: src/diagram.c:389
+#: src/diagram.c:390
 #, c-format
 msgid "New background image path: '%s'"
 msgstr ""
 
-#: src/diagram.c:554
+#: src/diagram.c:555
 #, c-format
 msgid "SIGUSR1 received: exporting to %s"
 msgstr ""
 
-#: src/diagram.c:722
+#: src/diagram.c:723
 #, c-format
 msgid "Unable to allocate color for new protocol %s"
 msgstr ""
 
-#: src/diagram.c:817
+#: src/diagram.c:818
 msgid "Canvas node null"
 msgstr ""
 
 # src/capture.c:409
-#: src/diagram.c:833
+#: src/diagram.c:834
 #, fuzzy, c-format
 msgid "Creating canvas_node: %s. Number of nodes %d"
 msgstr "Création du noeud: %s. Nombre de noeuds: %d"
 
-#: src/diagram.c:898
+#: src/diagram.c:899
 msgid "Unknown value or node_size_variable"
 msgstr ""
 
-#: src/diagram.c:1600
+#: src/diagram.c:1646
 msgid "Unknown value for link_size_variable"
 msgstr ""
 
-#: src/diagram.c:1639
+#: src/diagram.c:1685
 #, c-format
 msgid "Link main protocol: %s"
 msgstr ""
 
-#: src/diagram.c:1642
+#: src/diagram.c:1688
 msgid "Link main protocol unknown"
 msgstr ""
 
@@ -536,12 +559,12 @@ msgstr ""
 msgid "Updated nodes. Active nodes %d"
 msgstr ""
 
-#: src/preferences.c:316
+#: src/preferences.c:317
 #, fuzzy, c-format
 msgid "Preferences saved to %s"
 msgstr "Préférences enregistrées"
 
-#: src/preferences.c:323
+#: src/preferences.c:324
 #, c-format
 msgid "Error saving preferences to '%s': %s"
 msgstr ""

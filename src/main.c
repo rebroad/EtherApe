@@ -254,7 +254,7 @@ main (int argc, char *argv[])
       if (position_p) 
         {
 
-          g_info("Reading columns file '%s'", pref.position);
+          g_my_info(_("Reading columns file '%s'"), pref.position);
 
           total_position_columns=0;
           while (1) {
@@ -275,7 +275,7 @@ main (int argc, char *argv[])
             c=sscanf(tmpbuf,"%99s %u",
                      rbuf,&position_column[total_position_elements]);
 
-            g_info("row %d: regexp/ip %s, column %u", row, rbuf, position_column[total_position_elements]);
+            g_my_info(_("row %d: regexp/ip %s, column %u"), row, rbuf, position_column[total_position_elements]);
 
             if (rbuf[0] == '#' || c < 1 ) 
               continue; /* comment line or empty line */
@@ -312,7 +312,7 @@ main (int argc, char *argv[])
           for (c=0;c<=total_position_columns;c++) 
             position_column_max_count[c]=1;
 
-          g_info("Columns file read. Total columns %d", total_position_columns);
+          g_my_info(_("Columns file read. Total columns %d"), total_position_columns);
         }
       fclose(position_p);
     }
