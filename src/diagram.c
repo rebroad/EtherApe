@@ -613,7 +613,7 @@ guint update_diagram(GtkWidget * canvas)
     gtk_main_iteration ();
 
   gettimeofday (&appdata.now, NULL);
-  diffms = substract_times_ms(&appdata.now, &last_refresh_time);
+  diffms = subtract_times_ms(&appdata.now, &last_refresh_time);
   last_refresh_time = appdata.now;
 
   already_updating = FALSE;
@@ -968,7 +968,7 @@ display_node (node_t * node)
   if (!node)
     return FALSE;
 
-  diffms = substract_times_ms(&appdata.now, &node->node_stats.stats.last_time);
+  diffms = subtract_times_ms(&appdata.now, &node->node_stats.stats.last_time);
 
   /* There are problems if a canvas_node is deleted if it still
    * has packets, so we have to check that as well */
@@ -1521,7 +1521,7 @@ canvas_link_update(link_id_t * link_id, canvas_link_t * canvas_link,
       canvas_link->color = protohash_color(link->main_prot[pref.stack_level]);
 
       /* scale color down to 10% at link timeout */
-      diffms = substract_times_ms(&appdata.now, &link->link_stats.stats.last_time);
+      diffms = subtract_times_ms(&appdata.now, &link->link_stats.stats.last_time);
       scale = pow(0.10, diffms / pref.gui_link_timeout_time);
 
       scaledColor =

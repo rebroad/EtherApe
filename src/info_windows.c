@@ -331,7 +331,7 @@ protocols_table_compare (GtkTreeModel * gs, GtkTreeIter * a, GtkTreeIter * b,
 	ret = 1;
       break;
     case PROTO_COLUMN_LASTHEARD:
-      diffms = substract_times_ms(&prot1->rowstats.last_time, 
+      diffms = subtract_times_ms(&prot1->rowstats.last_time, 
                                   &prot2->rowstats.last_time);
       if (diffms == 0)
 	ret = 0;
@@ -726,7 +726,7 @@ update_stats_info_windows (void)
   status = get_capture_status();
 
   /* Update info windows at most twice a second */
-  diffms = substract_times_ms(&appdata.now, &last_update_time);
+  diffms = subtract_times_ms(&appdata.now, &last_update_time);
   if (pref.refresh_period < 500)
     if (diffms < 500)
       return;

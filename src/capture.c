@@ -430,7 +430,7 @@ get_offline_packet (void)
       this_time.tv_sec = pkt_header->ts.tv_sec;
       this_time.tv_usec = pkt_header->ts.tv_usec;
 
-      diffms = substract_times_ms(&this_time, &last_read_time);
+      diffms = subtract_times_ms(&this_time, &last_read_time);
 
       /* diff can be negative when listening to multiple interfaces.
        * In that case the delay is zeroed */

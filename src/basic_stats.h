@@ -25,10 +25,10 @@
 
 /* Returns a timeval structure with the time difference between to
  * other timevals. result = a - b */
-struct timeval substract_times (struct timeval a, struct timeval b);
+struct timeval subtract_times (struct timeval a, struct timeval b);
 
 /* returns the time difference a-b expressed in ms */
-double substract_times_ms (const struct timeval *a, const struct timeval *b);
+double subtract_times_ms (const struct timeval *a, const struct timeval *b);
 
 typedef struct
 {

@@ -38,7 +38,7 @@ static long packet_list_item_n = 0;
 /* Returns a timeval structure with the time difference between to
  * other timevals. result = a - b */
 struct timeval
-substract_times (struct timeval a, struct timeval b)
+subtract_times (struct timeval a, struct timeval b)
 {
   struct timeval result;
 
@@ -60,10 +60,10 @@ substract_times (struct timeval a, struct timeval b)
   result.tv_sec = a.tv_sec - b.tv_sec;
   result.tv_usec = a.tv_usec - b.tv_usec;
   return result;
-}				/* substract_times */
+}				/* subtract_times */
 
 /* returns the time difference a-b expressed in ms */
-double substract_times_ms (const struct timeval *a, const struct timeval *b)
+double subtract_times_ms (const struct timeval *a, const struct timeval *b)
 {
   double result;
 
@@ -71,10 +71,10 @@ double substract_times_ms (const struct timeval *a, const struct timeval *b)
 
 #if CHECK_EXPIRATION
   {
-    struct timeval t = substract_times(*a, *b);
+    struct timeval t = subtract_times(*a, *b);
     double ck = (double)(t.tv_sec*1000.0 + t.tv_usec/1000.0);
     if (fabs(ck - result) > 0.000001)
-      g_warning("Errore substract_times_ms: ms: %.f, timeval: %.f, delta: %.10f", 
+      g_warning("Errore subtract_times_ms: ms: %.f, timeval: %.f, delta: %.10f", 
                 result, ck, fabs(ck-result));
   }
 #endif
@@ -268,7 +268,7 @@ gchar *basic_stats_xml(const basic_stats_t *tf_stat)
   if (!tf_stat)
     return xmltag("stats", "");
 
-  diffms = substract_times_ms(&appdata.now, &tf_stat->last_time);
+  diffms = subtract_times_ms(&appdata.now, &tf_stat->last_time);
   msg = xmltag("stats",
                "\n<avg>%.0f</avg>\n"
                "<total>%.0f</total>\n"

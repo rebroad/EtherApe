@@ -254,7 +254,7 @@ node_update(node_id_t * node_id, node_t *node, gpointer delete_list_ptr)
        * node is expired */
       if (pref.node_timeout_time)
         {
-          diffms = substract_times_ms(&appdata.now, &node->node_stats.stats.last_time);
+          diffms = subtract_times_ms(&appdata.now, &node->node_stats.stats.last_time);
           if (diffms >= pref.node_timeout_time)
             {
               /* node expired, remove */

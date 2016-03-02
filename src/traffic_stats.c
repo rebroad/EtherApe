@@ -104,7 +104,7 @@ traffic_stats_purge_expired_packets(traffic_stats_t *pkt_stat, double pkt_expire
   while (pkt_stat->pkt_list.head)
   {
     packet = (packet_list_item_t *)g_queue_peek_tail(&pkt_stat->pkt_list);
-    diffms = substract_times_ms(&appdata.now, &packet->info->timestamp);
+    diffms = subtract_times_ms(&appdata.now, &packet->info->timestamp);
     if (diffms < pkt_expire_time)
       break; /* packet valid, subsequent packets are younger, no need to go further */
 
@@ -150,7 +150,7 @@ traffic_stats_update(traffic_stats_t *pkt_stat, double avg_time, double proto_ex
       /* the last packet of the list is the oldest */
       const packet_list_item_t* packet;
       packet = (const packet_list_item_t *)g_queue_peek_tail(&pkt_stat->pkt_list);
-      ms_from_oldest = substract_times_ms (&now, &packet->info->timestamp);
+      ms_from_oldest = subtract_times_ms (&now, &packet->info->timestamp);
       if (ms_from_oldest < avg_time)
         ms_from_oldest = avg_time;
       else

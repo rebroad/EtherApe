@@ -175,7 +175,7 @@ protocol_stack_purge_expired(protostack_t *pstk, double expire_time)
               if (protocol->stats.aver_accu<=0)
                 {
                   /* no traffic active on this proto, check purging */
-                  diffms = substract_times_ms(&appdata.now, &protocol->stats.last_time);
+                  diffms = subtract_times_ms(&appdata.now, &protocol->stats.last_time);
                   if (diffms >= expire_time)
                     {
                       protocol_t_delete(protocol);

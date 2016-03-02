@@ -200,7 +200,7 @@ update_link(link_id_t* link_id, link_t * link, gpointer delete_list_ptr)
        * link is expired */
       if (pref.link_timeout_time)
         {
-          diffms = substract_times_ms(&appdata.now, &link->link_stats.stats.last_time);
+          diffms = subtract_times_ms(&appdata.now, &link->link_stats.stats.last_time);
           if (diffms >= pref.link_timeout_time)
             {
               /* link expired, remove */

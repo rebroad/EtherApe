@@ -164,7 +164,7 @@ nodes_table_compare (GtkTreeModel * gls, GtkTreeIter * a, GtkTreeIter * b,
 	ret = 1;
       break;
     case NODES_COLUMN_LASTHEARD:
-      diffms = substract_times_ms(&node1->node_stats.stats.last_time,
+      diffms = subtract_times_ms(&node1->node_stats.stats.last_time,
                                   &node2->node_stats.stats.last_time);
       if (diffms == 0)
 	ret = 0;
