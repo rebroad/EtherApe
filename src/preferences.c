@@ -25,11 +25,6 @@
 #include "math.h"
 #include "datastructs.h"
 
-static gboolean get_version_levels (const gchar * version_string,
-				    guint * major, guint * minor,
-				    guint * patch);
-static gint version_compare (const gchar * a, const gchar * b);
-
 struct pref_struct pref;
 static const gchar *pref_group = "Diagram";
 
@@ -407,50 +402,5 @@ void copy_config(struct pref_struct *tgt, const struct pref_struct *src)
   tgt->refresh_period = src->refresh_period;
   tgt->averaging_time = src->averaging_time;
   tgt->position = g_strdup(src->position);
-}
-
-static gint
-version_compare (const gchar * a, const gchar * b)
-{
-  guint a_mj, a_mi, a_pl, b_mj, b_mi, b_pl;
-
-  g_assert (a != NULL);
-  g_assert (b != NULL);
-
-  /* TODO What should we return if there was a problem? */
-  g_return_val_if_fail ((get_version_levels (a, &a_mj, &a_mi, &a_pl)
-			 && get_version_levels (b, &b_mj, &b_mi, &b_pl)), 0);
-  if (a_mj < b_mj)
-    return -1;
-  else if (a_mj > b_mj)
-    return 1;
-  else if (a_mi < b_mi)
-    return -1;
-  else if (a_mi > b_mi)
-    return 1;
-  else if (a_pl < b_pl)
-    return -1;
-  else if (a_pl > b_pl)
-    return 1;
-  else
-    return 0;
-}
-
-static gboolean
-get_version_levels (const gchar * version_string,
-		    guint * major, guint * minor, guint * patch)
-{
-  gchar **tokens;
-
-  g_assert (version_string != NULL);
-
-  tokens = g_strsplit (version_string, ".", 0);
-  g_return_val_if_fail ((tokens
-			 && tokens[0] && tokens[1] && tokens[2]
-			 && sscanf (tokens[0], "%d", major)
-			 && sscanf (tokens[1], "%d", minor)
-			 && sscanf (tokens[2], "%d", patch)), FALSE);
-  g_strfreev (tokens);
-  return TRUE;
 }
 

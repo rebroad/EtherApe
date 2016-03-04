@@ -1158,7 +1158,6 @@ static void
 get_ipx (decode_proto_t *dp)
 {
   ipx_socket_t ipx_dsocket, ipx_ssocket;
-  guint16 ipx_length;
   ipx_type_t ipx_type;
 
   /* Make sure this is an IPX cur_packet */
@@ -1170,7 +1169,6 @@ get_ipx (decode_proto_t *dp)
   ipx_dsocket = pntohs (dp->cur_packet + 16);
   ipx_ssocket = pntohs (dp->cur_packet + 28);
   ipx_type = *(guint8 *) (dp->cur_packet + 5);
-  ipx_length = pntohs (dp->cur_packet + 2);
 
   switch (ipx_type)
     {

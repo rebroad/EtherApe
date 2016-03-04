@@ -59,7 +59,6 @@ static enum status_t capture_status = STOP;
 static guint get_offline_packet (void);
 static void cap_t_o_destroy(gpointer data);
 static guint get_live_packet (void);
-static void live_timeout(gpointer data);
 static void gdk_input_callback(gpointer dummy, gint source,
 			 GdkInputCondition condition);
 
@@ -256,7 +255,17 @@ gchar *get_default_filter (apemode_t mode)
   g_error("Invalid apemode %d", mode);
 }
 
-
+#ifdef DISABLE_GDKINPUTADD
+static void live_timeout(gpointer data)
+{
+  if (capture_status == PLAY)
+    capture_source = g_timeout_add_full (G_PRIORITY_DEFAULT,
+                                         1,
+                                         (GtkFunction) get_live_packet,
+                                         data,
+                                         (GDestroyNotify) live_timeout);
+}
+#endif
 
 gboolean
 start_capture (void)
@@ -510,14 +519,4 @@ static guint get_live_packet(void)
         packet_acquired( (guint8 *)pkt_data, pkt_header->caplen, pkt_header->len);
     }
   return FALSE;
-}
-
-static void live_timeout(gpointer data)
-{
-  if (capture_status == PLAY)
-    capture_source = g_timeout_add_full (G_PRIORITY_DEFAULT,
-                                         1,
-                                         (GtkFunction) get_live_packet,
-                                         data,
-                                         (GDestroyNotify) live_timeout);
 }

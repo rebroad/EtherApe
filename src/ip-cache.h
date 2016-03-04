@@ -51,6 +51,4 @@ struct ipcache_item *ipcache_prepare_request(address_t *ip);
 void ipcache_request_succeeded(struct ipcache_item *rp, long ttl, char *ipname);
 void ipcache_request_failed(struct ipcache_item *rp);
 
-char *strtdiff (char *d, size_t lend, long signeddiff);
-char *strlongip (address_t *ip);
 #endif

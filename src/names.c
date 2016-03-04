@@ -316,7 +316,7 @@ static gboolean get_llc_name (name_add_t *nt)
 static gboolean get_arp_name (name_add_t *nt)
 {
   guint16 protocol_type;
-  guint8 hardware_len, protocol_len;
+  guint8 hardware_len;
 #define ARPTYPE_IP 0x0800
 
   /* We can only tell the IP address of the asking node.
@@ -343,7 +343,6 @@ static gboolean get_arp_name (name_add_t *nt)
     }
 
   hardware_len = *(guint8 *) (nt->p + nt->offset + 4);
-  protocol_len = *(guint8 *) (nt->p + nt->offset + 5);
 
   fill_node_id(&nt->node_id, IP, nt, 8 + hardware_len, 0, AF_INET);
 

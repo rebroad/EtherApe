@@ -302,7 +302,6 @@ init_diagram (GladeXML *xml)
 static void init_background_image(GtkWidget *canvas)
 {
   GnomeCanvasGroup *group;
-  GError* error = NULL;
 
   group = gnome_canvas_root (GNOME_CANVAS (canvas));
   bck_image.group = GNOME_CANVAS_GROUP (gnome_canvas_item_new (group,
@@ -344,7 +343,6 @@ static void init_background_image(GtkWidget *canvas)
 void resize_background_image(GtkWidget *canvas)
 {
   GError* error = NULL;
-  GdkPixbuf* temp_pixbuf;
   GtkAllocation canvas_size;
   
   /* Get canvas dimensions */

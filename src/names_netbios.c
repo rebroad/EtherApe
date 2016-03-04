@@ -237,12 +237,9 @@ ethereal_nbns_name (const gchar * pd, int offset, int pd_len,
   char nbname[NBNAME_BUF_LEN];
   char buf[16];
   char *pname, *pnbname, cname, cnbname;
-  char *name_ret;
   int name_type;
 
   name_len = get_dns_name (pd, offset, pd_len, name, sizeof (name));
-
-  name_ret = outname;
 
   /* OK, now undo the first-level encoding. */
   pname = &name[0];
