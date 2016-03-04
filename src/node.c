@@ -21,6 +21,8 @@
 #include <config.h>
 #endif
 
+#include <arpa/inet.h>
+
 #include "appdata.h"
 #include "node.h"
 #include "capture.h"
@@ -634,4 +636,155 @@ gchar *nodes_catalog_xml(void)
   xml = xmltag("nodes","\n%s", msg);
   g_free(msg);
   return xml;
+}
+
+/*
+ * Attempt to parse orig_specstr as an IP address or CIDR range
+ * (e.g. 192.168.1.0/24) in either v4 or v6 notation; if both fail, fall back
+ * to treating orig_specstr as a single hostname.
+ */
+static struct nodeset_spec *parse_nodeset_spec(const gchar *orig_specstr)
+{
+  gchar *addr_str;
+  gchar *pfxlen_str;
+  long pfxlen;
+  gchar *slash;
+  gchar *specstr = g_strdup(orig_specstr);
+  struct nodeset_spec * nodeset = g_malloc(sizeof(*nodeset));
+
+  slash = strchr(specstr, '/');
+  if (slash)
+    {
+      /* Split prefix-length off from address */
+      *slash = '\0';
+      pfxlen_str = slash + 1;
+      if (strict_strtol(pfxlen_str, 10, &pfxlen) || pfxlen < 0)
+        pfxlen = -1;
+    }
+  else
+    pfxlen = -1;
+  addr_str = specstr;
+
+  if (inet_pton(AF_INET, addr_str, &nodeset->cidrrange.addr.addr_v4))
+    {
+      nodeset->kind = NS_CIDRRANGE;
+      nodeset->cidrrange.addr.type = AF_INET;
+      if (pfxlen >= 0 && pfxlen <= 32)
+          nodeset->cidrrange.nbits = pfxlen;
+      else
+          nodeset->cidrrange.nbits = 32;
+    }
+  else if (inet_pton(AF_INET6, addr_str, &nodeset->cidrrange.addr.addr_v6))
+    {
+      nodeset->kind = NS_CIDRRANGE;
+      nodeset->cidrrange.addr.type = AF_INET6;
+      if (pfxlen >= 0 && pfxlen <= 128)
+          nodeset->cidrrange.nbits = pfxlen;
+      else
+          nodeset->cidrrange.nbits = 128;
+    }
+  else if (*orig_specstr)
+    {
+      nodeset->kind = NS_HOSTNAME;
+      nodeset->hostname = g_strdup(orig_specstr);
+    }
+  else
+    nodeset->kind = NS_NONE;
+
+  g_free(specstr);
+
+  return nodeset;
+}
+
+/*
+ * str[c]spn()-friendly set of separator characters for user-provided
+ * nodeset-spec list strings
+ */
+#define NODESET_SPECLIST_SEPS " ,"
+
+/*
+ * Parse a string of into a list of nodeset_spec structs.  Elements of the
+ * list can be separated by spaces, commas, or a combination thereof.
+ */
+GList *parse_nodeset_spec_list(const gchar *orig_s)
+{
+  /* scratch copy for operating on */
+  gchar *s = g_strdup(orig_s);
+  gchar *p = s;
+  gchar tmp;
+  size_t span;
+  struct nodeset_spec *spec;
+  GList *speclist = NULL;
+
+  while (*p)
+    {
+      /* Find the span that runs until the next space or comma */
+      span = strcspn(p, NODESET_SPECLIST_SEPS);
+
+      /* Save a copy of the next character */
+      tmp = p[span];
+
+      /* Chop the string there, parse and save it */
+      p[span] = '\0';
+      spec = parse_nodeset_spec(p);
+      speclist = g_list_append(speclist, spec);
+
+      /* Restore the clobbered character */
+      p[span] = tmp;
+
+      /* Skip forward to the next entry */
+      p += span;
+      p += strspn(p, NODESET_SPECLIST_SEPS);
+    }
+
+  g_free(s);
+  return speclist;
+}
+
+/* Check if 'node' matches 'spec' */
+static int nodeset_match(const struct nodeset_spec *spec, const node_t *node)
+{
+  const address_t *nodeaddr;
+
+  if (spec->kind == NS_HOSTNAME
+      && (!strcmp(node->name->str, spec->hostname)
+          || !strcmp(node->numeric_name->str, spec->hostname)))
+    return 1;
+
+  if (node->node_id.node_type == IP)
+    nodeaddr = &node->node_id.addr.ip;
+  else if (node->node_id.node_type == TCP)
+    nodeaddr = &node->node_id.addr.tcp4.host;
+  else
+    return 0;
+
+  if (nodeaddr->type != spec->cidrrange.addr.type)
+    return 0;
+
+  return !bitwise_memcmp(nodeaddr->addr8, spec->cidrrange.addr.addr8,
+                         spec->cidrrange.nbits);
+}
+
+static int nodeset_speclist_findmatch(gconstpointer spec, gconstpointer node)
+{
+  return !nodeset_match(spec, node);
+}
+
+
+gboolean node_matches_spec_list(const node_t *node, GList *specs)
+{
+  return !!g_list_find_custom(specs, node, nodeset_speclist_findmatch);
+}
+
+static void free_nodeset_spec(gpointer p)
+{
+  struct nodeset_spec *s = p;
+  if (s->kind == NS_HOSTNAME)
+    g_free(s->hostname);
+  g_free(s);
+}
+
+void free_nodeset_spec_list(GList *specs)
+{
+  g_list_free_full(specs, free_nodeset_spec);
 }

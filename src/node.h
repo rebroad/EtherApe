@@ -61,4 +61,32 @@ gchar *nodes_catalog_dump(void);
 /* returns a newly allocated str with an xml dump of all nodes */
 gchar *nodes_catalog_xml(void);
 
+/*
+ * A specifier for a node or set of nodes, by hostname or address-prefix match
+ * (CIDR range).
+ */
+struct nodeset_spec
+{
+  enum
+    {
+      NS_HOSTNAME,
+      NS_CIDRRANGE,
+      NS_NONE,
+    } kind;
+
+  union
+  {
+    struct
+    {
+      address_t addr;
+      unsigned nbits;
+    } cidrrange;
+    gchar *hostname;
+  };
+};
+
+GList *parse_nodeset_spec_list(const gchar *s);
+gboolean node_matches_spec_list(const node_t *node, GList *specs);
+void free_nodeset_spec_list(GList *specs);
+
 #endif

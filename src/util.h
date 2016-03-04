@@ -54,6 +54,8 @@ const gchar *type_to_str(const address_t * ad);
  */
 int strict_strtol(const char *str, int base, long *val);
 
+int bitwise_memcmp(const void *a, const void *b, size_t nbits);
+
 /* xml helpers */
 gchar *xmltag(const gchar *name, const gchar *fmt, ...);
 

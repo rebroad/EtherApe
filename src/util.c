@@ -402,6 +402,24 @@ strict_strtol(const char *str, int base, long *val)
   return (*str && !*end) ? 0 : EINVAL;
 }
 
+/* Like memcp(3), but bitwise (big-endian at the sub-byte level) */
+int bitwise_memcmp(const void *a, const void *b, size_t nbits)
+{
+  int ret;
+  unsigned char a_last, b_last, mask;
+  size_t wholebytes = nbits / CHAR_BIT, rembits = nbits % CHAR_BIT;
+
+  ret = memcmp(a, b, wholebytes);
+  if (ret)
+    return ret;
+
+  mask = ~(rembits ? (1 << (CHAR_BIT - rembits)) - 1 : 0xFF);
+  a_last = *((unsigned char*)a + wholebytes) & mask;
+  b_last = *((unsigned char*)b + wholebytes) & mask;
+
+  return a_last - b_last;
+}
+
 /************************************************
  *
  * xml helpers 
@@ -443,4 +461,4 @@ gchar *compat_gdk_color_to_string(const GdkColor *color)
   g_assert(color != NULL);
   return g_strdup_printf("#%4.4x%4.4x%4.4x", color->red, color->green, color->blue);
 }
-#endif 
+#endif

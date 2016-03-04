@@ -21,8 +21,6 @@
 #include <config.h>
 #endif
 
-#include <arpa/inet.h>
-
 #include <gnome.h>
 #include <regex.h>
 
@@ -93,26 +91,6 @@ static gint canvas_link_update(link_id_t * link_id,
 				 canvas_link_t * canvas_link,
 				 GList ** delete_list);
 
-struct nodeset_spec
-{
-  enum
-    {
-      NS_HOSTNAME,
-      NS_CIDRRANGE,
-      NS_NONE,
-    } kind;
-
-  union
-  {
-    struct
-    {
-      address_t addr;
-      unsigned nbits;
-    } cidrrange;
-    const gchar* hostname;
-  };
-};
-
 struct node_ring
 {
   gfloat angle;
@@ -135,7 +113,7 @@ typedef struct
   gdouble y_rad_max;
   gdouble x_inner_rad_max;
   gdouble y_inner_rad_max;
-  struct nodeset_spec centered_nodes;
+  GList *centered_node_specs;
 } reposition_node_t;
 
 /***************************************************************************
@@ -522,6 +500,8 @@ diagram_update_nodes(GtkWidget * canvas)
 
       need_reposition = FALSE;
       need_font_refresh = FALSE;
+
+      free_nodeset_spec_list(rdata.centered_node_specs);
     }
 }
 
@@ -1083,104 +1063,6 @@ traffic_compare (gconstpointer a, gconstpointer b)
 
 }				/* traffic_compare */
 
-/*
- * Attempt to parse orig_specstr as an IP address or CIDR range
- * (e.g. 192.168.1.0/24) in either v4 or v6 notation; if both fail, fall back
- * to treating orig_specstr as a single hostname.
- */
-static void parse_nodeset_spec(const gchar *orig_specstr,
-                               struct nodeset_spec *nodeset)
-{
-  gchar *addr_str;
-  gchar *pfxlen_str;
-  long pfxlen;
-  gchar *slash;
-  gchar *specstr = g_strdup(orig_specstr);
-
-  slash = strchr(specstr, '/');
-  if (slash)
-    {
-      /* Split prefix-length off from address */
-      *slash = '\0';
-      pfxlen_str = slash + 1;
-      if (strict_strtol(pfxlen_str, 10, &pfxlen) || pfxlen < 0)
-        pfxlen = -1;
-    }
-  else
-    pfxlen = -1;
-  addr_str = specstr;
-
-  if (inet_pton(AF_INET, addr_str, &nodeset->cidrrange.addr.addr_v4))
-    {
-      nodeset->kind = NS_CIDRRANGE;
-      nodeset->cidrrange.addr.type = AF_INET;
-      if (pfxlen >= 0 && pfxlen <= 32)
-          nodeset->cidrrange.nbits = pfxlen;
-      else
-          nodeset->cidrrange.nbits = 32;
-    }
-  else if (inet_pton(AF_INET6, addr_str, &nodeset->cidrrange.addr.addr_v6))
-    {
-      nodeset->kind = NS_CIDRRANGE;
-      nodeset->cidrrange.addr.type = AF_INET6;
-      if (pfxlen >= 0 && pfxlen <= 128)
-          nodeset->cidrrange.nbits = pfxlen;
-      else
-          nodeset->cidrrange.nbits = 128;
-    }
-  else if (*orig_specstr)
-    {
-      nodeset->kind = NS_HOSTNAME;
-      nodeset->hostname = orig_specstr;
-    }
-  else
-    nodeset->kind = NS_NONE;
-
-  g_free(specstr);
-}
-
-/* Like memcp(3), but bitwise (big-endian at the sub-byte level) */
-static int bitwise_memcmp(const void *a, const void *b, size_t nbits)
-{
-  int ret;
-  unsigned char a_last, b_last, mask;
-  size_t wholebytes = nbits / CHAR_BIT, rembits = nbits % CHAR_BIT;
-
-  ret = memcmp(a, b, wholebytes);
-  if (ret)
-    return ret;
-
-  mask = ~(rembits ? (1 << (CHAR_BIT - rembits)) - 1 : 0xFF);
-  a_last = *((unsigned char*)a + wholebytes) & mask;
-  b_last = *((unsigned char*)b + wholebytes) & mask;
-
-  return a_last - b_last;
-}
-
-/* Check if 'node' matches 'spec' */
-static int nodeset_match(const struct nodeset_spec *spec, const node_t *node)
-{
-  const address_t *nodeaddr;
-
-  if (spec->kind == NS_HOSTNAME
-      && (!strcmp(node->name->str, spec->hostname)
-          || !strcmp(node->numeric_name->str, spec->hostname)))
-    return 1;
-
-  if (node->node_id.node_type == IP)
-    nodeaddr = &node->node_id.addr.ip;
-  else if (node->node_id.node_type == TCP)
-    nodeaddr = &node->node_id.addr.tcp4.host;
-  else
-    return 0;
-
-  if (nodeaddr->type != spec->cidrrange.addr.type)
-    return 0;
-
-  return !bitwise_memcmp(nodeaddr->addr8, spec->cidrrange.addr.addr8,
-                         spec->cidrrange.nbits);
-}
-
 /* initialize reposition struct */
 static void init_reposition(reposition_node_t *data,
                             GtkWidget * canvas, 
@@ -1222,10 +1104,7 @@ static void init_reposition(reposition_node_t *data,
   data->y_inner_rad_max = data->y_rad_max / 2;
 
   /* FIXME: would be nice to re-parse only when changed, not every reposition */
-  if (pref.centered_nodes)
-    parse_nodeset_spec(pref.centered_nodes, &data->centered_nodes);
-  else
-    data->centered_nodes.kind = NS_NONE;
+  data->centered_node_specs = parse_nodeset_spec_list(pref.centered_nodes);
 }
 
 /*
@@ -1242,7 +1121,7 @@ static gint reposition_canvas_nodes_prep(node_id_t *node_id,
     return FALSE;
 
   node = nodes_catalog_find((const node_id_t*)&canvas_node->canvas_node_id);
-  if (node && nodeset_match(&rdata->centered_nodes, node))
+  if (node && node_matches_spec_list(node, rdata->centered_node_specs))
     {
       canvas_node->centered = TRUE;
       rdata->center.n_nodes++;
@@ -1373,7 +1252,7 @@ static gint reposition_canvas_nodes(node_id_t * node_id,
 
           if (canvas_node->centered && data->center.n_nodes > 1)
             {
-              /* For the inner ring, just move it halfway closer the the center point. */
+              /* For the inner ring, just move it proportionally closer the the center point. */
               x = center_x + ((x - center_x) * pref.inner_ring_scale);
               y = center_y + ((y - center_y) * pref.inner_ring_scale);
             }
