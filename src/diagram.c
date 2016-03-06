@@ -113,7 +113,6 @@ typedef struct
   gdouble y_rad_max;
   gdouble x_inner_rad_max;
   gdouble y_inner_rad_max;
-  GList *centered_node_specs;
 } reposition_node_t;
 
 /***************************************************************************
@@ -500,8 +499,6 @@ diagram_update_nodes(GtkWidget * canvas)
 
       need_reposition = FALSE;
       need_font_refresh = FALSE;
-
-      free_nodeset_spec_list(rdata.centered_node_specs);
     }
 }
 
@@ -1102,9 +1099,6 @@ static void init_reposition(reposition_node_t *data,
   data->y_rad_max = 0.9 * (data->ymax - data->ymin) / 2;
   data->x_inner_rad_max = data->x_rad_max / 2;
   data->y_inner_rad_max = data->y_rad_max / 2;
-
-  /* FIXME: would be nice to re-parse only when changed, not every reposition */
-  data->centered_node_specs = parse_nodeset_spec_list(pref.centered_nodes);
 }
 
 /*
@@ -1121,7 +1115,7 @@ static gint reposition_canvas_nodes_prep(node_id_t *node_id,
     return FALSE;
 
   node = nodes_catalog_find((const node_id_t*)&canvas_node->canvas_node_id);
-  if (node && node_matches_spec_list(node, rdata->centered_node_specs))
+  if (node && node_matches_spec_list(node, centered_node_speclist))
     {
       canvas_node->centered = TRUE;
       rdata->center.n_nodes++;

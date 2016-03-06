@@ -24,8 +24,10 @@
 #include "preferences.h"
 #include "math.h"
 #include "datastructs.h"
+#include "node.h"
 
 struct pref_struct pref;
+GList *centered_node_speclist = NULL;
 static const gchar *pref_group = "Diagram";
 
 /***************************************************************
@@ -202,8 +204,9 @@ void load_config(void)
   read_string_config(&pref.filter, gkey, "filter");
   read_string_config(&pref.fontname, gkey, "fontname");
   read_string_config(&pref.text_color, gkey, "text_color");
-  read_string_config(&pref.centered_nodes, gkey, "centered_nodes");
   read_string_config(&pref.bck_image_path, gkey, "bck_image_path");
+  read_string_config(&pref.centered_nodes, gkey, "centered_nodes");
+  centered_node_speclist = parse_nodeset_spec_list(pref.centered_nodes);
 
   read_boolean_config(&pref.diagram_only, gkey, "diagram_only");
   read_boolean_config(&pref.group_unk, gkey, "group_unk");

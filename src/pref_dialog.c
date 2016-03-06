@@ -25,6 +25,7 @@
 #include "preferences.h"
 #include "diagram.h"
 #include "capture.h"
+#include "node.h"
 #include "datastructs.h"
 #include "util.h" /* compat functions */
 
@@ -484,8 +485,10 @@ static void on_center_node_changed(GtkComboBoxEntry * cbox, gpointer user_data)
   gchar *str;
   str = gtk_combo_box_get_active_text(GTK_COMBO_BOX(cbox));
   g_free(pref.centered_nodes);
-  pref.centered_nodes = g_strdup (str);
-  g_free (str);
+  pref.centered_nodes = g_strdup(str);
+  g_free(str);
+  free_nodeset_spec_list(centered_node_speclist);
+  centered_node_speclist = parse_nodeset_spec_list(pref.centered_nodes);
   cbox_add_select(cbox, pref.centered_nodes);
   ask_reposition(FALSE);
 }

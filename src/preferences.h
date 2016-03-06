@@ -91,6 +91,9 @@ struct pref_struct
 
 extern struct pref_struct pref;
 
+/* Parsed version pref.centered_nodes */
+extern GList *centered_node_speclist;
+
 /* preferences methods */
 void load_config(void);
 void save_config(void);
