@@ -24,6 +24,9 @@ delay ] [
 delay ] [
 .B -n 
 ] [
+.B -P 
+column file
+] [
 .B -q
 ] [
 .B -r
@@ -74,6 +77,12 @@ file.
 .BR "-n, --numeric"
 don't convert addresses to names, disables name resolution.
 .TP
+.BR "-P, --position" "file with list of nodes and columns" 
+Activate column positioning with the named file.
+Manually position nodes in virtual columns using the named file content.
+See
+.B Column Positioning.
+.TP
 .BR "-q"
 disables informational messages.
 .TP
@@ -93,6 +102,41 @@ Beware! the file will be overwritten without asking!
 .TP
 .BR "-?, --help"
 show a brief help message
+.SH COLUMN POSITIONING
+.PP
+With option
+.B -P|--position
+EtherApe reads a file specifying positions of some nodes. The input file takes the format of:
+  node.mydomain.com        1
+  router1.mydomain.com     2
+  router2.mydomain.com     2
+  172.16.2.[0-9]*          1
+  .*.mydomain.com          1
+  ff02:.*                  2
+  fe80:.*                  1
+.PP
+The first column is a regex of either the FQDN or the IP address. 
+.PP
+The second column is a number indicating the "column" that the node will be
+positioned in the display with column 1 being on the far left. Up to 10
+columns are permitted.
+.PP
+Instead of being arranged in a circle the nodes are displayed in columns. 
+This is quite useful for arranging nodes so that you can see nodes on the
+"inside" of your network on the left and the public internet nodes (anything
+not specified in the config file) on the right.
+.PP
+The input file above will cause 3 columns to display.
+Nodes with FQDN containing mydomain.com, those in the 172.16.2.0/24 subnet,
+and link local IPv6 addresses will be in the left column. 
+2 "routers", and IPv6 multicast will be in the center column and everything
+else will be in the right column. 
+.PP
+Column locations are determined by the first match while searching from the
+top of the input. 
+Overlapping regex's can be used with the understanding that the first match
+will determine the location. 
+The broadest regex's should be near the bottom of the position specification.
 .SH SIGNALS
 .TP
 .BR "USR1"

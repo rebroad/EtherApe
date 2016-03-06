@@ -4,8 +4,8 @@
   <!ENTITY appname          "EtherApe">
   <!ENTITY app "<application>EtherApe</application>">
   <!ENTITY appversion   "0.9.14">
-  <!ENTITY manrevision  "0.5">
-  <!ENTITY date "January 2010">
+  <!ENTITY manrevision  "0.7">
+  <!ENTITY date "March 2016">
 ]>
 <!--
       (Do not remove this comment block.)
@@ -43,6 +43,10 @@
       <year>2010</year>
       <year>2011</year>
       <year>2012</year>
+      <year>2013</year>
+      <year>2014</year>
+      <year>2015</year>
+      <year>2016</year>
       <holder>Juan Toledo</holder>
       <holder>Riccardo Ghetta</holder>
     </copyright>
@@ -107,6 +111,15 @@
       <revision>
         <revnumber>&appname; Manual V0.6</revnumber>
         <date>April 2012</date>
+        <revdescription>
+          <para role="author">Riccardo Ghetta
+          <email>bchiara@users.sf.net</email></para>
+        </revdescription>
+      </revision>
+    
+      <revision>
+        <revnumber>&appname; Manual V0.7</revnumber>
+        <date>March 2016</date>
         <revdescription>
           <para role="author">Riccardo Ghetta
           <email>bchiara@users.sf.net</email></para>
@@ -1351,6 +1364,176 @@ Conversely, --min-delay can help analyze many short lived connections.</para>
     </sect2>
   </sect1>
 
+  <sect1 id="etherape-cmdline">
+    <title>Command line options</title>
+
+    <para>While most of &app; functionality can be controlled via the GUI, some
+    unique modes are accessible only using the command line.</para>
+
+    <variablelist> 
+      <varlistentry> 
+        <term><option>-?</option></term>
+        <term><option>--help</option></term>
+        <listitem> 
+          <para>Brief command line help.</para> 
+        </listitem> 
+      </varlistentry> 
+
+      <varlistentry> 
+        <term><option>-d</option></term>
+        <term><option>--diagram-only</option></term>
+        <listitem> 
+          <para>Display nodes without labels.</para> 
+        </listitem> 
+      </varlistentry> 
+
+      <varlistentry> 
+        <term><option>-f <replaceable>capture filter</replaceable></option></term>
+        <term><option>--filter=<replaceable>capture filter</replaceable></option></term>
+        <listitem> 
+          <para>Sets the capture filter to use (use PCAP-style syntax).</para> 
+        </listitem> 
+      </varlistentry> 
+
+      <varlistentry> 
+        <term><option>-i <replaceable>interface name</replaceable></option></term>
+        <term><option>--interface=<replaceable>interface name</replaceable></option></term>
+        <listitem> 
+          <para>Sets the capture interface.</para> 
+        </listitem> 
+      </varlistentry> 
+
+      <varlistentry> 
+        <term><option>-l <replaceable>number of nodes</replaceable></option></term>
+        <term><option>--node-limit=<replaceable>number of nodes</replaceable></option></term>
+        <listitem> 
+          <para>Limits the number of nodes displayed.</para> 
+        </listitem> 
+      </varlistentry> 
+
+      <varlistentry> 
+        <term><option>-m <replaceable>link|ip|tcp</replaceable></option></term>
+        <term><option>--mode=<replaceable>link|ip|tcp</replaceable></option></term>
+        <listitem> 
+          <para>mode of operation.</para> 
+        </listitem> 
+      </varlistentry> 
+
+      <varlistentry> 
+        <term><option>-n</option></term>
+        <term><option>--numeric</option></term>
+        <listitem> 
+          <para>Disable name resolution, shows only numeric addresses.</para> 
+        </listitem> 
+      </varlistentry> 
+
+      <varlistentry> 
+        <term><option>-P <replaceable>file with list of nodes and their columns</replaceable></option></term>
+        <term><option>--position=<replaceable>file with list of nodes and their columns</replaceable></option></term>
+        <listitem> 
+          <para>Manually position nodes using columns. The input file takes
+          the format of:
+<literallayout class="monospaced">
+  node.mydomain.com        1
+  router1.mydomain.com     2
+  router2.mydomain.com     2
+  172.16.2.[0-9]*          1
+  .*.mydomain.com          1
+  ff02:.*                  2
+  fe80:.*                  1
+</literallayout>
+          </para>
+          <para>The first column is a regex of either the FQDN or the IP address.</para>
+          <para>The second column is a number indicating the "column" that the
+          node will be positioned in in the display with column 1 being on the
+          far left. Up to 10 columns are permitted.</para>
+          <para>Instead of being arranged in a circle the nodes are displayed
+          in columns. This is quite useful for arranging nodes so that you can
+          see nodes on the "inside" of your network on the left and the public
+          internet nodes (anything not specified in the config file) on the
+          right.</para>
+          <para>The input file above will cause 3 columns to display. Nodes
+          with FQDN containing mydomain.com, those in the 172.16.2.0/24
+          subnet, and link local IPv6 addresses will be in the left column. 2
+          "routers", and IPv6 multicast will be in the center column and
+          everything else will be in the right column. Column locations are
+          determined by the first match while searching from the top of the
+          input. Overlapping regex's can be used with the understanding that
+          the first match will determine the location. The broadest regex's
+          should be near the bottom of the position specification.</para> 
+        </listitem> 
+      </varlistentry> 
+
+      <varlistentry> 
+        <term><option>-q</option></term>
+        <term><option>--quiet</option></term>
+        <listitem> 
+          <para>Disable informational messages.</para> 
+        </listitem> 
+      </varlistentry> 
+
+      <varlistentry> 
+        <term><option>-r <replaceable>file to replay</replaceable></option></term>
+        <term><option>--replay-file=<replaceable>file to replay</replaceable></option></term>
+        <listitem> 
+          <para>Replay the given capture file.</para> 
+        </listitem> 
+      </varlistentry> 
+
+      <varlistentry> 
+        <term><option>-s</option></term>
+        <term><option>--stationary</option></term>
+        <listitem> 
+          <para>Don't move nodes around. <emphasys>Deprecated.</emphasys></para> 
+        </listitem> 
+      </varlistentry> 
+
+
+      <varlistentry> 
+        <term><option>--final-export=<replaceable>file to export to</replaceable></option></term>
+        <listitem> 
+          <para>Export statistics to the named file at the end of replay.</para> 
+          <warning>
+	    <para>The named file will be overwritten without asking.</para>
+          </warning>
+        </listitem> 
+      </varlistentry> 
+
+      <varlistentry> 
+        <term><option>--signal-export=<replaceable>file to export to</replaceable></option></term>
+        <listitem> 
+          <para>Export statistics to the named file when receiving USR1.</para> 
+          <warning>
+	    <para>The named file will be overwritten without asking.</para>
+          </warning>
+        </listitem> 
+      </varlistentry> 
+
+      <varlistentry> 
+        <term><option>--min-delay=<replaceable>delay</replaceable></option></term>
+        <listitem> 
+          <para>When replaying a file, minimum delay in ms between a packet and the next.</para> 
+        </listitem> 
+      </varlistentry> 
+
+      <varlistentry> 
+        <term><option>--max-delay=<replaceable>delay</replaceable></option></term>
+        <listitem> 
+          <para>When replaying a file, maximum delay in ms between a packet and the next.</para> 
+        </listitem> 
+      </varlistentry> 
+
+      <varlistentry> 
+        <term><option>--glade-file=<replaceable>glade file</replaceable></option></term>
+        <listitem> 
+          <para>Uses the named libglade file for loading widgets.</para> 
+        </listitem> 
+      </varlistentry> 
+
+    </variablelist> 
+  </sect1>
+
+
   <sect1 id="bugs">
     <title>Known Bugs and Limitations</title>
 
@@ -1361,7 +1544,7 @@ Conversely, --min-delay can help analyze many short lived connections.</para>
     only if the filter expression starts with 'vlan' and in this case
     only VLAN-tagged traffic will be shown.</para>
 
-    <para>OSI level attribution can be confused by
+    <para>OSI level attribution may be confused by
     encapsulation. For instance, when an Ethernet packet containing IP
     traffic is encapsulated by an LLC-SNAP header, IP data might be
     incorrectly flagged as ISO level 4 or 5.</para>
