@@ -1,6 +1,6 @@
                             Changelog for EtherApe
 
-  Overview of changes in EtherApe 0.9.14 ():
+  Overview of changes in EtherApe 0.9.14 (Saturday February 06, 2016):
    EtherApe now users the system /etc/services file instead of its own.
    While this change make some customizations a bit harder, it guarantees an
    up-to-date services file.

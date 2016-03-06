@@ -34,6 +34,9 @@ Glenn Feunteun   <glenn.feunteun@orange.com>
 Riccardo Ghetta <bchiara@users.sourceforge.net>
   developer
 
+David Goldfarb
+  nodes as 'columns'
+
 Simon Kirby	<sim@neato.org>
   dns.c
 
@@ -58,8 +61,8 @@ Eric Stewart
 Jasper Wallace	<jasper@pointless.net>
   pcap device autodetection
 
-Zev Weiss
-  central ring option
+Zev Weiss       <zevweiss@users.sourceforge.net>
+  developer
 
 Ted Wright	<ted.wright@grc.nasa.gov>
   non-overlapping display mode, link fading
@@ -75,5 +78,3 @@ If you have contributed in any way to the development
 of EtherApe and you are not properly credited, please
 tell me so that I can fix my mistake.
 
---
-$Id$
