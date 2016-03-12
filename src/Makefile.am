@@ -21,7 +21,6 @@ etherape_SOURCES = \
 	util.c util.h \
 	export.c export.h \
 	dns.c dns.h \
-	thread_resolve.c thread_resolve.h \
 	callbacks.c callbacks.h \
 	menus.c menus.h \
 	preferences.c preferences.h \
@@ -46,6 +45,10 @@ etherape_SOURCES = \
 	traffic_stats.c traffic_stats.h \
 	datastructs.c datastructs.h \
 	ui_utils.c ui_utils.h
+
+if !HAVE_LIBCARES
+etherape_SOURCES += thread_resolve.c thread_resolve.h
+endif
 
 etherape_LDADD = $(ETHERAPE_LIBS) $(PCAP_LIBS) 
 etherape_LDFLAGS = 

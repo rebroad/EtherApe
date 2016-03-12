@@ -94,6 +94,18 @@ if test $has_gethostbyaddr_r = no; then
  fi
 fi
 
+# Handle --with-c-ares
+AC_ARG_WITH([c-ares],
+  AS_HELP_STRING([--with-c-ares], [use the c-ares library for DNS resolution @<:@default=no@:>@]),
+  [],
+  [with_c_ares=no])
+
+if test $with_c_ares = yes; then
+  AC_SEARCH_LIBS([ares_init], [cares],
+    [AC_DEFINE([HAVE_LIBCARES], [1], [Define to 1 to use the c-ares DNS library])],
+    [AC_MSG_FAILURE([--with-c-ares was given, but the c-ares library was not found])])
+fi
+AM_CONDITIONAL([HAVE_LIBCARES], [test $with_c_ares = yes])
 
 # Check for the pcap library.
 AC_ARG_ENABLE(static-pcap,
