@@ -40,10 +40,9 @@ on_canvas1_size_allocate (GtkWidget * widget,
 				  widget->allocation.height / 2);
   ask_reposition(FALSE);
   canvas = glade_xml_get_widget (appdata.xml, "canvas1");
-  resize_background_image(canvas);
+  redraw_canvas_background(canvas);
   update_diagram (canvas);
 }
-
 
 /* TODO this is not necessary, can be set directly in etherape.glade */
 gboolean
@@ -54,7 +53,6 @@ on_node_popup_motion_notify_event (GtkWidget * widget,
   gtk_widget_destroy (widget);
   return FALSE;
 }
-
 
 gboolean
 on_name_motion_notify_event (GtkWidget * widget,

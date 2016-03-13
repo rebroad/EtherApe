@@ -122,6 +122,7 @@ void init_config(struct pref_struct *p)
   p->colors=NULL;
   p->centered_nodes = NULL;
   p->bck_image_path = NULL;
+  p->bck_image_enabled = FALSE;
 
   p->averaging_time=3000;
   p->position = NULL;
@@ -169,6 +170,7 @@ void set_default_config(struct pref_struct *p)
   g_free(p->centered_nodes);
   p->centered_nodes = g_strdup("");
 
+  p->bck_image_enabled = FALSE;
   g_free(p->bck_image_path);
   p->bck_image_path = g_strdup("");
 }
@@ -196,7 +198,7 @@ void load_config(void)
       if (!g_key_file_load_from_file(gkey, pref_file, G_KEY_FILE_NONE, NULL))
         {
           g_free(pref_file);
-          return; 
+          return;
         }
     }
   g_free(pref_file);
@@ -204,9 +206,11 @@ void load_config(void)
   read_string_config(&pref.filter, gkey, "filter");
   read_string_config(&pref.fontname, gkey, "fontname");
   read_string_config(&pref.text_color, gkey, "text_color");
-  read_string_config(&pref.bck_image_path, gkey, "bck_image_path");
   read_string_config(&pref.centered_nodes, gkey, "centered_nodes");
   centered_node_speclist = parse_nodeset_spec_list(pref.centered_nodes);
+
+  read_boolean_config(&pref.bck_image_enabled, gkey, "bck_image_enabled");
+  read_string_config(&pref.bck_image_path, gkey, "bck_image_path");
 
   read_boolean_config(&pref.diagram_only, gkey, "diagram_only");
   read_boolean_config(&pref.group_unk, gkey, "group_unk");
@@ -217,7 +221,7 @@ void load_config(void)
   read_int_config((gint *)&pref.node_size_variable, gkey, "node_size_variable");
   read_int_config((gint *)&pref.stack_level, gkey, "stack_level");
 
-  read_double_config(&pref.node_timeout_time, gkey, "node_timeout_time"); 
+  read_double_config(&pref.node_timeout_time, gkey, "node_timeout_time");
   read_double_config(&pref.gui_node_timeout_time, gkey, "gui_node_timeout_time");
   read_double_config(&pref.proto_node_timeout_time, gkey, "proto_node_timeout_time");
   read_double_config(&pref.link_timeout_time, gkey, "link_timeout_time");
@@ -298,6 +302,8 @@ void save_config(void)
   g_key_file_set_string(gkey, pref_group, "fontname", pref.fontname);
   g_key_file_set_string(gkey, pref_group, "text_color", pref.text_color);
   g_key_file_set_string(gkey, pref_group, "centered_nodes", pref.centered_nodes);
+
+  g_key_file_set_boolean(gkey, pref_group, "bck_image_enabled", pref.bck_image_enabled);
   g_key_file_set_string(gkey, pref_group, "bck_image_path", pref.bck_image_path);
 
   tmpstr = g_strjoinv(" ", pref.colors);
@@ -390,6 +396,7 @@ void copy_config(struct pref_struct *tgt, const struct pref_struct *src)
   tgt->text_color=g_strdup(src->text_color);
   tgt->fontname=g_strdup(src->fontname);
   tgt->centered_nodes=g_strdup(src->centered_nodes);
+  tgt->bck_image_enabled = src->bck_image_enabled;
   tgt->bck_image_path = g_strdup(src->bck_image_path);
   tgt->stack_level = src->stack_level;
   tgt->colors = g_strdupv(src->colors);

@@ -31,4 +31,4 @@ void delete_gui_protocols (void);
 void ask_reposition(gboolean refresh_font); /* request diagram relayout */
 void dump_stats(guint32 diff_msecs);
 void timeout_changed(void);
-void resize_background_image(GtkWidget *canvas); /* Called by on_canvas1_size_allocate */
+void redraw_canvas_background(GtkWidget *canvas); /* Called by on_canvas1_size_allocate */

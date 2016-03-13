@@ -169,6 +169,10 @@ initialize_pref_controls(void)
 
   pref_to_color_list();		/* Updates the color preferences table with pref.colors */
 
+  widget = glade_xml_get_widget(appdata.xml, "bck_image_enabled");
+  gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(widget), pref.bck_image_enabled);
+  gtk_widget_set_sensitive(glade_xml_get_widget(appdata.xml, "bck_image_open"), pref.bck_image_enabled);
+
   if (pref.bck_image_path && *pref.bck_image_path) {
     widget = glade_xml_get_widget(appdata.xml, "bck_image_open");
     gtk_file_chooser_select_filename(GTK_FILE_CHOOSER(widget), pref.bck_image_path);
@@ -504,6 +508,14 @@ on_background_image_path_selected (GtkFileChooserButton * filechooser, gpointer 
 {
   pref.bck_image_path = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER (filechooser));
 }       /* on_background_image_path_selected */
+
+void
+on_background_image_enable_toggled(GtkToggleButton *togglebutton, gpointer user_data)
+{
+  gboolean on = gtk_toggle_button_get_active(togglebutton);
+  pref.bck_image_enabled = on;
+  gtk_widget_set_sensitive(glade_xml_get_widget(appdata.xml, "bck_image_open"), on);
+}
 
 /* ----------------------------------------------------------
 
