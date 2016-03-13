@@ -21,6 +21,7 @@
 #include <config.h>
 #endif
 
+#include <fnmatch.h>
 #include <arpa/inet.h>
 
 #include "appdata.h"
@@ -741,14 +742,19 @@ GList *parse_nodeset_spec_list(const gchar *orig_s)
   return speclist;
 }
 
+/* FNM_CASEFOLD is a GNU extension, so fail gracefully if it's absent */
+#ifndef FNM_CASEFOLD
+#define FNM_CASEFOLD 0
+#endif
+
 /* Check if 'node' matches 'spec' */
 static int nodeset_match(const struct nodeset_spec *spec, const node_t *node)
 {
   const address_t *nodeaddr;
 
   if (spec->kind == NS_HOSTNAME
-      && (!strcmp(node->name->str, spec->hostname)
-          || !strcmp(node->numeric_name->str, spec->hostname)))
+      && (!fnmatch(spec->hostname, node->name->str, FNM_CASEFOLD)
+          || !fnmatch(spec->hostname, node->numeric_name->str, FNM_CASEFOLD)))
     return 1;
 
   if (node->node_id.node_type == IP)
