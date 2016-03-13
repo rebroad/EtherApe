@@ -129,11 +129,6 @@ AC_CHECK_FUNCS([snprintf floor gettimeofday localtime_r memset pow putenv socket
 # remove when obsolete!
 AC_CHECK_FUNCS([g_queue_init])
 
-# Create DATAFILE_DIR #define for config.h
-DATAFILE_DIR=$sysconfdir
-AC_DEFINE_UNQUOTED(DATAFILE_DIR,"$DATAFILE_DIR",[data file directory])
-AC_SUBST(DATAFILE_DIR)
-
 dnl Add the languages which your application supports here.
 ALL_LINGUAS="es fr nl tr sv it de"
 AM_GNU_GETTEXT([external])
