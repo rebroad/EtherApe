@@ -261,17 +261,19 @@ main (int argc, char *argv[])
 
           total_position_columns=0;
           while (1) {
-            /* Since the lines are simply and IP address for a FQDN, we should never have anything close to 200 chars 
-             * If we do, we just toss the rest
+            /*
+             * Since the lines are simply and IP address for a FQDN, we should
+             * never have anything close to 200 chars If we do, we just toss
+             * the rest.
              */
-            if (fgets(tmpbuf, sizeof(tmpbuf)-1, position_p) == NULL) 
+            if (fgets(tmpbuf, sizeof(tmpbuf)-1, position_p) == NULL)
               break;
             ++row;
 
             if (tmpbuf[strlen(tmpbuf)-1] != '\n')
               {
                 /* We didn't get the complete line because it was presumably too long */
-                while (fgetc(position_p) != '\n') 
+                while (fgetc(position_p) != '\n')
                   ;
               }
 
@@ -280,21 +282,20 @@ main (int argc, char *argv[])
 
             g_my_info(_("row %d: regexp/ip %s, column %u"), row, rbuf, position_column[total_position_elements]);
 
-            if (rbuf[0] == '#' || c < 1 ) 
+            if (rbuf[0] == '#' || c < 1 )
               continue; /* comment line or empty line */
             else if (c != 2)
               fprintf(stderr,"ERROR: Couldn't find column number in position file at row %d\n", row);
             else if (position_column[total_position_elements] > MAX_POSITION_COLUMNS)
               {
                 fprintf(stderr,"ERROR: Column %d greater than %d at position element: %s\n",
-                        position_column[total_position_elements],MAX_POSITION_COLUMNS,
-                        position_elements[total_position_elements]);
+                        position_column[total_position_elements], MAX_POSITION_COLUMNS, rbuf);
               }
             else
               {
                 reti=regcomp(&position_elements[total_position_elements],rbuf,REG_ICASE|REG_NOSUB);
-	
-                if (reti) 
+
+                if (reti)
                   fprintf(stderr,"Could not compile regex (%d) for pattern %s\n",total_position_elements,rbuf);
                 else
                   {
