@@ -96,7 +96,6 @@ void init_config(struct pref_struct *p)
 {
   p->name_res = TRUE;
   p->refresh_period = 800;	/* ms */
-  p->text_color = g_strdup ("yellow");
 
   p->diagram_only = FALSE;
   p->group_unk = TRUE;
