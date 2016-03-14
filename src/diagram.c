@@ -195,6 +195,8 @@ static gint link_item_event (GnomeCanvasItem * item,
 			     GdkEvent * event, canvas_link_t * canvas_link);
 static gint node_item_event (GnomeCanvasItem * item,
 			     GdkEvent * event, canvas_node_t * canvas_node);
+static gint pcap_stats_text_item_event(GnomeCanvasItem *item, GdkEvent *event,
+                                       void *unused);
 static void update_legend(void);
 static void draw_oneside_link(double xs, double ys, double xd, double yd,
                               const basic_stats_t *link_data, 
@@ -294,6 +296,9 @@ init_diagram (GladeXML *xml)
   pcap_stats_text_item = gnome_canvas_item_new(pcap_stats_text_group,
                                                GNOME_TYPE_CANVAS_TEXT, NULL);
   addref_canvas_obj(G_OBJECT(pcap_stats_text_item));
+
+  g_signal_connect(G_OBJECT(pcap_stats_text_item), "event",
+                   (GtkSignalFunc)pcap_stats_text_item_event, NULL);
 
   /* Initialize the known_protocols table */
   delete_gui_protocols ();
@@ -1738,6 +1743,29 @@ node_item_event (GnomeCanvasItem * item, GdkEvent * event,
   return FALSE;
 
 }				/* node_item_event */
+
+/* Explain pcap stats in status bar when moused over */
+static gint pcap_stats_text_item_event(GnomeCanvasItem *item, GdkEvent *event,
+                                       void *unused)
+{
+  switch (event->type)
+    {
+    case GDK_ENTER_NOTIFY:
+      gtk_statusbar_push(appdata.statusbar, 1, _("'recv': packets received; "
+                                                 "'drop': packets dropped by OS buffering; "
+                                                 "'ifdrop': packets dropped by interface or driver."));
+      break;
+
+    case GDK_LEAVE_NOTIFY:
+      gtk_statusbar_pop(appdata.statusbar, 1);
+      break;
+
+    default:
+      break;
+    }
+
+  return FALSE;
+}
 
 /* Pushes a string into the statusbar stack */
 void
