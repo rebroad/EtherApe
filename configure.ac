@@ -61,6 +61,20 @@ AC_CHECK_TYPES(u_short, ,AC_DEFINE(u_short, unsigned short, [define u_short]))
 AC_CHECK_TYPES(u_long, ,AC_DEFINE(u_long, unsigned long, [define u_long]))
 AC_CHECK_TYPES(u_char, ,AC_DEFINE(u_char, unsigned char, [define u_char]))
 
+AC_ARG_ENABLE([warnings],
+  AS_HELP_STRING([--disable-warnings], [Disable compiler warnings @<:@default=enabled@:>@]))
+
+if test "$enable_warnings" != no; then
+  ETHERAPE_CFLAGS="$ETHERAPE_CFLAGS -Wall"
+fi
+
+AC_ARG_ENABLE([werror],
+  AS_HELP_STRING([--enable-werror], [Treat warnings as errors @<:@default=disabled@:>@]))
+
+if test "$enable_werror" = yes; then
+  ETHERAPE_CFLAGS="$ETHERAPE_CFLAGS -Werror"
+fi
+
 # checks for osx or disable-gdk-input-add
 AC_ARG_ENABLE(gdk-input-add,
   [AC_HELP_STRING([--disable-gdk-input-add],[Use timers for live capture instead of gdk_input_add.])],
