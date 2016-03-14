@@ -162,7 +162,7 @@ main (int argc, char *argv[])
   set_debug_level();
 
   /* Config file */
-  load_config();
+  load_config(&pref);
 
   /* Command line */
   cl_numeric = !pref.name_res;

@@ -464,7 +464,7 @@ void
 on_save_pref_button_clicked (GtkButton * button, gpointer user_data)
 {
   confirm_changes();	/* to save we simulate confirmation */
-  save_config ();
+  save_config(&pref);
   hide_pref_dialog();
 }				/* on_save_pref_button_clicked */
 

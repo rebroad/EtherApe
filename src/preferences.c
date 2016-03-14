@@ -178,7 +178,7 @@ void set_default_config(struct pref_struct *p)
 }
 
 /* loads configuration from .gnome/Etherape */
-void load_config(void)
+void load_config(struct pref_struct *p)
 {
   gchar *pref_file;
   gchar *tmpstr = NULL;
@@ -186,7 +186,7 @@ void load_config(void)
   GKeyFile *gkey;
 
   /* first reset configurations to defaults */
-  set_default_config(&pref);
+  set_default_config(p);
 
   gkey = g_key_file_new();
 
@@ -205,36 +205,36 @@ void load_config(void)
     }
   g_free(pref_file);
 
-  read_string_config(&pref.filter, gkey, "filter");
-  read_string_config(&pref.fontname, gkey, "fontname");
-  read_string_config(&pref.text_color, gkey, "text_color");
-  read_string_config(&pref.centered_nodes, gkey, "centered_nodes");
-  centered_node_speclist = parse_nodeset_spec_list(pref.centered_nodes);
+  read_string_config(&p->filter, gkey, "filter");
+  read_string_config(&p->fontname, gkey, "fontname");
+  read_string_config(&p->text_color, gkey, "text_color");
+  read_string_config(&p->centered_nodes, gkey, "centered_nodes");
+  centered_node_speclist = parse_nodeset_spec_list(p->centered_nodes);
 
-  read_boolean_config(&pref.bck_image_enabled, gkey, "bck_image_enabled");
-  read_string_config(&pref.bck_image_path, gkey, "bck_image_path");
+  read_boolean_config(&p->bck_image_enabled, gkey, "bck_image_enabled");
+  read_string_config(&p->bck_image_path, gkey, "bck_image_path");
 
-  read_boolean_config(&pref.diagram_only, gkey, "diagram_only");
-  read_boolean_config(&pref.group_unk, gkey, "group_unk");
-  read_boolean_config(&pref.stationary, gkey, "stationary");
-  read_boolean_config(&pref.name_res, gkey, "name_res");
-  read_int_config((gint *)&pref.refresh_period, gkey, "refresh_period");
-  read_int_config((gint *)&pref.size_mode, gkey, "size_mode");
-  read_int_config((gint *)&pref.node_size_variable, gkey, "node_size_variable");
-  read_int_config((gint *)&pref.stack_level, gkey, "stack_level");
-  read_int_config((gint *)&pref.pcap_stats_pos, gkey, "pcap_stats_pos");
+  read_boolean_config(&p->diagram_only, gkey, "diagram_only");
+  read_boolean_config(&p->group_unk, gkey, "group_unk");
+  read_boolean_config(&p->stationary, gkey, "stationary");
+  read_boolean_config(&p->name_res, gkey, "name_res");
+  read_int_config((gint *)&p->refresh_period, gkey, "refresh_period");
+  read_int_config((gint *)&p->size_mode, gkey, "size_mode");
+  read_int_config((gint *)&p->node_size_variable, gkey, "node_size_variable");
+  read_int_config((gint *)&p->stack_level, gkey, "stack_level");
+  read_int_config((gint *)&p->pcap_stats_pos, gkey, "pcap_stats_pos");
 
-  read_double_config(&pref.node_timeout_time, gkey, "node_timeout_time");
-  read_double_config(&pref.gui_node_timeout_time, gkey, "gui_node_timeout_time");
-  read_double_config(&pref.proto_node_timeout_time, gkey, "proto_node_timeout_time");
-  read_double_config(&pref.link_timeout_time, gkey, "link_timeout_time");
-  read_double_config(&pref.gui_link_timeout_time, gkey, "gui_link_timeout_time");
-  read_double_config(&pref.proto_link_timeout_time, gkey, "proto_link_timeout_time");
-  read_double_config(&pref.proto_timeout_time, gkey, "proto_timeout_time");
-  read_double_config(&pref.averaging_time, gkey, "averaging_time");
-  read_double_config(&pref.node_radius_multiplier, gkey, "node_radius_multiplier");
-  read_double_config(&pref.link_node_ratio, gkey, "link_node_ratio");
-  read_double_config(&pref.inner_ring_scale, gkey, "inner_ring_scale");
+  read_double_config(&p->node_timeout_time, gkey, "node_timeout_time");
+  read_double_config(&p->gui_node_timeout_time, gkey, "gui_node_timeout_time");
+  read_double_config(&p->proto_node_timeout_time, gkey, "proto_node_timeout_time");
+  read_double_config(&p->link_timeout_time, gkey, "link_timeout_time");
+  read_double_config(&p->gui_link_timeout_time, gkey, "gui_link_timeout_time");
+  read_double_config(&p->proto_link_timeout_time, gkey, "proto_link_timeout_time");
+  read_double_config(&p->proto_timeout_time, gkey, "proto_timeout_time");
+  read_double_config(&p->averaging_time, gkey, "averaging_time");
+  read_double_config(&p->node_radius_multiplier, gkey, "node_radius_multiplier");
+  read_double_config(&p->link_node_ratio, gkey, "link_node_ratio");
+  read_double_config(&p->inner_ring_scale, gkey, "inner_ring_scale");
 
   read_string_config(&tmpstr, gkey, "colors");
   if (tmpstr)
@@ -242,9 +242,9 @@ void load_config(void)
       colorarray = g_strsplit(tmpstr, " ", 0);
       if (colorarray)
         {
-          g_strfreev(pref.colors);
-          pref.colors = protohash_compact(colorarray);
-          protohash_read_prefvect(pref.colors);
+          g_strfreev(p->colors);
+          p->colors = protohash_compact(colorarray);
+          protohash_read_prefvect(p->colors);
         }
       g_free(tmpstr);
     }
@@ -256,11 +256,11 @@ void load_config(void)
   */
 
   g_key_file_free(gkey);
-}				/* load_config */
+}
 
 /* saves configuration to .gnome/Etherape */
 /* It's not static since it will be called from the GUI */
-void save_config(void)
+void save_config(const struct pref_struct *p)
 {
   gchar *pref_file;
   gchar *cfgdata;
@@ -270,47 +270,47 @@ void save_config(void)
   GKeyFile *gkey;
 
   gkey = g_key_file_new();
-  
-  g_key_file_set_boolean(gkey, pref_group, "diagram_only", pref.diagram_only);
-  g_key_file_set_boolean(gkey, pref_group, "group_unk", pref.group_unk);
-  g_key_file_set_boolean(gkey, pref_group, "name_res", pref.name_res);
+
+  g_key_file_set_boolean(gkey, pref_group, "diagram_only", p->diagram_only);
+  g_key_file_set_boolean(gkey, pref_group, "group_unk", p->group_unk);
+  g_key_file_set_boolean(gkey, pref_group, "name_res", p->name_res);
   g_key_file_set_double(gkey, pref_group, "node_timeout_time",
-			  pref.node_timeout_time);
+                        p->node_timeout_time);
   g_key_file_set_double(gkey, pref_group, "gui_node_timeout_time",
-			  pref.gui_node_timeout_time);
+                        p->gui_node_timeout_time);
   g_key_file_set_double(gkey, pref_group, "proto_node_timeout_time",
-			  pref.proto_node_timeout_time);
+                        p->proto_node_timeout_time);
   g_key_file_set_double(gkey, pref_group, "link_timeout_time",
-			  pref.link_timeout_time);
+                        p->link_timeout_time);
   g_key_file_set_double(gkey, pref_group, "gui_link_timeout_time",
-			  pref.gui_link_timeout_time);
+                        p->gui_link_timeout_time);
   g_key_file_set_double(gkey, pref_group, "proto_link_timeout_time",
-			  pref.proto_link_timeout_time);
+                        p->proto_link_timeout_time);
   g_key_file_set_double(gkey, pref_group, "proto_timeout_time",
-			  pref.proto_timeout_time);
-  g_key_file_set_double(gkey, pref_group, "averaging_time", pref.averaging_time);
+                        p->proto_timeout_time);
+  g_key_file_set_double(gkey, pref_group, "averaging_time", p->averaging_time);
   g_key_file_set_double(gkey, pref_group, "node_radius_multiplier",
-			  pref.node_radius_multiplier);
+                        p->node_radius_multiplier);
   g_key_file_set_double(gkey, pref_group, "link_node_ratio",
-			  pref.link_node_ratio);
+                        p->link_node_ratio);
   g_key_file_set_double(gkey, pref_group, "inner_ring_scale",
-                        pref.inner_ring_scale);
-  g_key_file_set_integer(gkey, pref_group, "refresh_period", pref.refresh_period);
-  g_key_file_set_integer(gkey, pref_group, "size_mode", pref.size_mode);
+                        p->inner_ring_scale);
+  g_key_file_set_integer(gkey, pref_group, "refresh_period", p->refresh_period);
+  g_key_file_set_integer(gkey, pref_group, "size_mode", p->size_mode);
   g_key_file_set_integer(gkey, pref_group, "node_size_variable",
-			pref.node_size_variable);
-  g_key_file_set_integer(gkey, pref_group, "stack_level", pref.stack_level);
-  g_key_file_set_integer(gkey, pref_group, "pcap_stats_pos", pref.pcap_stats_pos);
+                         p->node_size_variable);
+  g_key_file_set_integer(gkey, pref_group, "stack_level", p->stack_level);
+  g_key_file_set_integer(gkey, pref_group, "pcap_stats_pos", p->pcap_stats_pos);
 
-  g_key_file_set_string(gkey, pref_group, "filter", pref.filter);
-  g_key_file_set_string(gkey, pref_group, "fontname", pref.fontname);
-  g_key_file_set_string(gkey, pref_group, "text_color", pref.text_color);
-  g_key_file_set_string(gkey, pref_group, "centered_nodes", pref.centered_nodes);
+  g_key_file_set_string(gkey, pref_group, "filter", p->filter);
+  g_key_file_set_string(gkey, pref_group, "fontname", p->fontname);
+  g_key_file_set_string(gkey, pref_group, "text_color", p->text_color);
+  g_key_file_set_string(gkey, pref_group, "centered_nodes", p->centered_nodes);
 
-  g_key_file_set_boolean(gkey, pref_group, "bck_image_enabled", pref.bck_image_enabled);
-  g_key_file_set_string(gkey, pref_group, "bck_image_path", pref.bck_image_path);
+  g_key_file_set_boolean(gkey, pref_group, "bck_image_enabled", p->bck_image_enabled);
+  g_key_file_set_string(gkey, pref_group, "bck_image_path", p->bck_image_path);
 
-  tmpstr = g_strjoinv(" ", pref.colors);
+  tmpstr = g_strjoinv(" ", p->colors);
   g_key_file_set_string(gkey, pref_group, "colors", tmpstr);
   g_free(tmpstr);
 
@@ -331,13 +331,13 @@ void save_config(void)
                              GTK_MESSAGE_ERROR,
                              GTK_BUTTONS_CLOSE,
                              _("Error saving preferences to '%s': %s"),
-                             pref_file, 
+                             pref_file,
                              (error && error->message) ? error->message : "");
       gtk_dialog_run (GTK_DIALOG (dialog));
       gtk_widget_destroy (dialog);
     }
   g_free(pref_file);
-}				/* save_config */
+}
 
 /* duplicates a config */
 struct pref_struct *

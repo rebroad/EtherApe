@@ -99,8 +99,8 @@ extern struct pref_struct pref;
 extern GList *centered_node_speclist;
 
 /* preferences methods */
-void load_config(void);
-void save_config(void);
+void load_config(struct pref_struct *p);
+void save_config(const struct pref_struct *p);
 void init_config(struct pref_struct *cfg);
 void set_default_config(struct pref_struct *cfg);
 struct pref_struct *duplicate_config(const struct pref_struct *src);
