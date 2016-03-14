@@ -22,13 +22,14 @@
 /* Possible states of capture status */
 enum status_t
 {
-  STOP = 0, 
-  PLAY = 1, 
+  STOP = 0,
+  PLAY = 1,
   PAUSE = 2,
   CAP_EOF = 3 /* end-of-file */
 };
 
 enum status_t get_capture_status(void);
+void get_capture_stats(struct pcap_stat *ps);
 
 gchar *init_capture (void);
 gboolean start_capture (void);

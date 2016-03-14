@@ -72,6 +72,15 @@ enum status_t get_capture_status(void)
   return capture_status;
 }
 
+void get_capture_stats(struct pcap_stat *ps)
+{
+  if (pcap_stats(pch_struct, ps))
+    {
+      memset(ps, 0, sizeof(*ps));
+      g_error("pcap_stats() failed: %s\n", pcap_geterr(pch_struct));
+    }
+}
+
 /* Sets up the pcap device
  * Sets up the mode and related variables
  * Sets up dns if needed

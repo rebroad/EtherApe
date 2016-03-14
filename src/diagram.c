@@ -46,6 +46,9 @@
 gboolean already_updating;
 gboolean stop_requested;
 
+static GnomeCanvasItem *pcap_stats_text_item = NULL;
+static GnomeCanvasGroup *pcap_stats_text_group = NULL;
+
 /***************************************************************************
  *
  * canvas_node_t definition and methods
@@ -142,7 +145,6 @@ static void init_canvas_background(GtkWidget *canvas);
  * local variables
  *
  **************************************************************************/
-
 
 static GTree *canvas_nodes;	/* We don't use the nodes tree directly in order to 
 				 * separate data from presentation: that is, we need to
@@ -279,6 +281,19 @@ init_diagram (GladeXML *xml)
   viewport = glade_xml_get_widget (appdata.xml, "legend_viewport");
   gtk_widget_set_style (viewport, style);
   gtk_style_set_background (viewport->style, viewport->window, GTK_STATE_NORMAL);
+
+  /* Create pcap stats text */
+  pcap_stats_text_group = gnome_canvas_root(GNOME_CANVAS(canvas));
+  pcap_stats_text_group = GNOME_CANVAS_GROUP(gnome_canvas_item_new(pcap_stats_text_group,
+                                                                   GNOME_TYPE_CANVAS_GROUP,
+                                                                   "x", 0.0,
+                                                                   "y", 0.0,
+                                                                   NULL));
+  addref_canvas_obj(G_OBJECT(pcap_stats_text_group));
+
+  pcap_stats_text_item = gnome_canvas_item_new(pcap_stats_text_group,
+                                               GNOME_TYPE_CANVAS_TEXT, NULL);
+  addref_canvas_obj(G_OBJECT(pcap_stats_text_item));
 
   /* Initialize the known_protocols table */
   delete_gui_protocols ();
@@ -548,6 +563,40 @@ diagram_update_links(GtkWidget * canvas)
   g_list_free(delete_list);
 }
 
+/* Return a g_malloc()ed string of libpcap stats counters */
+static gchar *get_pcap_stats_string(void)
+{
+  struct pcap_stat stats;
+
+  get_capture_stats(&stats);
+
+  return g_strdup_printf("%-12s %12u\n%-12s %12u\n%-12s %12u", "recv:",
+                         stats.ps_recv, "drop:", stats.ps_drop,
+                         "ifdrop:", stats.ps_ifdrop);
+}
+
+/* Update libpcap stats counters display */
+static void update_pcap_stats_text(GtkWidget *canvas)
+{
+  gdouble xmin, xmax, ymin, ymax;
+  gchar *oldstats = NULL;
+
+  if (get_capture_status() != PLAY)
+    return;
+
+  gnome_canvas_get_scroll_region(GNOME_CANVAS(canvas), &xmin, &ymin, &xmax, &ymax);
+
+  g_object_get(pcap_stats_text_item, "text", &oldstats, NULL);
+  gnome_canvas_item_set(pcap_stats_text_item,
+                        "text", get_pcap_stats_string(),
+                        "x", xmin, "y", ymin,
+                        "font", pref.fontname,
+                        "fill_color", pref.text_color,
+                        "anchor", GTK_ANCHOR_NW,
+                        NULL);
+  g_free(oldstats);
+}
+
 /* Refreshes the diagram. Called each refresh_period ms
  * 1. Checks for new protocols and displays them
  * 2. Updates nodes looks
@@ -611,6 +660,8 @@ guint update_diagram(GtkWidget * canvas)
 
   /* Now update info windows */
   update_info_windows ();
+
+  update_pcap_stats_text(canvas);
 
   /* With this we make sure that we don't overload the
    * CPU with redraws */
