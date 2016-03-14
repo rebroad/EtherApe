@@ -1527,9 +1527,9 @@ canvas_link_update(link_id_t * link_id, canvas_link_t * canvas_link,
       scale = pow(0.10, diffms / pref.gui_link_timeout_time);
 
       scaledColor =
-        (((int) (scale * canvas_link->color.red) & 0xFF00) << 16) |
-        (((int) (scale * canvas_link->color.green) & 0xFF00) << 8) |
-        ((int) (scale * canvas_link->color.blue) & 0xFF00) | 0xFF;
+        (((guint32) (scale * canvas_link->color.red) & 0xFF00) << 16) |
+        (((guint32) (scale * canvas_link->color.green) & 0xFF00) << 8) |
+        ((guint32) (scale * canvas_link->color.blue) & 0xFF00) | 0xFF;
     }
   else
     {
