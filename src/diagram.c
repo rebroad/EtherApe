@@ -585,7 +585,7 @@ static void update_pcap_stats_text(GtkWidget *canvas)
 {
   gdouble xmin, xmax, ymin, ymax, xpos, ypos;
   GtkAnchorType anchor;
-  gchar *oldstats = NULL;
+  gchar *tmpstr;
 
   if (pref.pcap_stats_pos == STATSPOS_NONE)
     {
@@ -631,15 +631,15 @@ static void update_pcap_stats_text(GtkWidget *canvas)
       return;
     }
 
-  g_object_get(pcap_stats_text_item, "text", &oldstats, NULL);
+  tmpstr = get_pcap_stats_string();
   gnome_canvas_item_set(pcap_stats_text_item,
-                        "text", get_pcap_stats_string(),
+                        "text", tmpstr,
                         "x", xpos, "y", ypos,
                         "font", pref.fontname,
                         "fill_color", pref.text_color,
                         "anchor", anchor,
                         NULL);
-  g_free(oldstats);
+  g_free(tmpstr);
 }
 
 /* Refreshes the diagram. Called each refresh_period ms
