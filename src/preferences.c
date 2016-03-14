@@ -114,7 +114,8 @@ void init_config(struct pref_struct *p)
   p->gui_link_timeout_time=0;
   p->link_timeout_time=0;
   p->proto_link_timeout_time=0;
-  p->refresh_period=0;	
+  p->refresh_period=0;
+  p->pcap_stats_pos = STATSPOS_NONE;
 
   p->filter = NULL;
   p->text_color=NULL;
@@ -149,6 +150,7 @@ void set_default_config(struct pref_struct *p)
   p->size_mode = LINEAR;
   p->node_size_variable = INST_OUTBOUND;
   p->stack_level = 0;
+  p->pcap_stats_pos = STATSPOS_NONE;
 
   g_free(p->filter);
   p->filter = g_strdup("ip or ip6");
@@ -220,6 +222,7 @@ void load_config(void)
   read_int_config((gint *)&pref.size_mode, gkey, "size_mode");
   read_int_config((gint *)&pref.node_size_variable, gkey, "node_size_variable");
   read_int_config((gint *)&pref.stack_level, gkey, "stack_level");
+  read_int_config((gint *)&pref.pcap_stats_pos, gkey, "pcap_stats_pos");
 
   read_double_config(&pref.node_timeout_time, gkey, "node_timeout_time");
   read_double_config(&pref.gui_node_timeout_time, gkey, "gui_node_timeout_time");
@@ -297,6 +300,7 @@ void save_config(void)
   g_key_file_set_integer(gkey, pref_group, "node_size_variable",
 			pref.node_size_variable);
   g_key_file_set_integer(gkey, pref_group, "stack_level", pref.stack_level);
+  g_key_file_set_integer(gkey, pref_group, "pcap_stats_pos", pref.pcap_stats_pos);
 
   g_key_file_set_string(gkey, pref_group, "filter", pref.filter);
   g_key_file_set_string(gkey, pref_group, "fontname", pref.fontname);
@@ -392,6 +396,7 @@ void copy_config(struct pref_struct *tgt, const struct pref_struct *src)
   tgt->inner_ring_scale = src->inner_ring_scale;
   tgt->size_mode = src->size_mode;
   tgt->node_size_variable = src->node_size_variable;
+  tgt->pcap_stats_pos = src->pcap_stats_pos;
   tgt->filter=g_strdup(src->filter);
   tgt->text_color=g_strdup(src->text_color);
   tgt->fontname=g_strdup(src->fontname);

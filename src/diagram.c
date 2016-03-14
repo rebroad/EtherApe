@@ -578,21 +578,61 @@ static gchar *get_pcap_stats_string(void)
 /* Update libpcap stats counters display */
 static void update_pcap_stats_text(GtkWidget *canvas)
 {
-  gdouble xmin, xmax, ymin, ymax;
+  gdouble xmin, xmax, ymin, ymax, xpos, ypos;
+  GtkAnchorType anchor;
   gchar *oldstats = NULL;
+
+  if (pref.pcap_stats_pos == STATSPOS_NONE)
+    {
+      gnome_canvas_item_hide(pcap_stats_text_item);
+      return;
+    }
+  else
+    gnome_canvas_item_show(pcap_stats_text_item);
 
   if (get_capture_status() != PLAY)
     return;
 
   gnome_canvas_get_scroll_region(GNOME_CANVAS(canvas), &xmin, &ymin, &xmax, &ymax);
 
+  switch (pref.pcap_stats_pos)
+    {
+    case STATSPOS_UPPER_LEFT:
+      xpos = xmin;
+      ypos = ymin;
+      anchor = GTK_ANCHOR_NW;
+      break;
+
+    case STATSPOS_UPPER_RIGHT:
+      xpos = xmax;
+      ypos = ymin;
+      anchor = GTK_ANCHOR_NE;
+      break;
+
+    case STATSPOS_LOWER_LEFT:
+      xpos = xmin;
+      ypos = ymax;
+      anchor = GTK_ANCHOR_SW;
+      break;
+
+    case STATSPOS_LOWER_RIGHT:
+      xpos = xmax;
+      ypos = ymax;
+      anchor = GTK_ANCHOR_SE;
+      break;
+
+    default:
+      g_error(_("Bogus statspos_t (%d) pref.pcap_stats_pos"), pref.pcap_stats_pos);
+      return;
+    }
+
   g_object_get(pcap_stats_text_item, "text", &oldstats, NULL);
   gnome_canvas_item_set(pcap_stats_text_item,
                         "text", get_pcap_stats_string(),
-                        "x", xmin, "y", ymin,
+                        "x", xpos, "y", ypos,
                         "font", pref.fontname,
                         "fill_color", pref.text_color,
-                        "anchor", GTK_ANCHOR_NW,
+                        "anchor", anchor,
                         NULL);
   g_free(oldstats);
 }

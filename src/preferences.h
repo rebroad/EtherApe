@@ -53,6 +53,8 @@ struct pref_struct
   gboolean bck_image_enabled; /* Whether or not to use a background image */
   gchar *bck_image_path;    /* Path to the background image (optional) */
 
+  statspos_t pcap_stats_pos; /* Position at which to display pcap stats */
+
   /* after this time has passed without traffic on a protocol, it's removed
    * from the global protocol stats */
   gdouble proto_timeout_time;

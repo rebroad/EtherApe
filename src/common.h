@@ -89,6 +89,18 @@ typedef enum
 }
 apemode_t;
 
+typedef enum
+{
+  /* Beware! The value given by the option widget must be coherent with
+   * the order of string in glade combo! */
+  STATSPOS_NONE = 0,
+  STATSPOS_UPPER_LEFT = 1,
+  STATSPOS_UPPER_RIGHT = 2,
+  STATSPOS_LOWER_LEFT = 3,
+  STATSPOS_LOWER_RIGHT = 4,
+}
+statspos_t;
+
 typedef struct __attribute__ ((packed))
 {
   union __attribute__ ((packed))

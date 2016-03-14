@@ -149,6 +149,9 @@ initialize_pref_controls(void)
     gdk_color_parse("#ffff00", &color);
   gtk_color_button_set_color(GTK_COLOR_BUTTON(widget), &color);
 
+  widget = glade_xml_get_widget (appdata.xml, "pcap_stats_pos");
+  gtk_combo_box_set_active(GTK_COMBO_BOX(widget), pref.pcap_stats_pos);
+
   widget = glade_xml_get_widget (appdata.xml, "filter_combo");
   model = gtk_combo_box_get_model(GTK_COMBO_BOX(widget));
   if (!model)
@@ -515,6 +518,11 @@ on_background_image_enable_toggled(GtkToggleButton *togglebutton, gpointer user_
   gboolean on = gtk_toggle_button_get_active(togglebutton);
   pref.bck_image_enabled = on;
   gtk_widget_set_sensitive(glade_xml_get_widget(appdata.xml, "bck_image_open"), on);
+}
+
+void on_pcap_stats_display_changed(GtkComboBox *combobox, gpointer user_data)
+{
+  pref.pcap_stats_pos = gtk_combo_box_get_active(combobox);
 }
 
 /* ----------------------------------------------------------
