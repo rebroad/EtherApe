@@ -1,5 +1,39 @@
                             Changelog for EtherApe
 
+  Overview of changes in EtherApe 0.9.15 ():
+   The central node ring setting now accepts multiple node specifiers
+   (separated by any combination of spaces and/or commas), and also
+   now understands glob syntax, so you can put for example
+
+     10.0.0.0/24, *.mydomain.tld, somehost.otherdomain.tld
+
+   and it will do what you'd expect.
+
+   There is now a compile-time configure option ('--with-c-ares',
+   disabled by default) to enable DNS resolution via the c-ares
+   library, supplanting EtherApe's built-in multithreaded
+   gethostbyaddr(3)-based resolver.  This is a fully non-blocking DNS
+   library and thus has potential for better performance while using
+   only a single background resolver thread, but also means that
+   name-lookup is strictly DNS-based, and will thus not take
+   /etc/hosts, NIS, or other name services into account.
+
+   Changes summary:
+     * New option to use c-ares for DNS resolution.
+     * Multiple node/subnets and glob syntax now supported for central
+       node ring.
+     * The background-image feature introduced in 0.9.14 can now be
+       turned off via a preference check-box.
+     * The background of the protocol legend is now black so that
+       lighter colors (e.g. yellow) are more readable.
+     * There is now an option to display packet-capture statistics
+       from libpcap in the main window (hover the mouse over them for
+       an explanation in the status bar).
+     * The show/hide state of the toolbar, protocol legend, and status
+       bar are now preserved along with other preferences in the
+       user's config file.
+
+
   Overview of changes in EtherApe 0.9.14 (Saturday February 06, 2016):
    EtherApe now users the system /etc/services file instead of its own.
    While this change make some customizations a bit harder, it guarantees an
