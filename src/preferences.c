@@ -125,6 +125,10 @@ void init_config(struct pref_struct *p)
   p->bck_image_path = NULL;
   p->bck_image_enabled = FALSE;
 
+  p->show_statusbar = TRUE;
+  p->show_toolbar = TRUE;
+  p->show_legend = TRUE;
+
   p->averaging_time=3000;
   p->position = NULL;
 }
@@ -175,6 +179,10 @@ void set_default_config(struct pref_struct *p)
   p->bck_image_enabled = FALSE;
   g_free(p->bck_image_path);
   p->bck_image_path = g_strdup("");
+
+  p->show_statusbar = TRUE;
+  p->show_toolbar = TRUE;
+  p->show_legend = TRUE;
 }
 
 /* loads configuration from .gnome/Etherape */
@@ -235,6 +243,10 @@ void load_config(struct pref_struct *p)
   read_double_config(&p->node_radius_multiplier, gkey, "node_radius_multiplier");
   read_double_config(&p->link_node_ratio, gkey, "link_node_ratio");
   read_double_config(&p->inner_ring_scale, gkey, "inner_ring_scale");
+
+  read_boolean_config(&p->show_statusbar, gkey, "show_statusbar");
+  read_boolean_config(&p->show_toolbar, gkey, "show_toolbar");
+  read_boolean_config(&p->show_legend, gkey, "show_legend");
 
   read_string_config(&tmpstr, gkey, "colors");
   if (tmpstr)
@@ -309,6 +321,10 @@ void save_config(const struct pref_struct *p)
 
   g_key_file_set_boolean(gkey, pref_group, "bck_image_enabled", p->bck_image_enabled);
   g_key_file_set_string(gkey, pref_group, "bck_image_path", p->bck_image_path);
+
+  g_key_file_set_boolean(gkey, pref_group, "show_statusbar", p->show_statusbar);
+  g_key_file_set_boolean(gkey, pref_group, "show_toolbar", p->show_toolbar);
+  g_key_file_set_boolean(gkey, pref_group, "show_legend", p->show_legend);
 
   tmpstr = g_strjoinv(" ", p->colors);
   g_key_file_set_string(gkey, pref_group, "colors", tmpstr);
@@ -406,7 +422,11 @@ void copy_config(struct pref_struct *tgt, const struct pref_struct *src)
   tgt->stack_level = src->stack_level;
   tgt->colors = g_strdupv(src->colors);
 
-  tgt->proto_timeout_time = src->proto_timeout_time;     
+  tgt->show_statusbar = src->show_statusbar;
+  tgt->show_toolbar = src->show_toolbar;
+  tgt->show_legend = src->show_legend;
+
+  tgt->proto_timeout_time = src->proto_timeout_time;
   tgt->gui_node_timeout_time = src->gui_node_timeout_time;
   tgt->node_timeout_time = src->node_timeout_time;
   tgt->proto_node_timeout_time = src->proto_node_timeout_time;
@@ -419,3 +439,26 @@ void copy_config(struct pref_struct *tgt, const struct pref_struct *src)
   tgt->position = g_strdup(src->position);
 }
 
+/*
+ * Sometimes (when showing/hiding statusbar, toolbar, or legend, specifically)
+ * we want to update the saved form of a single preference setting in-place
+ * without updating any others (to avoid implicitly doing an unwanted 'save'
+ * operation on unsaved preference changes).  This function thus loads the
+ * saved preferences into a temporary pref_struct, performs a given
+ * modification on it via the supplied 'edit' function (to which the arbitrary
+ * pointer 'data' is also passed), and then saves it.
+ */
+void mutate_saved_config(config_edit_fn edit, void *data)
+{
+  struct pref_struct tmp_prefs;
+
+  init_config(&tmp_prefs);
+
+  load_config(&tmp_prefs);
+
+  edit(&tmp_prefs, data);
+
+  save_config(&tmp_prefs);
+
+  free_config(&tmp_prefs);
+}

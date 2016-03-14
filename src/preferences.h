@@ -53,6 +53,11 @@ struct pref_struct
   gboolean bck_image_enabled; /* Whether or not to use a background image */
   gchar *bck_image_path;    /* Path to the background image (optional) */
 
+  /* Whether or not these respective UI elements are shown */
+  gboolean show_statusbar;
+  gboolean show_toolbar;
+  gboolean show_legend;
+
   statspos_t pcap_stats_pos; /* Position at which to display pcap stats */
 
   /* after this time has passed without traffic on a protocol, it's removed
@@ -107,4 +112,7 @@ struct pref_struct *duplicate_config(const struct pref_struct *src);
 void free_config(struct pref_struct *t);
 void copy_config(struct pref_struct *tgt, const struct pref_struct *src);
 
-#endif 
+typedef void (*config_edit_fn)(struct pref_struct *p, void *data);
+void mutate_saved_config(config_edit_fn edit, void *data);
+
+#endif

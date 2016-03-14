@@ -288,48 +288,71 @@ on_stop_menuitem_activate (GtkMenuItem * menuitem, gpointer user_data)
 /* View menu */
 
 void
-on_full_screen_activate (GtkCheckMenuItem * menuitem, gpointer user_data)
+on_full_screen_activate(GtkCheckMenuItem * menuitem, gpointer user_data)
 {
   if (menuitem->active)
     gtk_window_fullscreen((GtkWindow *)appdata.app1);
   else
     gtk_window_unfullscreen((GtkWindow *)appdata.app1);
-} /* on_full_screen_activate */
+}
 
+void edit_prefs_show_toolbar(struct pref_struct *p, void *data)
+{
+  p->show_toolbar = *(gboolean*)data;
+}
 
 void
-on_toolbar_check_activate (GtkCheckMenuItem * menuitem, gpointer user_data)
+on_toolbar_check_activate(GtkCheckMenuItem * menuitem, gpointer user_data)
 {
   GtkWidget *widget;
+  gboolean active = menuitem->active;
 
-  widget = glade_xml_get_widget (appdata.xml, "handlebox_toolbar");
-  if (menuitem->active)
-    gtk_widget_show (widget);
+  widget = glade_xml_get_widget(appdata.xml, "handlebox_toolbar");
+  if (active)
+    gtk_widget_show(widget);
   else
-    gtk_widget_hide (widget);
-}				/* on_toolbar_check_activate */
+    gtk_widget_hide(widget);
+
+  mutate_saved_config(edit_prefs_show_toolbar, &active);
+}
+
+void edit_prefs_show_legend(struct pref_struct *p, void *data)
+{
+  p->show_legend = *(gboolean*)data;
+}
 
 void
-on_legend_check_activate (GtkCheckMenuItem * menuitem, gpointer user_data)
+on_legend_check_activate(GtkCheckMenuItem * menuitem, gpointer user_data)
 {
   GtkWidget *widget;
+  gboolean active = menuitem->active;
 
-  widget = glade_xml_get_widget (appdata.xml, "handlebox_legend");
-  if (menuitem->active)
-    gtk_widget_show (widget);
+  widget = glade_xml_get_widget(appdata.xml, "handlebox_legend");
+  if (active)
+    gtk_widget_show(widget);
   else
-    gtk_widget_hide (widget);
-}				/* on_legend_check_activate */
+    gtk_widget_hide(widget);
+
+  mutate_saved_config(edit_prefs_show_legend, &active);
+}
+
+void edit_prefs_show_statusbar(struct pref_struct *p, void *data)
+{
+  p->show_statusbar = *(gboolean*)data;
+}
 
 void
-on_status_bar_check_activate (GtkCheckMenuItem * menuitem, gpointer user_data)
+on_status_bar_check_activate(GtkCheckMenuItem * menuitem, gpointer user_data)
 {
-  if (menuitem->active)
-    gtk_widget_show (GTK_WIDGET(appdata.statusbar));
-  else
-    gtk_widget_hide (GTK_WIDGET(appdata.statusbar));
-}				/* on_status_bar_check_activate */
+  gboolean active = menuitem->active;
 
+  if (active)
+    gtk_widget_show(GTK_WIDGET(appdata.statusbar));
+  else
+    gtk_widget_hide(GTK_WIDGET(appdata.statusbar));
+
+  mutate_saved_config(edit_prefs_show_statusbar, &active);
+}
 
 
 /* Help menu */

@@ -330,9 +330,36 @@ main (int argc, char *argv[])
 
   /* prepare decoders */
   services_init();
-  
+
   /* Sets controls to the values of variables and connects signals */
   init_diagram (appdata.xml);
+
+  if (!pref.show_statusbar)
+    {
+      widget = GTK_WIDGET(appdata.statusbar);
+      gtk_widget_hide(widget);
+
+      widget = glade_xml_get_widget(appdata.xml, "status_bar_check");
+      gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(widget), FALSE);
+    }
+
+  if (!pref.show_toolbar)
+    {
+      widget = glade_xml_get_widget(appdata.xml, "handlebox_toolbar");
+      gtk_widget_hide(widget);
+
+      widget = glade_xml_get_widget(appdata.xml, "toolbar_check");
+      gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(widget), FALSE);
+    }
+
+  if (!pref.show_legend)
+    {
+      widget = glade_xml_get_widget(appdata.xml, "handlebox_legend");
+      gtk_widget_hide(widget);
+
+      widget = glade_xml_get_widget(appdata.xml, "legend_check");
+      gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(widget), FALSE);
+    }
 
   /* Session handling */
   client = gnome_master_client ();
@@ -359,7 +386,7 @@ main (int argc, char *argv[])
   init_eth_resolv();
 
   init_menus ();
-  
+
   gui_start_capture ();
 
   /* MAIN LOOP */
