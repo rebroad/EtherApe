@@ -51,7 +51,7 @@ etherape_SOURCES += thread_resolve.c thread_resolve.h
 endif
 
 etherape_LDADD = $(ETHERAPE_LIBS) $(PCAP_LIBS) 
-etherape_LDFLAGS = 
+etherape_LDFLAGS = $(ETHERAPE_LDFLAGS)
 
 .indent: $(etherape_SOURCES) $(etherape_INCLUDES)
 	indent $? 

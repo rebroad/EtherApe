@@ -27,6 +27,7 @@ AC_PROG_LIBTOOL
 # Checks for libraries.
 PKG_CHECK_MODULES(ETHERAPE, glib-2.0 libglade-2.0 libgnomeui-2.0)
 AC_SUBST(ETHERAPE_CFLAGS)
+AC_SUBST(ETHERAPE_LDFLAGS)
 AC_SUBST(ETHERAPE_LIBS)
 
 # Checks for header files.
@@ -73,6 +74,14 @@ AC_ARG_ENABLE([werror],
 
 if test "$enable_werror" = yes; then
   ETHERAPE_CFLAGS="$ETHERAPE_CFLAGS -Werror"
+fi
+
+AC_ARG_ENABLE([ubsan],
+  AS_HELP_STRING([--enable-ubsan], [Compile with GCC/Clang's undefined-behavior sanitizer@<:@default=disabled@:>@]))
+
+if test "$enable_ubsan" = yes; then
+  ETHERAPE_CFLAGS="$ETHERAPE_CFLAGS -fsanitize=undefined"
+  ETHERAPE_LDFLAGS="$ETHERAPE_LDFLAGS -fsanitize=undefined"
 fi
 
 # checks for osx or disable-gdk-input-add
