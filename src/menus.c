@@ -313,6 +313,7 @@ on_toolbar_check_activate(GtkCheckMenuItem * menuitem, gpointer user_data)
   else
     gtk_widget_hide(widget);
 
+  pref.show_toolbar = active;
   mutate_saved_config(edit_prefs_show_toolbar, &active);
 }
 
@@ -333,6 +334,7 @@ on_legend_check_activate(GtkCheckMenuItem * menuitem, gpointer user_data)
   else
     gtk_widget_hide(widget);
 
+  pref.show_legend = active;
   mutate_saved_config(edit_prefs_show_legend, &active);
 }
 
@@ -351,6 +353,7 @@ on_status_bar_check_activate(GtkCheckMenuItem * menuitem, gpointer user_data)
   else
     gtk_widget_hide(GTK_WIDGET(appdata.statusbar));
 
+  pref.show_statusbar = active;
   mutate_saved_config(edit_prefs_show_statusbar, &active);
 }
 
