@@ -392,19 +392,6 @@ void redraw_canvas_background(GtkWidget *canvas)
   }
 }
 
-/* A simple helper strcmp()-wrapper to NULL-check both strings first. */
-static inline int strcmp_nullchk(const char *a, const char *b)
-{
-  if (!a && !b)
-    return 0;
-  else if (!a)
-    return -1;
-  else if (!b)
-    return 1;
-  else
-    return strcmp(a, b);
-}
-
 /*
  * Update the background image.  Load new image if user selected another path
  * in preferences.  Place the background image behind the nodes and links.
@@ -416,7 +403,7 @@ static void diagram_update_background_image(GtkWidget *canvas)
    * need to update the background.
    */
   if (pref.bck_image_enabled != canvas_background.use_image
-      || strcmp_nullchk(canvas_background.image.path, pref.bck_image_path)) {
+      || g_strcmp0(canvas_background.image.path, pref.bck_image_path)) {
     canvas_background.use_image = pref.bck_image_enabled;
     g_free(canvas_background.image.path);
     canvas_background.image.path = g_strdup(pref.bck_image_path);
