@@ -352,6 +352,7 @@ void save_config(const struct pref_struct *p)
       gtk_widget_destroy (dialog);
     }
   g_free(pref_file);
+  g_key_file_free(gkey);
 }
 
 /* duplicates a config */
