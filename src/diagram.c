@@ -184,7 +184,7 @@ static gint traffic_compare (gconstpointer a, gconstpointer b);
 static gint reposition_canvas_nodes (node_id_t * node_id,
 				     canvas_node_t * canvas_node,
 				     reposition_node_t *data);
-static gint reposition_canvas_nodes_prep(node_id_t * node_id,
+static gint reposition_canvas_nodes_prep(const node_id_t * node_id,
                                          canvas_node_t * canvas_node,
                                          reposition_node_t *data);
 static gint check_new_link (link_id_t * link_id,
@@ -1209,7 +1209,7 @@ static void init_reposition(reposition_node_t *data,
  * A preparatory pass to count how many nodes are centered and how many are on
  * the outer ring (and mark each appropriately).
  */
-static gint reposition_canvas_nodes_prep(node_id_t *node_id,
+static gint reposition_canvas_nodes_prep(const node_id_t *node_id,
                                          canvas_node_t *canvas_node,
                                          reposition_node_t *rdata)
 {
@@ -1218,7 +1218,7 @@ static gint reposition_canvas_nodes_prep(node_id_t *node_id,
   if (!canvas_node->shown)
     return FALSE;
 
-  node = nodes_catalog_find((const node_id_t*)&canvas_node->canvas_node_id);
+  node = nodes_catalog_find(node_id);
   if (node && node_matches_spec_list(node, centered_node_speclist))
     {
       canvas_node->centered = TRUE;
