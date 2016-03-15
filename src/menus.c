@@ -43,6 +43,7 @@ init_menus (void)
 {
   GtkWidget *widget = NULL, *item = NULL;
   GList *interfaces;
+  GList *iface;
   GSList *group = NULL;
   GString *info_string = NULL;
   GString *err_str = g_string_new ("");
@@ -71,21 +72,18 @@ init_menus (void)
   gtk_menu_shell_append (GTK_MENU_SHELL (widget), item);
 
   /* Set up the real interfaces menu entries */
-  while (interfaces)
+  for (iface = interfaces; iface; iface = iface->next)
     {
-      item =
-	gtk_radio_menu_item_new_with_label (group,
-					    (gchar *) (interfaces->data));
-      group = gtk_radio_menu_item_get_group (GTK_RADIO_MENU_ITEM (item));
-      gtk_menu_shell_append (GTK_MENU_SHELL (widget), item);
-      gtk_widget_show (item);
-      g_signal_connect_swapped (G_OBJECT (item), "activate",
-				GTK_SIGNAL_FUNC
-				(on_interface_radio_activate),
-				(gpointer) g_strdup (interfaces->data));
-      g_string_append (info_string, " ");
-      g_string_append (info_string, (gchar *) (interfaces->data));
-      interfaces = interfaces->next;
+      item = gtk_radio_menu_item_new_with_label(group,
+                                                (gchar *) (iface->data));
+      group = gtk_radio_menu_item_get_group(GTK_RADIO_MENU_ITEM(item));
+      gtk_menu_shell_append(GTK_MENU_SHELL(widget), item);
+      gtk_widget_show(item);
+      g_signal_connect_swapped(G_OBJECT(item), "activate",
+                               GTK_SIGNAL_FUNC(on_interface_radio_activate),
+                               (gpointer) g_strdup(iface->data));
+      g_string_append(info_string, " ");
+      g_string_append(info_string, (gchar *) (iface->data));
     }
 
   if (info_string) {
@@ -94,7 +92,7 @@ init_menus (void)
   }
 
   interface_list_free(interfaces);
-}				/* init_menus */
+}
 
 /* FILE MENU */
 
