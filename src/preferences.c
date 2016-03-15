@@ -216,7 +216,6 @@ void load_config(struct pref_struct *p)
   read_string_config(&p->fontname, gkey, "fontname");
   read_string_config(&p->text_color, gkey, "text_color");
   read_string_config(&p->centered_nodes, gkey, "centered_nodes");
-  centered_node_speclist = parse_nodeset_spec_list(p->centered_nodes);
 
   read_boolean_config(&p->bck_image_enabled, gkey, "bck_image_enabled");
   read_string_config(&p->bck_image_path, gkey, "bck_image_path");

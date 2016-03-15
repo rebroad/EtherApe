@@ -163,6 +163,7 @@ main (int argc, char *argv[])
 
   /* Config file */
   load_config(&pref);
+  centered_node_speclist = parse_nodeset_spec_list(pref.centered_nodes);
 
   /* Command line */
   cl_numeric = !pref.name_res;
