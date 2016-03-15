@@ -24,7 +24,6 @@
 #include <glib/gprintf.h>
 #include <glade/glade.h>
 #include <gtk/gtk.h>
-#include <regex.h>
 
 /* Variables */
 
@@ -61,13 +60,6 @@ struct appdata_struct
 };
 
 extern struct appdata_struct appdata;
-
-#define TOTAL_POSITION_ELEMENTS 1000
-#define MAX_POSITION_COLUMNS 10
-regex_t position_elements[TOTAL_POSITION_ELEMENTS];
-guint total_position_elements,position_column[TOTAL_POSITION_ELEMENTS];
-guint total_position_columns,position_column_count[MAX_POSITION_COLUMNS+1],position_column_max_count[MAX_POSITION_COLUMNS+1];
-
 
 #define DEBUG_ENABLED  (appdata.debug_mask & G_LOG_LEVEL_DEBUG)
 #define INFO_ENABLED  (appdata.debug_mask & G_LOG_LEVEL_INFO)

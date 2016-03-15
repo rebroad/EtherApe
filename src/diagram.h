@@ -17,6 +17,9 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
+#ifndef DIAGRAM_H
+#define DIAGRAM_H
+
 #include "appdata.h"
 
 extern gboolean already_updating; /* True while an instance of update_diagram is running */
@@ -32,3 +35,17 @@ void ask_reposition(gboolean refresh_font); /* request diagram relayout */
 void dump_stats(guint32 diff_msecs);
 void timeout_changed(void);
 void redraw_canvas_background(GtkWidget *canvas); /* Called by on_canvas1_size_allocate */
+
+#define TOTAL_POSITION_ELEMENTS 1000
+#define MAX_POSITION_COLUMNS 10
+
+/* Array of lists of nodeset_specs */
+extern GList *position_elements[TOTAL_POSITION_ELEMENTS];
+
+extern guint total_position_elements;
+extern guint position_column[TOTAL_POSITION_ELEMENTS];
+extern guint total_position_columns;
+extern guint position_column_count[MAX_POSITION_COLUMNS+1];
+extern guint position_column_max_count[MAX_POSITION_COLUMNS+1];
+
+#endif /* DIAGRAM_H */

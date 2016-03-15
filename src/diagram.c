@@ -22,7 +22,6 @@
 #endif
 
 #include <gnome.h>
-#include <regex.h>
 
 #include "appdata.h"
 #include "diagram.h"
@@ -117,6 +116,15 @@ typedef struct
   gdouble x_inner_rad_max;
   gdouble y_inner_rad_max;
 } reposition_node_t;
+
+/* Arrays for columnar-layout mode (-P flag) */
+GList *position_elements[TOTAL_POSITION_ELEMENTS];
+
+guint total_position_elements;
+guint position_column[TOTAL_POSITION_ELEMENTS];
+guint total_position_columns;
+guint position_column_count[MAX_POSITION_COLUMNS+1];
+guint position_column_max_count[MAX_POSITION_COLUMNS+1];
 
 /***************************************************************************
  *
@@ -1288,36 +1296,32 @@ static gint reposition_canvas_nodes(node_id_t * node_id,
     }
   else if (pref.position)
     {
-      char *nametmp = "";
       guint i, col = 0;
-      gint reti;
-      if (canvas_node->text_item)
-	{
-	  g_object_get(G_OBJECT(canvas_node->text_item),"text", &nametmp, NULL);
+      node_t *node = nodes_catalog_find(node_id);
 
-	  /* check against the items on our position */
-	  for (i = 0; i < total_position_elements; i++)
-	    {
-	      /* Need regex here */
-              reti= regexec(&position_elements[i],nametmp,0,NULL,0);
-	      if (!reti)
-		{
-		  col = position_column[i];
-		  break;
-		}
-	    }
+      if (node)
+        {
+          /* check against the items on our position */
+          for (i = 0; i < total_position_elements; i++)
+            {
+              if (node_matches_spec_list(node, position_elements[i]))
+                {
+                  col = position_column[i];
+                  break;
+                }
+            }
 
-	  /* If we didn't match the given position list, then it is to the very right */
-	  if (i==total_position_elements) col=total_position_columns;
-	
-	}
+          /* If we didn't match the given position list, then it is to the very right */
+          if (i == total_position_elements)
+            col = total_position_columns;
+        }
 
-	x = (((data->xmax - data->xmin) / (total_position_columns+1)) * col) + data->xmin;
-	y = (((data->ymax - data->ymin) / (position_column_max_count[col]+1)) * position_column_count[col])+ (data->ymin);
+      x = (((data->xmax - data->xmin) / (total_position_columns+1)) * col) + data->xmin;
+      y = (((data->ymax - data->ymin) / (position_column_max_count[col]+1)) * position_column_count[col])+ (data->ymin);
 
-	position_column_count[col]++;
-	if (position_column_count[col] > position_column_max_count[col])
-	  position_column_max_count[col]=position_column_count[col];
+      position_column_count[col]++;
+      if (position_column_count[col] > position_column_max_count[col])
+        position_column_max_count[col] = position_column_count[col];
     }
   else
     {

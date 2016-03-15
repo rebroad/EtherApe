@@ -18,10 +18,28 @@
    name-lookup is strictly DNS-based, and will thus not take
    /etc/hosts, NIS, or other name services into account.
 
+   There is a slightly backwards-incompatible change in the syntax of
+   the node-position file used with the '-P' flag added in release
+   0.9.14.  It now uses the same CIDR notation plus hostname-globbing
+   syntax used by the central node ring setting (instead of POSIX
+   regular expressions).  This provides simpler and more consistent
+   syntax with essentially the same real-world utility, but may
+   require some small changes to existing node-position files.  Some
+   examples:
+
+     Old (regex)           New (CIDR+glob)
+     ===============       ===============
+     172.16.2.[0-9]*       172.16.2.0/24
+     .*.mydomain.com       *.mydomain.com
+     fe80:.*               fe80::/16
+
+
    Changes summary:
      * New option to use c-ares for DNS resolution.
      * Multiple node/subnets and glob syntax now supported for central
        node ring.
+     * Node-matching syntax for '-P' flag's file now uses CIDR
+       notation and hostname-globbing instead of regexes.
      * The background-image feature introduced in 0.9.14 can now be
        turned off via a preference check-box.
      * The background of the protocol legend is now black so that

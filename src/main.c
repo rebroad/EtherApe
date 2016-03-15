@@ -249,13 +249,13 @@ main (int argc, char *argv[])
 
   if (pref.position)
     {
-      gint c,reti;
+      gint c;
       FILE *position_p;
-      char tmpbuf[200],rbuf[100];
+      char tmpbuf[200], rbuf[100];
       gint row = 0;
 
-      position_p=fopen(pref.position,"r");
-      if (position_p) 
+      position_p = fopen(pref.position,"r");
+      if (position_p)
         {
 
           g_my_info(_("Reading columns file '%s'"), pref.position);
@@ -294,17 +294,13 @@ main (int argc, char *argv[])
               }
             else
               {
-                reti=regcomp(&position_elements[total_position_elements],rbuf,REG_ICASE|REG_NOSUB);
+                position_elements[total_position_elements] = parse_nodeset_spec_list(rbuf);
 
-                if (reti)
-                  fprintf(stderr,"Could not compile regex (%d) for pattern %s\n",total_position_elements,rbuf);
-                else
-                  {
-                    if (position_column[total_position_elements] > total_position_columns)
-                      total_position_columns=position_column[total_position_elements];
-                    if (++total_position_elements >= TOTAL_POSITION_ELEMENTS) 
-                      break;
-                  }
+                if (position_column[total_position_elements] > total_position_columns)
+                  total_position_columns = position_column[total_position_elements];
+
+                if (++total_position_elements >= TOTAL_POSITION_ELEMENTS)
+                  break;
               }
           }
           /* Add one column for the unspecified addresses that go in the rightmost column */
@@ -314,8 +310,8 @@ main (int argc, char *argv[])
            * This is needed the very first time an element is displayed in a column.
            */
 
-          for (c=0;c<=total_position_columns;c++) 
-            position_column_max_count[c]=1;
+          for (c = 0; c <= total_position_columns; c++)
+            position_column_max_count[c] = 1;
 
           g_my_info(_("Columns file read. Total columns %d"), total_position_columns);
         }
