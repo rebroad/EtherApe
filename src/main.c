@@ -24,6 +24,7 @@
 #ifdef HAVE_UNISTD_H
 #include <unistd.h>
 #endif
+#include <ctype.h>
 #include <netinet/in.h>
 #include <signal.h>
 #include <gnome.h>
@@ -40,6 +41,7 @@
 #include "dns.h"
 #include "eth_resolv.h"
 #include "names.h"
+#include "util.h"
 
 /***************************************************************************
  *
@@ -63,6 +65,7 @@ static gint save_session (GnomeClient * client, gint phase,
                           gpointer client_data);
 static void log_handler (gchar * log_domain, GLogLevelFlags mask, 
                          const gchar * message, gpointer user_data);
+static void parse_position_file(const gchar *path);
 
 /* signal handling */
 static void install_handlers(void);
@@ -248,75 +251,7 @@ main (int argc, char *argv[])
       g_message("Invalid maximum delay %ld, ignored", madelay);
 
   if (pref.position)
-    {
-      gint c;
-      FILE *position_p;
-      char tmpbuf[200], rbuf[100];
-      gint row = 0;
-
-      position_p = fopen(pref.position,"r");
-      if (position_p)
-        {
-
-          g_my_info(_("Reading columns file '%s'"), pref.position);
-
-          total_position_columns=0;
-          while (1) {
-            /*
-             * Since the lines are simply and IP address for a FQDN, we should
-             * never have anything close to 200 chars If we do, we just toss
-             * the rest.
-             */
-            if (fgets(tmpbuf, sizeof(tmpbuf)-1, position_p) == NULL)
-              break;
-            ++row;
-
-            if (tmpbuf[strlen(tmpbuf)-1] != '\n')
-              {
-                /* We didn't get the complete line because it was presumably too long */
-                while (fgetc(position_p) != '\n')
-                  ;
-              }
-
-            c=sscanf(tmpbuf,"%99s %u",
-                     rbuf,&position_column[total_position_elements]);
-
-            g_my_info(_("row %d: regexp/ip %s, column %u"), row, rbuf, position_column[total_position_elements]);
-
-            if (rbuf[0] == '#' || c < 1 )
-              continue; /* comment line or empty line */
-            else if (c != 2)
-              fprintf(stderr,"ERROR: Couldn't find column number in position file at row %d\n", row);
-            else if (position_column[total_position_elements] > MAX_POSITION_COLUMNS)
-              {
-                fprintf(stderr,"ERROR: Column %d greater than %d at position element: %s\n",
-                        position_column[total_position_elements], MAX_POSITION_COLUMNS, rbuf);
-              }
-            else
-              {
-                position_elements[total_position_elements] = parse_nodeset_spec_list(rbuf);
-
-                if (position_column[total_position_elements] > total_position_columns)
-                  total_position_columns = position_column[total_position_elements];
-
-                if (++total_position_elements >= TOTAL_POSITION_ELEMENTS)
-                  break;
-              }
-          }
-          /* Add one column for the unspecified addresses that go in the rightmost column */
-          total_position_columns++;
-
-          /* Initialize the number of elements that would be in a column to 1.
-           * This is needed the very first time an element is displayed in a column.
-           */
-
-          for (c = 0; c <= total_position_columns; c++)
-            position_column_max_count[c] = 1;
-
-          g_my_info(_("Columns file read. Total columns %d"), total_position_columns);
-        }
-      fclose(position_p);
-    }
+    parse_position_file(pref.position);
 
   /* Glade */
   glade_gnome_init ();
@@ -391,7 +326,109 @@ main (int argc, char *argv[])
 
   free_static_data();
   return 0;
-}				/* main */
+}
+
+/*
+ * Parse the given line of a node-position file into a speclist and a column
+ * number, returning TRUE on success and FALSE on failure.
+ *
+ * Note: this modifies the string in place -- a bit ugly, but it's only used
+ * in one place, and it'ss easier than allocating a local copy.
+ */
+static gboolean parse_position_line(gchar *line, GList **speclist, long *colnum)
+{
+  gchar *p;
+
+  line = g_strstrip(line);
+
+  /* Empty line or comment */
+  if (!line[0] || line[0] == '#')
+    return FALSE;
+
+  /*
+   * Scan back from end to find beginning of column number at end of line.
+   * The "- 1" starting point is safe because at this point we know that
+   * strlen(line) > 0.
+   */
+  for (p = line + strlen(line) - 1; p > line; p--)
+    {
+      /* If we hit the character preceding the column number... */
+      if (*p == ',' || isspace(*p))
+        {
+          /* ...advance back to the start of it and break. */
+          p += 1;
+          break;
+        }
+    }
+
+  if (p == line || strict_strtol(p, 0, colnum))
+    {
+      g_error(_("Invalid position-file line: %s"), line);
+      return FALSE;
+    }
+  else if (*colnum <= 0 || *colnum > MAX_POSITION_COLUMNS)
+    {
+      g_error(_("Column number %ld out of range"), *colnum);
+      return FALSE;
+    }
+
+  /* 'p' > 'line' here; split the string just before the column number */
+  p[-1] = '\0';
+
+  *speclist = parse_nodeset_spec_list(line);
+
+  return TRUE;
+}
+
+static void parse_position_file(const gchar *path)
+{
+  gchar *contents;
+  gchar **lines;
+  gsize len;
+  GError *err;
+  int i;
+  long colnum;
+  GList *speclist;
+
+  if (!g_file_get_contents(path, &contents, &len, &err))
+    {
+      g_error(_("Failed to read position file %s: %s"), path, err->message);
+      g_error_free(err);
+      return;
+    }
+
+  lines = g_strsplit(contents, "\n", 0);
+  g_free(contents);
+
+  total_position_columns = 0;
+
+  for (i = 0; lines[i]; i++)
+    {
+      if (!parse_position_line(lines[i], &speclist, &colnum))
+        continue;
+
+      position_elements[total_position_elements] = speclist;
+      position_column[total_position_elements] = colnum;
+
+      if (position_column[total_position_elements] > total_position_columns)
+        total_position_columns = position_column[total_position_elements];
+
+      if (++total_position_elements >= TOTAL_POSITION_ELEMENTS)
+        break;
+    }
+
+  g_strfreev(lines);
+
+  /* Add one column for the unspecified addresses that go in the rightmost column */
+  total_position_columns++;
+
+  /*
+   * Initialize the number of elements that would be in a column to 1.  This
+   * is needed the very first time an element is displayed in a column.
+   */
+  for (i = 0; i <= total_position_columns; i++)
+    position_column_max_count[i] = 1;
+}
 
 /* releases all static and cached data. Called just before exiting. Obviously 
  * it's not stricly needed, since the memory will be returned to the OS anyway,

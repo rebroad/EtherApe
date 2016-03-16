@@ -33,6 +33,16 @@
      .*.mydomain.com       *.mydomain.com
      fe80:.*               fe80::/16
 
+   Additionally, each line of the node-position file may now include
+   multiple such node-matching patterns (separated by spaces and/or
+   commas as with the central node ring setting), so a single line
+   might look like:
+
+     *.mydomain.com, 10.0.0.0/24 3
+
+   (to put all nodes matching the given domain or CIDR range into
+   column 3).
+
 
    Changes summary:
      * New option to use c-ares for DNS resolution.
@@ -40,6 +50,8 @@
        node ring.
      * Node-matching syntax for '-P' flag's file now uses CIDR
        notation and hostname-globbing instead of regexes.
+     * Multiple patterns can now be given on a single line of the
+       node-position ('-P') file.
      * The background-image feature introduced in 0.9.14 can now be
        turned off via a preference check-box.
      * The background of the protocol legend is now black so that
