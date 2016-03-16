@@ -52,6 +52,9 @@
        notation and hostname-globbing instead of regexes.
      * Multiple patterns can now be given on a single line of the
        node-position ('-P') file.
+     * The columnar-layout ('-P') code has been changed to re-adjust
+       the spacing of nodes within a column when the number of nodes
+       decreases.  The 10-column limit has also been removed.
      * The background-image feature introduced in 0.9.14 can now be
        turned off via a preference check-box.
      * The background of the protocol legend is now black so that

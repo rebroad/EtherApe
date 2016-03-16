@@ -63,6 +63,10 @@ typedef struct
   gboolean is_new;
   gboolean shown;		/* True if it is to be displayed. */
   gboolean centered;            /* true if is a center node */
+
+  /* For '-P' mode (columnar layout) */
+  guint column; /* Which column this goes in */
+  guint column_idx; /* Which position within its column this node is */
 }
 canvas_node_t;
 static gint canvas_node_compare(const node_id_t *a, const node_id_t *b, 
@@ -115,16 +119,12 @@ typedef struct
   gdouble y_rad_max;
   gdouble x_inner_rad_max;
   gdouble y_inner_rad_max;
+
+  guint *column_populations;
 } reposition_node_t;
 
-/* Arrays for columnar-layout mode (-P flag) */
-GList *position_elements[TOTAL_POSITION_ELEMENTS];
-
-guint total_position_elements;
-guint position_column[TOTAL_POSITION_ELEMENTS];
-guint total_position_columns;
-guint position_column_count[MAX_POSITION_COLUMNS+1];
-guint position_column_max_count[MAX_POSITION_COLUMNS+1];
+/* Node-matching patterns for columnar-layout mode (-P flag) */
+GPtrArray *column_patterns;
 
 /***************************************************************************
  *
@@ -212,6 +212,7 @@ static void draw_oneside_link(double xs, double ys, double xd, double yd,
 static void init_reposition(reposition_node_t *data,
                             GtkWidget * canvas, 
                             guint total_nodes);
+static void clear_reposition(reposition_node_t *rdata);
 
 
 void ask_reposition(gboolean r_font)
@@ -532,6 +533,8 @@ diagram_update_nodes(GtkWidget * canvas)
       g_tree_foreach(canvas_nodes,
                     (GTraverseFunc) reposition_canvas_nodes,
                     &rdata);
+
+      clear_reposition(&rdata);
 
       need_reposition = FALSE;
       need_font_refresh = FALSE;
@@ -1174,7 +1177,7 @@ traffic_compare (gconstpointer a, gconstpointer b)
 
 /* initialize reposition struct */
 static void init_reposition(reposition_node_t *data,
-                            GtkWidget * canvas, 
+                            GtkWidget * canvas,
                             guint total_nodes)
 {
   gdouble text_compensation = 50;
@@ -1190,16 +1193,12 @@ static void init_reposition(reposition_node_t *data,
    */
   data->center.angle += M_PI / 4.0;
 
-  if (total_nodes)
-    {
-      guint col;
-      for(col=0;col<=total_position_columns;col++) position_column_count[col]=1;
-    }
+  data->column_populations = g_malloc0_n(column_patterns->len + 1,
+                                         sizeof(*data->column_populations));
 
-
-  gnome_canvas_get_scroll_region (GNOME_CANVAS (canvas),
-				  &data->xmin, &data->ymin, 
-                                  &data->xmax, &data->ymax);
+  gnome_canvas_get_scroll_region(GNOME_CANVAS (canvas),
+                                 &data->xmin, &data->ymin,
+                                 &data->xmax, &data->ymax);
 
 
   data->xmin += text_compensation;
@@ -1213,9 +1212,36 @@ static void init_reposition(reposition_node_t *data,
   data->y_inner_rad_max = data->y_rad_max / 2;
 }
 
+static void clear_reposition(reposition_node_t *rdata)
+{
+  g_free(rdata->column_populations);
+}
+
+static guint find_node_column(node_t *node)
+{
+  guint i;
+
+  /* This should only be called if we're in columnar-positioning mode */
+  g_assert(pref.position);
+
+  for (i = 0; i < column_patterns->len; i++)
+    {
+      if (node_matches_spec_list(node, g_ptr_array_index(column_patterns, i)))
+        return i;
+    }
+
+  /*
+   * If no explicit match was found it goes in the rightmost column (with an
+   * implicit "match-all" pattern).
+   */
+  return column_patterns->len;
+}
+
 /*
  * A preparatory pass to count how many nodes are centered and how many are on
- * the outer ring (and mark each appropriately).
+ * the outer ring (and mark each appropriately).  Also does analogous work for
+ * columnar-positioning mode (count nodes in each column and mark each node with
+ * its column).
  */
 static gint reposition_canvas_nodes_prep(const node_id_t *node_id,
                                          canvas_node_t *canvas_node,
@@ -1227,7 +1253,12 @@ static gint reposition_canvas_nodes_prep(const node_id_t *node_id,
     return FALSE;
 
   node = nodes_catalog_find(node_id);
-  if (node && node_matches_spec_list(node, centered_node_speclist))
+  if (pref.position)
+    {
+      canvas_node->column = find_node_column(node);
+      canvas_node->column_idx = rdata->column_populations[canvas_node->column]++;
+    }
+  else if (node && node_matches_spec_list(node, centered_node_speclist))
     {
       canvas_node->centered = TRUE;
       rdata->center.n_nodes++;
@@ -1239,6 +1270,17 @@ static gint reposition_canvas_nodes_prep(const node_id_t *node_id,
     }
 
   return FALSE;
+}
+
+/*
+ * Return a point between 'min' and 'max' appropriate for position number 'pos'
+ * out of 'num' total possible positions (basically pos/num of the way between
+ * min and max, though with some tweaking to keep things away from the very
+ * edges of the range).
+ */
+static gdouble scale_within(gdouble min, gdouble max, guint pos, guint num)
+{
+  return min + (((max - min) / (num + 1)) * (pos + 1));
 }
 
 /* Called from update_diagram if the global need_reposition
@@ -1296,32 +1338,12 @@ static gint reposition_canvas_nodes(node_id_t * node_id,
     }
   else if (pref.position)
     {
-      guint i, col = 0;
-      node_t *node = nodes_catalog_find(node_id);
+      guint col = canvas_node->column;
 
-      if (node)
-        {
-          /* check against the items on our position */
-          for (i = 0; i < total_position_elements; i++)
-            {
-              if (node_matches_spec_list(node, position_elements[i]))
-                {
-                  col = position_column[i];
-                  break;
-                }
-            }
-
-          /* If we didn't match the given position list, then it is to the very right */
-          if (i == total_position_elements)
-            col = total_position_columns;
-        }
-
-      x = (((data->xmax - data->xmin) / (total_position_columns+1)) * col) + data->xmin;
-      y = (((data->ymax - data->ymin) / (position_column_max_count[col]+1)) * position_column_count[col])+ (data->ymin);
-
-      position_column_count[col]++;
-      if (position_column_count[col] > position_column_max_count[col])
-        position_column_max_count[col] = position_column_count[col];
+      x = scale_within(data->xmin, data->xmax, canvas_node->column,
+                       column_patterns->len + 1);
+      y = scale_within(data->ymin, data->ymax, canvas_node->column_idx,
+                       data->column_populations[col]);
     }
   else
     {
@@ -1334,8 +1356,6 @@ static gint reposition_canvas_nodes(node_id_t * node_id,
         }
       else
         {
-          guint col;
-
           if (ring->n_nodes % 2 == 0)	/* spacing is better when n_nodes is odd and Y is linear */
             oddAngle = (ring->angle * ring->n_nodes) / (ring->n_nodes + 1);
           else
@@ -1358,9 +1378,6 @@ static gint reposition_canvas_nodes(node_id_t * node_id,
               x = center_x + ((x - center_x) * pref.inner_ring_scale);
               y = center_y + ((y - center_y) * pref.inner_ring_scale);
             }
-
-          for(col=0;col<=total_position_columns;col++)
-            position_column_max_count[col]=position_column_count[col];
         }
     }
 

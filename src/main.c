@@ -27,6 +27,7 @@
 #include <ctype.h>
 #include <netinet/in.h>
 #include <signal.h>
+#include <glib.h>
 #include <gnome.h>
 #include <libgnomeui/gnome-client.h>
 #include "appdata.h"
@@ -363,12 +364,12 @@ static gboolean parse_position_line(gchar *line, GList **speclist, long *colnum)
 
   if (p == line || strict_strtol(p, 0, colnum))
     {
-      g_error(_("Invalid position-file line: %s"), line);
+      fprintf(stderr, _("Invalid position-file line: %s"), line);
       return FALSE;
     }
-  else if (*colnum <= 0 || *colnum > MAX_POSITION_COLUMNS)
+  else if (*colnum <= 0)
     {
-      g_error(_("Column number %ld out of range"), *colnum);
+      fprintf(stderr, _("Column number %ld out of range"), *colnum);
       return FALSE;
     }
 
@@ -392,42 +393,30 @@ static void parse_position_file(const gchar *path)
 
   if (!g_file_get_contents(path, &contents, &len, &err))
     {
-      g_error(_("Failed to read position file %s: %s"), path, err->message);
+      fprintf(stderr, _("Failed to read position file %s: %s"), path, err->message);
       g_error_free(err);
       return;
     }
 
+  column_patterns = g_ptr_array_sized_new(10);
+
   lines = g_strsplit(contents, "\n", 0);
   g_free(contents);
 
-  total_position_columns = 0;
-
   for (i = 0; lines[i]; i++)
     {
-      if (!parse_position_line(lines[i], &speclist, &colnum))
-        continue;
+      if (parse_position_line(lines[i], &speclist, &colnum))
+        {
+          /* "user" column numbers are one-based; convert to zero-based here. */
+          colnum -= 1;
 
-      position_elements[total_position_elements] = speclist;
-      position_column[total_position_elements] = colnum;
-
-      if (position_column[total_position_elements] > total_position_columns)
-        total_position_columns = position_column[total_position_elements];
-
-      if (++total_position_elements >= TOTAL_POSITION_ELEMENTS)
-        break;
+          if (colnum > column_patterns->len)
+            g_ptr_array_set_size(column_patterns, colnum);
+          g_ptr_array_insert(column_patterns, colnum, speclist);
+        }
     }
 
   g_strfreev(lines);
-
-  /* Add one column for the unspecified addresses that go in the rightmost column */
-  total_position_columns++;
-
-  /*
-   * Initialize the number of elements that would be in a column to 1.  This
-   * is needed the very first time an element is displayed in a column.
-   */
-  for (i = 0; i <= total_position_columns; i++)
-    position_column_max_count[i] = 1;
 }
 
 /* releases all static and cached data. Called just before exiting. Obviously 
