@@ -1193,8 +1193,9 @@ static void init_reposition(reposition_node_t *data,
    */
   data->center.angle += M_PI / 4.0;
 
-  data->column_populations = g_malloc0_n(column_patterns->len + 1,
-                                         sizeof(*data->column_populations));
+  if (pref.position)
+    data->column_populations = g_malloc0_n(column_patterns->len + 1,
+                                           sizeof(*data->column_populations));
 
   gnome_canvas_get_scroll_region(GNOME_CANVAS (canvas),
                                  &data->xmin, &data->ymin,
@@ -1214,7 +1215,8 @@ static void init_reposition(reposition_node_t *data,
 
 static void clear_reposition(reposition_node_t *rdata)
 {
-  g_free(rdata->column_populations);
+  if (pref.position)
+    g_free(rdata->column_populations);
 }
 
 static guint find_node_column(node_t *node)
