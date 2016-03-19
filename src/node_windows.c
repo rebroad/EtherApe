@@ -25,7 +25,8 @@
 #include "node_windows.h"
 #include "info_windows.h"
 #include "ui_utils.h"
-#include "node.h"
+#include "stats/util.h"
+#include "stats/node.h"
 
 typedef enum 
 {
@@ -290,7 +291,7 @@ static void nodes_table_update_row(GtkListStore *gs, GtkTreeIter *it,
   sa = traffic_to_str (stats->average, TRUE);
   sb = traffic_to_str (stats->accumulated, FALSE);
   sc = g_strdup_printf ("%lu", stats->accu_packets);
-  sd = timeval_to_str (stats->last_time);
+  sd = timeval_to_str(stats->last_time);
   se = traffic_to_str (stats->avg_size, FALSE);
 
   gtk_list_store_set (gs, it, 

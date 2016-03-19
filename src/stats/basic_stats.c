@@ -24,7 +24,6 @@
 #include <math.h>
 #include "appdata.h"
 #include "basic_stats.h"
-#include "ui_utils.h"
 #include "util.h"
 
 static long packet_list_item_n = 0;
@@ -231,7 +230,7 @@ gchar *basic_stats_dump(const basic_stats_t *tf_stat)
   if (!tf_stat)
     return g_strdup("basic_stats_t NULL");
 
-  msg_time = timeval_to_str (tf_stat->last_time);
+  msg_time = timeval_to_str(tf_stat->last_time);
   msg = g_strdup_printf("avg: %f, avg_acc: %f, total: %f, avg_size: %f, "
                         "packets: %lu, last heard: %s",
                         tf_stat->average,

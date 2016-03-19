@@ -20,12 +20,12 @@
 #ifndef BASIC_STATS_H
 #define BASIC_STATS_H
 
-#include <sys/time.h>
+#include "common.h"
 #include "pkt_info.h"
 
 /* Returns a timeval structure with the time difference between to
  * other timevals. result = a - b */
-struct timeval subtract_times (struct timeval a, struct timeval b);
+struct timeval subtract_times(struct timeval a, struct timeval b);
 
 /* returns the time difference a-b expressed in ms */
 double subtract_times_ms (const struct timeval *a, const struct timeval *b);

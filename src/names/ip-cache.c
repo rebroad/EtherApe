@@ -33,7 +33,7 @@
 
 #include "common.h"
 #include "preferences.h"
-#include "util.h"
+#include "stats/util.h"
 #include "ip-cache.h"
 
 static GTree *ipcache_tree;

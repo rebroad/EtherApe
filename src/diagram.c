@@ -26,17 +26,17 @@
 #include "appdata.h"
 #include "diagram.h"
 #include "pref_dialog.h"
-#include "node.h"
+#include "stats/node.h"
 #include "info_windows.h"
-#include "protocols.h"
+#include "stats/protocols.h"
 #include "datastructs.h"
-#include "ip-cache.h"
+#include "names/ip-cache.h"
 #include "menus.h"
 #include "capture.h"
-#include "conversations.h"
+#include "stats/conversations.h"
 #include "preferences.h"
 #include "export.h"
-#include "util.h"
+#include "stats/util.h"
 
 /* maximum node and link size */
 #define MAX_NODE_SIZE 5000

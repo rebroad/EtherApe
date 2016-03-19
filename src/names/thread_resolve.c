@@ -53,7 +53,7 @@
 #include "common.h"
 #include "ip-cache.h"
 #include "thread_resolve.h"
-#include "util.h"
+#include "stats/util.h"
 
 #define ETHERAPE_THREAD_POOL_SIZE 6
 static pthread_t resolver_threads[ETHERAPE_THREAD_POOL_SIZE];

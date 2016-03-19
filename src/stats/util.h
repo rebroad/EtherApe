@@ -26,20 +26,11 @@
 #ifndef __UTIL_H__
 #define __UTIL_H__
 
-#include "appdata.h"
+//#include "appdata.h"
+#include "common.h"
 
-/* Returns the user's home directory, via the HOME environment
- * variable, or a default directory if HOME is not set */
-const char *get_home_dir (void);
-
-/* gets a list containing the names of available interfaces. Returns NULL 
- * if there is an error, putting also an error message into err_str.
- * The returned list MUST be freed with interface_list_free() */
-GList *interface_list_create(GString *err_str);
-void interface_list_free(GList * if_list);
-
-char *safe_strncpy (char *dst, const char *src, size_t maxlen);
-char *safe_strncat (char *dst, const char *src, size_t maxlen);
+char *safe_strncpy(char *dst, const char *src, size_t maxlen);
+char *safe_strncat(char *dst, const char *src, size_t maxlen);
 
 /* utility functions */
 const gchar *ipv4_to_str(const guint8 * ad);
@@ -55,6 +46,9 @@ const gchar *type_to_str(const address_t * ad);
 int strict_strtol(const char *str, int base, long *val);
 
 int bitwise_memcmp(const void *a, const void *b, size_t nbits);
+
+/* returns a newly allocated string with a timeval in human readable form */
+gchar *timeval_to_str(struct timeval last_heard);
 
 /* xml helpers */
 gchar *xmltag(const gchar *name, const gchar *fmt, ...);

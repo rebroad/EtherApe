@@ -26,13 +26,14 @@
 #include "appdata.h"
 #include "info_windows.h"
 #include "diagram.h"
-#include "node.h"
+#include "stats/node.h"
 #include "datastructs.h"
-#include "protocols.h"
+#include "stats/protocols.h"
 #include "capture.h"
 #include "preferences.h"
-#include "prot_types.h"
+#include "stats/prot_types.h"
 #include "ui_utils.h"
+#include "stats/util.h"
 #include "node_windows.h"
 
 typedef enum 
@@ -210,7 +211,7 @@ update_prot_info_window (prot_info_window_t * prot_info_window)
   widget = g_object_get_data (G_OBJECT (window), "name_label");
   gtk_label_set_text (GTK_LABEL (widget), prot_info_window->prot_name);
   widget = g_object_get_data (G_OBJECT (window), "last_heard_label");
-  str = timeval_to_str (prot->stats.last_time);
+  str = timeval_to_str(prot->stats.last_time);
   gtk_label_set_text (GTK_LABEL (widget), str);
   g_free(str);
   widget = g_object_get_data (G_OBJECT (window), "average");

@@ -20,59 +20,17 @@
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
+#include <pwd.h>
 
-#include <math.h>
 #include "appdata.h"
 #include "ui_utils.h"
-#include "traffic_stats.h"
-
+#include <pcap.h> /*JTC*/
 
 /* 
   
   Helper functions 
 
 */
-
-/* returns a newly allocated string with a timeval in human readable form */
-gchar *timeval_to_str (struct timeval last_heard)
-{
-  gchar *str;
-  struct timeval diff;
-  struct tm broken_time;
-
-  diff = subtract_times(appdata.now, last_heard);
-  if (diff.tv_sec <= 60)
-    {
-      /* Meaning "n seconds" ago */
-      return g_strdup_printf (_("%ld\" ago"), (long) diff.tv_sec);
-    }
-
-  if (diff.tv_sec < 600)
-    {
-      /* Meaning "m minutes, n seconds ago" */
-      return g_strdup_printf (_("%ld'%ld\" ago"),
-			 (long) floor ((double) diff.tv_sec / 60),
-			 (long) diff.tv_sec % 60);
-    }
-
-  if (!localtime_r ((time_t *) & (last_heard.tv_sec), &broken_time))
-    {
-      g_my_critical ("Time conversion failed in timeval_to_str");
-      return NULL;
-    }
-
-  if (diff.tv_sec < 3600 * 24)
-      str = g_strdup_printf ("%d:%d", broken_time.tm_hour, broken_time.tm_min);
-  else
-    {
-      /* Watch out! The first is month, the second day of the month */
-      str = g_strdup_printf (_("%d/%d %d:%d"),
-			     broken_time.tm_mon, broken_time.tm_mday,
-			     broken_time.tm_hour, broken_time.tm_min);
-    }
-
-  return str;
-}				/* timeval_to_str */
 
 /* registers the named glade widget on the specified object */
 void register_glade_widget(GladeXML *xm, GObject *tgt, const gchar *widgetName)
@@ -171,3 +129,103 @@ GtkTreeView *retrieve_treeview(GtkWidget *window)
     return NULL;
   return GTK_TREE_VIEW(g_object_get_data ( G_OBJECT(window), "EA_gv"));
 }
+
+const char *get_home_dir(void)
+{
+  char *env_value;
+  static const char *home = NULL;
+  struct passwd *pwd;
+
+  /* Return the cached value, if available */
+  if (home)
+    return home;
+
+  env_value = getenv ("HOME");
+
+  if (env_value)
+    {
+      home = env_value;
+    }
+  else
+    {
+      pwd = getpwuid(getuid ());
+      if (pwd != NULL)
+	{
+	  /* This is cached, so we don't need to worry
+	     about allocating multiple ones of them. */
+	  home = g_strdup (pwd->pw_dir);
+	}
+      else
+	home = "/tmp";
+    }
+
+  return home;
+}
+
+
+/* use only pcap to obtain the interface list */
+
+GList *interface_list_create(GString *err_str)
+{
+  GList *il = NULL;
+  pcap_if_t *pcap_devlist = NULL;
+  pcap_if_t *curdev;
+  char pcap_errstr[1024]="";
+
+  g_string_assign(err_str, "");
+
+  if (pcap_findalldevs(&pcap_devlist, pcap_errstr) < 0)
+    {
+      /* can't obtain interface list from pcap */
+      g_string_printf (err_str, "Getting interface list from pcap failed: %s",
+	       pcap_errstr);
+      return NULL;
+    }
+
+  /* We want to list the interfaces in order, but with loopbacks last. Since
+   * glist_append must iterate over all elements (!!!), we use g_list_prepend
+   * then reverse the list (stupid Glist!) */
+    
+  /* iterate on all pcap devices, skipping loopbacks*/
+  for (curdev = pcap_devlist ; curdev ; curdev = curdev->next)
+    {
+      if (PCAP_IF_LOOPBACK == curdev->flags)
+        continue; /* skip loopback */
+
+      il = g_list_prepend(il, g_strdup(curdev->name));
+    }
+
+  /* loopbacks added last */
+  for (curdev = pcap_devlist ; curdev ; curdev = curdev->next)
+    {
+      if (PCAP_IF_LOOPBACK != curdev->flags)
+        continue; /* only loopback */
+
+      il = g_list_prepend(il, g_strdup(curdev->name));
+    }
+
+  /* reverse list*/
+  il = g_list_reverse(il);
+
+  /* release pcap list */
+  pcap_freealldevs(pcap_devlist);
+
+  /* return ours */
+  return il;
+}
+
+static void interface_list_free_cb(gpointer data, gpointer user_data)
+{
+  g_free (data);
+}
+
+void interface_list_free(GList * if_list)
+{
+  if (if_list)
+    {
+      g_list_foreach (if_list, interface_list_free_cb, NULL);
+      g_list_free (if_list);
+    }
+}
+
+

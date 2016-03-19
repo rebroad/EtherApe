@@ -23,8 +23,7 @@
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
-//#include "appdata.h"
-#include "prot_types.h"
+#include "stats/prot_types.h"
 
 typedef struct
 {

@@ -18,7 +18,7 @@
  */
 
 #include "appdata.h"
-#include "node.h"
+#include "stats/node.h"
 
 void init_names(void);
 void cleanup_names(void);

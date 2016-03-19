@@ -25,9 +25,9 @@
 #include <gtk/gtk.h>
 #include <glib.h>
 #include "menus.h"
-#include "util.h"
+#include "ui_utils.h"
 #include "diagram.h"
-#include "decode_proto.h"
+#include "stats/decode_proto.h"
 #include "info_windows.h"
 #include "capture.h"
 #include "preferences.h"

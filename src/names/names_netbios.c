@@ -34,7 +34,7 @@
 #endif
 
 #include "names_netbios.h"
-#include "util.h"
+#include "stats/util.h"
 
 #define NBNAME_BUF_LEN   128
 #define BYTES_ARE_IN_FRAME(a,b,c) (((a)+(b))<(c))

@@ -35,11 +35,8 @@
                                   (double)(b)/0xFFFF))) / 2.0)
 
 
-/* returns a newly allocated string with a timeval in human readable form */
-gchar *timeval_to_str (struct timeval last_heard);
-
 /* returns a newly allocated string with a formatted traffic  */
-gchar *traffic_to_str (gdouble traffic, gboolean is_speed);
+gchar *traffic_to_str(gdouble traffic, gboolean is_speed);
 
 /* registers the named glade widget on the specified object */
 void register_glade_widget(GladeXML *xm, GObject *tgt, const gchar *widgetName);
@@ -59,5 +56,15 @@ void create_add_text_column(GtkTreeView *gv, const gchar *title, int colno,
 /* register/get a treeview to/from a window */
 void register_treeview(GtkWidget *window, GtkTreeView *gv);
 GtkTreeView *retrieve_treeview(GtkWidget *window);
+
+/* gets a list containing the names of available interfaces. Returns NULL 
+ * if there is an error, putting also an error message into err_str.
+ * The returned list MUST be freed with interface_list_free() */
+GList *interface_list_create(GString *err_str);
+void interface_list_free(GList * if_list);
+
+/* Returns the user's home directory, via the HOME environment
+ * variable, or a default directory if HOME is not set */
+const char *get_home_dir (void);
 
 #endif

@@ -30,10 +30,10 @@
 #include "dns.h"
 #include "eth_resolv.h"
 #include "names_netbios.h"
-#include "protocols.h"
+#include "stats/protocols.h"
 #include "datastructs.h"
 #include "preferences.h"
-#include "util.h"
+#include "stats/util.h"
 
 typedef struct
 {

@@ -29,12 +29,12 @@
 
 #include "appdata.h"
 #include "capture.h"
-#include "names.h"
-#include "links.h"
-#include "conversations.h"
-#include "dns.h"
-#include "decode_proto.h"
-#include "protocols.h"
+#include "names/names.h"
+#include "stats/links.h"
+#include "stats/conversations.h"
+#include "names/dns.h"
+#include "stats/decode_proto.h"
+#include "stats/protocols.h"
 #include "preferences.h"
 #include "export.h"
 

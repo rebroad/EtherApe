@@ -39,7 +39,7 @@
 #include "preferences.h"
 #include "node.h"
 #include "links.h"
-#include "names.h"
+#include "names/names.h"
 
 #define TCP_FTP 21
 #define TCP_NETBIOS_SSN 139

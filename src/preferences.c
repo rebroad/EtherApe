@@ -24,7 +24,7 @@
 #include "preferences.h"
 #include "math.h"
 #include "datastructs.h"
-#include "node.h"
+#include "stats/node.h"
 
 struct pref_struct pref;
 GList *centered_node_speclist = NULL;

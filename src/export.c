@@ -28,8 +28,8 @@
 #include <errno.h>
 #include <locale.h>
 
-#include "node.h"
-#include "util.h"
+#include "stats/node.h"
+#include "stats/util.h"
 #include "export.h"
 
 static gchar *header_xml(void)

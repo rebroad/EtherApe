@@ -1,7 +1,6 @@
 ## Process this file with automake to produce Makefile.in
 
-# $Id$
-
+AUTOMAKE_OPTIONS = subdir-objects
 
 confdir = $(sysconfdir)/etherape
 gladedir   = $(datadir)/etherape/glade
@@ -15,39 +14,47 @@ etherape_CPPFLAGS  = \
 
 bin_PROGRAMS = etherape
 
+## name resolution sources 
+etherape_names_SOURCES = \
+	names/eth_resolv.c names/eth_resolv.h \
+	names/dns.c names/dns.h \
+	names/ip-cache.c names/ip-cache.h \
+	names/names.c names/names.h \
+	names/names_netbios.c names/names_netbios.h
+
+# statistics sources
+etherape_stats_SOURCES = \
+	stats/basic_stats.c stats/basic_stats.h \
+	stats/conversations.c stats/conversations.h \
+	stats/decode_proto.c stats/decode_proto.h \
+	stats/links.c stats/links.h \
+	stats/node.c stats/node.h \
+	stats/node_id.c stats/node_id.h \
+	stats/protocols.c stats/protocols.h \
+	stats/prot_types.h stats/pkt_info.h \
+	stats/traffic_stats.c stats/traffic_stats.h \
+	stats/util.c stats/util.h
+
 etherape_SOURCES = \
-	common.h \
-	eth_resolv.c eth_resolv.h \
-	util.c util.h \
-	export.c export.h \
-	dns.c dns.h \
-	callbacks.c callbacks.h \
-	menus.c menus.h \
-	preferences.c preferences.h \
-	pref_dialog.c pref_dialog.h \
+    $(etherape_stats_SOURCES) \
+    $(etherape_names_SOURCES) \
 	main.c main.h \
+	common.h \
 	appdata.c appdata.h\
-	diagram.c diagram.h \
+	callbacks.c callbacks.h \
 	capture.c capture.h \
-	names.c names.h \
-	names_netbios.c names_netbios.h \
-	protocols.c protocols.h \
-	decode_proto.c decode_proto.h \
-	prot_types.h pkt_info.h \
-	info_windows.c info_windows.h \
-	ip-cache.c ip-cache.h \
-	node_id.c node_id.h \
-	node.c node.h \
-	node_windows.c node_windows.h \
-	links.c links.h \
-	conversations.c conversations.h \
-	basic_stats.c basic_stats.h \
-	traffic_stats.c traffic_stats.h \
 	datastructs.c datastructs.h \
+	diagram.c diagram.h \
+	export.c export.h \
+	info_windows.c info_windows.h \
+	menus.c menus.h \
+	node_windows.c node_windows.h \
+	pref_dialog.c pref_dialog.h \
+	preferences.c preferences.h \
 	ui_utils.c ui_utils.h
 
 if !HAVE_LIBCARES
-etherape_SOURCES += thread_resolve.c thread_resolve.h
+etherape_SOURCES += names/thread_resolve.c names/thread_resolve.h
 endif
 
 etherape_LDADD = $(ETHERAPE_LIBS) $(PCAP_LIBS) 

@@ -25,9 +25,9 @@
 #include "preferences.h"
 #include "diagram.h"
 #include "capture.h"
-#include "node.h"
+#include "stats/node.h"
 #include "datastructs.h"
-#include "util.h" /* compat functions */
+#include "stats/util.h" /* compat functions */
 
 #define MILLI   (1000.0)
 #define COLSPACES   "        "

@@ -26,7 +26,7 @@
 #include <netdb.h>
 #include "datastructs.h"
 #include "appdata.h"
-#include "util.h"
+#include "stats/util.h"
 
 #define LINESIZE 1024
 

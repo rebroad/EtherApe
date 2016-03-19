@@ -31,7 +31,7 @@
 #include <gnome.h>
 #include <libgnomeui/gnome-client.h>
 #include "appdata.h"
-#include "ip-cache.h"
+#include "names/ip-cache.h"
 #include "main.h"
 #include "diagram.h"
 #include "preferences.h"
@@ -39,10 +39,10 @@
 #include "menus.h"
 #include "capture.h"
 #include "datastructs.h"
-#include "dns.h"
-#include "eth_resolv.h"
-#include "names.h"
-#include "util.h"
+#include "names/dns.h"
+#include "names/eth_resolv.h"
+#include "names/names.h"
+#include "stats/util.h"
 
 /***************************************************************************
  *

@@ -21,11 +21,11 @@
 #include <config.h>
 #endif
 
-#include <sys/types.h>
-#include <netinet/in.h>
-#include "appdata.h"
+#include "common.h"
+//#include <netinet/in.h>
+//#include "appdata.h"
 #include "conversations.h"
-#include "dns.h"
+#include "names/dns.h"
 #include "util.h"
 
 /* Some protocols add an item here to help identify further packets of the 
