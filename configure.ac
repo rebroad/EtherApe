@@ -76,12 +76,33 @@ if test "$enable_werror" = yes; then
   ETHERAPE_CFLAGS="$ETHERAPE_CFLAGS -Werror"
 fi
 
+AC_ARG_ENABLE([asan],
+  AS_HELP_STRING([--enable-asan],
+    [Compile with GCC/Clang's address sanitizer (incompatible with --enable-tsan) @<:@default=disabled@:>@]))
+
+if test "$enable_asan" = yes; then
+  ETHERAPE_CFLAGS="$ETHERAPE_CFLAGS -fsanitize=address"
+  ETHERAPE_LDFLAGS="$ETHERAPE_LDFLAGS -fsanitize=address"
+fi
+
 AC_ARG_ENABLE([ubsan],
-  AS_HELP_STRING([--enable-ubsan], [Compile with GCC/Clang's undefined-behavior sanitizer@<:@default=disabled@:>@]))
+  AS_HELP_STRING([--enable-ubsan], [Compile with GCC/Clang's undefined-behavior sanitizer @<:@default=disabled@:>@]))
 
 if test "$enable_ubsan" = yes; then
   ETHERAPE_CFLAGS="$ETHERAPE_CFLAGS -fsanitize=undefined"
   ETHERAPE_LDFLAGS="$ETHERAPE_LDFLAGS -fsanitize=undefined"
+fi
+
+AC_ARG_ENABLE([tsan],
+  AS_HELP_STRING([--enable-tsan],
+    [Compile with GCC/Clang's thread sanitizer (incompatible with --enable-asan) @<:@default=disabled@:>@]))
+
+if test "$enable_tsan" = yes; then
+  if test "$enable_asan" = yes; then
+    AC_MSG_ERROR([--enable-tsan and --enable-asan are mutually incompatible])
+  fi
+  ETHERAPE_CFLAGS="$ETHERAPE_CFLAGS -fsanitize=thread"
+  ETHERAPE_LDFLAGS="$ETHERAPE_LDFLAGS -fsanitize=thread"
 fi
 
 # checks for osx or disable-gdk-input-add
