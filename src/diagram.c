@@ -572,6 +572,9 @@ static gchar *get_pcap_stats_string(void)
 {
   struct pcap_stat stats;
 
+  if (appdata.input_file)
+    return g_strdup(_("(Capture statistics unavailable in offline mode.)"));
+
   get_capture_stats(&stats);
 
   return g_strdup_printf("%-12s %12u\n%-12s %12u\n%-12s %12u", "recv:",

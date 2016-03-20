@@ -74,11 +74,17 @@ enum status_t get_capture_status(void)
 
 void get_capture_stats(struct pcap_stat *ps)
 {
+  memset(ps, 0, sizeof(*ps));
+
+  /*
+   * If called when reading from a capture file, pcap_stats() just fails with
+   * "Statistics aren't available from savefiles", so don't bother.
+   */
+  if (appdata.input_file)
+    return;
+
   if (pcap_stats(pch_struct, ps))
-    {
-      memset(ps, 0, sizeof(*ps));
-      g_error("pcap_stats() failed: %s\n", pcap_geterr(pch_struct));
-    }
+    fprintf(stderr, _("pcap_stats() failed: %s\n"), pcap_geterr(pch_struct));
 }
 
 /* Sets up the pcap device
