@@ -44,6 +44,7 @@
 
 gboolean already_updating;
 gboolean stop_requested;
+gboolean stationary_layout = FALSE;
 
 static GnomeCanvasItem *pcap_stats_text_item = NULL;
 static GnomeCanvasGroup *pcap_stats_text_group = NULL;
@@ -1193,7 +1194,7 @@ static void init_reposition(reposition_node_t *data,
    */
   data->center.angle += M_PI / 4.0;
 
-  if (pref.position)
+  if (column_patterns)
     data->column_populations = g_malloc0_n(column_patterns->len + 1,
                                            sizeof(*data->column_populations));
 
@@ -1215,7 +1216,7 @@ static void init_reposition(reposition_node_t *data,
 
 static void clear_reposition(reposition_node_t *rdata)
 {
-  if (pref.position)
+  if (column_patterns)
     g_free(rdata->column_populations);
 }
 
@@ -1224,7 +1225,7 @@ static guint find_node_column(node_t *node)
   guint i;
 
   /* This should only be called if we're in columnar-positioning mode */
-  g_assert(pref.position);
+  g_assert(column_patterns);
 
   for (i = 0; i < column_patterns->len; i++)
     {
@@ -1255,7 +1256,7 @@ static gint reposition_canvas_nodes_prep(const node_id_t *node_id,
     return FALSE;
 
   node = nodes_catalog_find(node_id);
-  if (pref.position)
+  if (column_patterns)
     {
       canvas_node->column = find_node_column(node);
       canvas_node->column_idx = rdata->column_populations[canvas_node->column]++;
@@ -1311,7 +1312,7 @@ static gint reposition_canvas_nodes(node_id_t * node_id,
 
   /* TODO I've done all the stationary changes in a hurry
    * I should review it an tidy up all this stuff */
-  if (pref.stationary)
+  if (stationary_layout)
     {
       if (canvas_node->is_new)
 	{
@@ -1338,7 +1339,7 @@ static gint reposition_canvas_nodes(node_id_t * node_id,
 	  y = data->y_rad_max * sin (s_angle);
 	}
     }
-  else if (pref.position)
+  else if (column_patterns)
     {
       guint col = canvas_node->column;
 
@@ -1384,7 +1385,7 @@ static gint reposition_canvas_nodes(node_id_t * node_id,
     }
 
 
-  if (!pref.stationary || canvas_node->is_new)
+  if (!stationary_layout || canvas_node->is_new)
     {
       gnome_canvas_item_set(GNOME_CANVAS_ITEM (canvas_node->group_item),
 			     "x", x, "y", y, NULL);

@@ -94,6 +94,7 @@ main (int argc, char *argv[])
   gchar *version;
   gchar *cl_glade_file = NULL;
   poptContext poptcon;
+  gchar *position_file_path = NULL;
 
   struct poptOption optionsTable[] = {
     {"diagram-only", 'd', POPT_ARG_NONE, &(pref.diagram_only), 0,
@@ -108,10 +109,10 @@ main (int argc, char *argv[])
      N_("export to named file at end of replay"), N_("<file to export to>")},
     {"signal-export", 0, POPT_ARG_STRING, &export_file_signal, 0,
      N_("export to named file on receiving USR1"), N_("<file to export to>")},
-    {"position", 'P', POPT_ARG_STRING, &(pref.position), 0,
+    {"position", 'P', POPT_ARG_STRING, &position_file_path, 0,
     N_("Manually position nodes based on File"), N_("<list of nodes and their columns>")},
-    {"stationary", 's', POPT_ARG_NONE, &(pref.stationary), 0,  
-     N_("don't move nodes around (deprecated)"), NULL}, 
+    {"stationary", 's', POPT_ARG_NONE, &stationary_layout, 0,
+     N_("don't move nodes around (deprecated)"), NULL},
     {"node-limit", 'l', POPT_ARG_INT, &(appdata.node_limit), 0,
      N_("limits nodes displayed"), N_("<number of nodes>")},
     {"mode", 'm', POPT_ARG_STRING, &mode_string, 0,
@@ -157,16 +158,11 @@ main (int argc, char *argv[])
 
   appdata_init(&appdata);
 
-  /* We obtain application parameters 
-   * First, absolute defaults
-   * Second, values saved in the config file
-   * Third, whatever given in the command line */
-  init_config(&pref);
-
   set_debug_level();
 
   /* Config file */
   load_config(&pref);
+  protohash_read_prefvect(pref.colors);
   centered_node_speclist = parse_nodeset_spec_list(pref.centered_nodes);
 
   /* Command line */
@@ -251,8 +247,8 @@ main (int argc, char *argv[])
   else
       g_message("Invalid maximum delay %ld, ignored", madelay);
 
-  if (pref.position)
-    parse_position_file(pref.position);
+  if (position_file_path)
+    parse_position_file(position_file_path);
 
   /* Glade */
   glade_gnome_init ();

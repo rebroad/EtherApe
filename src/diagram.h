@@ -39,4 +39,6 @@ void redraw_canvas_background(GtkWidget *canvas); /* Called by on_canvas1_size_a
 /* Array of lists of nodeset_specs */
 extern GPtrArray *column_patterns;
 
+extern gboolean stationary_layout;
+
 #endif /* DIAGRAM_H */

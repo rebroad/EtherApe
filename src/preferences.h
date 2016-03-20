@@ -25,13 +25,17 @@
 #endif
 #include "common.h"
 
-/* preferences data */
+/*
+ * Preferences data.
+ *
+ * Note that this is strictly for options that live in the config file;
+ * options set by command-line flags should go elsewhere.
+ */
 struct pref_struct
 {
   gboolean name_res;		/* Whether dns lookups are performed */
   gboolean diagram_only;	/* Do not use text on the diagram */
   gboolean group_unk;		/* Whether to display as one every unkown port protocol */
-  gboolean stationary;		/* Use alternative algorith for node placing */
   gdouble node_radius_multiplier;	/* used to calculate the radius of the
 					 * displayed nodes. So that the user can
 					 * select with certain precision this
@@ -83,7 +87,7 @@ struct pref_struct
   /* After this time has passed with no traffic for a link, it 
    * disappears from the diagram */
   gdouble gui_link_timeout_time;
-  
+
   /* After this time has passed with no traffic for a link, it 
   * is deleted from memory */
   gdouble link_timeout_time;
@@ -95,7 +99,6 @@ struct pref_struct
   guint32 refresh_period;	/* Time between diagram refreshes */
   gdouble averaging_time;	/* Microseconds of time we consider to
 				 * calculate traffic averages */
-  gchar *position;              /* Filename of a List of nodes and their positions */
 };
 
 extern struct pref_struct pref;
@@ -106,9 +109,6 @@ extern GList *centered_node_speclist;
 /* preferences methods */
 void load_config(struct pref_struct *p);
 void save_config(const struct pref_struct *p);
-void init_config(struct pref_struct *cfg);
-void set_default_config(struct pref_struct *cfg);
-struct pref_struct *duplicate_config(const struct pref_struct *src);
 void free_config(struct pref_struct *t);
 void copy_config(struct pref_struct *tgt, const struct pref_struct *src);
 

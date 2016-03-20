@@ -30,6 +30,9 @@ struct pref_struct pref;
 GList *centered_node_speclist = NULL;
 static const gchar *pref_group = "Diagram";
 
+/* Separator character used in encoding string-vectors */
+#define STRVEC_SEP " "
+
 /***************************************************************
  *
  * internal helpers
@@ -46,6 +49,18 @@ static void read_string_config(gchar **item, GKeyFile *gkey, const char *key)
   /* frees previous value and sets to new pointer */
   g_free(*item);
   *item = tmp;
+}
+
+static void read_strvec_config(gchar ***item, GKeyFile *gkey, const char *key)
+{
+  gchar *tmp = NULL;
+  read_string_config(&tmp, gkey, key);
+  if (tmp)
+    {
+      g_strfreev(*item);
+      *item = g_strsplit(tmp, STRVEC_SEP, 0);
+      g_free(tmp);
+    }
 }
 
 static void read_boolean_config(gboolean *item, GKeyFile *gkey, const char *key)
@@ -87,113 +102,145 @@ static gchar *old_config_file_name(void)
   return g_strdup_printf("%s/.gnome2/Etherape", g_get_home_dir());
 }
 
+typedef enum
+{
+  PT_bool,
+  PT_int,
+  PT_double,
+  PT_string,
+  PT_strvec,
+} preftype_t;
+
+/* Describes a setting in the config file */
+struct preference
+{
+  /* Label used in the config file */
+  const char *name;
+
+  /* where it sits within pref_struct */
+  ptrdiff_t offset;
+
+  /* What type of setting it is */
+  preftype_t type;
+
+  /* Default value for the setting */
+  union
+  {
+    gboolean pv_bool;
+    gint pv_int;
+    gdouble pv_double;
+    gchar *pv_string;
+    gchar **pv_strvec;
+  } defval;
+};
+
+#define MKPREF(n, t, d) { \
+    .name = #n, \
+    .offset = offsetof(struct pref_struct, n), \
+    .type = PT_##t, \
+    .defval.pv_##t = d, \
+  }
+
+static const struct preference preferences[] = {
+  MKPREF(name_res, bool, TRUE),
+  MKPREF(diagram_only, bool, FALSE),
+  MKPREF(group_unk, bool, TRUE),
+  MKPREF(centered_nodes, string, ""),
+
+  MKPREF(text_color, string, "#ffff00"),
+  MKPREF(fontname, string, "Sans 8"),
+  MKPREF(colors, strvec, ((char*[]){ "#ff0000;WWW,HTTP", "#0000ff;DOMAIN",
+                                     "#00ff00", "#ffff00", "#ff00ff", "#00ffff",
+                                     "#ffffff", "#ff7700", "#ff0077", "#ffaa77",
+                                     "#7777ff", "#aaaa33", NULL, })),
+
+  MKPREF(bck_image_enabled, bool, TRUE),
+  MKPREF(bck_image_path, string, ""),
+
+  MKPREF(show_statusbar, bool, TRUE),
+  MKPREF(show_toolbar, bool, TRUE),
+  MKPREF(show_legend, bool, TRUE),
+
+  MKPREF(inner_ring_scale, double, 0.5),
+  MKPREF(node_radius_multiplier, double, 0.0005),
+  MKPREF(link_node_ratio, double, 1.0),
+  MKPREF(node_size_variable, int, INST_OUTBOUND),
+  MKPREF(size_mode, int, LINEAR),
+
+  MKPREF(node_timeout_time, double, 120000.0),
+  MKPREF(gui_node_timeout_time, double, 60000.0),
+  MKPREF(proto_node_timeout_time, double, 0),
+
+  MKPREF(link_timeout_time, double, 20000.0),
+  MKPREF(gui_link_timeout_time, double, 20000.0),
+  MKPREF(proto_link_timeout_time, double, 600000.0),
+
+  MKPREF(proto_timeout_time, double, 60000.0),
+  MKPREF(refresh_period, int, 100),
+  MKPREF(averaging_time, double, 2000.0),
+
+  MKPREF(filter, string, "ip or ip6"),
+  MKPREF(pcap_stats_pos, int, STATSPOS_NONE),
+  MKPREF(stack_level, int, 0),
+};
+
+#define NUM_PREFS (sizeof(preferences) / sizeof(preferences[0]))
+
 /***************************************************************
  *
  * pref handling
  *
  ***************************************************************/
-void init_config(struct pref_struct *p)
+static void default_config(struct pref_struct *p)
 {
-  p->name_res = TRUE;
-  p->refresh_period = 800;	/* ms */
+  int i;
+  void *addr;
+  gchar *tmp;
 
-  p->diagram_only = FALSE;
-  p->group_unk = TRUE;
-  p->stationary = FALSE;
-  p->node_radius_multiplier = 0.0005;
-  p->link_node_ratio = 1;
-  p->inner_ring_scale = 0.5;
-  p->size_mode = LINEAR;
-  p->node_size_variable = INST_OUTBOUND;
-  p->stack_level = 0;
-  p->proto_timeout_time=0;
-  p->gui_node_timeout_time=0;
-  p->node_timeout_time=0;
-  p->proto_node_timeout_time=0;
-  p->gui_link_timeout_time=0;
-  p->link_timeout_time=0;
-  p->proto_link_timeout_time=0;
-  p->refresh_period=0;
-  p->pcap_stats_pos = STATSPOS_NONE;
+  for (i = 0; i < NUM_PREFS; i++)
+    {
+      addr = (char *)p + preferences[i].offset;
+      switch (preferences[i].type)
+        {
+        case PT_bool:
+          *(gboolean *)addr = preferences[i].defval.pv_bool;
+          break;
 
-  p->filter = NULL;
-  p->text_color=NULL;
-  p->fontname=NULL;
-  p->colors=NULL;
-  p->centered_nodes = NULL;
-  p->bck_image_path = NULL;
-  p->bck_image_enabled = FALSE;
+        case PT_int:
+          *(gint *)addr = preferences[i].defval.pv_int;
+          break;
 
-  p->show_statusbar = TRUE;
-  p->show_toolbar = TRUE;
-  p->show_legend = TRUE;
+        case PT_double:
+          *(gdouble *)addr = preferences[i].defval.pv_double;
+          break;
 
-  p->averaging_time=3000;
-  p->position = NULL;
-}
+        case PT_string:
+          *(gchar **)addr = g_strdup(preferences[i].defval.pv_string);
+          break;
 
-void set_default_config(struct pref_struct *p)
-{
-  p->diagram_only = FALSE;
-  p->group_unk = TRUE;
-  p->stationary = FALSE;
-  p->name_res = TRUE;
-  p->node_timeout_time = 120000.0;
-  p->gui_node_timeout_time = 60000.0;
-  p->proto_node_timeout_time = 60000.0;
-  p->link_timeout_time = 20000.0;
-  p->gui_link_timeout_time = 20000.0;
-  p->proto_link_timeout_time = 20000.0;
-  p->proto_timeout_time = 600000.0;
-  p->averaging_time = 2000.0;
-  p->node_radius_multiplier = 0.0005;
-  p->link_node_ratio = 1.0;
-  p->inner_ring_scale = 0.5;
-  p->refresh_period = 100;
-  p->size_mode = LINEAR;
-  p->node_size_variable = INST_OUTBOUND;
-  p->stack_level = 0;
-  p->pcap_stats_pos = STATSPOS_NONE;
-
-  g_free(p->filter);
-  p->filter = g_strdup("ip or ip6");
-
-  g_free(p->fontname);
-  p->fontname = g_strdup("Sans 8");
-
-  g_free(p->text_color);
-  p->text_color = g_strdup("#ffff00");
-
-  g_strfreev(p->colors);
-  p->colors = g_strsplit("#ff0000;WWW,HTTP #0000ff;DOMAIN #00ff00 #ffff00 "
-                           "#ff00ff #00ffff #ffffff #ff7700 #ff0077 #ffaa77 "
-                           "#7777ff #aaaa33",
-                           " ", 0);
-  p->colors = protohash_compact(p->colors);
-  protohash_read_prefvect(p->colors);
-
-  g_free(p->centered_nodes);
-  p->centered_nodes = g_strdup("");
-
-  p->bck_image_enabled = FALSE;
-  g_free(p->bck_image_path);
-  p->bck_image_path = g_strdup("");
-
-  p->show_statusbar = TRUE;
-  p->show_toolbar = TRUE;
-  p->show_legend = TRUE;
+        case PT_strvec:
+          /*
+           * Slightly clunky join-and-re-split dance so that the initialized
+           * result is a g_strfreev()-able string vector.
+           */
+          tmp = g_strjoinv(STRVEC_SEP, preferences[i].defval.pv_strvec);
+          *(gchar ***)addr = g_strsplit(tmp, STRVEC_SEP, 0);
+          g_free(tmp);
+          break;
+        }
+    }
 }
 
 /* loads configuration from .gnome/Etherape */
 void load_config(struct pref_struct *p)
 {
   gchar *pref_file;
-  gchar *tmpstr = NULL;
-  gchar **colorarray;
   GKeyFile *gkey;
+  int i;
+  void *addr;
 
-  /* first reset configurations to defaults */
-  set_default_config(p);
+  /* first set up defaults */
+  default_config(p);
 
   gkey = g_key_file_new();
 
@@ -212,58 +259,34 @@ void load_config(struct pref_struct *p)
     }
   g_free(pref_file);
 
-  read_string_config(&p->filter, gkey, "filter");
-  read_string_config(&p->fontname, gkey, "fontname");
-  read_string_config(&p->text_color, gkey, "text_color");
-  read_string_config(&p->centered_nodes, gkey, "centered_nodes");
-
-  read_boolean_config(&p->bck_image_enabled, gkey, "bck_image_enabled");
-  read_string_config(&p->bck_image_path, gkey, "bck_image_path");
-
-  read_boolean_config(&p->diagram_only, gkey, "diagram_only");
-  read_boolean_config(&p->group_unk, gkey, "group_unk");
-  read_boolean_config(&p->stationary, gkey, "stationary");
-  read_boolean_config(&p->name_res, gkey, "name_res");
-  read_int_config((gint *)&p->refresh_period, gkey, "refresh_period");
-  read_int_config((gint *)&p->size_mode, gkey, "size_mode");
-  read_int_config((gint *)&p->node_size_variable, gkey, "node_size_variable");
-  read_int_config((gint *)&p->stack_level, gkey, "stack_level");
-  read_int_config((gint *)&p->pcap_stats_pos, gkey, "pcap_stats_pos");
-
-  read_double_config(&p->node_timeout_time, gkey, "node_timeout_time");
-  read_double_config(&p->gui_node_timeout_time, gkey, "gui_node_timeout_time");
-  read_double_config(&p->proto_node_timeout_time, gkey, "proto_node_timeout_time");
-  read_double_config(&p->link_timeout_time, gkey, "link_timeout_time");
-  read_double_config(&p->gui_link_timeout_time, gkey, "gui_link_timeout_time");
-  read_double_config(&p->proto_link_timeout_time, gkey, "proto_link_timeout_time");
-  read_double_config(&p->proto_timeout_time, gkey, "proto_timeout_time");
-  read_double_config(&p->averaging_time, gkey, "averaging_time");
-  read_double_config(&p->node_radius_multiplier, gkey, "node_radius_multiplier");
-  read_double_config(&p->link_node_ratio, gkey, "link_node_ratio");
-  read_double_config(&p->inner_ring_scale, gkey, "inner_ring_scale");
-
-  read_boolean_config(&p->show_statusbar, gkey, "show_statusbar");
-  read_boolean_config(&p->show_toolbar, gkey, "show_toolbar");
-  read_boolean_config(&p->show_legend, gkey, "show_legend");
-
-  read_string_config(&tmpstr, gkey, "colors");
-  if (tmpstr)
+  for (i = 0; i < NUM_PREFS; i++)
     {
-      colorarray = g_strsplit(tmpstr, " ", 0);
-      if (colorarray)
+      addr = (char *)p + preferences[i].offset;
+      switch (preferences[i].type)
         {
-          g_strfreev(p->colors);
-          p->colors = protohash_compact(colorarray);
-          protohash_read_prefvect(p->colors);
+        case PT_bool:
+          read_boolean_config(addr, gkey, preferences[i].name);
+          break;
+
+        case PT_int:
+          read_int_config(addr, gkey, preferences[i].name);
+          break;
+
+        case PT_double:
+          read_double_config(addr, gkey, preferences[i].name);
+          break;
+
+        case PT_string:
+          read_string_config(addr, gkey, preferences[i].name);
+          break;
+
+        case PT_strvec:
+          read_strvec_config(addr, gkey, preferences[i].name);
+          break;
         }
-      g_free(tmpstr);
     }
 
-  /* if needed, read the config version 
-  version = g_key_file_get_string(gkey, "General", "version");
-  ... do processing here ...
-  g_free(version);
-  */
+  p->colors = protohash_compact(p->colors);
 
   g_key_file_free(gkey);
 }
@@ -272,61 +295,47 @@ void load_config(struct pref_struct *p)
 /* It's not static since it will be called from the GUI */
 void save_config(const struct pref_struct *p)
 {
+  int i;
   gchar *pref_file;
   gchar *cfgdata;
-  gchar *tmpstr;
+  gchar *tmp;
+  const gchar *name;
   gboolean res;
   GError *error = NULL;
   GKeyFile *gkey;
+  void *addr;
 
   gkey = g_key_file_new();
 
-  g_key_file_set_boolean(gkey, pref_group, "diagram_only", p->diagram_only);
-  g_key_file_set_boolean(gkey, pref_group, "group_unk", p->group_unk);
-  g_key_file_set_boolean(gkey, pref_group, "name_res", p->name_res);
-  g_key_file_set_double(gkey, pref_group, "node_timeout_time",
-                        p->node_timeout_time);
-  g_key_file_set_double(gkey, pref_group, "gui_node_timeout_time",
-                        p->gui_node_timeout_time);
-  g_key_file_set_double(gkey, pref_group, "proto_node_timeout_time",
-                        p->proto_node_timeout_time);
-  g_key_file_set_double(gkey, pref_group, "link_timeout_time",
-                        p->link_timeout_time);
-  g_key_file_set_double(gkey, pref_group, "gui_link_timeout_time",
-                        p->gui_link_timeout_time);
-  g_key_file_set_double(gkey, pref_group, "proto_link_timeout_time",
-                        p->proto_link_timeout_time);
-  g_key_file_set_double(gkey, pref_group, "proto_timeout_time",
-                        p->proto_timeout_time);
-  g_key_file_set_double(gkey, pref_group, "averaging_time", p->averaging_time);
-  g_key_file_set_double(gkey, pref_group, "node_radius_multiplier",
-                        p->node_radius_multiplier);
-  g_key_file_set_double(gkey, pref_group, "link_node_ratio",
-                        p->link_node_ratio);
-  g_key_file_set_double(gkey, pref_group, "inner_ring_scale",
-                        p->inner_ring_scale);
-  g_key_file_set_integer(gkey, pref_group, "refresh_period", p->refresh_period);
-  g_key_file_set_integer(gkey, pref_group, "size_mode", p->size_mode);
-  g_key_file_set_integer(gkey, pref_group, "node_size_variable",
-                         p->node_size_variable);
-  g_key_file_set_integer(gkey, pref_group, "stack_level", p->stack_level);
-  g_key_file_set_integer(gkey, pref_group, "pcap_stats_pos", p->pcap_stats_pos);
+  for (i = 0; i < NUM_PREFS; i++)
+    {
+      addr = (char *)p + preferences[i].offset;
+      name = preferences[i].name;
+      switch (preferences[i].type)
+        {
+        case PT_bool:
+          g_key_file_set_boolean(gkey, pref_group, name, *(gboolean *)addr);
+          break;
 
-  g_key_file_set_string(gkey, pref_group, "filter", p->filter);
-  g_key_file_set_string(gkey, pref_group, "fontname", p->fontname);
-  g_key_file_set_string(gkey, pref_group, "text_color", p->text_color);
-  g_key_file_set_string(gkey, pref_group, "centered_nodes", p->centered_nodes);
+        case PT_int:
+          g_key_file_set_integer(gkey, pref_group, name, *(gint *)addr);
+          break;
 
-  g_key_file_set_boolean(gkey, pref_group, "bck_image_enabled", p->bck_image_enabled);
-  g_key_file_set_string(gkey, pref_group, "bck_image_path", p->bck_image_path);
+        case PT_double:
+          g_key_file_set_double(gkey, pref_group, name, *(gdouble *)addr);
+          break;
 
-  g_key_file_set_boolean(gkey, pref_group, "show_statusbar", p->show_statusbar);
-  g_key_file_set_boolean(gkey, pref_group, "show_toolbar", p->show_toolbar);
-  g_key_file_set_boolean(gkey, pref_group, "show_legend", p->show_legend);
+        case PT_string:
+          g_key_file_set_string(gkey, pref_group, name, *(gchar **)addr);
+          break;
 
-  tmpstr = g_strjoinv(" ", p->colors);
-  g_key_file_set_string(gkey, pref_group, "colors", tmpstr);
-  g_free(tmpstr);
+        case PT_strvec:
+          tmp = g_strjoinv(STRVEC_SEP, *(gchar ***)addr);
+          g_key_file_set_string(gkey, pref_group, preferences[i].name, tmp);
+          g_free(tmp);
+          break;
+        }
+    }
 
   g_key_file_set_string(gkey, "General", "version", VERSION);
 
@@ -337,105 +346,81 @@ void save_config(const struct pref_struct *p)
   g_free(cfgdata);
 
   if (res)
-    g_my_info (_("Preferences saved to %s"), pref_file);
+    g_my_info(_("Preferences saved to %s"), pref_file);
   else
     {
-      GtkWidget *dialog = gtk_message_dialog_new (NULL,
-                             GTK_DIALOG_DESTROY_WITH_PARENT,
-                             GTK_MESSAGE_ERROR,
-                             GTK_BUTTONS_CLOSE,
-                             _("Error saving preferences to '%s': %s"),
-                             pref_file,
-                             (error && error->message) ? error->message : "");
-      gtk_dialog_run (GTK_DIALOG (dialog));
-      gtk_widget_destroy (dialog);
+      GtkWidget *dialog = gtk_message_dialog_new(NULL, GTK_DIALOG_DESTROY_WITH_PARENT,
+                                                 GTK_MESSAGE_ERROR, GTK_BUTTONS_CLOSE,
+                                                 _("Error saving preferences to '%s': %s"),
+                                                 pref_file, error->message);
+      gtk_dialog_run(GTK_DIALOG(dialog));
+      gtk_widget_destroy(dialog);
     }
   g_free(pref_file);
   g_key_file_free(gkey);
 }
 
-/* duplicates a config */
-struct pref_struct *
-duplicate_config(const struct pref_struct *src)
-{
-  struct pref_struct *t;
-
-  t = g_malloc(sizeof(struct pref_struct));
-  g_assert(t);
-
-  t->filter = NULL;
-  t->text_color = NULL;
-  t->fontname = NULL;
-  t->colors = NULL;
-  t->centered_nodes = NULL;
-  t->bck_image_path = NULL;
-  copy_config(t, src);
-
-  return t;
-}
-
 /* releases all memory allocated for internal fields */
-void free_config(struct pref_struct *t)
+void free_config(struct pref_struct *p)
 {
-  g_free(t->filter);
-  t->filter=NULL;
-  g_free(t->text_color);
-  t->text_color=NULL;
-  g_free(t->fontname);
-  t->fontname=NULL;
-  g_free(t->centered_nodes);
-  t->centered_nodes=NULL;
-  g_free(t->bck_image_path);
-  t->bck_image_path=NULL;
+  int i;
+  void *addr;
 
-  g_strfreev(t->colors);
-  t->colors = NULL;
+  for (i = 0; i < NUM_PREFS; i++)
+    {
+      addr = (char *)p + preferences[i].offset;
+      switch (preferences[i].type)
+        {
+        case PT_string:
+          g_free(*(gchar **)addr);
+          *(gchar **)addr = NULL;
+          break;
+
+        case PT_strvec:
+          g_strfreev(*(gchar ***)addr);
+          *(gchar ***)addr = NULL;
+          break;
+
+        default:
+          break;
+        }
+    }
 }
 
 /* copies a configuration from src to tgt */
 void copy_config(struct pref_struct *tgt, const struct pref_struct *src)
 {
-  if (tgt == src)
-	return;
+  int i;
+  void *src_addr;
+  void *tgt_addr;
 
-  /* first, reset old data */
-  free_config(tgt);
+  for (i = 0; i < NUM_PREFS; i++)
+    {
+      src_addr = (char *)src + preferences[i].offset;
+      tgt_addr = (char *)tgt + preferences[i].offset;
+      switch (preferences[i].type)
+        {
+        case PT_bool:
+          *(gboolean *)tgt_addr = *(gboolean *)src_addr;
+          break;
 
-  /* then copy */
-  tgt->name_res=src->name_res;
-  tgt->diagram_only = src->diagram_only;
-  tgt->group_unk = src->group_unk;
-  tgt->stationary = src->stationary;
-  tgt->node_radius_multiplier = src->node_radius_multiplier;
-  tgt->link_node_ratio = src->link_node_ratio;
-  tgt->inner_ring_scale = src->inner_ring_scale;
-  tgt->size_mode = src->size_mode;
-  tgt->node_size_variable = src->node_size_variable;
-  tgt->pcap_stats_pos = src->pcap_stats_pos;
-  tgt->filter=g_strdup(src->filter);
-  tgt->text_color=g_strdup(src->text_color);
-  tgt->fontname=g_strdup(src->fontname);
-  tgt->centered_nodes=g_strdup(src->centered_nodes);
-  tgt->bck_image_enabled = src->bck_image_enabled;
-  tgt->bck_image_path = g_strdup(src->bck_image_path);
-  tgt->stack_level = src->stack_level;
-  tgt->colors = g_strdupv(src->colors);
+        case PT_int:
+          *(gint *)tgt_addr = *(gint *)src_addr;
+          break;
 
-  tgt->show_statusbar = src->show_statusbar;
-  tgt->show_toolbar = src->show_toolbar;
-  tgt->show_legend = src->show_legend;
+        case PT_double:
+          *(gdouble *)tgt_addr = *(gdouble *)src_addr;
+          break;
 
-  tgt->proto_timeout_time = src->proto_timeout_time;
-  tgt->gui_node_timeout_time = src->gui_node_timeout_time;
-  tgt->node_timeout_time = src->node_timeout_time;
-  tgt->proto_node_timeout_time = src->proto_node_timeout_time;
-  tgt->gui_link_timeout_time = src->gui_link_timeout_time;
-  tgt->link_timeout_time = src->link_timeout_time;
-  tgt->proto_link_timeout_time = src->proto_link_timeout_time;
+        case PT_string:
+          *(gchar **)tgt_addr = g_strdup(*(gchar **)src_addr);
+          break;
 
-  tgt->refresh_period = src->refresh_period;
-  tgt->averaging_time = src->averaging_time;
-  tgt->position = g_strdup(src->position);
+        case PT_strvec:
+          *(gchar ***)tgt_addr = g_strdupv(*(gchar ***)src_addr);
+          break;
+        }
+    }
 }
 
 /*
@@ -450,8 +435,6 @@ void copy_config(struct pref_struct *tgt, const struct pref_struct *src)
 void mutate_saved_config(config_edit_fn edit, void *data)
 {
   struct pref_struct tmp_prefs;
-
-  init_config(&tmp_prefs);
 
   load_config(&tmp_prefs);
 

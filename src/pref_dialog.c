@@ -46,7 +46,7 @@ static void cbox_add_select(GtkComboBoxEntry *cbox, const gchar *str);
 
 static gboolean colors_changed = FALSE;
 static GtkWidget *diag_pref = NULL;  /* diagram configuration window */
-static struct pref_struct *tmp_pref = NULL; /* tmp copy of pref data */
+static struct pref_struct tmp_pref; /* tmp copy of pref data */
 
 
 static void
@@ -71,9 +71,7 @@ static void
 hide_pref_dialog(void)
 {
   /* purge temporary */
-  free_config(tmp_pref);
-  g_free(tmp_pref);
-  tmp_pref = NULL;
+  free_config(&tmp_pref);
 
   /* reset flags */
   colors_changed = FALSE;
@@ -276,10 +274,10 @@ on_preferences1_activate (GtkMenuItem * menuitem, gpointer user_data)
   GtkComboBoxEntry *cbox;
 
   /* saves current prefs to a temporary */
-  tmp_pref = duplicate_config(&pref);
+  copy_config(&tmp_pref, &pref);
 
   initialize_pref_controls();
-  
+
   cbox = GTK_COMBO_BOX_ENTRY(glade_xml_get_widget (appdata.xml, "filter_combo"));
   cbox_add_select(cbox, pref.filter);
 
@@ -448,7 +446,7 @@ void
 on_cancel_pref_button_clicked (GtkButton * button, gpointer user_data)
 {
   /* reset configuration to saved */
-  copy_config(&pref, tmp_pref);
+  copy_config(&pref, &tmp_pref);
 
   ask_reposition(TRUE);
   if (colors_changed)
