@@ -38,7 +38,7 @@
 
 #ifdef HAVE_LIBCARES
 #include "ip-cache.h"
-#include "util.h"
+#include "stats/util.h"
 #else
 #include "thread_resolve.h"
 #endif
