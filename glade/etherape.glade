@@ -524,6 +524,8 @@ Square Root</property>
                         <property name="use_underline">True</property>
                       </widget>
                       <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">False</property>
                         <property name="position">0</property>
                       </packing>
                     </child>
@@ -533,6 +535,8 @@ Square Root</property>
                         <property name="tooltip" translatable="yes">Optional central node</property>
                       </widget>
                       <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">False</property>
                         <property name="position">1</property>
                       </packing>
                     </child>
