@@ -34,7 +34,7 @@ typedef enum
 
 capstatus_t get_capture_status(void);
 
-gchar *init_capture(void);
+gchar *init_capture(const gchar *user);
 
 /*
  * Get a list containing the names of available capture interfaces.  Returns

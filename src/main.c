@@ -94,8 +94,9 @@ main (int argc, char *argv[])
   gchar *version;
   gchar *errmsg;
   gchar *cl_glade_file = NULL;
-  poptContext poptcon;
   gchar *position_file_path = NULL;
+  gchar *cl_privdrop_user = NULL;
+  poptContext poptcon;
 
   struct poptOption optionsTable[] = {
     {"diagram-only", 'd', POPT_ARG_NONE, &(pref.diagram_only), 0,
@@ -111,7 +112,7 @@ main (int argc, char *argv[])
     {"signal-export", 0, POPT_ARG_STRING, &export_file_signal, 0,
      N_("export to named file on receiving USR1"), N_("<file to export to>")},
     {"position", 'P', POPT_ARG_STRING, &position_file_path, 0,
-    N_("Manually position nodes based on File"), N_("<list of nodes and their columns>")},
+     N_("Manually position nodes based on File"), N_("<list of nodes and their columns>")},
     {"stationary", 's', POPT_ARG_NONE, &stationary_layout, 0,
      N_("don't move nodes around (deprecated)"), NULL},
     {"node-limit", 'l', POPT_ARG_INT, &(appdata.node_limit), 0,
@@ -124,12 +125,14 @@ main (int argc, char *argv[])
      N_("Disable informational messages"), NULL},
     {"min-delay", 0, POPT_ARG_LONG, &midelay,  0,
      N_("minimum packet delay in ms for reading capture files [cli only]"),
-      N_("<delay>")},
+     N_("<delay>")},
     {"max-delay", 0, POPT_ARG_LONG, &madelay,  0,
      N_("maximum packet delay in ms for reading capture files [cli only]"),
-      N_("<delay>")},
+     N_("<delay>")},
     {"glade-file", 0, POPT_ARG_STRING, &(cl_glade_file), 0,
      N_("uses the named libglade file for widgets"), N_("<glade file>")},
+    {"relinquish-privileges", 'Z', POPT_ARG_STRING, &cl_privdrop_user, 0,
+     N_("run as the given user"), N_("<username>")},
 
     POPT_AUTOHELP {NULL, 0, 0, NULL, 0, NULL, NULL}
   };
@@ -150,8 +153,16 @@ main (int argc, char *argv[])
   /*
    * Start the background capture process early so it doesn't end up with so
    * much gnome/glib/gtk crud attached to it.
+   *
+   * IMPORTANT: this must come before calling into glib, since it will cache
+   * things and then not invalidate those caches when we setuid to the '-Z'
+   * user id.  For example, load_config() calls config_file_name(), which in
+   * turn calls g_get_user_config_dir(), which caches getenv(HOME), leading to
+   * problems opening the user's config file later on (it will still be trying
+   * to open a config file in root's $HOME instead of the unprivileged user's,
+   * even after setuid()).
    */
-  errmsg = init_capture();
+  errmsg = init_capture(cl_privdrop_user);
   if (errmsg)
     {
       fatal_error_dialog(errmsg);

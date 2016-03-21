@@ -22,6 +22,8 @@
 
 #include <stdio.h>
 #include <errno.h>
+#include <pwd.h>
+#include <grp.h>
 
 #if HAVE_UNISTD_H
 #include <unistd.h>
@@ -111,7 +113,36 @@ static gchar *recvstr(size_t len)
   return str;
 }
 
-gchar *init_capture(void)
+static void setenv_warn(const char *var, const char *value)
+{
+  if (setenv(var, value, 1))
+    g_warning(_("Failed to set %s environment variable to '%s': %s"), var, value,
+              strerror(errno));
+}
+
+/* Switch to the given (presumably un-privileged) user. */
+static void privdrop(const gchar *user)
+{
+  struct passwd *pw;
+
+  pw = getpwnam(user);
+
+  if (!pw)
+    g_error(_("Unknown user '%s'"), user);
+
+  if (initgroups(pw->pw_name, pw->pw_gid)
+      || setgid(pw->pw_gid)
+      || setuid(pw->pw_uid))
+    g_error(_("Failed to switch to user '%s' (uid=%lu, gid=%lu): %s"), user,
+            (unsigned long)pw->pw_uid, (unsigned long)pw->pw_gid, strerror(errno));
+
+  setenv_warn("USER", pw->pw_name);
+  setenv_warn("USERNAME", pw->pw_name);
+  setenv_warn("HOME", pw->pw_dir);
+  setenv_warn("SHELL", pw->pw_shell);
+}
+
+gchar *init_capture(const gchar *user)
 {
   int status;
   int sockfds[2];
@@ -151,6 +182,9 @@ gchar *init_capture(void)
         g_warning("packet pipe close() failed: %s", strerror(errno));
       pktcap_run(sockfds[1], pipefds[1]);
     }
+
+  if (user)
+    privdrop(user);
 
   /* parent */
   if (close(sockfds[1]))

@@ -43,6 +43,11 @@
    (to put all nodes matching the given domain or CIDR range into
    column 3).
 
+   As a security feature (privilege separation), packet-capture
+   operations are now isolated in a separate background process.  The
+   new '-Z' flag can be used to specify a user to run the main
+   (foreground) process as.
+
 
    Changes summary:
      * New option to use c-ares for DNS resolution.
@@ -65,6 +70,8 @@
      * The show/hide state of the toolbar, protocol legend, and status
        bar are now preserved along with other preferences in the
        user's config file.
+     * New '-Z' flag (or '--relinquish-privileges') can be used to run
+       most processing as an unprivileged user.
 
 
   Overview of changes in EtherApe 0.9.14 (Saturday February 06, 2016):
