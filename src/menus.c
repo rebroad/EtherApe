@@ -29,7 +29,7 @@
 #include "diagram.h"
 #include "stats/decode_proto.h"
 #include "info_windows.h"
-#include "capture.h"
+#include "capture/capctl.h"
 #include "preferences.h"
 #include "export.h"
 
@@ -48,7 +48,7 @@ init_menus (void)
   GString *info_string = NULL;
   GString *err_str = g_string_new ("");
 
-  interfaces = interface_list_create(err_str);
+  interfaces = get_capture_interfaces(err_str);
   if (err_str)
      g_my_info (_("get_interface result: '%s'"), err_str->str);
   if (!interfaces)
@@ -91,7 +91,7 @@ init_menus (void)
      g_string_free(info_string, TRUE);
   }
 
-  interface_list_free(interfaces);
+  free_capture_interfaces(interfaces);
 }
 
 /* FILE MENU */
@@ -110,8 +110,8 @@ on_open_activate (GtkMenuItem * menuitem, gpointer user_data)
 				      GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
 				      GTK_STOCK_OPEN, GTK_RESPONSE_ACCEPT,
 				      NULL);
-  if (appdata.input_file)
-    gtk_file_chooser_set_filename(GTK_FILE_CHOOSER(dialog), appdata.input_file);
+  if (appdata.source.type == ST_FILE && appdata.source.file)
+    gtk_file_chooser_set_filename(GTK_FILE_CHOOSER(dialog), appdata.source.file);
 
   if (gtk_dialog_run (GTK_DIALOG (dialog)) == GTK_RESPONSE_ACCEPT)
     {
@@ -119,18 +119,16 @@ on_open_activate (GtkMenuItem * menuitem, gpointer user_data)
       manager = gtk_recent_manager_get_default ();
       gtk_recent_manager_add_item (manager, gtk_file_chooser_get_uri(GTK_FILE_CHOOSER (dialog)));
 
-      g_free(appdata.input_file);
-      appdata.input_file = gtk_file_chooser_get_filename (GTK_FILE_CHOOSER (dialog));
+      appdata_clear_source(&appdata);
+      appdata.source.type = ST_FILE;
+      appdata.source.file = gtk_file_chooser_get_filename (GTK_FILE_CHOOSER (dialog));
       gtk_widget_destroy (dialog);
 
-      g_free (appdata.interface);
-      appdata.interface = NULL;
-      
       gui_start_capture ();
     }
   else
     gtk_widget_destroy (dialog);
-}				/* on_open_activate */
+}
 
 void
 on_export_activate (GtkMenuItem * menuitem, gpointer user_data)
@@ -171,7 +169,8 @@ on_interface_radio_activate (gchar * gui_device)
 {
   g_assert (gui_device != NULL);
 
-  if (appdata.interface && !strcmp (gui_device, appdata.interface))
+  if (appdata.source.type == ST_LIVE && appdata.source.interface
+      && !strcmp(gui_device, appdata.source.interface))
     return;
 
   if (in_start_capture)
@@ -182,18 +181,14 @@ on_interface_radio_activate (gchar * gui_device)
   if (!gui_stop_capture ())
      return;
 
-  if (appdata.input_file)
-    g_free (appdata.input_file);
-  appdata.input_file = NULL;
-
-  if (appdata.interface)
-    g_free (appdata.interface);
-  appdata.interface = g_strdup (gui_device);
+  appdata_clear_source(&appdata);
+  appdata.source.type = ST_LIVE;
+  appdata.source.interface = g_strdup(gui_device);
 
   gui_start_capture ();
 
   g_my_info (_("Capture interface set to %s in GUI"), gui_device);
-}				/* on_interface_radio_activate */
+}
 
 void
 on_mode_radio_activate (GtkMenuItem * menuitem, gpointer user_data)
@@ -391,6 +386,29 @@ on_help_activate (GtkMenuItem * menuitem, gpointer user_data)
 
 /* Helper functions */
 
+#define EN_PLAY 1
+#define EN_PAUSE 2
+#define EN_NEXT 4
+#define EN_STOP 8
+
+static inline void set_widget_enabled_by_id(const gchar *id, gboolean onoff)
+{
+  GtkWidget *w = glade_xml_get_widget(appdata.xml, id);
+  gtk_widget_set_sensitive(w, onoff);
+}
+
+static void set_ctrl_enablestate(guint32 flags)
+{
+  set_widget_enabled_by_id("start_button", !!(flags & EN_PLAY));
+  set_widget_enabled_by_id("start_menuitem", !!(flags & EN_PLAY));
+  set_widget_enabled_by_id("pause_button", !!(flags & EN_PAUSE));
+  set_widget_enabled_by_id("pause_menuitem", !!(flags & EN_PAUSE));
+  set_widget_enabled_by_id("next_button", !!(flags & EN_NEXT));
+  set_widget_enabled_by_id("next_menuitem", !!(flags & EN_NEXT));
+  set_widget_enabled_by_id("stop_button", !!(flags & EN_STOP));
+  set_widget_enabled_by_id("stop_menuitem", !!(flags & EN_STOP));
+}
+
 /* Sets up the GUI to reflect changes and calls start_capture() */
 void
 gui_start_capture (void)
@@ -404,47 +422,35 @@ gui_start_capture (void)
       return;
 
   if (get_capture_status() == STOP)
-    if ((errorbuf = init_capture ()) != NULL)
-      {
-	fatal_error_dialog (errorbuf);
-	return;
-      }
-
-  if (get_capture_status() == PLAY)
+    {
+      if ((errorbuf = start_capture()) != NULL)
+        {
+          fatal_error_dialog (errorbuf);
+          return;
+        }
+    }
+  else if (get_capture_status() == PLAY)
     {
       g_warning (_("Status already PLAY at gui_start_capture"));
       return;
     }
-
-  if (!start_capture ())
-    return;
+  else if (get_capture_status() == PAUSE)
+    {
+      errorbuf = unpause_capture();
+      if (errorbuf)
+        {
+          fatal_error_dialog(errorbuf);
+          return;
+        }
+    }
 
   in_start_capture = TRUE;
 
   /* Enable and disable control buttons */
-  widget = glade_xml_get_widget (appdata.xml, "stop_button");
-  gtk_widget_set_sensitive (widget, TRUE);
-  widget = glade_xml_get_widget (appdata.xml, "stop_menuitem");
-  gtk_widget_set_sensitive (widget, TRUE);
-  widget = glade_xml_get_widget (appdata.xml, "start_button");
-  gtk_widget_set_sensitive (widget, FALSE);
-  widget = glade_xml_get_widget (appdata.xml, "start_menuitem");
-  gtk_widget_set_sensitive (widget, FALSE);
-  widget = glade_xml_get_widget (appdata.xml, "pause_button");
-  gtk_widget_set_sensitive (widget, TRUE);
-  widget = glade_xml_get_widget (appdata.xml, "pause_menuitem");
-  gtk_widget_set_sensitive (widget, TRUE);
-  widget = glade_xml_get_widget (appdata.xml, "next_button");
-  gtk_widget_set_sensitive (widget, appdata.input_file != NULL);
-  widget = glade_xml_get_widget (appdata.xml, "next_menuitem");
-  gtk_widget_set_sensitive (widget, appdata.input_file != NULL);
+  set_ctrl_enablestate(EN_STOP|EN_PAUSE|(appdata.source.type == ST_FILE ? EN_NEXT : 0));
 
   /* Enable and disable link layer menu */
-  widget = glade_xml_get_widget (appdata.xml, "link_radio");
-  if (!has_linklevel())
-    gtk_widget_set_sensitive (widget, FALSE);
-  else
-    gtk_widget_set_sensitive (widget, TRUE);
+  set_widget_enabled_by_id("link_radio", has_linklevel());
 
   /* Set active mode in GUI */
   switch (appdata.mode)
@@ -470,10 +476,10 @@ gui_start_capture (void)
   /* Sets the statusbar */
   status_string = g_string_new (_("Reading data from "));
 
-  if (appdata.input_file)
-    g_string_append (status_string, appdata.input_file);
-  else if (appdata.interface)
-    g_string_append (status_string, appdata.interface);
+  if (appdata.source.type == ST_FILE && appdata.source.file)
+    g_string_append (status_string, appdata.source.file);
+  else if (appdata.source.interface)
+    g_string_append (status_string, appdata.source.interface);
   else
     g_string_append (status_string, _("default interface"));
 
@@ -504,7 +510,7 @@ gui_start_capture (void)
 void
 gui_pause_capture (void)
 {
-  GtkWidget *widget;
+  gchar *err;
 
   /*
    * Make sure the data in the info windows is updated
@@ -512,25 +518,15 @@ gui_pause_capture (void)
    */
   update_info_windows ();
 
-  if (!pause_capture ())
-    return;
+  err = pause_capture();
+  if (err)
+    {
+      g_error("Error pausing capture: %s", err);
+      g_free(err);
+      return;
+    }
 
-  widget = glade_xml_get_widget (appdata.xml, "stop_button");
-  gtk_widget_set_sensitive (widget, TRUE);
-  widget = glade_xml_get_widget (appdata.xml, "stop_menuitem");
-  gtk_widget_set_sensitive (widget, TRUE);
-  widget = glade_xml_get_widget (appdata.xml, "start_button");
-  gtk_widget_set_sensitive (widget, TRUE);
-  widget = glade_xml_get_widget (appdata.xml, "start_menuitem");
-  gtk_widget_set_sensitive (widget, TRUE);
-  widget = glade_xml_get_widget (appdata.xml, "pause_button");
-  gtk_widget_set_sensitive (widget, FALSE);
-  widget = glade_xml_get_widget (appdata.xml, "pause_menuitem");
-  gtk_widget_set_sensitive (widget, FALSE);
-  widget = glade_xml_get_widget (appdata.xml, "next_button");
-  gtk_widget_set_sensitive (widget, FALSE);
-  widget = glade_xml_get_widget (appdata.xml, "next_menuitem");
-  gtk_widget_set_sensitive (widget, FALSE);
+  set_ctrl_enablestate(EN_PLAY|EN_STOP);
 
   set_statusbar_msg (_("Paused"));
 
@@ -541,32 +537,16 @@ gui_pause_capture (void)
 /* reached eof on a file replay */
 void gui_eof_capture(void)
 {
-  GtkWidget *widget;
   GString *status_string = NULL;
 
   if (get_capture_status() == STOP)
     return;
 
-  widget = glade_xml_get_widget (appdata.xml, "start_button");
-  gtk_widget_set_sensitive (widget, TRUE);
-  widget = glade_xml_get_widget (appdata.xml, "start_menuitem");
-  gtk_widget_set_sensitive (widget, TRUE);
-/*  widget = glade_xml_get_widget (appdata.xml, "stop_button");
-  gtk_widget_set_sensitive (widget, FALSE);
-  widget = glade_xml_get_widget (appdata.xml, "stop_menuitem");
-  gtk_widget_set_sensitive (widget, FALSE);*/
-  widget = glade_xml_get_widget (appdata.xml, "pause_button");
-  gtk_widget_set_sensitive (widget, FALSE);
-  widget = glade_xml_get_widget (appdata.xml, "pause_menuitem");
-  gtk_widget_set_sensitive (widget, FALSE);
-  widget = glade_xml_get_widget (appdata.xml, "next_button");
-  gtk_widget_set_sensitive (widget, FALSE);
-  widget = glade_xml_get_widget (appdata.xml, "next_menuitem");
-  gtk_widget_set_sensitive (widget, FALSE);
+  set_ctrl_enablestate(EN_PLAY);
 
   /* Sets the statusbar */
   status_string = g_string_new ("");
-  g_string_printf(status_string, _("Replay from file '%s' completed."), appdata.input_file);
+  g_string_printf(status_string, _("Replay from file '%s' completed."), appdata.source.file);
   set_statusbar_msg (status_string->str);
   g_string_free (status_string, TRUE);
 }				/* gui_stop_capture */
@@ -578,6 +558,7 @@ gui_stop_capture (void)
 {
   GtkWidget *widget;
   GString *status_string = NULL;
+  gchar *err;
 
   stop_requested = FALSE;
   if (get_capture_status() == STOP)
@@ -596,25 +577,15 @@ gui_stop_capture (void)
       return FALSE;
     }
 
-  if (!stop_capture ())
-    return FALSE;
+  err = stop_capture();
+  if (err)
+    {
+      g_error("Failed to stop capture: %s", err);
+      g_free(err);
+      return FALSE;
+    }
 
-  widget = glade_xml_get_widget (appdata.xml, "start_button");
-  gtk_widget_set_sensitive (widget, TRUE);
-  widget = glade_xml_get_widget (appdata.xml, "start_menuitem");
-  gtk_widget_set_sensitive (widget, TRUE);
-  widget = glade_xml_get_widget (appdata.xml, "stop_button");
-  gtk_widget_set_sensitive (widget, FALSE);
-  widget = glade_xml_get_widget (appdata.xml, "stop_menuitem");
-  gtk_widget_set_sensitive (widget, FALSE);
-  widget = glade_xml_get_widget (appdata.xml, "pause_button");
-  gtk_widget_set_sensitive (widget, FALSE);
-  widget = glade_xml_get_widget (appdata.xml, "pause_menuitem");
-  gtk_widget_set_sensitive (widget, FALSE);
-  widget = glade_xml_get_widget (appdata.xml, "next_button");
-  gtk_widget_set_sensitive (widget, FALSE);
-  widget = glade_xml_get_widget (appdata.xml, "next_menuitem");
-  gtk_widget_set_sensitive (widget, FALSE);
+  set_ctrl_enablestate(EN_PLAY);
 
   /* Delete and free protocol information */
   delete_gui_protocols ();
@@ -625,10 +596,10 @@ gui_stop_capture (void)
   /* Sets the statusbar */
   status_string = g_string_new (_("Ready to capture from "));
 
-  if (appdata.input_file)
-    g_string_append (status_string, appdata.input_file);
-  else if (appdata.interface)
-    g_string_append (status_string, appdata.interface);
+  if (appdata.source.type == ST_FILE && appdata.source.file)
+    g_string_append (status_string, appdata.source.file);
+  else if (appdata.source.interface)
+    g_string_append (status_string, appdata.source.interface);
   else
     g_string_append (status_string, _("default interface"));
 
@@ -669,16 +640,16 @@ set_active_interface ()
     {
       widget = (GtkWidget *) (menu_items->data);
 
-      if (appdata.input_file)
-	{
-	  gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (widget), TRUE);
-	  return;
-	}
+      if (appdata.source.type == ST_FILE)
+        {
+          gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(widget), TRUE);
+          return;
+        }
 
       label = GTK_LABEL (GTK_BIN (widget)->child)->label;
 
-      if (!strcmp (label, appdata.interface))
-	gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (widget), TRUE);
+      if (appdata.source.type == ST_LIVE && !strcmp(label, appdata.source.interface))
+        gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(widget), TRUE);
 
       menu_items = menu_items->next;
     }

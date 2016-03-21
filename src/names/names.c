@@ -25,6 +25,9 @@
 #ifdef HAVE_UNISTD_H
 #include <unistd.h>
 #endif
+
+#include <pcap.h> /* for DLT_* */
+
 #include "appdata.h"
 #include "names.h"
 #include "dns.h"

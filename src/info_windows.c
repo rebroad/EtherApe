@@ -29,7 +29,7 @@
 #include "stats/node.h"
 #include "datastructs.h"
 #include "stats/protocols.h"
-#include "capture.h"
+#include "capture/capctl.h"
 #include "preferences.h"
 #include "stats/prot_types.h"
 #include "ui_utils.h"
@@ -232,7 +232,7 @@ update_prot_info_windows (void)
 {
   GList *list_item = NULL, *remove_item;
   prot_info_window_t *prot_info_window = NULL;
-  enum status_t status;
+  capstatus_t status;
 
   status = get_capture_status();
 
@@ -678,13 +678,11 @@ node_info_window_compare(gconstpointer a, gconstpointer b)
 guint
 update_info_windows (void)
 {
-  enum status_t status;
+  capstatus_t status;
 
   status = get_capture_status();
   if (status != PLAY && status != STOP)
     return TRUE;
-
-  gettimeofday (&appdata.now, NULL);
 
   update_protocols_window ();
   update_stats_info_windows ();
@@ -718,7 +716,7 @@ update_stats_info_windows (void)
 {
   GList *list_item;
   GtkWidget *window;
-  enum status_t status;
+  capstatus_t status;
   double diffms;
   static struct timeval last_update_time = {
     0, 0

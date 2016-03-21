@@ -26,7 +26,7 @@
 
 #include "appdata.h"
 #include "node.h"
-#include "capture.h"
+#include "capture/capctl.h"
 #include "preferences.h"
 #include "util.h"
 

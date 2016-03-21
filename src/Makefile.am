@@ -35,14 +35,21 @@ etherape_stats_SOURCES = \
 	stats/traffic_stats.c stats/traffic_stats.h \
 	stats/util.c stats/util.h
 
+# capture sources
+etherape_capture_SOURCES = \
+	capture/capture.c capture/capture.h \
+	capture/capctl.c capture/capctl.h \
+	capture/cap-util.c capture/cap-util.h \
+	capture/capctl-msg.h
+
 etherape_SOURCES = \
-    $(etherape_stats_SOURCES) \
-    $(etherape_names_SOURCES) \
+	$(etherape_stats_SOURCES) \
+	$(etherape_names_SOURCES) \
+	$(etherape_capture_SOURCES) \
 	main.c main.h \
 	common.h \
 	appdata.c appdata.h\
 	callbacks.c callbacks.h \
-	capture.c capture.h \
 	datastructs.c datastructs.h \
 	diagram.c diagram.h \
 	export.c export.h \

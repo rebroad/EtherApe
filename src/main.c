@@ -37,7 +37,7 @@
 #include "preferences.h"
 #include "info_windows.h"
 #include "menus.h"
-#include "capture.h"
+#include "capture/capctl.h"
 #include "datastructs.h"
 #include "names/dns.h"
 #include "names/eth_resolv.h"
@@ -92,6 +92,7 @@ main (int argc, char *argv[])
   glong midelay = 0;
   glong madelay = G_MAXLONG;
   gchar *version;
+  gchar *errmsg;
   gchar *cl_glade_file = NULL;
   poptContext poptcon;
   gchar *position_file_path = NULL;
@@ -134,10 +135,35 @@ main (int argc, char *argv[])
   };
 
 #ifdef ENABLE_NLS
-  bindtextdomain (PACKAGE, PACKAGE_LOCALE_DIR);
+  bindtextdomain(PACKAGE, PACKAGE_LOCALE_DIR);
   bind_textdomain_codeset(PACKAGE, "UTF-8"); /* force UTF-8 conversion */
-  textdomain (PACKAGE);
+  textdomain(PACKAGE);
 #endif
+
+  appdata_init(&appdata);
+
+  /* Command line */
+  poptcon = poptGetContext("Etherape", argc, (const char **)argv, optionsTable, 0);
+  while (poptGetNextOpt(poptcon) > 0);
+  poptFreeContext(poptcon);
+
+  /*
+   * Start the background capture process early so it doesn't end up with so
+   * much gnome/glib/gtk crud attached to it.
+   */
+  errmsg = init_capture();
+  if (errmsg)
+    {
+      fatal_error_dialog(errmsg);
+      return 1;
+    }
+
+  /* Load saved preferences */
+  load_config(&pref);
+  protohash_read_prefvect(pref.colors);
+  centered_node_speclist = parse_nodeset_spec_list(pref.centered_nodes);
+
+  pref.name_res = !cl_numeric;
 
   /* We set the window icon to use */
   if (!getenv ("GNOME_DESKTOP_ICON"))
@@ -156,26 +182,12 @@ main (int argc, char *argv[])
 		      GNOME_PARAM_POPT_TABLE, optionsTable, GNOME_PARAM_NONE);
   g_free(version);
 
-  appdata_init(&appdata);
-
   set_debug_level();
-
-  /* Config file */
-  load_config(&pref);
-  protohash_read_prefvect(pref.colors);
-  centered_node_speclist = parse_nodeset_spec_list(pref.centered_nodes);
-
-  /* Command line */
-  cl_numeric = !pref.name_res;
-  poptcon =
-    poptGetContext ("Etherape", argc, (const char **) argv, optionsTable, 0);
-  while (poptGetNextOpt (poptcon) > 0);
 
   if (cl_interface)
     {
-      if (appdata.interface)
-	g_free (appdata.interface);
-      appdata.interface = g_strdup (cl_interface);
+      appdata.source.type = ST_LIVE;
+      appdata.source.interface = g_strdup(cl_interface);
     }
 
   if (export_file_final)
@@ -191,13 +203,11 @@ main (int argc, char *argv[])
       appdata.export_file_signal = g_strdup (export_file_signal);
     }
 
-  pref.name_res = !cl_numeric;
-
   if (cl_input_file)
     {
-      if (appdata.input_file)
-	g_free (appdata.input_file);
-      appdata.input_file = g_strdup (cl_input_file);
+      appdata_clear_source(&appdata);
+      appdata.source.type = ST_FILE;
+      appdata.source.file = g_strdup(cl_input_file);
     }
 
   /* Find mode of operation */
@@ -308,8 +318,14 @@ main (int argc, char *argv[])
   widget = glade_xml_get_widget (appdata.xml, "canvas1");
   destroying_idle (widget);
 
+  /* Enable anti-aliasing */
+  GNOME_CANVAS(widget)->aa = TRUE;
+
   /* This other timeout makes sure that the info windows are updated */
   g_timeout_add (500, (GtkFunction) update_info_windows, NULL);
+
+  if (pref.name_res && dns_open())
+    g_warning(_("DNS resolver initialization failed"));
 
   init_names();
   init_eth_resolv();

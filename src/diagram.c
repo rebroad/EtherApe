@@ -32,7 +32,7 @@
 #include "datastructs.h"
 #include "names/ip-cache.h"
 #include "menus.h"
-#include "capture.h"
+#include "capture/capctl.h"
 #include "stats/conversations.h"
 #include "preferences.h"
 #include "export.h"
@@ -572,7 +572,7 @@ static gchar *get_pcap_stats_string(void)
 {
   struct pcap_stat stats;
 
-  if (appdata.input_file)
+  if (appdata.source.type == ST_FILE)
     return g_strdup(_("(Capture statistics unavailable in offline mode.)"));
 
   get_capture_stats(&stats);
@@ -653,7 +653,7 @@ guint update_diagram(GtkWidget * canvas)
 {
   static struct timeval last_refresh_time = { 0, 0 };
   double diffms;
-  enum status_t status;
+  capstatus_t status;
 
   /* if requested and enabled, dump to xml */
   if (appdata.request_dump && appdata.export_file_signal)
@@ -688,7 +688,7 @@ guint update_diagram(GtkWidget * canvas)
     }
 
   already_updating = TRUE;
-  gettimeofday (&appdata.now, NULL);
+  gettimeofday(&appdata.gui_now, NULL);
 
   /* update nodes */
   diagram_update_nodes(canvas);
@@ -714,15 +714,15 @@ guint update_diagram(GtkWidget * canvas)
    * CPU with redraws */
 
   if ((last_refresh_time.tv_sec == 0) && (last_refresh_time.tv_usec == 0))
-    last_refresh_time = appdata.now;
+    last_refresh_time = appdata.gui_now;
 
   /* Force redraw */
   while (gtk_events_pending ())
     gtk_main_iteration ();
 
-  gettimeofday (&appdata.now, NULL);
-  diffms = subtract_times_ms(&appdata.now, &last_refresh_time);
-  last_refresh_time = appdata.now;
+  gettimeofday(&appdata.gui_now, NULL);
+  diffms = subtract_times_ms(&appdata.gui_now, &last_refresh_time);
+  last_refresh_time = appdata.gui_now;
 
   already_updating = FALSE;
 

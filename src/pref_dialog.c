@@ -24,7 +24,7 @@
 #include "pref_dialog.h"
 #include "preferences.h"
 #include "diagram.h"
-#include "capture.h"
+#include "capture/capctl.h"
 #include "stats/node.h"
 #include "datastructs.h"
 #include "stats/util.h" /* compat functions */
@@ -479,7 +479,7 @@ static void on_filter_entry_changed(GtkComboBoxEntry * cbox, gpointer user_data)
   pref.filter = g_strdup (str);
   /* TODO We should look at the error code from set_filter and pop
    * up a window accordingly */
-  set_filter (pref.filter, NULL);
+  set_filter(pref.filter);
   g_free (str);
   cbox_add_select(cbox, pref.filter);
 }				/* on_filter_entry_changed */

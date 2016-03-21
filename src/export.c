@@ -40,10 +40,10 @@ static gchar *header_xml(void)
   const struct tm *tmnow;
   char timebuf[256];
 
-  if (appdata.input_file)
-    dvc = xmltag("capture_file", appdata.input_file);
-  else if (appdata.interface)
-    dvc = xmltag("capture_device", appdata.interface);
+  if (appdata.source.type == ST_FILE)
+    dvc = xmltag("capture_file", appdata.source.file);
+  else if (appdata.source.interface)
+    dvc = xmltag("capture_device", appdata.source.interface);
 
   timenow = time(NULL);
   tmnow = localtime(&timenow);

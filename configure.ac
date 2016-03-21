@@ -32,7 +32,7 @@ AC_SUBST(ETHERAPE_LIBS)
 
 # Checks for header files.
 AC_HEADER_STDC
-AC_CHECK_HEADERS([arpa/inet.h fcntl.h netdb.h netinet/in.h stdlib.h string.h sys/ioctl.h sys/socket.h sys/time.h unistd.h math.h])
+AC_CHECK_HEADERS([arpa/inet.h fcntl.h netdb.h netinet/in.h stdlib.h string.h sys/ioctl.h sys/socket.h sys/time.h sys/wait.h unistd.h math.h])
 
 AC_CHECK_HEADERS([sys/socket.h])
 AC_CHECK_HEADERS([net/if.h], [], [],

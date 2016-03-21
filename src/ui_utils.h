@@ -57,12 +57,6 @@ void create_add_text_column(GtkTreeView *gv, const gchar *title, int colno,
 void register_treeview(GtkWidget *window, GtkTreeView *gv);
 GtkTreeView *retrieve_treeview(GtkWidget *window);
 
-/* gets a list containing the names of available interfaces. Returns NULL 
- * if there is an error, putting also an error message into err_str.
- * The returned list MUST be freed with interface_list_free() */
-GList *interface_list_create(GString *err_str);
-void interface_list_free(GList * if_list);
-
 /* Returns the user's home directory, via the HOME environment
  * variable, or a default directory if HOME is not set */
 const char *get_home_dir (void);

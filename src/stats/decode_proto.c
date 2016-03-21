@@ -30,6 +30,9 @@
 #ifdef HAVE_ARPA_INET_H
 #include <arpa/inet.h>
 #endif
+
+#include <pcap.h> /* for DLT_* */
+
 #include "prot_types.h"
 #include "util.h"
 #include "decode_proto.h"

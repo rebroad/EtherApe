@@ -29,18 +29,20 @@ struct appdata_struct appdata;
 
 void appdata_init(struct appdata_struct *p)
 {
-  gettimeofday (&p->now, NULL);
+  gettimeofday(&p->gui_now, NULL);
+  memset(&p->now, 0, sizeof(p->now));
 
   p->xml = NULL;
   p->app1 = NULL;
   p->statusbar = NULL;
 
   p->glade_file = NULL;
-  p->input_file = NULL;
   p->export_file = NULL;
   p->export_file_final = NULL;
   p->export_file_signal = NULL;
-  p->interface = NULL;
+
+  p->source.type = ST_LIVE;
+  p->source.interface = NULL;
 
   p->mode = IP;
   p->node_limit = -1;
@@ -51,6 +53,20 @@ void appdata_init(struct appdata_struct *p)
   p->n_packets = 0;
   p->total_mem_packets = 0;
   p->request_dump = FALSE;
+}
+
+void appdata_clear_source(struct appdata_struct *p)
+{
+  if (p->source.type == ST_LIVE)
+    {
+      g_free(p->source.interface);
+      p->source.interface = NULL;
+    }
+  else
+    {
+      g_free(p->source.file);
+      p->source.file = NULL;
+    }
 }
 
 gboolean appdata_init_glade(gchar *new_glade_file)
@@ -77,11 +93,10 @@ gboolean appdata_init_glade(gchar *new_glade_file)
 /* releases all memory allocated for internal fields */
 void appdata_free(struct appdata_struct *p)
 {
+  appdata_clear_source(p);
+
   g_free(p->glade_file);
   p->glade_file = NULL;
-
-  g_free(p->input_file);
-  p->input_file = NULL;
 
   g_free(p->export_file);
   p->export_file = NULL;
@@ -91,9 +106,6 @@ void appdata_free(struct appdata_struct *p)
 
   g_free(p->export_file_signal);
   p->export_file_signal = NULL;
-
-  g_free(p->interface);
-  p->interface=NULL;
 
   /* no need to free glade widgets ... */
 }

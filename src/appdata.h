@@ -33,11 +33,11 @@ struct appdata_struct
   GtkWidget *app1;		/* Pointer to the main app window */
   GtkStatusbar *statusbar;        /* Main window statusbar */
 
-  struct timeval now;		/* Set both at each packet capture and 
-                                 * in each redraw of the diagram */
+  /* These two are different for offline (file-based) capture/replay */
+  struct timeval now; /* Where in packet-capture time we are */
+  struct timeval gui_now; /* Real (as in wall-clock gettimeofday()) time */
 
   gchar *glade_file;            /* fullspec of xml glade file */
-  gchar *input_file;		/* Capture file to read from */
   gchar *export_file;		/* file to export to */
   gchar *export_file_final;     /* file to export to at end of replay */
   gchar *export_file_signal;    /* file to export to at receipt of usr1 */
@@ -46,7 +46,16 @@ struct appdata_struct
 
   gint node_limit;		/* Max number of nodes to show. If <0 it's not
 				 * limited */
-  gchar *interface;		/* Network interface to listen to */
+
+  struct
+  {
+    enum { ST_FILE, ST_LIVE, } type;
+    union
+    {
+      gchar *interface; /* Network interface to listen to */
+      gchar *file;      /* Capture file to read from */
+    };
+  } source;
 
   GLogLevelFlags debug_mask;    /* debug mask active */
 
@@ -65,8 +74,13 @@ extern struct appdata_struct appdata;
 #define INFO_ENABLED  (appdata.debug_mask & G_LOG_LEVEL_INFO)
 
 void appdata_init(struct appdata_struct *p);
+void appdata_clear_source(struct appdata_struct *p);
 gboolean appdata_init_glade(gchar *new_glade_file);
 void appdata_free(struct appdata_struct *p);
 
+static inline gchar *appdata_source_name(const struct appdata_struct *p)
+{
+  return p->source.type == ST_LIVE ? p->source.interface : p->source.file;
+}
 
 #endif

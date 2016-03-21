@@ -36,7 +36,6 @@
 #endif
 #include <string.h>
 #include <stdlib.h>
-#include <pcap.h>
 #include <glib.h>
 
 #ifdef ENABLE_NLS
