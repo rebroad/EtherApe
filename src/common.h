@@ -34,6 +34,9 @@
 #ifdef HAVE_SYS_SOCKET_H
 #include <sys/socket.h>
 #endif
+#ifdef HAVE_ARPA_INET_H
+#include <arpa/inet.h>
+#endif
 #include <string.h>
 #include <stdlib.h>
 #include <glib.h>
@@ -149,13 +152,22 @@ static inline int address_cmp(const address_t *a, const address_t *b)
 						      G_LOG_LEVEL_CRITICAL, \
 						      format, ##args)
 
-/* Pointer versions of ntohs and ntohl.  Given a pointer to a member of a
+/*
+ * Pointer versions of ntohs and ntohl.  Given a pointer to a member of a
  * byte array, returns the value of the two or four bytes at the pointer.
  */
-#define pntohs(p)  ntohs(*((guint16 *)(p)))
-#define phtons(p)  htons(*((guint16 *)(p)))
-#define pntohl(p)  ntohl(*((guint32 *)(p)))
-#define phtonl(p)  htonl(*((guint32 *)(p)))
+#define MAKE_PNxH(direction, suffix, type) \
+  static inline type p##direction##suffix(const void *p) \
+  { \
+    type tmp; \
+    memcpy(&tmp, p, sizeof(tmp)); \
+    return direction##suffix(tmp); \
+  }
+
+MAKE_PNxH(hton, s, guint16);
+MAKE_PNxH(ntoh, s, guint16);
+MAKE_PNxH(hton, l, guint32);
+MAKE_PNxH(ntoh, l, guint32);
 
 /* Takes the hi_nibble value from a byte */
 #define hi_nibble(b) ((b & 0xf0) >> 4)

@@ -399,7 +399,7 @@ static void get_eth_type (decode_proto_t *dp)
    * Jumbo frames pose a challenge because they are 802.3, but size > 1500
    * Right now we don't support jumbo frames.
    */
-  ethsize = pntohs (dp->cur_packet + size_offset);
+  ethsize = pntohs(dp->cur_packet + size_offset);
 
   if (ethsize == ETHERTYPE_VLAN)
     {
@@ -411,8 +411,8 @@ static void get_eth_type (decode_proto_t *dp)
           guint16 vlanid = pntohs(dp->cur_packet + 14) & 0x0fff;
           g_my_debug("VLAN id: %u", vlanid);
         }
-      size_offset = 16; 
-      ethsize = pntohs (dp->cur_packet + size_offset); /* get the real size */
+      size_offset = 16;
+      ethsize = pntohs(dp->cur_packet + size_offset); /* get the real size */
     }
 
   if (ethsize <= 1500)
@@ -848,7 +848,7 @@ get_linux_sll (decode_proto_t *dp)
 
   decode_proto_add(dp, "LINUX-SLL");
 
-  etype = pntohs (&dp->cur_packet[14]);
+  etype = pntohs(&dp->cur_packet[14]);
 
   add_offset(dp, 16);
   if (etype == ETHERTYPE_IP || etype == ETHERTYPE_IPv6)
@@ -881,7 +881,7 @@ get_llc (decode_proto_t *dp)
     {
       /* LLC SNAP: has an additional ethernet II type added */
       etype_t eth2_type;
-      eth2_type = (etype_t) pntohs (dp->cur_packet + 6);
+      eth2_type = (etype_t) pntohs(dp->cur_packet + 6);
       add_offset(dp, 8);
       get_eth_II (dp, eth2_type);
       return;
@@ -1007,7 +1007,7 @@ get_ip (decode_proto_t *dp)
       decode_proto_add(dp, "IP");
 
       ip_type = dp->cur_packet[9];
-      fragment_offset = pntohs (dp->cur_packet + 6);
+      fragment_offset = pntohs(dp->cur_packet + 6);
       fragment_offset &= 0x0fff;
 
       if (appdata.mode !=  LINK6)
@@ -1169,8 +1169,8 @@ get_ipx (decode_proto_t *dp)
 
   decode_proto_add(dp, "IPX");
 
-  ipx_dsocket = pntohs (dp->cur_packet + 16);
-  ipx_ssocket = pntohs (dp->cur_packet + 28);
+  ipx_dsocket = pntohs(dp->cur_packet + 16);
+  ipx_ssocket = pntohs(dp->cur_packet + 28);
   ipx_type = *(guint8 *) (dp->cur_packet + 5);
 
   switch (ipx_type)
@@ -1275,8 +1275,8 @@ get_tcp (decode_proto_t *dp)
   gboolean dst_pref = FALSE;
 
   decode_proto_add(dp, "TCP");
-  dp->global_src_port = src_port = pntohs (dp->cur_packet);
-  dp->global_dst_port = dst_port = pntohs (dp->cur_packet + 2);
+  dp->global_src_port = src_port = pntohs(dp->cur_packet);
+  dp->global_dst_port = dst_port = pntohs(dp->cur_packet + 2);
 
   if (appdata.mode ==  TCP)
     {
@@ -1369,8 +1369,8 @@ get_udp (decode_proto_t *dp)
   gboolean dst_pref = FALSE;
 
   decode_proto_add(dp, "UDP");
-  dp->global_src_port = src_port = pntohs (dp->cur_packet);
-  dp->global_dst_port = dst_port = pntohs (dp->cur_packet + 2);
+  dp->global_src_port = src_port = pntohs(dp->cur_packet);
+  dp->global_dst_port = dst_port = pntohs(dp->cur_packet + 2);
 
   if (appdata.mode ==  TCP)
     {
@@ -1435,7 +1435,7 @@ get_udp (decode_proto_t *dp)
   else
     chosen_service = dst_service;
   decode_proto_add(dp, "%s", chosen_service->name);
-}				/* get_udp */
+}
 
 static gboolean
 get_rpc (decode_proto_t *dp, gboolean is_udp)
@@ -1455,7 +1455,7 @@ get_rpc (decode_proto_t *dp, gboolean is_udp)
   else
     rpcstart = 4;
 
-  msg_type = pntohl (dp->cur_packet + rpcstart + 4);
+  msg_type = pntohl(dp->cur_packet + rpcstart + 4);
 
   switch (msg_type)
     {
@@ -1473,11 +1473,11 @@ get_rpc (decode_proto_t *dp, gboolean is_udp)
       return TRUE;
 
     case RPC_CALL:
-      rpcver = pntohl (dp->cur_packet + rpcstart + 8);
+      rpcver = pntohl(dp->cur_packet + rpcstart + 8);
       if (rpcver != 2)
         return FALSE; /* only ONC-RPC v2 */
   
-      msg_program = pntohl (dp->cur_packet + rpcstart + 12);
+      msg_program = pntohl(dp->cur_packet + rpcstart + 12);
       switch (msg_program)
 	{
 	case BOOTPARAMS_PROGRAM:
