@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2016-02-06 08:40+0100\n"
-"PO-Revision-Date: 2015-06-06 09:03+0200\n"
+"PO-Revision-Date: 2016-10-03 07:58+0200\n"
 "Last-Translator: R.Ghetta <bchiara@users.sf.net>\n"
 "Language-Team: \n"
 "Language: it\n"
@@ -59,11 +59,11 @@ msgstr "esporta nel file specificato alla ricezione di SIGUSR1"
 
 #: src/main.c:105
 msgid "Manually position nodes based on File"
-msgstr ""
+msgstr "Posiziona manualmente i nodi in base al File"
 
 #: src/main.c:105
 msgid "<list of nodes and their columns>"
-msgstr ""
+msgstr "<elenco di nodi e delle loro colonne>"
 
 #: src/main.c:107
 msgid "don't move nodes around (deprecated)"
@@ -124,17 +124,17 @@ msgstr "modo sconosciuto. Eseguire etherape --help per un elenco di modi"
 #: src/main.c:257
 #, c-format
 msgid "Reading columns file '%s'"
-msgstr ""
+msgstr "Lettura colonne dal file '%s'"
 
 #: src/main.c:278
 #, c-format
 msgid "row %d: regexp/ip %s, column %u"
-msgstr ""
+msgstr "riga %d: regexp/ip %s, colonna %u"
 
 #: src/main.c:315
 #, c-format
 msgid "Columns file read. Total columns %d"
-msgstr ""
+msgstr "File colonne letto. Colonne totali %d"
 
 #: src/capture.c:110
 #, c-format
@@ -354,12 +354,12 @@ msgstr ""
 #: src/diagram.c:365
 #, c-format
 msgid "Loading of background image failed with error '%s'"
-msgstr ""
+msgstr "Caricamento dell'immagine di sfondo fallito con errore '%s'"
 
 #: src/diagram.c:390
 #, c-format
 msgid "New background image path: '%s'"
-msgstr ""
+msgstr "Nuova path per l'immagine di sfondo: '%s'"
 
 #: src/diagram.c:555
 #, c-format
@@ -623,11 +623,11 @@ msgstr ""
 
 #: glade/etherape.glade:123
 msgid "_Inner Ring Scale"
-msgstr ""
+msgstr "Scala del cerchio _Interno"
 
 #: glade/etherape.glade:137
 msgid "Inner ring radius as a fraction of outer ring size"
-msgstr ""
+msgstr "Raggio del cerchio interno in rapporto al cerchio esterno"
 
 #: glade/etherape.glade:165
 msgid "Link _Width - Node Radius Ratio"
@@ -725,7 +725,7 @@ msgstr "Nodo centrale (opzionale)"
 
 #: glade/etherape.glade:512
 msgid "Background Image"
-msgstr ""
+msgstr "Immagine di sfondo"
 
 #: glade/etherape.glade:544 glade/etherape.glade:785 glade/etherape.glade:930
 msgid "Diagram"
