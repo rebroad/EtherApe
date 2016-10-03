@@ -1484,7 +1484,7 @@ Conversely, --min-delay can help analyze many short lived connections.</para>
         <term><option>-s</option></term>
         <term><option>--stationary</option></term>
         <listitem> 
-          <para>Don't move nodes around. <emphasys>Deprecated.</emphasys></para> 
+          <para>Don't move nodes around. <emphasis>Deprecated.</emphasis></para> 
         </listitem> 
       </varlistentry> 
 
