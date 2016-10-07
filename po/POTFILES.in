@@ -11,6 +11,7 @@ src/node_windows.c
 src/pref_dialog.c
 src/preferences.c
 src/ui_utils.c
+src/compat.c
 src/capture/capture.c
 src/capture/capctl.c
 src/capture/cap-util.c

@@ -173,6 +173,12 @@ AC_CHECK_FUNCS([snprintf floor gettimeofday localtime_r memset pow putenv socket
 # remove when obsolete!
 AC_CHECK_FUNCS([g_queue_init])
 
+# check for g_list_free_full (glib < 2.28)
+AC_CHECK_FUNCS([g_list_free_full])
+
+# check for g_ptr_array_insert (glib < 2.40, RHEL7/CENTOS7 and before)
+AC_CHECK_FUNCS([g_ptr_array_insert])
+
 dnl Add the languages which your application supports here.
 ALL_LINGUAS="es fr nl tr sv it de"
 AM_GNU_GETTEXT([external])

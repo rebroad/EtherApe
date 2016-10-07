@@ -25,6 +25,7 @@
 #include "traffic_stats.h"
 #include "ui_utils.h"
 #include "util.h"
+#include "compat.h"
 
 /***************************************************************************
  *

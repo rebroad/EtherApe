@@ -50,6 +50,7 @@ etherape_SOURCES = \
 	common.h \
 	appdata.c appdata.h\
 	callbacks.c callbacks.h \
+	compat.c compat.h \
 	datastructs.c datastructs.h \
 	diagram.c diagram.h \
 	export.c export.h \

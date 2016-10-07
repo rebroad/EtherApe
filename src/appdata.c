@@ -22,6 +22,7 @@
 #endif
 
 #include "appdata.h"
+#include "stats/node.h"
 
 #define ETHERAPE_GLADE_FILE "etherape.glade"	/* glade 3 file */
 
@@ -112,8 +113,9 @@ void appdata_free(struct appdata_struct *p)
 
   if (p->column_patterns) {
     int pos;
-    for (pos = 0; pos < p->column_patterns->len; ++pos)
-       g_free(g_ptr_array_index(p->column_patterns, pos));
+    for (pos = 0; pos < p->column_patterns->len; ++pos) {
+       free_nodeset_spec_list(g_ptr_array_index(p->column_patterns, pos));
+    }
     g_ptr_array_free(p->column_patterns, TRUE);
     p->column_patterns = NULL;
   }

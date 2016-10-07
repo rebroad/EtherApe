@@ -3,9 +3,9 @@
  *
  * $Id$
  *
- * Ethereal - Network traffic analyzer
- * By Gerald Combs <gerald@zing.org>
+ * Original file by Gerald Combs <gerald@zing.org>
  * Copyright 1998 Gerald Combs
+ * Later changes copyright 2016 Riccardo Ghetta
  *
  * 
  * This program is free software; you can redistribute it and/or
@@ -26,7 +26,6 @@
 #ifndef __UTIL_H__
 #define __UTIL_H__
 
-//#include "appdata.h"
 #include "common.h"
 
 char *safe_strncpy(char *dst, const char *src, size_t maxlen);
@@ -52,12 +51,5 @@ gchar *timeval_to_str(struct timeval last_heard);
 
 /* xml helpers */
 gchar *xmltag(const gchar *name, const gchar *fmt, ...);
-
-#if !defined(HAVE_G_QUEUE_INIT)
-void compat_g_queue_init(GQueue *gq);
-gchar *compat_gdk_color_to_string(const GdkColor *color);
-#define g_queue_init compat_g_queue_init
-#define gdk_color_to_string compat_gdk_color_to_string
-#endif
 
 #endif /* __UTIL_H__ */

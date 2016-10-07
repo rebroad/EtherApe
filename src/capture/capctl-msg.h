@@ -21,6 +21,10 @@
 
 #include <pcap.h>
 
+#ifndef PCAP_NETMASK_UNKNOWN
+#define PCAP_NETMASK_UNKNOWN 0xFFFFFFFF  /* only pcap >=1.10 defines this */
+#endif
+
 typedef enum
 {
   CRQ_PING, /* Only used during init to check liveness */

@@ -43,6 +43,7 @@
 #include "names/eth_resolv.h"
 #include "names/names.h"
 #include "stats/util.h"
+#include "compat.h"
 
 /***************************************************************************
  *

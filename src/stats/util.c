@@ -5,11 +5,9 @@
 /* util.c
  * Utility routines
  *
- * $Id$
- *
- * Ethereal - Network traffic analyzer
- * By Gerald Combs <gerald@zing.org>
+ * Original file by Gerald Combs <gerald@zing.org>
  * Copyright 1998 Gerald Combs
+ * Later changes copyright 2016 Riccardo Ghetta
  *
  * 
  * This program is free software; you can redistribute it and/or
@@ -381,24 +379,3 @@ gchar *xmltag(const gchar *name, const gchar *fmt, ...)
 }
 
 
-/************************************************
- *
- * compatibility functions for CENTOS5 and RHEL5
- *
- *************************************************/
-#if !defined(HAVE_G_QUEUE_INIT)
-
-void compat_g_queue_init(GQueue *gq)
-{
-  g_assert(gq != NULL);
-  gq->head = NULL;
-  gq->tail = NULL;
-  gq->length = 0;
-}
-
-gchar *compat_gdk_color_to_string(const GdkColor *color)
-{
-  g_assert(color != NULL);
-  return g_strdup_printf("#%4.4x%4.4x%4.4x", color->red, color->green, color->blue);
-}
-#endif

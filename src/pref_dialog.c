@@ -27,7 +27,7 @@
 #include "capture/capctl.h"
 #include "stats/node.h"
 #include "datastructs.h"
-#include "stats/util.h" /* compat functions */
+#include "compat.h"
 
 #define MILLI   (1000.0)
 #define COLSPACES   "        "
