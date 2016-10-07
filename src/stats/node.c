@@ -752,10 +752,11 @@ static int nodeset_match(const struct nodeset_spec *spec, const node_t *node)
 {
   const address_t *nodeaddr;
 
+  g_assert(spec);
   if (spec->kind == NS_HOSTNAME
       && (!fnmatch(spec->hostname, node->name->str, FNM_CASEFOLD)
           || !fnmatch(spec->hostname, node->numeric_name->str, FNM_CASEFOLD)))
-    return 1;
+    return 1; /* found */
 
   if (node->node_id.node_type == IP)
     nodeaddr = &node->node_id.addr.ip;
@@ -776,16 +777,19 @@ static int nodeset_speclist_findmatch(gconstpointer spec, gconstpointer node)
   return !nodeset_match(spec, node);
 }
 
-
+/* returns TRUE if column spec matches node */
 gboolean node_matches_spec_list(const node_t *node, GList *specs)
 {
-  return !!g_list_find_custom(specs, node, nodeset_speclist_findmatch);
+  g_assert(node);
+  if (!specs)
+    return FALSE;
+  return g_list_find_custom(specs, node, nodeset_speclist_findmatch) != NULL;
 }
 
 static void free_nodeset_spec(gpointer p)
 {
   struct nodeset_spec *s = p;
-  if (s->kind == NS_HOSTNAME)
+  if (s && s->kind == NS_HOSTNAME)
     g_free(s->hostname);
   g_free(s);
 }

@@ -66,7 +66,7 @@ static gint save_session (GnomeClient * client, gint phase,
                           gpointer client_data);
 static void log_handler (gchar * log_domain, GLogLevelFlags mask, 
                          const gchar * message, gpointer user_data);
-static void parse_position_file(const gchar *path);
+static GPtrArray *parse_position_file(const gchar *path);
 
 /* signal handling */
 static void install_handlers(void);
@@ -77,8 +77,7 @@ static void signal_export(int signum);
  * implementation
  *
  **************************************************************************/
-int
-main (int argc, char *argv[])
+int main (int argc, char *argv[])
 {
   GtkWidget *widget;
   GnomeClient *client;
@@ -113,7 +112,7 @@ main (int argc, char *argv[])
      N_("export to named file on receiving USR1"), N_("<file to export to>")},
     {"position", 'P', POPT_ARG_STRING, &position_file_path, 0,
      N_("Manually position nodes based on File"), N_("<list of nodes and their columns>")},
-    {"stationary", 's', POPT_ARG_NONE, &stationary_layout, 0,
+    {"stationary", 's', POPT_ARG_NONE, &(appdata.stationary_layout), 0,
      N_("don't move nodes around (deprecated)"), NULL},
     {"node-limit", 'l', POPT_ARG_INT, &(appdata.node_limit), 0,
      N_("limits nodes displayed"), N_("<number of nodes>")},
@@ -269,7 +268,7 @@ main (int argc, char *argv[])
       g_message("Invalid maximum delay %ld, ignored", madelay);
 
   if (position_file_path)
-    parse_position_file(position_file_path);
+    appdata.column_patterns = parse_position_file(position_file_path);
 
   /* Glade */
   glade_gnome_init ();
@@ -363,6 +362,7 @@ static gboolean parse_position_line(gchar *line, GList **speclist, long *colnum)
 {
   gchar *p;
 
+  g_assert(line);
   line = g_strstrip(line);
 
   /* Empty line or comment */
@@ -390,7 +390,7 @@ static gboolean parse_position_line(gchar *line, GList **speclist, long *colnum)
       fprintf(stderr, _("Invalid position-file line: %s"), line);
       return FALSE;
     }
-  else if (*colnum <= 0)
+  else if (*colnum <= 0 || *colnum > 10)
     {
       fprintf(stderr, _("Column number %ld out of range"), *colnum);
       return FALSE;
@@ -404,7 +404,7 @@ static gboolean parse_position_line(gchar *line, GList **speclist, long *colnum)
   return TRUE;
 }
 
-static void parse_position_file(const gchar *path)
+static GPtrArray *parse_position_file(const gchar *path)
 {
   gchar *contents;
   gchar **lines;
@@ -413,15 +413,16 @@ static void parse_position_file(const gchar *path)
   int i;
   long colnum;
   GList *speclist;
+  GPtrArray *colpos = NULL;
 
   if (!g_file_get_contents(path, &contents, &len, &err))
     {
       fprintf(stderr, _("Failed to read position file %s: %s"), path, err->message);
       g_error_free(err);
-      return;
+      return NULL;
     }
 
-  column_patterns = g_ptr_array_sized_new(10);
+  colpos = g_ptr_array_sized_new(10);
 
   lines = g_strsplit(contents, "\n", 0);
   g_free(contents);
@@ -433,13 +434,14 @@ static void parse_position_file(const gchar *path)
           /* "user" column numbers are one-based; convert to zero-based here. */
           colnum -= 1;
 
-          if (colnum > column_patterns->len)
-            g_ptr_array_set_size(column_patterns, colnum);
-          g_ptr_array_insert(column_patterns, colnum, speclist);
+          if (colnum > colpos->len)
+            g_ptr_array_set_size(colpos, colnum);
+          g_ptr_array_insert(colpos, colnum, speclist);
         }
     }
 
   g_strfreev(lines);
+  return colpos;
 }
 
 /* releases all static and cached data. Called just before exiting. Obviously 
@@ -452,6 +454,7 @@ static void free_static_data(void)
   services_clear();
   cleanup_eth_resolv();
   cleanup_names();
+  appdata_free(&appdata);
 }
 
 static void

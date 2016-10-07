@@ -49,10 +49,13 @@ void appdata_init(struct appdata_struct *p)
   p->debug_mask = (G_LOG_LEVEL_MASK & ~(G_LOG_LEVEL_DEBUG | G_LOG_LEVEL_INFO));
   p->min_delay = 0;
   p->max_delay = G_MAXULONG;
+  p->stationary_layout = FALSE;
 
   p->n_packets = 0;
   p->total_mem_packets = 0;
   p->request_dump = FALSE;
+
+  p->column_patterns = NULL;
 }
 
 void appdata_clear_source(struct appdata_struct *p)
@@ -106,6 +109,14 @@ void appdata_free(struct appdata_struct *p)
 
   g_free(p->export_file_signal);
   p->export_file_signal = NULL;
+
+  if (p->column_patterns) {
+    int pos;
+    for (pos = 0; pos < p->column_patterns->len; ++pos)
+       g_free(g_ptr_array_index(p->column_patterns, pos));
+    g_ptr_array_free(p->column_patterns, TRUE);
+    p->column_patterns = NULL;
+  }
 
   /* no need to free glade widgets ... */
 }

@@ -257,7 +257,7 @@ Lower right</property>
                       <widget class="GtkHScale" id="node_radius_slider">
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
-                        <property name="adjustment">0 -4 0 0.25 1 0</property>
+                        <property name="adjustment">0 -4 -0.01 0.05 0.2 0</property>
                         <property name="digits">2</property>
                         <property name="draw_value">False</property>
                         <property name="value_pos">right</property>

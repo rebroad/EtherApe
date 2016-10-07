@@ -159,6 +159,11 @@ BuildRequires: gettext-devel
 BuildRequires: gnome-doc-utils
 BuildRequires: rarian
 BuildRequires: rarian-compat
+%if 0%{?fedora_version} > 2300
+BuildRequires: rarian
+%endif
+# fedora24 needs a text browser for docbook-utils
+BuildRequires: w3m
 %endif
 
 %description

@@ -36,9 +36,4 @@ void dump_stats(guint32 diff_msecs);
 void timeout_changed(void);
 void redraw_canvas_background(GtkWidget *canvas); /* Called by on_canvas1_size_allocate */
 
-/* Array of lists of nodeset_specs */
-extern GPtrArray *column_patterns;
-
-extern gboolean stationary_layout;
-
 #endif /* DIAGRAM_H */

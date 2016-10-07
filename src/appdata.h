@@ -61,11 +61,13 @@ struct appdata_struct
 
   gulong min_delay;    /* min packet distance when replaying a file */
   gulong max_delay;    /* max packet distance when replaying a file */
-
+  gboolean stationary_layout;   /* if true, use stationary layout */
 
   unsigned long n_packets;	/* Number of total packets received */
   glong total_mem_packets;      /* Number of packets currently in memory */
   gboolean request_dump;        /* if true, do an xml dump */
+
+  GPtrArray *column_patterns; /* Node-matching patterns for columnar-layout mode (-P flag) */
 };
 
 extern struct appdata_struct appdata;

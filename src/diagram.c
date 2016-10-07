@@ -44,7 +44,6 @@
 
 gboolean already_updating;
 gboolean stop_requested;
-gboolean stationary_layout = FALSE;
 
 static GnomeCanvasItem *pcap_stats_text_item = NULL;
 static GnomeCanvasGroup *pcap_stats_text_group = NULL;
@@ -123,9 +122,6 @@ typedef struct
 
   guint *column_populations;
 } reposition_node_t;
-
-/* Node-matching patterns for columnar-layout mode (-P flag) */
-GPtrArray *column_patterns;
 
 /***************************************************************************
  *
@@ -1197,8 +1193,8 @@ static void init_reposition(reposition_node_t *data,
    */
   data->center.angle += M_PI / 4.0;
 
-  if (column_patterns)
-    data->column_populations = g_malloc0_n(column_patterns->len + 1,
+  if (appdata.column_patterns)
+    data->column_populations = g_malloc0_n(appdata.column_patterns->len + 1,
                                            sizeof(*data->column_populations));
 
   gnome_canvas_get_scroll_region(GNOME_CANVAS (canvas),
@@ -1219,7 +1215,7 @@ static void init_reposition(reposition_node_t *data,
 
 static void clear_reposition(reposition_node_t *rdata)
 {
-  if (column_patterns)
+  if (appdata.column_patterns)
     g_free(rdata->column_populations);
 }
 
@@ -1228,11 +1224,11 @@ static guint find_node_column(node_t *node)
   guint i;
 
   /* This should only be called if we're in columnar-positioning mode */
-  g_assert(column_patterns);
+  g_assert(appdata.column_patterns);
 
-  for (i = 0; i < column_patterns->len; i++)
+  for (i = 0; i < appdata.column_patterns->len; i++)
     {
-      if (node_matches_spec_list(node, g_ptr_array_index(column_patterns, i)))
+      if (node_matches_spec_list(node, g_ptr_array_index(appdata.column_patterns, i)))
         return i;
     }
 
@@ -1240,7 +1236,7 @@ static guint find_node_column(node_t *node)
    * If no explicit match was found it goes in the rightmost column (with an
    * implicit "match-all" pattern).
    */
-  return column_patterns->len;
+  return appdata.column_patterns->len;
 }
 
 /*
@@ -1259,7 +1255,7 @@ static gint reposition_canvas_nodes_prep(const node_id_t *node_id,
     return FALSE;
 
   node = nodes_catalog_find(node_id);
-  if (column_patterns)
+  if (appdata.column_patterns)
     {
       canvas_node->column = find_node_column(node);
       canvas_node->column_idx = rdata->column_populations[canvas_node->column]++;
@@ -1315,7 +1311,7 @@ static gint reposition_canvas_nodes(node_id_t * node_id,
 
   /* TODO I've done all the stationary changes in a hurry
    * I should review it an tidy up all this stuff */
-  if (stationary_layout)
+  if (appdata.stationary_layout)
     {
       if (canvas_node->is_new)
 	{
@@ -1342,12 +1338,12 @@ static gint reposition_canvas_nodes(node_id_t * node_id,
 	  y = data->y_rad_max * sin (s_angle);
 	}
     }
-  else if (column_patterns)
+  else if (appdata.column_patterns)
     {
       guint col = canvas_node->column;
 
       x = scale_within(data->xmin, data->xmax, canvas_node->column,
-                       column_patterns->len + 1);
+                       appdata.column_patterns->len + 1);
       y = scale_within(data->ymin, data->ymax, canvas_node->column_idx,
                        data->column_populations[col]);
     }
@@ -1388,7 +1384,7 @@ static gint reposition_canvas_nodes(node_id_t * node_id,
     }
 
 
-  if (!stationary_layout || canvas_node->is_new)
+  if (!appdata.stationary_layout || canvas_node->is_new)
     {
       gnome_canvas_item_set(GNOME_CANVAS_ITEM (canvas_node->group_item),
 			     "x", x, "y", y, NULL);
