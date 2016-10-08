@@ -1330,7 +1330,7 @@ get_tcp (decode_proto_t *dp)
   if (!src_service && !dst_service)
     {
       if (pref.group_unk)
-        decode_proto_add(dp, "TCP-UNKNOwN");
+        decode_proto_add(dp, "TCP-UNKNOWN");
       else
         {
           if (chosen_port == src_port)
