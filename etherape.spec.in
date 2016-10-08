@@ -6,28 +6,28 @@
 
 # define an appropriate suffix for the packages
 %if 0%{?mgaversion}
-%define sys	mga%{mga_release}
+%define sys     mga%{mga_release}
 %endif
 %if 0%{?mdkversion}
-%define sys	mdv%{mandriva_release}
+%define sys     mdv%{mandriva_release}
 %endif
 %if 0%{?suse_version} 
-%define sys	suse%{suse_version}
+%define sys     suse%{suse_version}
 %endif
 %if 0%{?sles_version}
-%define sys	sles%{sles_version}
+%define sys     sles%{sles_version}
 %endif
 %if 0%{?fedora_version} 
-%define sys	fdv%{fedora_version}
+%define sys     fdv%{fedora_version}
 %endif
 %if 0%{?rhel_version}
-%define sys	rhel%{rhel_version}
+%define sys     rhel%{rhel_version}
 %endif
 %if 0%{?centos_version}
-%define sys	centos%{centos_version}
+%define sys     centos%{centos_version}
 %endif
 %if 0%{?scientificlinux_version}
-%define sys	sfl%{scientificlinux_version}
+%define sys     sfl%{scientificlinux_version}
 %endif
 
 Name:           etherape
@@ -49,11 +49,7 @@ Group:          Monitoring
 %endif
 %endif
 
-#%if 0%{?fedora_version} || 0%{?rhel_version} || 0%{?centos_version} || 0%{?scientificlinux_version}
-#BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
-#%else
 BuildRoot:      %{_tmppath}/%{name}-%{version}
-#%endif
 
 #Docdir: %{prefix}/doc
 
@@ -100,8 +96,19 @@ BuildRequires: docbook_4
 BuildRequires: fdupes
 BuildRequires: update-desktop-files
 BuildRequires: sed
-%if 0%{?suse_version} > 1110 && 0%{?suse_version} != 1315
+%if ( 0%{?is_opensuse} )
+%if 0%{?suse_version} > 1320 || 0%{?suse_version} == 1315
+# leap and tumbleweed
+BuildRequires: scrollkeeper
+%else
+# others
 BuildRequires: rarian-scrollkeeper-compat
+%endif
+%else
+# !is_opensuse, i.e. SLES
+%if 0%{?suse_version} > 1110
+BuildRequires: rarian-scrollkeeper-compat
+%endif
 %endif
 %endif
 
@@ -179,9 +186,7 @@ from a file as well as live from the network.
 %setup -q
 %{__rm} -rf .hg
 %if 0%{?suse_version} || 0%{?sles_version}
-%if 0%{?suse_version} != 1315
 %__sed -ie "s#http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd#file:///usr/share/sgml/docbook/dtd/4.2/docbookx.dtd#" doc/C/etherape.xml
-%endif
 %__cat >> etherape.desktop.in << _EOF_
 X-KDE-SubstituteUID=true
 X-KDE-Username=root
@@ -193,9 +198,11 @@ _EOF_
 gnome-doc-prepare --force --automake
 autoreconf -fi
 %configure --with-pic --disable-scrollkeeper
+#%if 0%{?is_opensuse} || ( ! 0%{?suse_version} == 1315 )
 # apparently opensuse has a broken xmllib configuration, missing an alias
 # for omf dtd
 %__sed -ie "s#--dtdvalid 'http://scrollkeeper.sourceforge.net/dtds/scrollkeeper-omf-1.0/scrollkeeper-omf.dtd'#--dtdvalidfpi \\\"-//OMF//DTD Scrollkeeper OMF Variant V1.0//EN\\\"#" doc/Makefile
+#%endif
 %else
 %if 0%{?fedora_version} || 0%{?rhel_version} || 0%{?centos_version} || 0%{?scientificlinux_version}
 # fedora/redhat/centos/SFL use a different dtd ...
@@ -221,7 +228,6 @@ autoreconf
 %find_lang %{name}
 
 %if 0%{?suse_version} || 0%{?sles_version}
-#%suse_update_desktop_file %{name} System Network
 %fdupes %{buildroot}
 %endif
 
@@ -243,11 +249,7 @@ autoreconf
 %doc %{_datadir}/omf/%{name}
 %docdir %{_datadir}/gnome/help/%{name}
 %doc %{_datadir}/gnome/help/%{name}/**
-%if 0%{?suse_version} && 0%{?suse_version} > 1110 
-# on opensuse rarian doesn't create /usr/share/omf, so we must
-# declare ownership of /usr/share/omf
 %dir %{_datadir}/omf
-%endif
 
 
 %post
@@ -262,6 +264,9 @@ scrollkeeper-update -q || :
 
 
 %changelog
+* Sat Oct  8 2016 R.Ghetta <bchiara@users.sf.net> 0.9.15
+- updates for new release
+
 * Sat Feb  6 2016 R.Ghetta <bchiara@users.sf.net> 0.9.14
 - fixes for newer distributions
 

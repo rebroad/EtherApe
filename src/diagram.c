@@ -1194,7 +1194,7 @@ static void init_reposition(reposition_node_t *data,
   data->center.angle += M_PI / 4.0;
 
   if (appdata.column_patterns)
-    data->column_populations = g_malloc0_n(appdata.column_patterns->len + 1,
+    data->column_populations = g_malloc0(appdata.column_patterns->len + 1 *
                                            sizeof(*data->column_populations));
 
   gnome_canvas_get_scroll_region(GNOME_CANVAS (canvas),

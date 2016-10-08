@@ -29,6 +29,7 @@
 #include "capture/capctl.h"
 #include "preferences.h"
 #include "util.h"
+#include "compat.h"
 
 typedef struct
 {
