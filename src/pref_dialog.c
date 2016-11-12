@@ -684,7 +684,7 @@ on_colordiag_ok_clicked (GtkButton * button, gpointer user_data)
           if (!gtk_tree_model_get_iter
               (GTK_TREE_MODEL (ep.gs), &itsibling, gpath))
             return;			/* path not found */
-            gtk_list_store_insert_before (ep.gs, &it, &itsibling);
+          gtk_list_store_insert_before (ep.gs, &it, &itsibling);
         }
       else
         gtk_list_store_append (ep.gs, &it);	/* no row selected, append */
