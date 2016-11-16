@@ -231,7 +231,7 @@ gchar *node_xml(const node_t * node)
 /* This function is called to discard packets from the list 
  * of packets beloging to a node or a link, and to calculate
  * the average traffic for that node or link */
-gboolean
+static gboolean
 node_update(node_id_t * node_id, node_t *node, gpointer delete_list_ptr)
 {
   double diffms;

@@ -38,7 +38,6 @@ void node_delete(node_t *node); /* destroys a node, releasing memory */
 gchar *node_dump(const node_t * node);
 gchar *node_xml(const node_t * node);
 gint node_count(void); /* total number of nodes in memory */
-gboolean node_update(node_id_t * node_id, node_t *node, gpointer delete_list_ptr);
 
 /* methods to handle every new node not yet handled in the main app */
 void new_nodes_clear(void);
