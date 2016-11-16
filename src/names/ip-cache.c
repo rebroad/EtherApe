@@ -111,7 +111,7 @@ ipcache_active_entries(void)
 }
 
 const char *
-ipcache_lookup(address_t *addr)
+ipcache_lookup(const address_t *addr)
 {
   struct ipcache_item *item;
 
@@ -131,7 +131,7 @@ ipcache_lookup(address_t *addr)
 }
 
 static struct ipcache_item *
-ipcache_alloc_item(address_t *ip)
+ipcache_alloc_item(const address_t *ip)
 {
   struct ipcache_item *item;
 
@@ -144,7 +144,7 @@ ipcache_alloc_item(address_t *ip)
 }
 
 struct ipcache_item *
-ipcache_prepare_request(address_t *ip)
+ipcache_prepare_request(const address_t *ip)
 {
   struct ipcache_item *item;
 
@@ -160,7 +160,7 @@ ipcache_prepare_request(address_t *ip)
 }
 
 void
-ipcache_request_succeeded(struct ipcache_item *rp, long ttl, char *ipname)
+ipcache_request_succeeded(struct ipcache_item *rp, long ttl, const char *ipname)
 {
   rp->hostname = g_strdup(ipname);
   rp->expiry = time(NULL) + ttl;

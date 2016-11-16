@@ -46,9 +46,9 @@ void ipcache_clear(void);
 
 long ipcache_active_entries(void);
 
-const char* ipcache_lookup(address_t *addr);
-struct ipcache_item *ipcache_prepare_request(address_t *ip);
-void ipcache_request_succeeded(struct ipcache_item *rp, long ttl, char *ipname);
+const char* ipcache_lookup(const address_t *addr);
+struct ipcache_item *ipcache_prepare_request(const address_t *ip);
+void ipcache_request_succeeded(struct ipcache_item *rp, long ttl, const char *ipname);
 void ipcache_request_failed(struct ipcache_item *rp);
 
 #endif
