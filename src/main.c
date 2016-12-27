@@ -391,7 +391,7 @@ static gboolean parse_position_line(gchar *line, GList **speclist, long *colnum)
       fprintf(stderr, _("Invalid position-file line: %s"), line);
       return FALSE;
     }
-  else if (*colnum <= 0)
+  else if (*colnum <= 0 || *colnum > 1000)
     {
       fprintf(stderr, _("Column number %ld out of range"), *colnum);
       return FALSE;

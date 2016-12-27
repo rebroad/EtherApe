@@ -1446,7 +1446,7 @@ Conversely, --min-delay can help analyze many short lived connections.</para>
           <para>The first column is a regex of either the FQDN or the IP address.</para>
           <para>The second column is a number indicating the "column" that the
           node will be positioned in in the display with column 1 being on the
-          far left. Up to 10 columns are permitted.</para>
+          far left. Up to 1000 columns are permitted.</para>
           <para>Instead of being arranged in a circle the nodes are displayed
           in columns. This is quite useful for arranging nodes so that you can
           see nodes on the "inside" of your network on the left and the public
