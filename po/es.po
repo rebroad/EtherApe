@@ -13,7 +13,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 0.9.12\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-10-03 08:06+0200\n"
+"POT-Creation-Date: 2017-02-10 19:45+0100\n"
 "PO-Revision-Date: 2011-06-01 02:13+0200\n"
 "Last-Translator: Javier Fernandez-Sanguino <jfs@debian.org>\n"
 "Language-Team: Spanish <es@li.org>\n"
@@ -24,7 +24,7 @@ msgstr ""
 
 # src/info_windows.c:221 src/info_windows.c:542 src/main.c:166 src/menus.c:34
 # src/menus.c:372
-#: src/appdata.c:82
+#: src/appdata.c:86
 #, fuzzy, c-format
 msgid "Could not load glade interface file '%s'!"
 msgstr "No ha sido posible cargar el archivo glade! (%s)"
@@ -35,7 +35,7 @@ msgstr "No ha sido posible cargar el archivo glade! (%s)"
 msgid "%s protocol not supported"
 msgstr "Protocolos DDP no soportados en %s"
 
-#: src/diagram.c:230
+#: src/diagram.c:226
 #, fuzzy, c-format
 msgid ""
 "Nodes: %d (on canvas: %d, shown: %u), Links: %d, Conversations: %ld, names "
@@ -47,58 +47,58 @@ msgstr ""
 "en la lista %ld). Entradas de caché IP %ld. Objetos de canvas: %ld. "
 "Refresco: %u ms"
 
-#: src/diagram.c:576
+#: src/diagram.c:572
 msgid "(Capture statistics unavailable in offline mode.)"
 msgstr ""
 
-#: src/diagram.c:632
+#: src/diagram.c:628
 #, c-format
 msgid "Bogus statspos_t (%d) pref.pcap_stats_pos"
 msgstr ""
 
-#: src/diagram.c:661
+#: src/diagram.c:657
 #, c-format
 msgid "SIGUSR1 received: exporting to %s"
 msgstr "Se recibió SIGUSR1: exportando a %s"
 
 # src/diagram.c:437
-#: src/diagram.c:831
+#: src/diagram.c:827
 #, c-format
 msgid "Unable to allocate color for new protocol %s"
 msgstr "No ha sido posible reservar un color para el nuevo protocolo %s"
 
-#: src/diagram.c:926
+#: src/diagram.c:922
 msgid "Canvas node null"
 msgstr "Modo «null» de canvas"
 
 # src/diagram.c:579
-#: src/diagram.c:942
+#: src/diagram.c:938
 #, c-format
 msgid "Creating canvas_node: %s. Number of nodes %d"
 msgstr "Creando nodo de diagrama: %s. Número de nodos: %d"
 
 # src/diagram.c:681
-#: src/diagram.c:1007
+#: src/diagram.c:1003
 msgid "Unknown value or node_size_variable"
 msgstr "Valor desconocido en node_size_variable"
 
 # src/diagram.c:681
-#: src/diagram.c:1662
+#: src/diagram.c:1658
 msgid "Unknown value for link_size_variable"
 msgstr "Valor desconocido en link_size_variable"
 
 # src/diagram.c:1227
-#: src/diagram.c:1701
+#: src/diagram.c:1697
 #, c-format
 msgid "Link main protocol: %s"
 msgstr "Protocolo principal del enlace: %s"
 
 # src/diagram.c:1230
-#: src/diagram.c:1704
+#: src/diagram.c:1700
 msgid "Link main protocol unknown"
 msgstr "Protocolo principal del enlace desconocido"
 
-#: src/diagram.c:1768
+#: src/diagram.c:1764
 msgid ""
 "'recv': packets received; 'drop': packets dropped by OS buffering; 'ifdrop': "
 "packets dropped by interface or driver."
@@ -271,17 +271,17 @@ msgstr ""
 msgid "DNS resolver initialization failed"
 msgstr ""
 
-#: src/main.c:390
+#: src/main.c:391
 #, c-format
 msgid "Invalid position-file line: %s"
 msgstr ""
 
-#: src/main.c:395
+#: src/main.c:396
 #, c-format
 msgid "Column number %ld out of range"
 msgstr ""
 
-#: src/main.c:419
+#: src/main.c:421
 #, c-format
 msgid "Failed to read position file %s: %s"
 msgstr ""
@@ -542,23 +542,23 @@ msgid "Updated links. Active links %d"
 msgstr "Enlaces actualizados. Hay %d enlaces activos"
 
 # src/capture.c:844
-#: src/stats/node.c:114
+#: src/stats/node.c:115
 #, c-format
 msgid "New node: %s. Number of nodes %d"
 msgstr "Nuevo nodo: %s. Número de nodos: %d"
 
 # src/capture.c:844
-#: src/stats/node.c:148
+#: src/stats/node.c:149
 #, c-format
 msgid "delete node: %s. Number of nodes %d"
 msgstr "Borrando nodo: %s. Número de nodos: %d"
 
-#: src/stats/node.c:269
+#: src/stats/node.c:270
 #, c-format
 msgid "Queuing node '%s' for remove"
 msgstr "Añadiendo el nodo '%s' a la cola de eliminaciones"
 
-#: src/stats/node.c:588
+#: src/stats/node.c:589
 #, c-format
 msgid "Updated nodes. Active nodes %d"
 msgstr "Nodos actualizados. Hay %d nodos activos"
@@ -571,20 +571,20 @@ msgstr "Modo no soportado en get_link_id"
 
 # src/info_windows.c:754
 #  Meaning "n seconds" ago
-#: src/stats/util.c:332
+#: src/stats/util.c:330
 #, fuzzy, c-format
 msgid "%ld\" ago"
 msgstr "hace %d\""
 
 # src/info_windows.c:760
-#: src/stats/util.c:338
+#: src/stats/util.c:336
 #, fuzzy, c-format
 msgid "%ld'%ld\" ago"
 msgstr "hace %d'%d\""
 
 # src/info_windows.c:772
 #  Watch out! The first is month, the second day of the month
-#: src/stats/util.c:354
+#: src/stats/util.c:352
 #, c-format
 msgid "%d/%d %d:%d"
 msgstr "%d/%d %d:%d"

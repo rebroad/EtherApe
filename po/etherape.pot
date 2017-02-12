@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-10-03 08:06+0200\n"
+"POT-Creation-Date: 2017-02-10 19:45+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: src/appdata.c:82
+#: src/appdata.c:86
 #, c-format
 msgid "Could not load glade interface file '%s'!"
 msgstr ""
@@ -27,7 +27,7 @@ msgstr ""
 msgid "%s protocol not supported"
 msgstr ""
 
-#: src/diagram.c:230
+#: src/diagram.c:226
 #, c-format
 msgid ""
 "Nodes: %d (on canvas: %d, shown: %u), Links: %d, Conversations: %ld, names "
@@ -35,52 +35,52 @@ msgid ""
 "IP cache entries %ld. Canvas objs: %ld. Refreshed: %u ms"
 msgstr ""
 
-#: src/diagram.c:576
+#: src/diagram.c:572
 msgid "(Capture statistics unavailable in offline mode.)"
 msgstr ""
 
-#: src/diagram.c:632
+#: src/diagram.c:628
 #, c-format
 msgid "Bogus statspos_t (%d) pref.pcap_stats_pos"
 msgstr ""
 
-#: src/diagram.c:661
+#: src/diagram.c:657
 #, c-format
 msgid "SIGUSR1 received: exporting to %s"
 msgstr ""
 
-#: src/diagram.c:831
+#: src/diagram.c:827
 #, c-format
 msgid "Unable to allocate color for new protocol %s"
 msgstr ""
 
-#: src/diagram.c:926
+#: src/diagram.c:922
 msgid "Canvas node null"
 msgstr ""
 
-#: src/diagram.c:942
+#: src/diagram.c:938
 #, c-format
 msgid "Creating canvas_node: %s. Number of nodes %d"
 msgstr ""
 
-#: src/diagram.c:1007
+#: src/diagram.c:1003
 msgid "Unknown value or node_size_variable"
 msgstr ""
 
-#: src/diagram.c:1662
+#: src/diagram.c:1658
 msgid "Unknown value for link_size_variable"
 msgstr ""
 
-#: src/diagram.c:1701
+#: src/diagram.c:1697
 #, c-format
 msgid "Link main protocol: %s"
 msgstr ""
 
-#: src/diagram.c:1704
+#: src/diagram.c:1700
 msgid "Link main protocol unknown"
 msgstr ""
 
-#: src/diagram.c:1768
+#: src/diagram.c:1764
 msgid ""
 "'recv': packets received; 'drop': packets dropped by OS buffering; 'ifdrop': "
 "packets dropped by interface or driver."
@@ -232,17 +232,17 @@ msgstr ""
 msgid "DNS resolver initialization failed"
 msgstr ""
 
-#: src/main.c:390
+#: src/main.c:391
 #, c-format
 msgid "Invalid position-file line: %s"
 msgstr ""
 
-#: src/main.c:395
+#: src/main.c:396
 #, c-format
 msgid "Column number %ld out of range"
 msgstr ""
 
-#: src/main.c:419
+#: src/main.c:421
 #, c-format
 msgid "Failed to read position file %s: %s"
 msgstr ""
@@ -468,22 +468,22 @@ msgstr ""
 msgid "Updated links. Active links %d"
 msgstr ""
 
-#: src/stats/node.c:114
+#: src/stats/node.c:115
 #, c-format
 msgid "New node: %s. Number of nodes %d"
 msgstr ""
 
-#: src/stats/node.c:148
+#: src/stats/node.c:149
 #, c-format
 msgid "delete node: %s. Number of nodes %d"
 msgstr ""
 
-#: src/stats/node.c:269
+#: src/stats/node.c:270
 #, c-format
 msgid "Queuing node '%s' for remove"
 msgstr ""
 
-#: src/stats/node.c:588
+#: src/stats/node.c:589
 #, c-format
 msgid "Updated nodes. Active nodes %d"
 msgstr ""
@@ -492,17 +492,17 @@ msgstr ""
 msgid "Unsupported ape mode in node_id_compare"
 msgstr ""
 
-#: src/stats/util.c:332
+#: src/stats/util.c:330
 #, c-format
 msgid "%ld\" ago"
 msgstr ""
 
-#: src/stats/util.c:338
+#: src/stats/util.c:336
 #, c-format
 msgid "%ld'%ld\" ago"
 msgstr ""
 
-#: src/stats/util.c:354
+#: src/stats/util.c:352
 #, c-format
 msgid "%d/%d %d:%d"
 msgstr ""

@@ -1,6 +1,6 @@
                             Changelog for EtherApe
 
-  Overview of changes in EtherApe 0.9.15 ():
+  Overview of changes in EtherApe 0.9.15 (Friday, February 10, 2017):
    The central node ring setting now accepts multiple node specifiers
    (separated by any combination of spaces and/or commas), and also
    now understands glob syntax, so you can put for example
