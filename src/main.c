@@ -26,8 +26,10 @@
 #include <netinet/in.h>
 #include <signal.h>
 #include <glib.h>
-#include <gnome.h>
-#include <libgnomeui/gnome-client.h>
+#include <glib/gi18n.h>
+#include <popt.h>
+#include <gtk/gtk.h>
+#include <libgnomecanvas/libgnomecanvas.h>
 #include "appdata.h"
 #include "names/ip-cache.h"
 #include "main.h"
@@ -58,11 +60,6 @@ static void (*old_sighup_handler) (int);
  **************************************************************************/
 static void free_static_data(void);
 static void set_debug_level (void);
-static void session_die (GnomeClient * client, gpointer client_data);
-static gint save_session (GnomeClient * client, gint phase, 
-                          GnomeSaveStyle save_style, gint is_shutdown, 
-                          GnomeInteractStyle interact_style, gint is_fast, 
-                          gpointer client_data);
 static void log_handler (gchar * log_domain, GLogLevelFlags mask, 
                          const gchar * message, gpointer user_data);
 static GPtrArray *parse_position_file(const gchar *path);
@@ -79,7 +76,6 @@ static void signal_export(int signum);
 int main (int argc, char *argv[])
 {
   GtkWidget *widget;
-  GnomeClient *client;
   gchar *mode_string = NULL;
   gchar *cl_filter = NULL;
   gchar *cl_interface = NULL;
@@ -89,7 +85,6 @@ int main (int argc, char *argv[])
   gboolean cl_numeric = FALSE;
   glong midelay = 0;
   glong madelay = G_MAXLONG;
-  gchar *version;
   gchar *errmsg;
   gchar *cl_glade_file = NULL;
   gchar *position_file_path = NULL;
@@ -145,7 +140,8 @@ int main (int argc, char *argv[])
 
   /* Command line */
   poptcon = poptGetContext("Etherape", argc, (const char **)argv, optionsTable, 0);
-  while (poptGetNextOpt(poptcon) > 0);
+  while (poptGetNextOpt(poptcon) > 0)
+    ;
   poptFreeContext(poptcon);
 
   /*
@@ -178,18 +174,7 @@ int main (int argc, char *argv[])
   if (!getenv ("GNOME_DESKTOP_ICON"))
     putenv ("GNOME_DESKTOP_ICON=" PIXMAPS_DIR "/etherape.png");
 
-#ifdef PACKAGE_SCM_REV
-  /* We initiate the application and read command line options */
-  version = g_strdup_printf("%s (hg id %s)", VERSION, 
-                            (*PACKAGE_SCM_REV) ? PACKAGE_SCM_REV : 
-                              _("-unknown-"));
-#else
-  version = g_strdup(VERSION);
-#endif
-  gnome_program_init ("EtherApe", version, 
-                      LIBGNOMEUI_MODULE, argc, argv,
-		      GNOME_PARAM_POPT_TABLE, optionsTable, GNOME_PARAM_NONE);
-  g_free(version);
+  gtk_init (&argc, &argv);
 
   set_debug_level();
 
@@ -270,7 +255,7 @@ int main (int argc, char *argv[])
     appdata.column_patterns = parse_position_file(position_file_path);
 
   /* Glade */
-  glade_gnome_init ();
+  glade_init ();
   glade_require("gnome");
   glade_require("canvas");
   if (!appdata_init_glade(cl_glade_file))
@@ -309,12 +294,6 @@ int main (int argc, char *argv[])
       gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(widget), FALSE);
     }
 
-  /* Session handling */
-  client = gnome_master_client ();
-  g_signal_connect (G_OBJECT (client), "save_yourself",
-		    GTK_SIGNAL_FUNC (save_session), argv[0]);
-  g_signal_connect (G_OBJECT (client), "die",
-		    GTK_SIGNAL_FUNC (session_die), NULL);
   gtk_widget_show (appdata.app1);
 
   install_handlers();
@@ -493,47 +472,6 @@ log_handler (gchar * log_domain,
   if (mask & appdata.debug_mask)
     g_log_default_handler("EtherApe", mask, message, user_data);
 }
-
-/* the gnome session manager may call this function */
-static void
-session_die (GnomeClient * client, gpointer client_data)
-{
-  g_message ("in die");
-  gtk_main_quit ();
-}				/* session_die */
-
-/* the gnome session manager may call this function */
-static gboolean
-save_session (GnomeClient * client, gint phase, GnomeSaveStyle save_style,
-	      gboolean is_shutdown, GnomeInteractStyle interact_style,
-	      gboolean is_fast, gpointer client_data)
-{
-  gchar **argv;
-  guint argc;
-
-  /* allocate 0-filled, so it will be NULL-terminated */
-  argv = g_malloc0 (sizeof (gchar *) * 4);
-  g_assert(argv);
-
-  argc = 1;
-
-  argv[0] = client_data;
-
-  g_message ("In save_session");
-#if 0
-  if (message)
-    {
-      argv[1] = "--message";
-      argv[2] = message;
-      argc = 3;
-    }
-#endif
-
-  gnome_client_set_clone_command (client, argc, argv);
-  gnome_client_set_restart_command (client, argc, argv);
-  return TRUE;
-}				/* save_session */
-
 
 /***************************************************************************
  *

@@ -4,6 +4,9 @@ Juan Toledo	<toledo@users.sourceforge.net>
 Vincent van Adrighem	<vincent@dirck.mine.nu>
   Dutch translation
 
+Balló György
+  remove gnomeui dependence
+
 Ben Allen
   Patch for -z option
 

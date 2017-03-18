@@ -19,7 +19,8 @@
 #include <config.h>
 #endif
 
-#include <gnome.h>
+#include <gtk/gtk.h>
+#include <libgnomecanvas/libgnomecanvas.h>
 #include "appdata.h"
 #include "callbacks.h"
 #include "diagram.h"
