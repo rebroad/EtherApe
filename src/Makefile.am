@@ -10,6 +10,7 @@ etherape_CPPFLAGS  = \
 	-DGLADEDIR=\""$(gladedir)"\" \
 	-DCONFDIR=\""$(confdir)"\" \
 	$(WARN_CFLAGS) \
+	$(PTHREAD_CFLAGS) \
 	$(ETHERAPE_CFLAGS) 
 
 bin_PROGRAMS = etherape
@@ -65,8 +66,8 @@ if !HAVE_LIBCARES
 etherape_SOURCES += names/thread_resolve.c names/thread_resolve.h
 endif
 
-etherape_LDADD = $(ETHERAPE_LIBS) $(PCAP_LIBS) 
-etherape_LDFLAGS = $(ETHERAPE_LDFLAGS)
+etherape_LDADD = $(ETHERAPE_LIBS) $(PCAP_LIBS) $(PTHREAD_LIBS) $(PTHREAD_CFLAGS)
+etherape_LDFLAGS = $(ETHERAPE_LDFLAGS) 
 
 .indent: $(etherape_SOURCES) $(etherape_INCLUDES)
 	indent $? 

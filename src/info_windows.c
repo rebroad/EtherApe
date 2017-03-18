@@ -34,6 +34,11 @@
 #include "stats/util.h"
 #include "node_windows.h"
 
+#if !defined(G_SOURCE_CONTINUE)
+// RHEL6/CENTOS6, SLE11 etc don't have this macro
+#define G_SOURCE_CONTINUE TRUE
+#endif
+
 typedef enum 
 {
   PROTO_COLUMN_COLOR = 0,

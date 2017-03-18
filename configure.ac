@@ -26,10 +26,11 @@ AC_PROG_LIBTOOL
 #AC_PROG_INTLTOOL(0.27)
 
 # Checks for libraries.
-PKG_CHECK_MODULES(ETHERAPE, glib-2.0 libglade-2.0 libgnomecanvas-2.0 popt)
+PKG_CHECK_MODULES(ETHERAPE, glib-2.0 libglade-2.0 libgnomecanvas-2.0)
 AC_SUBST(ETHERAPE_CFLAGS)
 AC_SUBST(ETHERAPE_LDFLAGS)
 AC_SUBST(ETHERAPE_LIBS)
+AX_PTHREAD
 
 # Checks for header files.
 AC_HEADER_STDC
@@ -156,6 +157,7 @@ AC_ETHEREAL_PCAP_CHECK
 # check for other libraries (needed for AC_CHECK_FUNCS)
 AC_SEARCH_LIBS(pow, [m])
 AC_SEARCH_LIBS(glib_check_version, [glib-2.0])
+AC_SEARCH_LIBS(poptGetContext, [popt])
 
 # Check for inet_ntop (it's supposed to exists everywhere, but ...)
 AC_CHECK_FUNCS([inet_ntop])
