@@ -59,6 +59,7 @@ BuildRequires: gettext
 BuildRequires: autoconf
 BuildRequires: pkgconfig
 BuildRequires: libtool
+BuildRequires: popt
 
 # Mageia
 %if 0%{?mgaversion}
