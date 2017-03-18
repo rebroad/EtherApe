@@ -1,3 +1,1276 @@
+2017-03-18  R.Ghetta  <bchiara@users.sf.net>
+
+	* etherape.spec.in:
+	buildrequire popt
+	[7d5e00620d74] [tip]
+
+	* AUTHORS, NEWS, configure.ac, src/callbacks.c, src/diagram.c,
+	src/main.c:
+	use libgnomecanvas only instead of libgnomeui. Based on the work of
+	Arch Linux packager bgyorgy (Balló György)
+	[d40de86aa4ff]
+
+	* .hgignore:
+	update ignores
+	[583fd5a8ff95]
+
+	* src/appdata.c, src/appdata.h, src/callbacks.c, src/capture/capctl-
+	msg.h, src/capture/capctl.c, src/capture/capctl.h,
+	src/capture/capture.c, src/capture/capture.h, src/common.h,
+	src/datastructs.c, src/datastructs.h, src/diagram.c, src/diagram.h,
+	src/info_windows.c, src/info_windows.h, src/main.c, src/main.h,
+	src/menus.c, src/menus.h, src/names/dns.h, src/names/ip-cache.h,
+	src/names/names.c, src/names/names.h, src/names/names_netbios.c,
+	src/names/names_netbios.h, src/node_windows.c, src/node_windows.h,
+	src/pref_dialog.c, src/pref_dialog.h, src/preferences.c,
+	src/preferences.h, src/stats/basic_stats.c, src/stats/basic_stats.h,
+	src/stats/conversations.c, src/stats/conversations.h,
+	src/stats/decode_proto.c, src/stats/decode_proto.h,
+	src/stats/links.c, src/stats/links.h, src/stats/node.c,
+	src/stats/node.h, src/stats/node_id.c, src/stats/node_id.h,
+	src/stats/pkt_info.h, src/stats/prot_types.h, src/stats/protocols.c,
+	src/stats/protocols.h, src/stats/traffic_stats.c,
+	src/stats/traffic_stats.h, src/stats/util.h, src/ui_utils.c,
+	src/ui_utils.h:
+	normalize copyright
+	[11f2a19de397]
+
+	* configure.ac, src/capture/capctl.c, src/capture/capture.c,
+	src/compat.c, src/compat.h, src/names/eth_resolv.c,
+	src/names/eth_resolv.h, src/names/names_netbios.c:
+	remove unused and obsolete configure checks
+	[f4939bc5118b]
+
+2017-02-12  R.Ghetta  <bchiara@users.sf.net>
+
+	* .hgtags:
+	Added tag rel-0.9.15 for changeset dc7c0c374b4d
+	[3f0020f330e7]
+
+	* NEWS, po/de.po, po/es.po, po/etherape.pot, po/fr.po, po/it.po,
+	po/nl.po, po/sv.po, po/tr.po:
+	release 0.9.15
+	[dc7c0c374b4d] [rel-0.9.15]
+
+2016-12-27  R.Ghetta  <bchiara@users.sf.net>
+
+	* doc/C/etherape.xml, etherape.1, src/main.c:
+	fix a security limit of 1000 columns, update manual accordingly
+	[9e950b2c4171]
+
+2016-12-22  Zev Weiss  <zev@bewilderbeest.net>
+
+	* src/main.c:
+	Re-lift 10-column limit on '-P' layout mode.
+	[c838da200015]
+
+2016-11-16  Zev Weiss  <zev@bewilderbeest.net>
+
+	* src/stats/node.c, src/stats/node.h:
+	Make node_update() static.
+	[9a2e8a7ead68]
+
+	* src/names/ip-cache.c, src/names/ip-cache.h:
+	Add some const annotations to ip-cache functions.
+	[72af002e8f2d]
+
+2016-10-08  R.Ghetta  <bchiara@users.sf.net>
+
+	* configure.ac, etherape.spec.in, src/diagram.c, src/stats/node.c:
+	other compatibility changes
+	[747ba0319f7c]
+
+	* src/stats/decode_proto.c:
+	fix typo (this time hopefully without introducing another ...)
+	[c2251d5b6e1e]
+
+2016-11-11  Zev Weiss  <zev@bewilderbeest.net>
+
+	* src/pref_dialog.c:
+	Small whitespace fix.
+
+	This was triggering the misleading-indentation warning in recent
+	GCCs.
+	[56ce566c727e]
+
+2016-10-07  R.Ghetta  <bchiara@users.sf.net>
+
+	* configure.ac, po/POTFILES.in, src/Makefile.am, src/appdata.c,
+	src/capture/capctl-msg.h, src/compat.c, src/compat.h, src/main.c,
+	src/pref_dialog.c, src/stats/traffic_stats.c, src/stats/util.c,
+	src/stats/util.h:
+	helpers for older distros
+	[3b395a5e2c5d]
+
+	* etherape.spec.in, glade/etherape.glade, src/appdata.c,
+	src/appdata.h, src/diagram.c, src/diagram.h, src/main.c,
+	src/stats/node.c:
+	move static data to common appdata struct, tweak radius slider,
+	handle column corner cases
+	[a2d78a1cd298]
+
+2016-10-03  R.Ghetta  <bchiara@users.sf.net>
+
+	* configure.ac, doc/C/etherape.xml, po/POTFILES.in, po/de.po,
+	po/es.po, po/etherape.pot, po/fr.po, po/it.po, po/nl.po, po/sv.po,
+	po/tr.po:
+	bump version number, sync potfiles, fix typo
+	[f1d8d156a439]
+
+	* po/fr.po, po/it.po:
+	update translations
+	[19f823a0dc34]
+
+2016-03-21  Zev Weiss  <zev@bewilderbeest.net>
+
+	* glade/etherape.glade:
+	Small layout fix for preferences window.
+
+	Central node ring text box had been weirdly tall; now it's a more
+	normal height.
+	[b31695cf66cc]
+
+	* src/common.h, src/stats/decode_proto.c:
+	More careful versions of pntohl() and friends.
+
+	The existing p{ntoh,hton}{s,l}() macros just did a direct pointer
+	cast and dereference, which sometimes lead to misaligned-address
+	reports from UBSAN. This fixes that by using memcpy() to copy bytes
+	from the pointer into a temporary variable instead.
+	[511fb409ba27]
+
+	* NEWS, etherape.1, src/capture/capctl.c, src/capture/capctl.h,
+	src/main.c:
+	Add '-Z' flag to run main process as unprivileged user.
+
+	Only the background packet-capture continues running as the original
+	user (presumably root); everything else done in the main foreground
+	process can instead be run as an unprivileged user.
+
+	'-Z' and the matching long option ('--relinquish-privileges') were
+	chosen to mirror the corresponding tcpdump flags.
+	[7215f9a213d5]
+
+2016-03-20  Zev Weiss  <zev@bewilderbeest.net>
+
+	* configure.ac, src/Makefile.am, src/appdata.c, src/appdata.h,
+	src/capture.c, src/capture.h, src/capture/cap-util.c, src/capture
+	/cap-util.h, src/capture/capctl-msg.h, src/capture/capctl.c,
+	src/capture/capctl.h, src/capture/capture.c, src/capture/capture.h,
+	src/common.h, src/diagram.c, src/export.c, src/info_windows.c,
+	src/main.c, src/menus.c, src/names/names.c, src/pref_dialog.c,
+	src/stats/decode_proto.c, src/stats/node.c, src/ui_utils.c,
+	src/ui_utils.h:
+	Move packet-capture to a separate process.
+
+	Shortly after starting, the main (foreground) process forks off a
+	dedicated child process for doing pcap stuff. They communicate
+	control messages via a (bidirectional) socketpair; raw packet data
+	is sent back to the foreground process via a pipe.
+	[dc4437a83869]
+
+	* configure.ac:
+	Add configure options for ASAN and TSAN.
+
+	--enable-asan and --enable-tsan turn on building with GCC/Clang's
+	address and thread sanitizers, respectively, though only one of them
+	can be used at a time.
+	[ef4908656bdd]
+
+	* src/capture.c, src/diagram.c:
+	More graceful handling of pcap stats in offline mode.
+	[72ed35428969]
+
+	* src/diagram.c, src/diagram.h, src/main.c, src/pref_dialog.c,
+	src/preferences.c, src/preferences.h:
+	More structured preferences.
+
+	Less repetitive boilerplate in the preference loading/saving code,
+	fewer things to remember to update when adding a new one. Just add a
+	member to pref_struct and a corresponding entry in the preferences
+	array and the infrastructure will take care of the rest.
+
+	Also enforces a distinction between *preferences*, which are saved
+	persistently in the config file, and command-line settings, which
+	are not. Thus the 'stationary' and 'position' settings are removed
+	from pref_struct.
+	[9aae2ff79a4b]
+
+2016-03-19  Zev Weiss  <zev@bewilderbeest.net>
+
+	* src/names/dns.c:
+	Fix build with --with-c-ares.
+	[095edad75107]
+
+2016-03-19  R.Ghetta  <bchiara@users.sf.net>
+
+	* src/Makefile.am, src/basic_stats.c, src/basic_stats.h,
+	src/capture.c, src/conversations.c, src/conversations.h,
+	src/datastructs.c, src/datastructs.h, src/decode_proto.c,
+	src/decode_proto.h, src/diagram.c, src/dns.c, src/dns.h,
+	src/eth_resolv.c, src/eth_resolv.h, src/export.c,
+	src/info_windows.c, src/info_windows.h, src/ip-cache.c, src/ip-
+	cache.h, src/links.c, src/links.h, src/main.c, src/menus.c,
+	src/names.c, src/names.h, src/names/dns.c, src/names/dns.h,
+	src/names/eth_resolv.c, src/names/eth_resolv.h, src/names/ip-
+	cache.c, src/names/ip-cache.h, src/names/names.c, src/names/names.h,
+	src/names/names_netbios.c, src/names/names_netbios.h,
+	src/names/thread_resolve.c, src/names/thread_resolve.h,
+	src/names_netbios.c, src/names_netbios.h, src/node.c, src/node.h,
+	src/node_id.c, src/node_id.h, src/node_windows.c, src/pkt_info.h,
+	src/pref_dialog.c, src/preferences.c, src/prot_types.h,
+	src/protocols.c, src/protocols.h, src/stats/basic_stats.c,
+	src/stats/basic_stats.h, src/stats/conversations.c,
+	src/stats/conversations.h, src/stats/decode_proto.c,
+	src/stats/decode_proto.h, src/stats/links.c, src/stats/links.h,
+	src/stats/node.c, src/stats/node.h, src/stats/node_id.c,
+	src/stats/node_id.h, src/stats/pkt_info.h, src/stats/prot_types.h,
+	src/stats/protocols.c, src/stats/protocols.h,
+	src/stats/traffic_stats.c, src/stats/traffic_stats.h,
+	src/stats/util.c, src/stats/util.h, src/thread_resolve.c,
+	src/thread_resolve.h, src/traffic_stats.c, src/traffic_stats.h,
+	src/ui_utils.c, src/ui_utils.h, src/util.c, src/util.h:
+	roughly divide source files in three areas: name-resolution,
+	statistics and everything else
+	[ad58ffd91e76]
+
+2016-03-17  Zev Weiss  <zev@bewilderbeest.net>
+
+	* src/diagram.c:
+	Don't use column_positions when not in columnar-positioning mode.
+
+	Avoids a segfault in the default (ring-positioning) mode.
+	[e9a51eb9b378]
+
+	* config.h.in:
+	Remove autogenerated config.h.in from revision control.
+	[e8994ef25527]
+
+2016-03-16  Zev Weiss  <zev@bewilderbeest.net>
+
+	* NEWS, src/diagram.c, src/diagram.h, src/main.c:
+	Clean up columnar-layout code.
+
+	Removes hard-coded static limitations (e.g. 10 columns max, 200
+	characters for node-matching patterns, etc.).
+
+	Also allows the spacing of nodes within a column to re-expand when
+	the population of the column decreases (so a spike in the population
+	doesn't leave it permanently scrunched together).
+	[6ffe90362ddc]
+
+	* NEWS, src/main.c:
+	Allow multiple patterns per line in node-position files.
+
+	One-pattern-per-line still works of course, but multiple lines for
+	the same column number can now optionally be condensed into a single
+	line.
+	[55994cfcbde7]
+
+2016-03-15  Zev Weiss  <zev@bewilderbeest.net>
+
+	* NEWS, src/appdata.h, src/diagram.c, src/diagram.h, src/main.c:
+	Re-use CIDR+hostname-globbing for columnar-positioning mode (-P).
+
+	This is slightly backwards-incompatible, in that the syntax for the
+	node-position file changes slightly, but improves general UI
+	consistency with the existing centered-node-ring code.
+
+	(Also cleans up the '-P' code a bit, moving variables from header
+	files to *.c files and such.)
+	[35a64bad37d5]
+
+	* src/diagram.c:
+	Slight cleanup of reposition_canvas_nodes_prep().
+
+	Use the node_id_t parameter instead of an ugly cast from a member of
+	the canvas_node.
+	[064babd314f1]
+
+	* src/diagram.c:
+	Use g_strcmp0() instead of hand-rolled version.
+	[af34155dd739]
+
+	* src/main.c, src/preferences.c:
+	Move centered-node spec-list parsing out of load_config().
+
+	Especially now that load_config() is parameterized, it really didn't
+	belong there, and having it there actually caused a bug with
+	showing/hiding the toolbar/status-bar/legend re-loading and thus
+	potentially changing the set of centered nodes. (This fixes that.)
+	[b61f556f3a8c]
+
+2016-03-14  Zev Weiss  <zev@bewilderbeest.net>
+
+	* src/menus.c:
+	Fix memory leak in init_menus().
+
+	The GList of pcap interfaces was getting freed, but only after also
+	being used as an iterator (causing it to end up always being NULL by
+	the time it got freed). Fix by using a separate iterator variable.
+	[794629376b24]
+
+	* src/preferences.c:
+	Fix memory leak in save_config().
+
+	The GKeyFile wasn't getting freed.
+	[4ad6210f5c6e]
+
+	* src/preferences.c:
+	Fix memory leak in init_config();
+
+	A default color string was getting allocated and then immediately
+	NULLed out later in the same function without getting freed.
+	[9d4356453720]
+
+	* src/diagram.c:
+	Fix memory leak in pcap-stats display code.
+
+	Though I can't see it mentioned in the documentation anywhere,
+	gnome_canvas_set_item() apparently mallocs its own copy of the
+	string passed in for the "text" argument.
+	[9d9cec6dd266]
+
+	* AUTHORS, glade/etherape.glade:
+	List my main email address in AUTHORS file & credits window.
+	[a5ab56f6860b]
+
+	* NEWS:
+	Update NEWS with recent user-visible changes.
+	[6f3aab1eeec1]
+
+	* src/diagram.c:
+	Fix undefined behavior in canvas_link_update().
+
+	Shifting a one into the sign bit of an int is undefined; instead
+	cast to guint32, since that's what the expression is ultimately
+	constructing anyway.
+
+	[Problem detected by UBSAN.]
+	[c24e1ee23fc0]
+
+	* configure.ac, src/Makefile.am:
+	Add configure option to compile with UBSAN (undefined-behavior
+	sanitizer).
+
+	Pass --enable-ubsan to use it.
+	[0886cec4e7ed]
+
+	* src/menus.c:
+	Fix a bug in show/hide state saving for statusbar/toolbar/legend.
+
+	The commit that added persistence for that state neglected to update
+	the main in-memory pref_struct, so a later preferences save
+	operation would overwrite the saved version with a stale in-memory
+	version, potentially losing the setting.
+	[82c9c37d6993]
+
+	* src/main.c, src/menus.c, src/preferences.c, src/preferences.h:
+	Save show/hide state of toolbar, legend, and statusbar in config
+	file.
+
+	This addresses a feature request (https://sourceforge.net/p/etherape
+	/discussion/8022/thread/56a11409/).
+	[87fe7d4f5c7e]
+
+	* src/main.c, src/pref_dialog.c, src/preferences.c, src/preferences.h:
+	Parameterize load_config() and save_config().
+
+	They each now take a pref_struct to operate on.
+	[33546d35e6d6]
+
+2016-03-13  Zev Weiss  <zev@bewilderbeest.net>
+
+	* configure.ac:
+	Configurable compiler warnings.
+
+	Now have -Wall enabled by default (which can be turned off by
+	passing
+	--disable-warnings to configure), and -Werror available via
+	--enable-werror.
+	[a54a0748da31]
+
+	* src/diagram.c:
+	Explain pcap stats labels in status bar when moused over.
+
+	Would have done it as a tooltip, but there doesn't seem to be any
+	straightforward way of putting tooltips on canvas items.
+	[19fceb151058]
+
+	* glade/etherape.glade, src/common.h, src/diagram.c,
+	src/pref_dialog.c, src/preferences.c, src/preferences.h:
+	Make pcap stats display position configurable via preferences.
+
+	Can be in any corner or turned off.
+	[691114576489]
+
+	* src/capture.c, src/capture.h, src/diagram.c:
+	Display pcap packet counter stats on main canvas.
+	[19bb2bdd3a6b]
+
+	* src/node.c:
+	Use fnmatch(3) instead of strcmp(3) for matching node names.
+
+	This allows specifying e.g. "*.foobar.tld" in hostname-based
+	matching for the central node ring.
+	[1698c80cebce]
+
+	* configure.ac:
+	Remove unused DATAFILE_DIR definition.
+	[6229e8cce805]
+
+	* src/main.c:
+	Fix a format-string warning in position-file parsing code.
+
+	Also cleans up a bit of code-formatting.
+	[eb7737d05338]
+
+	* glade/etherape.glade, src/callbacks.c, src/diagram.c, src/diagram.h,
+	src/pref_dialog.c, src/preferences.c, src/preferences.h:
+	Allow turning background image off.
+
+	While the preferences dialog allowed selecting a background image,
+	it didn't offer any way to return to the default (no background
+	image) after having done so. This patch adds a preferences boolean
+	to enable/disable the background image setting.
+
+	(Also does a bit of cleanup/restructuring of the background-handling
+	code in src/diagram.c.)
+	[655d4387e7c8]
+
+2016-03-12  Zev Weiss  <zev@bewilderbeest.net>
+
+	* configure.ac, src/Makefile.am, src/dns.c:
+	Add optional support for rDNS resolution via the c-ares library.
+
+	Passing '--with-c-ares' to configure enables it, in which case
+	thread_resolve.[ch] are skipped in favor of the library's resolver
+	routines.
+
+	Note that using this means that reverse name lookup will be strictly
+	DNS-based and thus won't take things like /etc/hosts or NIS into
+	account (hence it being disabled by default).
+
+	[See: http://c-ares.haxx.se/]
+	[826904973004]
+
+2016-03-06  R.Ghetta  <bchiara@users.sf.net>
+
+	* doc/C/etherape.xml, etherape.1:
+	update man page and manual
+	[0f5fc51f5d2a]
+
+	* AUTHORS, NEWS, glade/etherape.glade:
+	Added Zev Weiss as developer
+	[2b001bff859b]
+
+2014-08-03  Zev Weiss  <zev@bewilderbeest.net>
+
+	* src/basic_stats.c, src/pkt_info.h:
+	Remove unused new_packet_protos().
+	[186e4e751227]
+
+2016-03-06  Zev Weiss  <zev@bewilderbeest.net>
+
+	* src/diagram.c, src/pref_dialog.c, src/preferences.c,
+	src/preferences.h:
+	Don't re-parse centered-nodes speclist on every reposition.
+
+	It's now just parsed once when it's changed (or first loaded) and
+	reused each time.
+	[65519544a981]
+
+2016-03-04  Zev Weiss  <zev@bewilderbeest.net>
+
+	* src/diagram.c, src/node.c, src/node.h, src/util.c, src/util.h:
+	Accept multiple sets of nodes to put on inner ring.
+
+	This is handy for putting e.g. both your IPv4 and IPv6 local address
+	space on the inner ring.
+
+	(Also moves some of the related code out of diagram.c, since it
+	didn't really belong there.)
+	[7b4405949a9e]
+
+2014-07-26  Zev Weiss  <zev@bewilderbeest.net>
+
+	* glade/etherape.glade, src/diagram.c:
+	Make protocol legend background black.
+	[c011e1168037]
+
+2016-03-04  Zev Weiss  <zev@bewilderbeest.net>
+
+	* src/capture.c, src/decode_proto.c, src/diagram.c, src/ip-cache.h,
+	src/menus.c, src/names.c, src/names_netbios.c, src/preferences.c:
+	Remove some unused variable & functions.
+	[f6084dfc1949]
+
+2014-08-03  Zev Weiss  <zev@bewilderbeest.net>
+
+	* src/util.h:
+	Remove __cplusplus cruft from src/util.h.
+	[f472db501f62]
+
+2014-08-01  Zev Weiss  <zev@bewilderbeest.net>
+
+	* src/datastructs.c:
+	Replace double-init check with an assert.
+
+	Double-initialization just shouldn't happen.
+	[2b04c37f40ba]
+
+	* config.h.in, configure.ac, configure.in:
+	Rename configure.in to configure.ac.
+
+	As recommended by a warning from autoreconf.
+	[88db31f6f712]
+
+2014-07-27  Zev Weiss  <zev@bewilderbeest.net>
+
+	* src/maketcpudp.sh, src/prot_types.h, src/tcpudp.h:
+	Delete unused tcpudp.h and maketcpudp.sh.
+	[38ab9a60070b]
+
+2014-08-03  Zev Weiss  <zev@bewilderbeest.net>
+
+	* src/basic_stats.c, src/decode_proto.c, src/pkt_info.h,
+	src/protocols.c:
+	Inline prot_desc into packet_info_t.
+
+	A bit less malloc()ing in the packet-decode hotpath.
+	[ebf005db0f20]
+
+2014-07-26  Zev Weiss  <zev@bewilderbeest.net>
+
+	* src/common.h, src/ip-cache.c, src/ip-cache.h, src/main.c,
+	src/thread_resolve.c:
+	Simplified ip-cache.c using GLib tree.
+	[05c34e89473d]
+
+2014-07-27  Zev Weiss  <zev@bewilderbeest.net>
+
+	* src/appdata.c, src/appdata.h, src/diagram.c, src/diagram.h,
+	src/preferences.c, src/preferences.h:
+	Fix some variable declarations.
+
+	Actual variables live in *.c; *.h just has extern declarations.
+	[b38bc9d4b2dd]
+
+2014-08-06  Zev Weiss  <zev@bewilderbeest.net>
+
+	* src/main.c, src/names.c, src/names.h:
+	Properly initialize and clean up prot_functions in names.c.
+	[c5636404ad28]
+
+	* src/eth_resolv.c, src/eth_resolv.h, src/main.c, src/names.c:
+	Rewrite eth_resolv.c.
+
+	No more manufacturer IDs, which were never used anyway; more use of
+	libc routines and glib data structures instead of hand-rolled ones.
+	[8bf427e0765d]
+
+	* src/Makefile.am, src/eth_resolv.c, src/resolv.c:
+	Rename src/resolv.c to src/eth_resolv.c.
+
+	Matches its header and better describes what it does.
+	[5b05a20616de]
+
+2014-09-07  Zev Weiss  <zev@bewilderbeest.net>
+
+	* src/node_id.c, src/node_id.h:
+	Get rid of basically-unused node_addr_t type.
+
+	Keeping the union separate from its tag doesn't seem too useful.
+	[6bb3c0fb93fb]
+
+2016-03-02  Zev Weiss  <zev@bewilderbeest.net>
+
+	* src/basic_stats.c, src/basic_stats.h, src/capture.c, src/diagram.c,
+	src/info_windows.c, src/links.c, src/node.c, src/node_windows.c,
+	src/protocols.c, src/traffic_stats.c, src/ui_utils.c:
+	Spelling fix: s/substract/subtract/.
+	[91561b6dc5cd]
+
+2016-02-06  R.Ghetta  <bchiara@users.sf.net>
+
+	* .hgtags:
+	Added tag rel-0.9.14 for changeset 8cb5942410c9
+	[d5f28e25aa8f]
+
+	* COPYING, NEWS, etherape.spec.in, po/de.po, po/es.po,
+	po/etherape.pot, po/fr.po, po/it.po, po/nl.po, po/sv.po, po/tr.po,
+	src/main.c:
+	updates and fixes for 0.9.14
+	[8cb5942410c9] [rel-0.9.14]
+
+2016-01-25  R.Ghetta  <bchiara@users.sf.net>
+
+	* src/main.c:
+	small fixes for column facility
+	[606e206afd11]
+
+	* src/appdata.h, src/diagram.c, src/main.c, src/preferences.c,
+	src/preferences.h:
+	FR #20 - specify position of nodes Thanks to David Goldfarb\
+
+	Allows users to create a file specifying positions of some nodes.
+	The input file takes the format of: node.mydomain.com 1
+	router1.mydomain.com 2 router2.mydomain.com 2 172.16.2.[0-9]* 1
+	.*.mydomain.com 1 ff02:.* 2 fe80:.* 1
+
+	The first column is a regex of either the FQDN or the IP address.
+	The second column is a number indicating the "column" that the node
+	will be positioned in in the display with column 1 being on the far
+	left. Up to 10 columns are permitted. Instead of being arranged in a
+	circle the nodes are displayed in columns. This is quite useful for
+	arranging nodes so that you can see nodes on the "inside" of your
+	network on the left and the public internet nodes (anything not
+	specified in the config file) on the right. The input file above
+	will cause 3 columns to display. Nodes with FQDN containing
+	mydomain.com, those in the 172.16.2.0/24 subnet, and link local IPv6
+	addresses will be in the left column. 2 "routers", and IPv6
+	multicast will be in the center column and everything else will be
+	in the right column. Column locations are determined by the first
+	match while searching from the top of the input. Overlapping regex's
+	can be used with the understanding that the first match will
+	determine the location. The broadest regex's should be near the
+	bottom of the position specification.
+
+	To use the patch, create the input file and pass into etherape in
+	the commandline parameter -P: etherape -P myPositionFile.
+	[6e9bc34f30b7]
+
+	* TODO, configure.in, doc/C/etherape.xml, etherape-devel.spec.in,
+	etherape.spec.in, po/de.po, po/es.po, po/etherape.pot, po/fr.po,
+	po/it.po, po/nl.po, po/sv.po, po/tr.po:
+	update po
+	[85a9b0c92de2]
+
+2015-09-18  R.Ghetta  <bchiara@users.sf.net>
+
+	* src/capture.c, src/menus.c:
+	cppcheck fixes
+	[8969d9202b06]
+
+2015-09-17  R.Ghetta  <bchiara@users.sf.net>
+
+	* glade/etherape.glade:
+	remove (unused) GnomeMessageBox. The only remaining gnome widget is
+	GnomeCanvas
+	[48cf3333bb48]
+
+	* AUTHORS:
+	fix typo
+	[08c3b0f420dd]
+
+	* src/pref_dialog.c, src/preferences.c:
+	fill background image preference button with chosen file, if any
+	[ec28ae73e6e4]
+
+2015-08-28  R.Ghetta  <bchiara@users.sf.net>
+
+	* src/diagram.c:
+	fix: resizing window would crash etherape
+	[e2c202e738f3]
+
+2015-08-23  Glenn Feunteun  <glenn.feunteun@orange.com>
+
+	* AUTHORS, glade/etherape.glade, src/pref_dialog.c, src/pref_dialog.h:
+	background image selection patch
+	[935e350e0bfc]
+
+2015-07-26  R.Ghetta  <bchiara@users.sf.net>
+
+	* src/main.c:
+	fix debugging output
+
+	lately, g_log_default_handler changed behaviour. The old way is only
+	available by setting an environment variable ...
+	[e808cf2b2b32]
+
+2015-07-26  Glenn Feunteun  <glenn.feunteun@orange.com>
+
+	* AUTHORS, NEWS, glade/etherape.glade, src/callbacks.c, src/diagram.c,
+	src/diagram.h, src/pref_dialog.c, src/preferences.c,
+	src/preferences.h:
+	allows an image file used as a static background
+	[c3d7c1065552]
+
+2015-06-06  R.Ghetta  <bchiara@users.sf.net>
+
+	* NEWS, po/de.po, po/es.po, po/etherape.pot, po/fr.po, po/it.po,
+	po/nl.po, po/sv.po, po/tr.po:
+	update translations, NEWS
+	[dc6e10a4b1e8]
+
+2014-07-27  R.Ghetta  <bchiara@users.sf.net>
+
+	* glade/etherape.glade:
+	Set some attributes on auxiliary windows.
+
+	Gives friendlier behavior when run under a tiling window manager.
+	[ae51ed9f82e0]
+
+2014-07-27  Zew Weiss  <zev@bewilderbeest.net>
+
+	* glade/etherape.glade, src/diagram.c, src/pref_dialog.c,
+	src/pref_dialog.h, src/preferences.c, src/preferences.h:
+	Make inner node ring scale adjustable.
+	[df63abf02034]
+
+	* src/pref_dialog.c:
+	Reposition nodes when centered_nodes changes.
+	[d660aceae0c9]
+
+	* src/diagram.c:
+	Small inner-ring layout improvement.
+
+	Makes things a bit more readable with small numbers of nodes.
+	[0863d1a0876a]
+
+	* src/diagram.c, src/pref_dialog.c, src/preferences.c,
+	src/preferences.h, src/util.c, src/util.h:
+	Extend center node to allow a second smaller node ring.
+
+	This allows specifying a CIDR range of addresses that will have
+	their nodes distributed around a smaller concentric inner ring of
+	nodes, so you can position e.g. your subnet on the inner ring and
+	everything else in the outer ring.
+	[c4632666d972]
+
+2014-07-26  Zew Weiss  <zev@bewilderbeest.net>
+
+	* src/thread_resolve.c:
+	Close a race in thread shutdown path.
+
+	The main thread had been destroying the mutex & condvar without
+	waiting for the resolver threads to exit, potentially ripping them
+	out from under live threads that were still using them. Now we
+	instead pthread_join() the resolver threads before destroying the
+	mutex & condvar.
+	[5979a16a2b95]
+
+2015-06-06  R.Ghetta  <bchiara@users.sf.net>
+
+	* Makefile.am, etherape.spec.in, services, src/datastructs.c:
+	EtherApe services file is not needed anymore, fix protocol case
+	[8caf8fe5e926]
+
+2014-07-24  Zew Weiss  <zev@bewilderbeest.net>
+
+	* src/datastructs.c:
+	Use C library's getservent() instead of hand-rolled version.
+	[727d818b993a]
+
+2015-06-06  R.Ghetta  <bchiara@users.sf.net>
+
+	* INSTALL, configure.in, mkinstalldirs, src/Makefile.am:
+	fixes for autoconf 2.69, bump version number
+	[86d5626f5cf4]
+
+2015-03-08  R.Ghetta  <bchiara@users.sf.net>
+
+	* AUTHORS, ChangeLog, NEWS:
+	patch #5 from StrPt, make std files UTF-8
+	[2d31e70b56e1]
+
+	* etherape.desktop.in:
+	patch #6 from StrPt
+	[213e5552880e]
+
+2014-02-02  R.Ghetta  <bchiara@users.sf.net>
+
+	* src/decode_proto.c:
+	fix wlan control frames decoding
+	[f1abef28d88b]
+
+2013-05-05  R.Ghetta  <bchiara@users.sf.net>
+
+	* .hgtags:
+	Added tag rel-0.9.13 for changeset d17b6330edb4
+	[a27ade6c4d7b]
+
+	* NEWS, configure.in, glade/etherape.glade, po/etherape.pot:
+	release 0.9.13
+	[d17b6330edb4] [rel-0.9.13]
+
+	* AUTHORS, NEWS, glade/etherape.glade, src/diagram.c,
+	src/pref_dialog.c, src/preferences.c, src/preferences.h:
+	centered node option, based on work of Javier Fernandez-Sanguino
+	Peña
+	[052f3c4577f6]
+
+	* AUTHORS, NEWS, glade/etherape.glade:
+	credits update
+	[0328ddaeb414]
+
+2012-09-23  R.Ghetta  <bchiara@users.sf.net>
+
+	* glade/etherape.glade:
+	enable full screen mode - patch by nrvale0
+	[a99762f04fd5]
+
+2012-04-18  R.Ghetta  <bchiara@users.sf.net>
+
+	* doc/C/etherape.xml, doc/C/figures/pref_colors_dlg.eps,
+	doc/C/figures/pref_colors_dlg.png:
+	documentation fixes
+	[38ae3630af28]
+
+2011-06-15  R.Ghetta  <bchiara@users.sf.net>
+
+	* NEWS, po/de.po:
+	updated German translation, thanks to Chris Leick
+	[a8f6db59c2dd]
+
+2011-06-08  R.Ghetta  <bchiara@users.sf.net>
+
+	* glade/etherape.glade, src/diagram.c:
+	fixed typos. Thanks to Chris Leick for the tip.
+	[9d2f9f125a38]
+
+2011-06-05  R.Ghetta  <bchiara@users.sf.net>
+
+	* NEWS, configure.in, glade/etherape.glade, po/POTFILES.in, po/de.po,
+	po/es.po, po/etherape.pot, po/fr.po, po/it.po, po/nl.po, po/sv.po,
+	po/tr.po:
+	Added German translation from Chris Leick and updated .po files.
+	(de.po borrowed by Debian bug #549635).
+	[d999353e3173]
+
+2011-06-01  R.Ghetta  <bchiara@users.sf.net>
+
+	* NEWS, po/es.po:
+	updated spanish translation, thanks to Javier Fernandez-Sanguino
+	Peña
+	[7f8e09241e47]
+
+	* .hgtags:
+	Added tag rel-0.9.12 for changeset f2ddedcf249e
+	[aeab149751f2]
+
+2011-05-30  R.Ghetta  <bchiara@users.sf.net>
+
+	* NEWS, configure.in, src/common.h, src/conversations.c,
+	src/decode_proto.c, src/ip-cache.c, src/resolv.c,
+	src/thread_resolve.c, src/util.c:
+	fix for 3309061 - cut 0.9.12
+	[f2ddedcf249e] [rel-0.9.12]
+
+2011-05-27  R.Ghetta  <bchiara@users.sf.net>
+
+	* .hgtags:
+	Added tag rel-0.9.11 for changeset 0166d90479ca
+	[638e03127afc]
+
+	* NEWS:
+	prepare for release
+	[0166d90479ca] [rel-0.9.11]
+
+2011-05-14  R.Ghetta  <bchiara@users.sf.net>
+
+	* po/POTFILES.in, po/es.po, po/etherape.pot, po/fr.po, po/it.po,
+	po/nl.po, po/sv.po, po/tr.po:
+	update po
+	[517a650f1bca]
+
+	* NEWS, config.h.in, configure.in, src/Makefile.am,
+	src/direct_resolve.c, src/direct_resolve.h, src/dns.c,
+	src/thread_resolve.c:
+	remove the old, deprecated, direct resolver
+	[83679c157b9e]
+
+	* configure.in, po/it.po:
+	adds italian translation
+	[94d82f1b1bdc]
+
+	* glade/etherape.glade, src/diagram.c:
+	link size computed using the node preferences instead of always
+	average
+	[e80a638f9456]
+
+	* glade/etherape.glade, src/common.h, src/diagram.c, src/links.c,
+	src/links.h:
+	allows using packets number or size as graphing variable
+	[77727bbf144e]
+
+	* configure.in, etherape-devel.spec.in:
+	special spec file for building off mercurial on opensuse build
+	service
+	[38ffc25c92b5]
+
+2011-03-18  R.Ghetta  <bchiara@users.sf.net>
+
+	* src/pref_dialog.c:
+	re-enable compats for centos/rhel5
+	[53de4cda69b5]
+
+2011-03-17  R.Ghetta  <bchiara@users.sf.net>
+
+	* ChangeLog, NEWS, OVERVIEW, src/Makefile.am, src/appdata.c,
+	src/appdata.h, src/basic_stats.c, src/callbacks.c, src/callbacks.h,
+	src/capture.c, src/conversations.c, src/datastructs.c,
+	src/datastructs.h, src/decode_proto.c, src/diagram.c, src/diagram.h,
+	src/dns.c, src/export.c, src/export.h, src/globals.h,
+	src/info_windows.c, src/ip-cache.c, src/links.c, src/main.c,
+	src/menus.c, src/menus.h, src/names.c, src/names.h,
+	src/names_netbios.c, src/names_netbios.h, src/node.c, src/node_id.c,
+	src/node_windows.c, src/node_windows.h, src/pref_dialog.c,
+	src/pref_dialog.h, src/preferences.c, src/preferences.h,
+	src/protocols.c, src/resolv.c, src/traffic_stats.c, src/ui_utils.c,
+	src/ui_utils.h, src/util.c, src/util.h:
+	split preferences (saved) from transient global application data.
+	[5d484bab5cd2]
+
+	* src/Makefile.am, src/pref_dialog.c, src/pref_dialog.h,
+	src/preferences.c, src/preferences.h:
+	preferences refactoring
+	[85e40ee45507]
+
+	* NEWS, src/callbacks.c, src/main.c, src/preferences.c,
+	src/preferences.h:
+	use glib ini file facilities instead of gnome-config
+	[2a57b684edf3]
+
+2011-03-16  R.Ghetta  <bchiara@users.sf.net>
+
+	* NEWS:
+	update news
+	[f9530b747647]
+
+	* config.h.in, configure.in, src/capture.c:
+	gdk_input_add doesn't work on osx (at least with the pcap fd). As a
+	workaround, use timers, like when replaying from file.
+	[95e9fdc46a6f]
+
+2011-03-10  R.Ghetta  <bchiara@users.sf.net>
+
+	* src/main.c:
+	fixed -m option parsing
+	[7f0d4d2c3d35]
+
+2011-03-02  R.Ghetta  <bchiara@users.sf.net>
+
+	* src/export.c:
+	fix for compatibility with mandriva security checks
+	[b865ba750b42]
+
+	* NEWS, glade/etherape.glade, src/datastructs.c, src/globals.h,
+	src/main.c, src/preferences.c, src/preferences.h:
+	Remove obsolete preference "cycle assigned colors"
+	[5ba5e4d3fb92]
+
+	* etherape.spec.in:
+	OpenSUSE build service improvments
+	[c5cc57268592]
+
+2011-02-18  R.Ghetta  <bchiara@users.sf.net>
+
+	* NEWS, TODO, configure.in, doc/C/figures/link_info.eps,
+	doc/C/figures/link_info.png, src/decode_proto.c, src/diagram.c,
+	src/info_windows.c, src/links.c, src/links.h:
+	unify link statistics
+
+	Until now, two link items were registered for each connection, one
+	for each node involved. Without an unified view, there was no way to
+	calculate total link traffic, nor give a clear picture of packet
+	flow.
+	[7cafdccc2096]
+
+2011-02-26  R.Ghetta  <bchiara@users.sf.net>
+
+	* doc/C/etherape.xml, src/Makefile.am, src/capture.c, src/capture.h,
+	src/diagram.c, src/export.c, src/export.h, src/menus.c, src/util.c:
+	add an header to xml export (FR 3185920)
+	[b24ea631d1eb]
+
+2011-02-24  R.Ghetta  <bchiara@users.sf.net>
+
+	* debian/changelog, debian/control, debian/copyright, debian/etherape-
+	root.desktop, debian/etherape.xpm, debian/rules:
+	imported debian patches for 0.9.10
+	[67a9b3cb853d]
+
+2011-02-23  R.Ghetta  <bchiara@users.sf.net>
+
+	* etherape.spec.in:
+	extra for opensuse scrollkeeper
+
+	apparently opensuse xmllib2 is somewhat broken, because validation
+	of omf dtd requires an internet connection. Perhaps a missing
+	rewrite rule on xml catalog. This bug prevents building a
+	development package on OpenSUSE obs. As a crude fix, we patch the
+	generated doc/Makefile
+	[262bedc66ed5]
+
+2011-02-19  R.Ghetta  <bchiara@users.sf.net>
+
+	* Makefile.am, config.h.in, configure.in, debian/docs,
+	doc/C/etherape.xml, etherape.1, etherape.desktop,
+	etherape.desktop.in, etherape.spec.in, src/basic_stats.c,
+	src/callbacks.c, src/capture.c, src/datastructs.c,
+	src/decode_proto.c, src/dns.c, src/ip-cache.c, src/links.c,
+	src/menus.c, src/names.c, src/names_netbios.c, src/node.c,
+	src/node_id.c, src/preferences.c, src/protocols.c,
+	src/thread_resolve.c, src/traffic_stats.c, src/util.c, src/util.h:
+	improve spec file and sources for use on OpenSUSE build service
+
+	The spec file is very old and needs a bit of refreshing. With some
+	work, we should be able to use OpenSUSE build service and have
+	packages for multiple platforms. Add also some changes for
+	CentOS/RHEL5 compatibility.
+	[c1bd3830a5bd]
+
+	* src/basic_stats.c, src/capture.c, src/decode_proto.c,
+	src/decode_proto.h, src/main.c, src/names_netbios.c:
+	warning fixes
+	[7c94cd88abc2]
+
+2011-02-18  R.Ghetta  <bchiara@users.sf.net>
+
+	* src/capture.c:
+	pcap handling improvements
+
+	Better error messages
+	[d30e63747771]
+
+2011-02-19  R.Ghetta  <bchiara@users.sf.net>
+
+	* glade/etherape.glade:
+	updated credits
+	[48f041a10325]
+
+2011-02-18  R.Ghetta  <bchiara@users.sf.net>
+
+	* doc/C/etherape.xml, etherape.1, src/diagram.c, src/globals.h,
+	src/main.c, src/preferences.c, src/protocols.c, src/traffic_stats.c:
+	dump to xml on receipt of SIGUSR1
+	[29c9bc041ced]
+
+2011-02-17  R.Ghetta  <bchiara@users.sf.net>
+
+	* src/basic_stats.c, src/basic_stats.h, src/capture.c, src/common.h,
+	src/diagram.c, src/info_windows.c, src/links.c, src/node.c,
+	src/node_windows.c, src/protocols.c, src/traffic_stats.c,
+	src/ui_utils.c:
+	fix timeout and average computations
+	[1cf4bf57e8ad]
+
+	* src/capture.c, src/capture.h, src/datastructs.c, src/decode_proto.c,
+	src/diagram.c, src/info_windows.c, src/main.c, src/menus.c,
+	src/menus.h, src/names.c, src/node.c, src/node_id.c,
+	src/node_windows.c, src/preferences.c, src/util.c:
+	fix compilation warnings
+	[966e8861392e]
+
+	* Makefile.am, README.help, README.thanks, patches/README.patch:
+	remove obsolete files
+	[195c57c16846]
+
+2011-02-13  R.Ghetta  <bchiara@users.sf.net>
+
+	* AUTHORS, configure.in, debian/changelog, debian/compat,
+	debian/control, debian/copyright, debian/dirs, debian/etherape-
+	root.desktop, debian/etherape.xpm, debian/manpages, debian/menu,
+	debian/rules, po/es.po, po/etherape.pot, po/fr.po, po/nl.po,
+	po/sv.po, po/tr.po:
+	import debian specific patches, plus a Swedish translation by Daniel
+	Nylander
+	[c86186b7ed8b]
+
+	* NEWS, doc/C/etherape.xml, doc/C/figures/appmain.eps,
+	doc/C/figures/appmain.png, doc/C/figures/eth_toolbar.eps,
+	doc/C/figures/eth_toolbar.png, doc/C/figures/link_info.eps,
+	doc/C/figures/link_info.png, doc/C/figures/node_info.eps,
+	doc/C/figures/node_info.png, doc/C/figures/proto_info.eps,
+	doc/C/figures/proto_info.png, glade/etherape.glade, src/capture.c,
+	src/capture.h, src/menus.c, src/menus.h:
+	adds a button to skip lengthy pauses when replaying from file
+	[73a62c144bdd]
+
+2011-02-12  R.Ghetta  <bchiara@users.sf.net>
+
+	* NEWS, glade/Makefile.am, glade/etherape.glade, glade/nodes.xpm,
+	glade/pause.xpm, glade/play.xpm, glade/stop.xpm, src/node_windows.c:
+	use stock icons on toolbar, add nodes toolbar button
+	[9ad66923b036]
+
+2011-02-11  R.Ghetta  <bchiara@users.sf.net>
+
+	* etherape.1, src/capture.c, src/capture.h, src/globals.h, src/main.c,
+	src/preferences.c:
+	added option --final-export: dump xml at end of replay
+	[7703624e91d7]
+
+2011-02-10  R.Ghetta  <bchiara@users.sf.net>
+
+	* NEWS, doc/C/etherape.xml, glade/etherape.glade, src/basic_stats.c,
+	src/basic_stats.h, src/globals.h, src/menus.c, src/menus.h,
+	src/node.c, src/node.h, src/node_id.c, src/node_id.h,
+	src/preferences.c, src/protocols.c, src/protocols.h,
+	src/traffic_stats.c, src/traffic_stats.h, src/util.c, src/util.h:
+	adds a facility to save a snapshot of node statistics to an xml
+	file. Updated manual
+	[01692d8939b9]
+
+2011-02-06  R.Ghetta  <bchiara@users.sf.net>
+
+	* .hgtags:
+	Added tag rel-0.9.10 for changeset 82553feedcc1
+	[147eaa03170c]
+
+	* NEWS, po/es.po, po/etherape.pot, po/fr.po, po/nl.po, po/tr.po:
+	final release notes
+	[82553feedcc1] [rel-0.9.10]
+
+	* TODO, doc/C/etherape.xml, etherape.1, src/decode_proto.c:
+	documentation updates
+	[d24f64c6a5fc]
+
+2011-02-05  R.Ghetta  <bchiara@users.sf.net>
+
+	* AUTHORS, NEWS, config.h.in, configure.in, glade/etherape.glade,
+	src/capture.c, src/main.c, src/names.c, src/preferences.c,
+	src/util.c, src/util.h:
+	improve ipv6 address printing, configure cleanups, update news
+	[09508196dd42]
+
+2011-02-05  David Flamand  <dflamand@gmail.com>
+
+	* AUTHORS, src/common.h, src/conversations.c, src/conversations.h,
+	src/decode_proto.c, src/direct_resolve.c, src/direct_resolve.h,
+	src/dns.c, src/dns.h, src/ip-cache.c, src/ip-cache.h, src/links.c,
+	src/names.c, src/node.c, src/node_id.c, src/node_id.h,
+	src/thread_resolve.c, src/thread_resolve.h, src/util.c, src/util.h:
+	IPv6 protocol support
+	[120a10957416]
+
+2011-02-05  R.Ghetta  <bchiara@users.sf.net>
+
+	* NEWS, etherape.desktop, etherape.desktop.in, src/capture.c,
+	src/decode_proto.c, src/globals.h, src/main.c, src/preferences.c:
+	added --min-delay
+	[9aeb128479d3]
+
+2010-05-14  R.Ghetta  <bchiara@users.sf.net>
+
+	* services:
+	added torrent ports and some others
+	[1f1d998d2a5c]
+
+2010-03-03  R.Ghetta  <bchiara@users.sf.net>
+
+	* src/info_windows.c:
+	removed bogus double assignement. Thanks to "johndoe123321" for the
+	patch.
+	[41cceca6cb83]
+
+2010-02-21  R.Ghetta  <bchiara@users.sf.net>
+
+	* NEWS, src/datastructs.c, src/direct_resolve.c, src/thread_resolve.c:
+	Various cleanups. Added checks for invalid proto-color mappings (see
+	debian bug 566226)
+	[94a4491f6fc2]
+
+2010-02-13  R.Ghetta  <bchiara@users.sf.net>
+
+	* src/capture.c, src/direct_resolve.c, src/direct_resolve.h,
+	src/dns.c, src/dns.h, src/thread_resolve.c, src/thread_resolve.h:
+	cleanup name resolving
+	[cc2e4245cf0e]
+
+2010-02-12  R.Ghetta  <bchiara@users.sf.net>
+
+	* glade/etherape.glade, src/info_windows.c, src/info_windows.h,
+	src/ui_utils.c:
+	other glade fixes, revise some formatting, remove useless column
+	enable menu
+	[5a07223b34e1]
+
+2010-02-07  R.Ghetta  <bchiara@users.sf.net>
+
+	* NEWS, src/info_windows.c:
+	average size on nodes detail
+	[4936976e23a7]
+
+	* src/thread_resolve.c:
+	detach resolver threads to speed up pgm exit
+	[5108448b8417]
+
+	* glade/etherape.glade, src/ui_utils.c:
+	preserve selection state
+	[e00785348464]
+
+	* glade/etherape.glade, src/basic_stats.c, src/basic_stats.h,
+	src/capture.c, src/info_windows.c, src/node_windows.c:
+	New data: average packet size
+	[d6057f756342]
+
+	* glade/etherape.glade:
+	Fixes for latest glade
+	[224c7d9994b2]
+
+	* src/capture.c, src/thread_resolve.c:
+	Improve messages
+	[83cd41de5d65]
+
+	* src/basic_stats.c, src/decode_proto.c, src/diagram.c,
+	src/pkt_info.h, src/traffic_stats.c, src/traffic_stats.h:
+	performance: replaced glist with gqueue to avoid seeking for last
+	item
+	[70b44d2057cd]
+
+	* src/basic_stats.c, src/basic_stats.h, src/links.c, src/node.c,
+	src/protocols.c, src/traffic_stats.c:
+	Fix averaging
+	[ce4dbaa000d7]
+
+	* src/capture.c, src/diagram.c, src/info_windows.c:
+	better var naming
+	[7fdf4a5db172]
+
+2010-01-16  R.Ghetta  <bchiara@users.sf.net>
+
+	* NEWS:
+	mention Sotiris fix.
+	[c15fc6aeb4d8]
+
+2010-01-04  R.Ghetta  <bchiara@users.sf.net>
+
+	* .hgtags, NEWS, po/es.po, po/etherape.pot, po/fr.po, po/nl.po,
+	po/tr.po:
+	release 0.9.9
+	[13d2656505bd]
+
+	* .hgtags:
+	Added tag 0.9.9 for changeset dc1e62cfce60
+	[1c49c5fd0e7d]
+
+	* src/direct_resolve.c, src/direct_resolve.h, src/dns.c, src/dns.h,
+	src/ip-cache.c, src/ip-cache.h, src/names.c, src/thread_resolve.c,
+	src/thread_resolve.h:
+	a bit of cleanup
+	[dc1e62cfce60] [rel-0.9.9]
+
+	* configure.in, po/es.po, po/etherape.pot, po/fr.po, po/nl.po,
+	po/tr.po, src/capture.c, src/conversations.c, src/decode_proto.c,
+	src/diagram.c, src/globals.h, src/preferences.c:
+	format tweaks
+	[556543f07329]
+
+	* src/diagram.c, src/menus.c, src/node_windows.c:
+	Mandriva compiles with -Werror=format-security. Patch by Jerome
+	Brenier to make EtherApe compliant.
+
+	Strangely, gcc complains only about an handful of calls, while
+	others, more or less identical are just ignored. The real risk is
+	pretty low, anyway, because:
+	- the flagged strings are used only with higher debug levels.
+	- external input can come only from netbios names or dns records, but
+	both inputs are very limited. Still, some extra security is always
+	good.
+	[cc574e3a010e]
+
 2010-01-03  R.Ghetta  <bchiara@users.sf.net>
 
 	* screenshots merge
