@@ -1,7 +1,6 @@
 /* util.h
  * Utility definitions
  *
- * $Id$
  *
  * Original file by Gerald Combs <gerald@zing.org>
  * Copyright 1998 Gerald Combs

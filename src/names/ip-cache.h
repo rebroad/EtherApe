@@ -1,6 +1,6 @@
 /*
    Etherape
-   Copyright (C) 2000 Juan Toledo
+   Copyright (C) 2000 Juan Toledo, Riccardo Ghetta
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
