@@ -25,3 +25,5 @@ stamp-h1
 omf_timestamp
 po/POTFILES
 po/remove-potcdate.sed
+.deps/
+.dirstamp
