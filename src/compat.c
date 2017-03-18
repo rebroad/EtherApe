@@ -32,20 +32,6 @@
  *
  *************************************************/
 
-void compat_g_queue_init(GQueue *gq)
-{
-  g_assert(gq != NULL);
-  gq->head = NULL;
-  gq->tail = NULL;
-  gq->length = 0;
-}
-
-gchar *compat_gdk_color_to_string(const GdkColor *color)
-{
-  g_assert(color != NULL);
-  return g_strdup_printf("#%4.4x%4.4x%4.4x", color->red, color->green, color->blue);
-}
-
 void compat_g_list_free_full(GList *list, GDestroyNotify free_func)
 {
   g_assert(free_func);

@@ -2,7 +2,7 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ(2.53)
-AC_INIT([etherape],[0.9.15])
+AC_INIT([etherape],[0.9.16])
 AC_CONFIG_SRCDIR(README)
 AC_CONFIG_MACRO_DIR([m4])
 AM_CONFIG_HEADER([config.h])
@@ -57,11 +57,6 @@ AC_C_CONST
 AC_TYPE_SIZE_T
 AC_HEADER_TIME
 AC_STRUCT_TM
-AC_C_VOLATILE
-AC_CHECK_TYPES(u_int, ,AC_DEFINE(u_int, unsigned int, [define u_int]))
-AC_CHECK_TYPES(u_short, ,AC_DEFINE(u_short, unsigned short, [define u_short]))
-AC_CHECK_TYPES(u_long, ,AC_DEFINE(u_long, unsigned long, [define u_long]))
-AC_CHECK_TYPES(u_char, ,AC_DEFINE(u_char, unsigned char, [define u_char]))
 
 AC_ARG_ENABLE([warnings],
   AS_HELP_STRING([--disable-warnings], [Disable compiler warnings @<:@default=enabled@:>@]))
@@ -162,17 +157,8 @@ AC_ETHEREAL_PCAP_CHECK
 AC_SEARCH_LIBS(pow, [m])
 AC_SEARCH_LIBS(glib_check_version, [glib-2.0])
 
-# Checks for library functions.
-AC_FUNC_MALLOC
-AC_FUNC_MEMCMP
-AC_FUNC_VPRINTF
-AC_TYPE_SIGNAL
-AC_CHECK_FUNCS([snprintf floor gettimeofday localtime_r memset pow putenv socket sqrt strcasecmp strchr strerror strpbrk strstr inet_ntop])
-
-# check for g_queue_init - if missing, this enables also the gdk_color_to_string
-# replacement. Needed for CENTOS5 (and RHEL5 also)
-# remove when obsolete!
-AC_CHECK_FUNCS([g_queue_init])
+# Check for inet_ntop (it's supposed to exists everywhere, but ...)
+AC_CHECK_FUNCS([inet_ntop])
 
 # check for g_list_free_full (glib < 2.28)
 AC_CHECK_FUNCS([g_list_free_full])

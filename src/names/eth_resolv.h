@@ -23,7 +23,7 @@
 
 void init_eth_resolv(void);
 
-const char *get_ether_name(const u_char *addr);
+const char *get_ether_name(const unsigned char *addr);
 
 void cleanup_eth_resolv(void);
 

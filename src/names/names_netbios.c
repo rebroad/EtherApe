@@ -105,7 +105,7 @@ get_dns_name (const gchar * pd, int offset, int pd_len, char *name, int maxname)
   const gchar *dptr = dp;
   char *np = name;
   int len = -1;
-  u_int component_len;
+  unsigned int component_len;
   int dns_data_offset;
 
   if (offset >= pd_len)

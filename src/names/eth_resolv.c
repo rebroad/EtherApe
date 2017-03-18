@@ -112,7 +112,7 @@ void cleanup_eth_resolv(void)
   ethers = NULL;
 }
 
-const char *get_ether_name(const u_char *addr_bytes)
+const char *get_ether_name(const unsigned char *addr_bytes)
 {
   struct ether_addr addr;
   struct ether_ent *ent;

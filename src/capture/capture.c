@@ -394,7 +394,7 @@ static void flush_pktbuf(void)
 static void handle_packet(void)
 {
   struct pcap_pkthdr *hdr;
-  const u_char *data;
+  const unsigned char *data;
   int status;
 
   assert(pktbuf.buffered == 0);

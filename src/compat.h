@@ -22,13 +22,6 @@
 #ifndef __COMPAT_H__
 #define __COMPAT_H__
 
-#if !defined(HAVE_G_QUEUE_INIT)
-void compat_g_queue_init(GQueue *gq);
-gchar *compat_gdk_color_to_string(const GdkColor *color);
-#define g_queue_init compat_g_queue_init
-#define gdk_color_to_string compat_gdk_color_to_string
-#endif
-
 #if !defined(HAVE_G_LIST_FREE_FULL)
 void compat_g_list_free_full (GList *list, GDestroyNotify free_func);
 #define g_list_free_full compat_g_list_free_full

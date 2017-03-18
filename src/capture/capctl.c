@@ -65,7 +65,7 @@ static struct
   gboolean new;
   gint64 wait_ms;
   struct pcap_pkthdr lastpkt_hdr;
-  u_char lastpkt_data[MAXCAPSIZE];
+  unsigned char lastpkt_data[MAXCAPSIZE];
 } filecap_state;
 
 static capstatus_t capture_status = STOP;
@@ -331,7 +331,7 @@ static gboolean filecap_get_packet(gpointer unused)
 {
   int status;
   struct pcap_pkthdr *nextpkt_hdr;
-  const u_char *nextpkt_data;
+  const unsigned char *nextpkt_data;
   struct timeval pktdelta;
   size_t copylen;
 
