@@ -963,7 +963,7 @@ canvas_node_update(node_id_t * node_id, canvas_node_t * canvas_node,
     {
       /* adds current to list of canvas nodes to delete */
       *delete_list = g_list_prepend( *delete_list, node_id);
-      g_my_debug ("Queing canvas node to remove.");
+      g_my_debug ("Queueing canvas node to remove.");
       need_reposition = TRUE;
       return FALSE;
     }
@@ -1499,7 +1499,7 @@ canvas_link_update(link_id_t * link_id, canvas_link_t * canvas_link,
   if (!link)
     {
       *delete_list = g_list_prepend( *delete_list, link_id);
-      g_my_debug ("Queing canvas link to remove.");
+      g_my_debug ("Queueing canvas link to remove.");
       return FALSE;
     }
 

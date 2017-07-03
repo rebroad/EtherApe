@@ -136,7 +136,7 @@
   Overview of changes in EtherApe 0.9.11 (Friday May 27, 2011):
    Several users asked for a way to export traffic statistics.
    EtherApe now can save a snapshot with all known nodes and relevant
-   informations to an XML file. With option --final-export, a dump is
+   information to an XML file. With option --final-export, a dump is
    automatically generated when a capture file is fully replayed.
    Additionally, option --signal-export enables SIGUSR1 handling, to 
    dump on signal.

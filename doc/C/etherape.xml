@@ -849,7 +849,7 @@ Conversely, --min-delay can help analyze many short lived connections.</para>
               <listitem>
                 <para><guilabel>Level 2 (Eg: ETHII)</guilabel></para>
 
-                <para>Shows only OSI level 2 informations. For example ETHII
+                <para>Shows only OSI level 2 information. For example ETHII
                 or FDDI</para>
               </listitem>
 
@@ -1560,7 +1560,7 @@ Conversely, --min-delay can help analyze many short lived connections.</para>
     <title>XML export file format</title>
 
     <para>This section presents &app; XML export file format followed by a detailed analysis.</para>
-    <warning><para>At this time &app; exports only node informations. Future releases might export also link data.</para></warning>
+    <warning><para>At this time &app; exports only node information. Future releases might export also link data.</para></warning>
 <para>This example shows a file containing only a single, simple, node. A real file will contain many nodes, possibly with more involved &lt;protocol&gt; subtags.  The general structure remains the same, however.</para>
 
     <programlisting linenumbering="numbered">
