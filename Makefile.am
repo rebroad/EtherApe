@@ -57,34 +57,6 @@ EXTRA_DIST = config.rpath mkinstalldirs  \
 	$(conf_DATA)
 
 
-full-dist :
-	test `whoami` = toledo
-	test `echo ${VERSION}` != `cat old.version`
-	jed html/NEWS.html
-	make NEWS
-	make dist
-	cp -f ${PACKAGE}-${VERSION}.tar.gz /usr/src/redhat/SOURCES/
-	rpm -ba etherape.spec
-
-# Since the next part fails so much, I dump it to the screen so that it can
-# be copied and pasted manually
-	echo -e scp ${PACKAGE}-${VERSION}.tar.gz etherape.sourceforge.net:ftp \\n\
-	ssh etherape.sourceforge.net ncftpput upload.sourceforge.net /incoming/ ftp/${PACKAGE}-${VERSION}.tar.gz\\n\
-	scp /usr/src/redhat/RPMS/i386/${PACKAGE}-${VERSION}-1.i386.rpm etherape.sourceforge.net:ftp\\n\
-	ssh etherape.sourceforge.net ncftpput upload.sourceforge.net /incoming/ ftp/${PACKAGE}-${VERSION}-1.i386.rpm\\n\
-	scp /usr/src/redhat/SRPMS/${PACKAGE}-${VERSION}-1.src.rpm etherape.sourceforge.net:ftp\\n\
-	ssh etherape.sourceforge.net ncftpput upload.sourceforge.net /incoming/ ftp/${PACKAGE}-${VERSION}-1.src.rpm\\n\
-	"echo ${VERSION} > old.version"
-
-	scp ${PACKAGE}-${VERSION}.tar.gz etherape.sourceforge.net:ftp
-	ssh etherape.sourceforge.net ncftpput upload.sourceforge.net /incoming/ ftp/${PACKAGE}-${VERSION}.tar.gz
-	scp /usr/src/redhat/RPMS/i386/${PACKAGE}-${VERSION}-1.i386.rpm etherape.sourceforge.net:ftp
-	ssh etherape.sourceforge.net ncftpput upload.sourceforge.net /incoming/ ftp/${PACKAGE}-${VERSION}-1.i386.rpm		
-	scp /usr/src/redhat/SRPMS/${PACKAGE}-${VERSION}-1.src.rpm etherape.sourceforge.net:ftp
-	ssh etherape.sourceforge.net ncftpput upload.sourceforge.net /incoming/ ftp/${PACKAGE}-${VERSION}-1.src.rpm
-
-	echo ${VERSION} > old.version
-
 dist-hook: etherape.spec
 	cp etherape.spec $(distdir)
 
