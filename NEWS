@@ -5,6 +5,9 @@
    Changes summary:
      * require only gnome-canvas, not gnome-ui. Based on the work of
        Arch Linux packager bgyorgy (Balló György).  Thanks!
+ 
+     * migrate from deprecated gnome-doc-utils to yelp-tools.
+       Unfortunately this change rules out older distributions
 
 
   Overview of changes in EtherApe 0.9.15 (Friday, February 10, 2017):
