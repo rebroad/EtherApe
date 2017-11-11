@@ -216,6 +216,7 @@ AC_CONFIG_FILES([Makefile
 	   po/Makefile.in
            etherape.spec
            etherape.desktop
+           PKGBUILD
            glade/Makefile
            src/Makefile
 	   m4/Makefile

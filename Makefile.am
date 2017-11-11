@@ -48,6 +48,8 @@ EXTRA_DIST = config.rpath mkinstalldirs  \
 	debian/menu		\
 	debian/rules		\
 	debian/etherape.xpm	\
+	PKGBUILD		\
+	PKGBUILD.in		\
 	src/glade-strings	\
 	$(Development_DATA)	\
 	$(pixmaps_DATA)		\

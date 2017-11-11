@@ -1,0 +1,33 @@
+#
+# copied and adapter for use with opensuse build service
+#
+# Maintainer: Thorsten Töpper <atsutane-tu@freethoughts.de>
+# Contributor: kevin <kevin@archlinux.org>
+# Contributor: Damir Perisa <damir.perisa@bluewin.ch>
+
+pkgname=etherape
+pkgver=@VERSION@
+pkgrel=1
+pkgdesc='A graphical network monitor for various OSI layers and protocols'
+arch=('i686' 'x86_64')
+url="http://etherape.sourceforge.net/"
+license=('GPL2')
+# as of 03/2017 'libglvnd' 'mesa' are needed only for OBS
+depends=('libgnomecanvas' 'libpcap' 'popt' 'libglvnd' 'mesa')
+makedepends=('rarian' 'yelp-tools' 'itstool')
+source=(http://downloads.sourceforge.net/${pkgname}/${pkgname}-${pkgver}.tar.gz)
+#sha1ums=('')     # building for release - add sha of tar package
+sha1sums=('SKIP')  # building for devel
+
+build() {
+  cd ${srcdir}/${pkgname}-${pkgver}
+
+  ./configure --prefix=/usr --sysconfdir=/etc
+  make
+}
+
+package() {
+  cd ${srcdir}/${pkgname}-${pkgver}
+
+  make DESTDIR=${pkgdir} install
+}
