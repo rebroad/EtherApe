@@ -1,15 +1,12 @@
-include $(top_srcdir)/gnome-doc-utils.make
-dist-hook: doc-dist-hook
+@YELP_HELP_RULES@
 
-DOC_MODULE = etherape
-DOC_ENTITIES = 
-DOC_INCLUDES = 
+HELP_ID = etherape
 
 # translations
-DOC_LINGUAS =
+#HELP_LINGUAS =
 
 # List of figures to include.  Paths are relative to the C/ subdir
-DOC_FIGURES = \
+HELP_MEDIA = \
 		figures/all_nodes.eps \
 		figures/all_nodes.png \
 		figures/appmain.eps \
@@ -34,3 +31,6 @@ DOC_FIGURES = \
 		figures/protocol_edit_dlg.png \
 		figures/proto_info.eps \
 		figures/proto_info.png
+
+HELP_FILES = \
+		index.docbook

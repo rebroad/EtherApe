@@ -3,10 +3,10 @@
 
 AC_PREREQ(2.53)
 AC_INIT([etherape],[0.9.16])
-AC_CONFIG_SRCDIR(README)
+AC_CONFIG_SRCDIR([config.h.in])
 AC_CONFIG_MACRO_DIR([m4])
 AM_CONFIG_HEADER([config.h])
-AM_INIT_AUTOMAKE([-Wall])
+AM_INIT_AUTOMAKE([-Wall foreign])
 
 # defines
 AC_DEFINE([HAVE_CATGETS],[],[cmt])
@@ -51,7 +51,7 @@ AC_CHECK_HEADERS([net/if.h], [], [],
   # include <sys/socket.h>
   #endif
 ])
- 
+
 
 # Checks for typedefs, structures, and compiler characteristics.
 AC_C_CONST
@@ -115,17 +115,17 @@ if test $use_gdk_input_add = no; then
   AC_MSG_NOTICE([gtk_input_add disabled])
 fi
 
-AC_CHECK_FUNC(gethostbyaddr_r, [has_gethostbyaddr_r=yes], 
-  AC_CHECK_LIB(bind, gethostbyaddr_r, [has_gethostbyaddr_r=yes], 
-   AC_CHECK_LIB(resolv, gethostbyaddr_r, [has_gethostbyaddr_r=yes], 
+AC_CHECK_FUNC(gethostbyaddr_r, [has_gethostbyaddr_r=yes],
+  AC_CHECK_LIB(bind, gethostbyaddr_r, [has_gethostbyaddr_r=yes],
+   AC_CHECK_LIB(resolv, gethostbyaddr_r, [has_gethostbyaddr_r=yes],
     AC_CHECK_LIB(nsl, gethostbyaddr_r, [has_gethostbyaddr_r=yes],[has_gethostbyaddr_r=no]))))
 
 if test $has_gethostbyaddr_r = no; then
  AC_MSG_NOTICE([gethostbyaddr_r not found, trying with gethostbyaddr])
- AC_CHECK_FUNC(gethostbyaddr, [has_gethostbyaddr=yes], 
-  AC_CHECK_LIB(bind, gethostbyaddr, [has_gethostbyaddr=yes], 
-   AC_CHECK_LIB(resolv, gethostbyaddr, [has_gethostbyaddr=yes], 
-     AC_CHECK_LIB(nsl, gethostbyaddr, [has_gethostbyaddr=yes], 
+ AC_CHECK_FUNC(gethostbyaddr, [has_gethostbyaddr=yes],
+  AC_CHECK_LIB(bind, gethostbyaddr, [has_gethostbyaddr=yes],
+   AC_CHECK_LIB(resolv, gethostbyaddr, [has_gethostbyaddr=yes],
+     AC_CHECK_LIB(nsl, gethostbyaddr, [has_gethostbyaddr=yes],
       [AC_MSG_ERROR([Missing both gethostbyaddr and gethostbyaddr_r. Please install a resolver library.])]
       ))))
 
@@ -190,8 +190,8 @@ else
   AC_DEFINE_UNQUOTED(PIXMAPS_DIR, "${prefix}/share/pixmaps",[pixmaps directory])
 fi
 
-dnl initialize gnome doc macros
-GNOME_DOC_INIT
+dnl initialize yelp doc macros
+YELP_HELP_INIT
 
 dnl get mercurial version - sadly, this works only on a developer repo ...
 dnl AC_CONFIG_COMMANDS_PRE([

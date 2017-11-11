@@ -5,7 +5,7 @@ SUBDIRS = src doc glade m4 po
 # standard props
 DATADIR=.
 
-DISTCHECK_CONFIGURE_FLAGS=--disable-scrollkeeper
+DISTCHECK_CONFIGURE_FLAGS=
 
 indent:
 	cd src && make indent
@@ -29,7 +29,7 @@ purge:
 splint:
 	cd src && make splint
 
-DISTCLEANFILES=gnome-doc-utils.make
+DISTCLEANFILES=
 
 EXTRA_DIST = config.rpath mkinstalldirs  \
 	README.bugs		\
@@ -39,15 +39,6 @@ EXTRA_DIST = config.rpath mkinstalldirs  \
 	etherape.spec		\
 	etherape.spec.in	\
 	etherape.desktop.in	\
-	debian/README.debian	\
-	debian/changelog	\
-	debian/control		\
-	debian/copyright	\
-	debian/dirs		\
-	debian/docs		\
-	debian/menu		\
-	debian/rules		\
-	debian/etherape.xpm	\
 	PKGBUILD		\
 	PKGBUILD.in		\
 	src/glade-strings	\
@@ -55,7 +46,6 @@ EXTRA_DIST = config.rpath mkinstalldirs  \
 	$(pixmaps_DATA)		\
 	$(man_MANS)		\
 	m4			\
-	gnome-doc-utils.make	\
 	$(conf_DATA)
 
 

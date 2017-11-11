@@ -376,7 +376,7 @@ on_help_activate (GtkMenuItem * menuitem, gpointer user_data)
   GError *err = NULL;
 
 #if GTK_CHECK_VERSION(2, 13, 1)
-  gtk_show_uri (NULL, "ghelp:" PACKAGE_NAME, GDK_CURRENT_TIME, &err);
+  gtk_show_uri (NULL, "help:" PACKAGE_NAME, GDK_CURRENT_TIME, &err);
 #else
   gnome_help_display (PACKAGE_NAME ".xml", NULL, &err);
 #endif

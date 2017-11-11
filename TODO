@@ -1,8 +1,6 @@
 User visible features:
 ----------------------
 
-  * change user and drop privileges. Perhaps use also capabilities.
-
   * identify nodes from protocol window. It could be done by maintaining a
     node tree for every global protocol.
 
