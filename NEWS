@@ -1,7 +1,12 @@
                             Changelog for EtherApe
 
   Overview of changes in EtherApe 0.9.16 ():
+     
+   Many thanks to Patrick Matthäi for packaging EtherApe for Debian and
+   helping to keep this utility updated. 
    
+
+
    Changes summary:
      * require only gnome-canvas, not gnome-ui. Based on the work of
        Arch Linux packager bgyorgy (Balló György).  Thanks!
@@ -9,6 +14,7 @@
      * migrate from deprecated gnome-doc-utils to yelp-tools.
        Unfortunately this change rules out older distributions
 
+     * updated German translation, thanks to Chris Leick
 
   Overview of changes in EtherApe 0.9.15 (Friday, February 10, 2017):
    The central node ring setting now accepts multiple node specifiers

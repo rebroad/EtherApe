@@ -1,14 +1,14 @@
 # Translation of etherape to German
 # Copyright (C) 2000 Juan Toledo <toledo@users.sourceforge.net>.
 # This file is distributed under the same license as the etherape package.
-# Chris Leick <c.leick@vollbio.de>, 2009, 2011
+# Chris Leick <c.leick@vollbio.de>, 2009-2017
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: etherape 0.9.12\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2017-11-10 22:09+0100\n"
-"PO-Revision-Date: 2011-06-09 21:21+0200\n"
+"PO-Revision-Date: 2017-11-18 12:37+0200\n"
 "Last-Translator: Chris Leick <c.leick@vollbio.de>\n"
 "Language-Team: German <debian-l10n-german@lists.debian.org>\n"
 "Language: de\n"
@@ -16,37 +16,37 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
+# https://de.wikipedia.org/wiki/Glade_(Programmierwerkzeug)
 #: src/appdata.c:85
-#, fuzzy, c-format
+#, c-format
 msgid "Could not load glade interface file '%s'!"
-msgstr "Die Schnittstelle konnte nicht geladen werden. (%s)"
+msgstr "Die Glade-Schnittstellendatei »%s« konnte nicht geladen werden."
 
 #: src/datastructs.c:392
-#, fuzzy, c-format
+#, c-format
 msgid "%s protocol not supported"
-msgstr "DDP-Protokolle nicht in %s unterstützt"
+msgstr "Protokoll %s nicht unterstützt"
 
-# FIXME s/canvas:%d/canvas: %d/
 #: src/diagram.c:225
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "Nodes: %d (on canvas: %d, shown: %u), Links: %d, Conversations: %ld, names "
 "%ld, protocols %ld. Total Packets seen: %lu (in memory: %ld, on list %ld). "
 "IP cache entries %ld. Canvas objs: %ld. Refreshed: %u ms"
 msgstr ""
-"Knoten: %d (auf Zeichenfläche: %d, angezeigt: %u), Links: %d, Gespräche:  "
+"Knoten: %d (auf Zeichenfläche: %d, angezeigt: %u), Verweise: %d, Gespräche:  "
 "%ld, Namen %ld, Protokolle %ld. Gesamt gesehene Pakete: %lu (im Speicher: "
 "%ld, auf der Liste %ld). IP-Zwischenspeichereinträge %ld. "
 "Zeichenflächenobjekte: %ld. Aktualisiert: %u ms"
 
 #: src/diagram.c:571
 msgid "(Capture statistics unavailable in offline mode.)"
-msgstr ""
+msgstr "(Statistiken erfassen, die im Offline-Modus nicht verfügbar sind)"
 
 #: src/diagram.c:627
 #, c-format
 msgid "Bogus statspos_t (%d) pref.pcap_stats_pos"
-msgstr ""
+msgstr "gefälschte statspos_t (%d) pref.pcap_stats_pos"
 
 #: src/diagram.c:656
 #, c-format
@@ -78,17 +78,19 @@ msgstr "Unbekannter Wert für link_size_variable"
 #: src/diagram.c:1696
 #, c-format
 msgid "Link main protocol: %s"
-msgstr "Link-Hauptprotokoll: %s"
+msgstr "Verweishauptprotokoll: %s"
 
 #: src/diagram.c:1699
 msgid "Link main protocol unknown"
-msgstr "Unbekanntes Link-Hauptprotokoll"
+msgstr "Unbekanntes Verweishauptprotokoll"
 
 #: src/diagram.c:1763
 msgid ""
 "'recv': packets received; 'drop': packets dropped by OS buffering; 'ifdrop': "
 "packets dropped by interface or driver."
 msgstr ""
+"»recv«: Pakete empfangen; »drop«: Pakete durch Betriebssystempufferung "
+"verworfen; »ifdrop« Pakete durch Schnittstelle oder Treiber verworfen."
 
 #: src/info_windows.c:119 src/info_windows.c:783
 #, c-format
@@ -118,7 +120,7 @@ msgstr "A->B"
 
 #: src/info_windows.c:992
 msgid "Link timed out"
-msgstr "Zeit des Links abgelaufen"
+msgstr "Zeit des Verweises abgelaufen"
 
 #: src/main.c:96
 msgid "don't display any node text identification"
@@ -163,11 +165,11 @@ msgstr "beim Empfang von USR1 in genannte Datei exportieren"
 
 #: src/main.c:108
 msgid "Manually position nodes based on File"
-msgstr ""
+msgstr "Knoten von Hand auf Basis der Datei positionieren"
 
 #: src/main.c:108
 msgid "<list of nodes and their columns>"
-msgstr ""
+msgstr "<Liste der Knoten und ihrer Spalten>"
 
 #: src/main.c:110
 msgid "don't move nodes around (deprecated)"
@@ -224,12 +226,11 @@ msgstr "<Glade-Datei>"
 
 #: src/main.c:128
 msgid "run as the given user"
-msgstr ""
+msgstr "als angegebener Benutzer ausführen"
 
 #: src/main.c:128
-#, fuzzy
 msgid "<username>"
-msgstr "<Schnittstellenname>"
+msgstr "<Benutzername>"
 
 #: src/main.c:218
 msgid "Unrecognized mode. Do etherape --help for a list of modes"
@@ -239,22 +240,22 @@ msgstr ""
 
 #: src/main.c:316
 msgid "DNS resolver initialization failed"
-msgstr ""
+msgstr "Initialisieren des DNS-Auflösers fehlgeschlagen"
 
 #: src/main.c:368
 #, c-format
 msgid "Invalid position-file line: %s"
-msgstr ""
+msgstr "ungültige Positionsdateizeile: %s"
 
 #: src/main.c:373
 #, c-format
 msgid "Column number %ld out of range"
-msgstr ""
+msgstr "Spaltennummer %ld außerhalb des Bereichs"
 
 #: src/main.c:398
 #, c-format
 msgid "Failed to read position file %s: %s"
-msgstr ""
+msgstr "Lesen von Positionsdatei %s fehlgeschlagen: %s"
 
 #: src/menus.c:51
 #, c-format
@@ -300,10 +301,10 @@ msgstr "Daten werden gelesen von "
 msgid "default interface"
 msgstr "Standardschnittstelle"
 
-# http://de.wikipedia.org/wiki/OSI-Modell (Sicherungsschicht)
+# https://de.wikipedia.org/wiki/OSI-Modell
 #: src/menus.c:487
 msgid " in Data Link mode"
-msgstr " im Data-Link-Modus"
+msgstr " im Sicherungsschichtmodus"
 
 #: src/menus.c:490
 msgid " in IP mode"
@@ -341,17 +342,17 @@ msgstr "Diagramm gestoppt"
 #: src/pref_dialog.c:296
 #, c-format
 msgid "Adjustment value: %g. Radius multiplier %g"
-msgstr ""
+msgstr "Korrekturwert: %g. Radiusmultiplikator %g"
 
 #: src/pref_dialog.c:307
 #, c-format
 msgid "Adjustment value: %g. Link-node ratio %g"
-msgstr ""
+msgstr "Korrekturwert: %g. Verweisknotenverhältnis %g"
 
 #: src/pref_dialog.c:317
 #, c-format
 msgid "Adjustment value: %g. Inner ring scale %g"
-msgstr ""
+msgstr "Korrekturwert: %g. Innerer Skalenring %g"
 
 #: src/preferences.c:347
 #, c-format
@@ -365,47 +366,46 @@ msgstr "Fehler beim Speichern der Einstellungen unter »%s«: %s"
 
 #: src/capture/capctl.c:81
 msgid "Failed to receive message from packet-capture process"
-msgstr ""
+msgstr "Nachrichtenempfang vom Datenpaketerfassungsprozess fehlgeschlagen"
 
 #: src/capture/capctl.c:87
 msgid "Failed to send message to packet-capture process"
-msgstr ""
+msgstr "Nachrichtversand an Datenpaketerfassungsprozess fehlgeschlagen"
 
 #: src/capture/capctl.c:93
 msgid "Failed to receive packet from packet-capture process"
-msgstr ""
+msgstr "Datenpaketempfang vom Datenpaketerfassungsprozess fehlgeschlagen"
 
 #: src/capture/capctl.c:118
 #, c-format
 msgid "Failed to set %s environment variable to '%s': %s"
-msgstr ""
+msgstr "Setzen von Umgebungsvariable %s auf »%s« fehlgeschlagen: %s"
 
 #: src/capture/capctl.c:130
 #, c-format
 msgid "Unknown user '%s'"
-msgstr ""
+msgstr "unbekannter Benutzer »%s«"
 
 #: src/capture/capctl.c:135
 #, c-format
 msgid "Failed to switch to user '%s' (uid=%lu, gid=%lu): %s"
-msgstr ""
+msgstr "Wechsel zu Benutzer »%s« fehlgeschlagen (uid=%lu, gid=%lu): %s"
 
 #: src/capture/capctl.c:457
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "%s uses unsupported link type %d, cannot proceed.  Please choose another "
 "source."
 msgstr ""
-"Gerät %s benutzt den nicht unterstützten Link-Typ %d, Erfassen nicht "
-"möglich. Bitte benutzen Sie eine andere Schnittstelle."
+"%s benutzt den nicht unterstützten Verweistyp %d, fortfahren nicht möglich. "
+"Bitte benutzen Sie eine andere Quelle."
 
 #: src/capture/capctl.c:468
-#, fuzzy
 msgid ""
 "This device does not support link-layer mode.  Please use IP or TCP modes."
 msgstr ""
-"Das Gerät unterstützt keinen Modus auf der Link-Ebene. Bitte benutzen Sie "
-"IP- oder TCP-Modi."
+"Dieses Gerät unterstützt den Sicherungsschichtmodus nicht. Bitte benutzen "
+"Sie IP- oder TCP-Modi."
 
 #: src/names/names.c:109
 #, c-format
@@ -428,11 +428,11 @@ msgstr "Affenmodus wird in fill_node_id nicht unterstützt"
 #: src/stats/decode_proto.c:194
 #, c-format
 msgid "Link type is %s"
-msgstr "Link-Typ ist %s"
+msgstr "Verweistyp ist %s"
 
 #: src/stats/decode_proto.c:268
 msgid "Data link entry not initialized"
-msgstr "Data-Link-Eintrag nicht initialisiert"
+msgstr "Sicherungsschichteintrag nicht initialisiert"
 
 #: src/stats/decode_proto.c:569
 msgid "Radiotap:captured size too small, packet discarded"
@@ -445,12 +445,11 @@ msgstr "PPI: erfasste Größe zu klein, Paket verworfen"
 #: src/stats/decode_proto.c:629
 #, c-format
 msgid "PPI:unsupported link type %u, packet discarded"
-msgstr "PPI: nicht unterstützter Link-Typ %u, Paket verworfen"
+msgstr "PPI: nicht unterstützter Verweistyp %u, Paket verworfen"
 
 #: src/stats/decode_proto.c:708
-#, fuzzy
 msgid "wlan:captured size too small (less than 10 bytes), packet discarded"
-msgstr "wlan: erfasste Größe zu klein, Paket verworfen"
+msgstr "wlan: erfasste Größe zu klein (weniger als 10 Bytes), Paket verworfen"
 
 #: src/stats/decode_proto.c:732
 #, c-format
@@ -458,19 +457,21 @@ msgid "Invalid tofromds field in WLAN packet: 0x%x"
 msgstr "Ungültiges Tofromds-Feld im WLAN-Paket: 0x%x"
 
 #: src/stats/decode_proto.c:763 src/stats/decode_proto.c:796
-#, fuzzy, c-format
+#, c-format
 msgid "wlan:captured size too small (read %u, needed %u), packet discarded"
-msgstr "wlan: erfasste Größe zu klein, Paket verworfen"
+msgstr ""
+"wlan: erfasste Größe zu klein (%u gelesen, %u benötigt), Paket verworfen"
 
 #: src/stats/decode_proto.c:779
-#, fuzzy, c-format
+#, c-format
 msgid "wlan:captured size too small (read %u, needed %u), RTS packet discarded"
-msgstr "wlan: erfasste Größe zu klein, Paket verworfen"
+msgstr ""
+"wlan: erfasste Größe zu klein (%u gelesen, %u benötigt), Paket verworfen"
 
 #: src/stats/decode_proto.c:830
-#, fuzzy, c-format
+#, c-format
 msgid "wlan:frame type 0x%x is reserved, decode aborted"
-msgstr "wlan: unbekanntes Frame-Typ 0x%x, Dekodieren abgebrochen"
+msgstr "wlan: Frame-Typ 0x%x ist reserviert, Dekodieren abgebrochen"
 
 #: src/stats/decode_proto.c:834
 #, c-format
@@ -479,17 +480,17 @@ msgstr "wlan: unbekanntes Frame-Typ 0x%x, Dekodieren abgebrochen"
 
 #: src/stats/links.c:210
 msgid "Queuing link for remove"
-msgstr "Link zum Entfernen in Warteschlange stellen"
+msgstr "Verweis zum Entfernen in Warteschlange stellen"
 
 #: src/stats/links.c:261
 #, c-format
 msgid "New link: %s. Number of links %d"
-msgstr "Neuer Link: %s. Anzahl der Links %d"
+msgstr "Neuer Verweis: %s. Anzahl der Verweise %d"
 
 #: src/stats/links.c:343
 #, c-format
 msgid "Updated links. Active links %d"
-msgstr "Aktualisierte Links. Aktive Links %d"
+msgstr "Aktualisierte Verweise. Aktive Verweise %d"
 
 #: src/stats/node.c:113
 #, c-format
@@ -512,9 +513,8 @@ msgid "Updated nodes. Active nodes %d"
 msgstr "Aktualisierte Knoten. Aktive Knoten %d"
 
 #: src/stats/node_id.c:70
-#, fuzzy
 msgid "Unsupported ape mode in node_id_compare"
-msgstr "Affenmodus wird in fill_node_id nicht unterstützt"
+msgstr "Affenmodus wird in node_id_compare nicht unterstützt"
 
 #: src/stats/util.c:330
 #, c-format
@@ -562,7 +562,7 @@ msgstr ""
 #: glade/etherape.glade:74
 msgid "The statistic used to compute node and link sizes"
 msgstr ""
-"Die Statistik, die zum Berechnen der Knoten- und Link-Größen benutzt wird"
+"Die Statistik, die zum Berechnen der Knoten- und Verweisgrößen benutzt wird"
 
 #: glade/etherape.glade:76
 msgid "Size _Variable"
@@ -570,7 +570,6 @@ msgstr "Gr_ößenvariable"
 
 # FIXME instantaneous
 #: glade/etherape.glade:89
-#, fuzzy
 msgid ""
 "Set the kind of instantaneous or accumulated traffic that the node radius "
 "indicates"
@@ -602,21 +601,24 @@ msgstr ""
 
 #: glade/etherape.glade:121
 msgid "_Inner Ring Scale"
-msgstr ""
+msgstr "_Innerer Skalenring"
 
 #: glade/etherape.glade:135
 msgid "Inner ring radius as a fraction of outer ring size"
-msgstr ""
+msgstr "innerer Ringradius als Bruchteil der äußeren Ringgröße"
 
 #: glade/etherape.glade:163
 msgid "Display pcap _stats:"
-msgstr ""
+msgstr "PCAP-_Statistiken anzeigen:"
 
 #: glade/etherape.glade:176
 msgid ""
 "Set where to display pcap stats: packets received, dropped by OS buffering, "
 "and dropped by the interface or driver"
 msgstr ""
+"Einstellen, wohin PCAP-Statistiken angezeigt werden: empfangene Datenpakete, "
+"durch Betriebssystempufferung verworfene und durch die Schnittstelle oder "
+"den Treiber verworfene"
 
 #: glade/etherape.glade:177
 msgid ""
@@ -626,14 +628,19 @@ msgid ""
 "Lower left\n"
 "Lower right"
 msgstr ""
+"(Aus)\n"
+"Oben links\n"
+"Oben rechts\n"
+"Unten links\n"
+"Unten rechts"
 
 #: glade/etherape.glade:204
 msgid "Link _Width - Node Radius Ratio"
-msgstr "Verhältnis Link-_Breite - Knotenradius"
+msgstr "Verhältnis Verweis_breite - Knotenradius"
 
 #: glade/etherape.glade:218
 msgid "Ratio between link width and node radius"
-msgstr "Verhältnis zwischen Link-Breite und Knotenradius"
+msgstr "Verhältnis zwischen Verweisbreite und Knotenradius"
 
 #: glade/etherape.glade:244
 msgid "Node _Radius Multiplier"
@@ -648,7 +655,7 @@ msgid ""
 "Choose how node radius and link width are calculated as a function of "
 "average traffic"
 msgstr ""
-"Wählen Sie, wie der Knotenradius und die Link-Breite als Funktion des "
+"Wählen Sie, wie der Knotenradius und die Verweisbreite als Funktion des "
 "Durchschnittsverkehrs berechnet werden"
 
 #: glade/etherape.glade:299
@@ -694,7 +701,7 @@ msgstr "Setzt den Erfassungsfilter"
 
 #: glade/etherape.glade:440
 msgid "Node Label _Font"
-msgstr "_Schriftart der Knotenbeschriftung"
+msgstr "Schrift_art der Knotenbeschriftung"
 
 #: glade/etherape.glade:454
 msgid "Node Label Font"
@@ -716,23 +723,23 @@ msgstr "Wählen sie eine Farbe"
 
 #: glade/etherape.glade:521
 msgid "C_entral Node"
-msgstr ""
+msgstr "_zentraler Knoten"
 
 #: glade/etherape.glade:533
 msgid "Optional central node"
-msgstr ""
+msgstr "optionaler zentraler Knoten"
 
 #: glade/etherape.glade:553
 msgid "Use _background image"
-msgstr ""
+msgstr "_Hintergrundbild verwenden"
 
 #: glade/etherape.glade:557
 msgid "Enable selection of a background image for the main display"
-msgstr ""
+msgstr "Auswahl eines Hintergrundbilds für die Hauptansicht aktivieren"
 
 #: glade/etherape.glade:572
 msgid "Background Image"
-msgstr ""
+msgstr "Hintergrundbild"
 
 #: glade/etherape.glade:604 glade/etherape.glade:845 glade/etherape.glade:990
 msgid "Diagram"
@@ -771,7 +778,7 @@ msgstr "Farben"
 
 #: glade/etherape.glade:750
 msgid "Diagram Refresh _Period (ms)"
-msgstr "Diagramm_aktualisierungsperiode (ms)"
+msgstr "Diagrammaktualisierungs_periode (ms)"
 
 #: glade/etherape.glade:763
 msgid "Refresh diagram every this many miliseconds"
@@ -825,19 +832,19 @@ msgid ""
 "Remove this link from the diagram after this much time. 0 means never "
 "timeout."
 msgstr ""
-"Diesen Link nach so viel Zeit aus dem Diagramm entfernen. 0 bedeutet, dass "
-"es keine Zeitüberschreitung gibt"
+"Diesen Verweis nach so viel Zeit aus dem Diagramm entfernen. 0 bedeutet, "
+"dass es keine Zeitüberschreitung gibt"
 
 #: glade/etherape.glade:1039
 msgid ""
 "Delete this link from memory after this much time. 0 means never timeout."
 msgstr ""
-"Diesen Link nach so viel Zeit aus dem Speicher löschen. 0 bedeutet, dass es "
-"keine Zeitüberschreitung gibt."
+"Diesen Verweis nach so viel Zeit aus dem Speicher löschen. 0 bedeutet, dass "
+"es keine Zeitüberschreitung gibt."
 
 #: glade/etherape.glade:1098
 msgid "<i>Link Timeouts (s)</i>"
-msgstr "<i>Link-Zeitüberschreitungen (s)</i>"
+msgstr "<i>Verweis-Zeitüberschreitungen (s)</i>"
 
 #: glade/etherape.glade:1135
 msgid "Remove this protocol from memory after this much time. "
@@ -885,7 +892,7 @@ msgstr "label73"
 
 #: glade/etherape.glade:1384 glade/etherape.glade:1832
 msgid "Instantaneous"
-msgstr "Augenblicklich"
+msgstr "augenblicklich"
 
 #: glade/etherape.glade:1397 glade/etherape.glade:1433
 msgid "test label"
@@ -893,7 +900,7 @@ msgstr "Testbeschriftung"
 
 #: glade/etherape.glade:1420 glade/etherape.glade:1844
 msgid "Accumulated"
-msgstr "Angesammelt"
+msgstr "angesammelt"
 
 #: glade/etherape.glade:1463
 msgid "Select color"
@@ -904,9 +911,8 @@ msgid "EtherApe: assign protocol"
 msgstr "EtherApe: Protokoll zuordnen"
 
 #: glade/etherape.glade:1518
-#, fuzzy
 msgid "Type protocol name..."
-msgstr "Protokollnamen eintippen"
+msgstr "Protokollnamen eintippen …"
 
 #: glade/etherape.glade:1531
 msgid "Type the protocol name"
@@ -949,16 +955,14 @@ msgid "Average size"
 msgstr "Durchschnittsgröße"
 
 #: glade/etherape.glade:1996
-#, fuzzy
 msgid "Copyright 2001-2013 Juan Toledo, Riccardo Ghetta"
-msgstr "Copyright 2001-2011 Juan Toledo, Riccardo Ghetta"
+msgstr "Copyright 2001-2013 Juan Toledo, Riccardo Ghetta"
 
 #: glade/etherape.glade:1997
 msgid "A Graphical Network Browser."
 msgstr "Ein grafischer Netzwerk-Browser"
 
 #: glade/etherape.glade:2021
-#, fuzzy
 msgid ""
 "Vincent van Adrighem <vincent@dirck.mine.nu>\n"
 "Gôrkem Cetin <gorkem@gelecek.com.tr>\n"
@@ -969,6 +973,7 @@ msgid ""
 msgstr ""
 "Vincent van Adrighem <vincent@dirck.mine.nu>\n"
 "Gôrkem Cetin <gorkem@gelecek.com.tr>\n"
+"Javier Fernandez-Sanguino Peña\n"
 "Chris Leick <c.leick@vollbio.de>\n"
 "Frederic Peters <fpeters@debian.org>\n"
 "Daniel Nylander\n"
@@ -999,7 +1004,7 @@ msgstr "M_odus"
 
 #: glade/etherape.glade:2142
 msgid "Set Link Layer (OSI level 2) mode"
-msgstr "Sicherungsschicht-Modus (OSI-Schicht 2) setzen"
+msgstr "Sicherungsschichtmodus (OSI-Schicht 2) setzen"
 
 #: glade/etherape.glade:2143
 msgid "_Link Layer"
@@ -1054,9 +1059,8 @@ msgid "_Protocols"
 msgstr "Proto_kolle"
 
 #: glade/etherape.glade:2283
-#, fuzzy
 msgid "Show or hide the nodes window"
-msgstr "Das Knotenfenster anzeigen oder verstecken\t"
+msgstr "Das Knotenfenster anzeigen oder verstecken"
 
 #: glade/etherape.glade:2284
 msgid "_Nodes"
@@ -1064,11 +1068,11 @@ msgstr "Kno_ten"
 
 #: glade/etherape.glade:2297
 msgid "Activate full screen mode"
-msgstr ""
+msgstr "Vollbildmodus aktivieren"
 
 #: glade/etherape.glade:2298
 msgid "_Full Screen"
-msgstr ""
+msgstr "_Vollbild"
 
 #: glade/etherape.glade:2308
 msgid "Show or hide the toolbar"
@@ -1146,104 +1150,4 @@ msgstr "Alle Knoten an_zeigen"
 msgid "Controls display of nodes timed out from diagram, but still in memory"
 msgstr ""
 "Steuert die Anzeige von Knoten, deren Zeit im Diagramm überschritten war, "
-"die aber immer nocht im Speicher sind"
-
-#~ msgid ""
-#~ "No capture device found or insufficient privileges.\n"
-#~ "Only file replay will be available.\n"
-#~ "EtherApe must be run with administrative privileges (e.g. root) to enable "
-#~ "live capture.\n"
-#~ "Pcap error: %s"
-#~ msgstr ""
-#~ "Kein Gerät zum Erfassen gefunden oder unzureichende Rechte\n"
-#~ "Nur das Abspielen von Dateien wird verfügbar sein.\n"
-#~ "EtherApe muss mit Administratorrechten ausgeführt werden (z.B. Root), um "
-#~ "Live-Erfassung zu aktivieren.\n"
-#~ "Pcap-Fehler: %s"
-
-#~ msgid ""
-#~ "Error opening %s : %s\n"
-#~ "- perhaps you need to be root?"
-#~ msgstr ""
-#~ "Fehler beim Öffnen von %s: %s\n"
-#~ "- vielleicht müssen Sie Root sein?"
-
-#~ msgid "Live device %s opened for capture. pcap_fd: %d"
-#~ msgstr "Aktives Gerät %s für Erfassung geöffnet. pcap_fd: %d"
-
-#~ msgid "Can't open both %s and device %s. Please choose one."
-#~ msgstr ""
-#~ "Die Geräte %s und %s können nicht beide geöffnet werden. Bitte wählen Sie "
-#~ "eins aus."
-
-#~ msgid "Error opening %s : %s"
-#~ msgstr "Fehler beim Öffnen von %s: %s"
-
-#~ msgid "%s opened for offline capture"
-#~ msgstr "%s für Offline-Erfassung geöffnet"
-
-#, fuzzy
-#~ msgid ""
-#~ "File %s contains packets with unsupported link type %u, cannot replay"
-#~ msgstr ""
-#~ "Datei %s enthält Pakete mit dem nicht unterstützten Link-Typ %d, erneutes "
-#~ "Abspielen nicht möglich"
-
-#, fuzzy
-#~ msgid "Unsupported link type %u"
-#~ msgstr "Nicht unterstützer Link-Typ %d"
-
-#~ msgid ""
-#~ "Couldn't obtain netmask info (%s). Filters involving broadcast addresses "
-#~ "could behave incorrectly."
-#~ msgstr ""
-#~ "Netzmaskeninformation (%s) konnte nicht ermittelt werden. Filter mit "
-#~ "Broadcast-Adressen könnten sich inkorrekt verhalten."
-
-#~ msgid "Unable to parse filter string (%s). Filter ignored."
-#~ msgstr ""
-#~ "Die Filterzeichenkette kann nicht ausgewertet werden (%s). Filter "
-#~ "ignoriert."
-
-#~ msgid "Can't install filter (%s). Filter ignored."
-#~ msgstr "Der Filter kann nicht installiert werden (%s). Filter ignoriert."
-
-#~ msgid "Starting live capture"
-#~ msgstr "Aktive Erfassung wird gestartet"
-
-#~ msgid "Using timers for live capture"
-#~ msgstr "Für aktive Erfassung werden Zeitnehmer benutzt"
-
-#~ msgid "Starting offline capture"
-#~ msgstr "Offline-Erfassung wird gestartet"
-
-#~ msgid "Pausing offline capture"
-#~ msgstr "Offline-Erfassung wird pausiert"
-
-#~ msgid "Error while trying to pause capture"
-#~ msgstr "Fehler beim Pausieren der Erfassung"
-
-#~ msgid "Stopping live capture"
-#~ msgstr "Aktive Erfassung wird gestoppt"
-
-#~ msgid "Stopping offline capture"
-#~ msgstr "Offline-Erfassung wird gestoppt"
-
-#~ msgid "Capture device stopped or file closed"
-#~ msgstr "Erfassungsgerät gestoppt oder Datei geschlossen"
-
-#~ msgid "Information"
-#~ msgstr "Informationen"
-
-#~ msgid "Failed to open %s. No TCP or UDP services will be recognized"
-#~ msgstr ""
-#~ "Öffnen von %s fehlgeschlagen. TCP- oder UDP-Dienste werden nicht erkannt."
-
-#~ msgid "Reading TCP and UDP services from %s"
-#~ msgstr "TCP- und UDP-Dienste werden von %s gelesen"
-
-#~ msgid "Unable to  parse line %s"
-#~ msgstr "Zeile %s kann nicht ausgewertet werden"
-
-#~ msgid "SCTP protocols not supported in %s"
-#~ msgstr "SCTP-Protokolle nicht in %s unterstützt"
+"die aber immer noch im Speicher sind"
