@@ -257,7 +257,6 @@ int main (int argc, char *argv[])
   /* Glade */
   glade_init ();
   glade_require("gnome");
-  glade_require("canvas");
   if (!appdata_init_glade(cl_glade_file))
     return 1;
 
