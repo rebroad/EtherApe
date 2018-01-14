@@ -1,7 +1,18 @@
                             Changelog for EtherApe
 
   Overview of changes in EtherApe 0.9.16 (Sunday, January 14, 2018):
-     
+
+   Several distributions are phasing out Gnome 2 libraries and EtherApe needs
+   to update as well.
+   Unfortunately, this mean dropping support for older distributions, for
+   example CENTOS 5 and 6. At this time the EtherApe executable can still be
+   built for those distributions, but not the project as a whole.
+   
+   This is an interim release, where the only Gnome 2 component is
+   gnome-canvas. Apart of that, EtherApe is now a GTK2 application.
+      Work is underway to replace gnome-canvas with another component.
+   Documentation is now based on yelp-tools instead of Scroolkeeper/Rarian.
+
    Many thanks to Patrick Matthäi for packaging EtherApe for Debian and
    helping to keep this tool current. 
 

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 0.8.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-11-10 22:09+0100\n"
+"POT-Creation-Date: 2018-01-14 12:27+0100\n"
 "PO-Revision-Date: 2001-08-10 12:57+02:00\n"
 "Last-Translator: Frederic Peters <fpeters@debian.org>\n"
 "Language-Team: None\n"
@@ -241,21 +241,21 @@ msgstr "<nom de l'interface>"
 msgid "Unrecognized mode. Do etherape --help for a list of modes"
 msgstr "Mode inconnu. Faites etherape --help pour la liste des modes"
 
-#: src/main.c:316
+#: src/main.c:315
 msgid "DNS resolver initialization failed"
 msgstr ""
 
-#: src/main.c:368
+#: src/main.c:367
 #, c-format
 msgid "Invalid position-file line: %s"
 msgstr ""
 
-#: src/main.c:373
+#: src/main.c:372
 #, c-format
 msgid "Column number %ld out of range"
 msgstr ""
 
-#: src/main.c:398
+#: src/main.c:397
 #, c-format
 msgid "Failed to read position file %s: %s"
 msgstr ""
