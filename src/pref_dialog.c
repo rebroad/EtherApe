@@ -40,9 +40,9 @@ static void on_size_variable_changed(GtkComboBox * combo, gpointer data);
 static void on_size_mode_changed(GtkComboBox * combo, gpointer data);
 static void on_text_color_changed(GtkColorButton * wdg, gpointer data);
 static void on_text_font_changed(GtkFontButton * wdg, gpointer data);
-static void on_filter_entry_changed(GtkComboBoxEntry * cbox, gpointer user_data);
-static void on_center_node_changed(GtkComboBoxEntry * cbox, gpointer user_data);
-static void cbox_add_select(GtkComboBoxEntry *cbox, const gchar *str);
+static void on_filter_entry_changed(GtkComboBox * cbox, gpointer user_data);
+static void on_center_node_changed(GtkComboBox * cbox, gpointer user_data);
+static void cbox_add_select(GtkComboBox *cbox, const gchar *str);
 
 
 static gboolean colors_changed = FALSE;
@@ -56,10 +56,10 @@ confirm_changes(void)
   GtkWidget *widget = NULL;
 
   widget = glade_xml_get_widget (appdata.xml, "filter_combo");
-  on_filter_entry_changed (GTK_COMBO_BOX_ENTRY(widget), NULL);
+  on_filter_entry_changed(GTK_COMBO_BOX(widget), NULL);
 
   widget = glade_xml_get_widget (appdata.xml, "center_combo");
-  on_center_node_changed (GTK_COMBO_BOX_ENTRY(widget), NULL);
+  on_center_node_changed(GTK_COMBO_BOX(widget), NULL);
 
   if (colors_changed)
     {
@@ -258,17 +258,17 @@ initialize_pref_controls(void)
 
 void on_preferences1_activate (GtkMenuItem * menuitem, gpointer user_data)
 {
-  GtkComboBoxEntry *cbox;
+  GtkComboBox *cbox;
 
   /* saves current prefs to a temporary */
   copy_config(&tmp_pref, &pref);
 
   initialize_pref_controls();
 
-  cbox = GTK_COMBO_BOX_ENTRY(glade_xml_get_widget (appdata.xml, "filter_combo"));
+  cbox = GTK_COMBO_BOX(glade_xml_get_widget(appdata.xml, "filter_combo"));
   cbox_add_select(cbox, pref.filter);
 
-  cbox = GTK_COMBO_BOX_ENTRY(glade_xml_get_widget (appdata.xml, "center_combo"));
+  cbox = GTK_COMBO_BOX(glade_xml_get_widget(appdata.xml, "center_combo"));
   cbox_add_select(cbox, pref.centered_nodes);
 
   gtk_widget_show(diag_pref);
@@ -441,7 +441,7 @@ void on_save_pref_button_clicked (GtkWidget * button, gpointer user_data)
 
 
 /* Makes a new filter */
-static void on_filter_entry_changed(GtkComboBoxEntry * cbox, gpointer user_data)
+static void on_filter_entry_changed(GtkComboBox *cbox, gpointer user_data)
 {
   const gchar *str;
   /* TODO should make sure that for each mode the filter is set up
@@ -457,7 +457,7 @@ static void on_filter_entry_changed(GtkComboBoxEntry * cbox, gpointer user_data)
 }				/* on_filter_entry_changed */
 
 /* Makes a new center node */
-static void on_center_node_changed(GtkComboBoxEntry * cbox, gpointer user_data)
+static void on_center_node_changed(GtkComboBox * cbox, gpointer user_data)
 {
   const gchar *str;
   str = gtk_entry_get_text(GTK_ENTRY(gtk_bin_get_child(GTK_BIN(cbox))));
@@ -708,7 +708,7 @@ on_protocol_edit_dialog_show (GtkWidget * wdg, gpointer user_data)
   GtkTreePath *gpath = NULL;
   GtkTreeViewColumn *gcol = NULL;
   GtkTreeIter it;
-  GtkComboBoxEntry *cbox;
+  GtkComboBox *cbox;
   EATreePos ep;
 
   if (!get_color_store (&ep))
@@ -724,7 +724,7 @@ on_protocol_edit_dialog_show (GtkWidget * wdg, gpointer user_data)
 
   gtk_tree_model_get (GTK_TREE_MODEL (ep.gs), &it, 2, &protocol_string, -1);
 
-  cbox = GTK_COMBO_BOX_ENTRY(glade_xml_get_widget (appdata.xml, "protocol_entry"));
+  cbox = GTK_COMBO_BOX(glade_xml_get_widget (appdata.xml, "protocol_entry"));
   cbox_add_select(cbox, protocol_string);
 
   g_free (protocol_string);
@@ -734,11 +734,12 @@ on_protocol_edit_dialog_show (GtkWidget * wdg, gpointer user_data)
 void
 on_protocol_edit_ok_clicked (GtkButton * button, gpointer user_data)
 {
+  const gchar *combo_string;
   gchar *proto_string;
   GtkTreePath *gpath = NULL;
   GtkTreeViewColumn *gcol = NULL;
   GtkTreeIter it;
-  GtkComboBoxEntry *cbox;
+  GtkComboBox *cbox;
   EATreePos ep;
   if (!get_color_store (&ep))
     return;
@@ -751,9 +752,9 @@ on_protocol_edit_ok_clicked (GtkButton * button, gpointer user_data)
   if (!gtk_tree_model_get_iter (GTK_TREE_MODEL (ep.gs), &it, gpath))
     return;			/* path not found */
 
-  cbox = GTK_COMBO_BOX_ENTRY(glade_xml_get_widget (appdata.xml, "protocol_entry"));
-  proto_string = gtk_combo_box_get_active_text(GTK_COMBO_BOX(cbox));
-  proto_string = g_utf8_strup (proto_string, -1);
+  cbox = GTK_COMBO_BOX(glade_xml_get_widget (appdata.xml, "protocol_entry"));
+  combo_string = gtk_entry_get_text(GTK_ENTRY(gtk_bin_get_child(GTK_BIN(cbox))));
+  proto_string = g_utf8_strup(g_strdup(combo_string), -1);
   proto_string = remove_spaces(proto_string);
   
   cbox_add_select(cbox, proto_string);
@@ -852,7 +853,7 @@ color_list_to_pref (void)
 
 /* adds a string to the combo if not already present and loads it in the
    edit box. If str is "" simply clears the edit box */
-static void cbox_add_select(GtkComboBoxEntry *cbox, const gchar *str)
+static void cbox_add_select(GtkComboBox *cbox, const gchar *str)
 {
   GtkTreeModel *model;
   GtkTreeIter iter,iter3;

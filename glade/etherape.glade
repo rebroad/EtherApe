@@ -1156,21 +1156,13 @@ Square Root</property>
                       </packing>
                     </child>
                     <child>
-                      <widget class="GtkComboBoxEntry" id="filter_combo">
+                      <widget class="GtkComboBox" id="filter_combo">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="tooltip" translatable="yes">Sets the capture filter</property>
                         <property name="active">0</property>
+                        <property name="has_entry">True</property>
                         <property name="items" translatable="yes"/>
-                        <child internal-child="entry">
-                          <widget class="GtkEntry" id="comboboxentry-entry2">
-                            <property name="can_focus">False</property>
-                            <property name="primary_icon_activatable">False</property>
-                            <property name="secondary_icon_activatable">False</property>
-                            <property name="primary_icon_sensitive">True</property>
-                            <property name="secondary_icon_sensitive">True</property>
-                          </widget>
-                        </child>
                       </widget>
                       <packing>
                         <property name="expand">True</property>
@@ -1293,19 +1285,11 @@ Square Root</property>
                       </packing>
                     </child>
                     <child>
-                      <widget class="GtkComboBoxEntry" id="center_combo">
+                      <widget class="GtkComboBox" id="center_combo">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="tooltip" translatable="yes">Optional central node</property>
-                        <child internal-child="entry">
-                          <widget class="GtkEntry" id="comboboxentry-entry4">
-                            <property name="can_focus">False</property>
-                            <property name="primary_icon_activatable">False</property>
-                            <property name="secondary_icon_activatable">False</property>
-                            <property name="primary_icon_sensitive">True</property>
-                            <property name="secondary_icon_sensitive">True</property>
-                          </widget>
-                        </child>
+                        <property name="has_entry">True</property>
                       </widget>
                       <packing>
                         <property name="expand">False</property>
@@ -2296,6 +2280,9 @@ Square Root</property>
                     <child>
                       <placeholder/>
                     </child>
+                    <child>
+                      <placeholder/>
+                    </child>
                   </widget>
                 </child>
               </widget>
@@ -2519,6 +2506,9 @@ Square Root</property>
                         <property name="top_attach">3</property>
                         <property name="bottom_attach">4</property>
                       </packing>
+                    </child>
+                    <child>
+                      <placeholder/>
                     </child>
                     <child>
                       <placeholder/>
@@ -2898,20 +2888,12 @@ Square Root</property>
               </packing>
             </child>
             <child>
-              <widget class="GtkComboBoxEntry" id="protocol_entry">
+              <widget class="GtkComboBox" id="protocol_entry">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="tooltip" translatable="yes">Type the protocol name</property>
+                <property name="has_entry">True</property>
                 <property name="items" translatable="yes">WWW</property>
-                <child internal-child="entry">
-                  <widget class="GtkEntry" id="comboboxentry-entry6">
-                    <property name="can_focus">False</property>
-                    <property name="primary_icon_activatable">False</property>
-                    <property name="secondary_icon_activatable">False</property>
-                    <property name="primary_icon_sensitive">True</property>
-                    <property name="secondary_icon_sensitive">True</property>
-                  </widget>
-                </child>
               </widget>
               <packing>
                 <property name="expand">False</property>
