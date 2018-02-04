@@ -3,10 +3,11 @@
 AUTOMAKE_OPTIONS = subdir-objects
 
 confdir = $(sysconfdir)/etherape
-gladedir   = $(datadir)/etherape/glade
+gladedir = $(datadir)/etherape/glade
 
 etherape_CPPFLAGS  = \
 	-I$(top_srcdir)/intl \
+	-DGSEAL_ENABLE \
 	-DGLADEDIR=\""$(gladedir)"\" \
 	-DCONFDIR=\""$(confdir)"\" \
 	$(WARN_CFLAGS) \
