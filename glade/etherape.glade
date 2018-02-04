@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <glade-interface>
-  <!-- interface-requires canvas 0.0 -->
-  <!-- interface-requires canvas 0.0 -->
   <!-- interface-requires gtk+ 2.24 -->
   <!-- interface-naming-policy project-wide -->
   <widget class="GtkAboutDialog" id="about1">
@@ -649,18 +647,7 @@ Daniel Nylander
                 <property name="hscrollbar_policy">never</property>
                 <property name="vscrollbar_policy">never</property>
                 <child>
-                  <widget class="GnomeCanvas" id="canvas1">
-                    <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <property name="width">560</property>
-                    <property name="height">400</property>
-                    <property name="scroll_x1">-280</property>
-                    <property name="scroll_y1">-200</property>
-                    <property name="scroll_x2">280</property>
-                    <property name="scroll_y2">200</property>
-                    <property name="pixels_per_unit">1</property>
-                    <signal name="size_allocate" handler="on_canvas1_size_allocate"/>
-                  </widget>
+                  <placeholder/>
                 </child>
               </widget>
               <packing>

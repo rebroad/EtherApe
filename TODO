@@ -1,3 +1,6 @@
+fix resize
+
+
 User visible features:
 ----------------------
 
@@ -30,7 +33,4 @@ Issues in the source code
 
   * refactor stop handling; separate clearing data from updating. 
 
-  * migrate from gnome-doc-utils to yelp-tools.
-    Note: works only for gnome3+, besides chances are it will change soon to 
-	  something-a-bit-different-but-incompatible anyway.
 

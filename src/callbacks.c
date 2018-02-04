@@ -1,6 +1,6 @@
 /* EtherApe
  * Copyright (C) 2000 Juan Toledo, Riccardo Ghetta
- * 
+ *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
@@ -20,43 +20,32 @@
 #endif
 
 #include <gtk/gtk.h>
-#include <libgnomecanvas/libgnomecanvas.h>
+#include <goocanvas.h>
 #include "appdata.h"
 #include "callbacks.h"
 #include "diagram.h"
 #include "preferences.h"
 
 void on_canvas1_size_allocate(GtkWidget *widget,
-			      GtkAllocation *allocation, gpointer user_data)
+			      									GtkAllocation *allocation,
+															gpointer user_data)
 {
-
-  GtkWidget *canvas;
-  gnome_canvas_set_scroll_region (GNOME_CANVAS (widget),
-				  -allocation->width / 2,
-				  -allocation->height / 2,
-				  allocation->width / 2,
-				  allocation->height / 2);
-  ask_reposition(FALSE);
-  canvas = glade_xml_get_widget (appdata.xml, "canvas1");
-  redraw_canvas_background(canvas);
-  update_diagram (canvas);
+	resize_diagram(allocation);
 }
 
 /* TODO this is not necessary, can be set directly in etherape.glade */
-gboolean
-on_node_popup_motion_notify_event (GtkWidget * widget,
-				   GdkEventMotion * event, gpointer user_data)
+gboolean on_node_popup_motion_notify_event(GtkWidget *widget,
+				   																 GdkEventMotion *event,
+																					 gpointer user_data)
 {
-
   gtk_widget_destroy (widget);
   return FALSE;
 }
 
-gboolean
-on_name_motion_notify_event (GtkWidget * widget,
-			     GdkEventMotion * event, gpointer user_data)
+gboolean on_name_motion_notify_event(GtkWidget *widget,
+			     													 GdkEventMotion *event,
+																		 gpointer user_data)
 {
-
   g_message ("Motion in name label");
   return FALSE;
 }

@@ -20,7 +20,7 @@
 #endif
 
 #include <gtk/gtk.h>
-#include <libgnomecanvas/libgnomecanvas.h>
+#include <goocanvas.h>
 
 #include "appdata.h"
 #include "diagram.h"
@@ -44,8 +44,8 @@
 gboolean already_updating;
 gboolean stop_requested;
 
-static GnomeCanvasItem *pcap_stats_text_item = NULL;
-static GnomeCanvasGroup *pcap_stats_text_group = NULL;
+static GooCanvasText *pcap_stats_text_item = NULL;
+//static GooCanvasGroup *pcap_stats_text_group = NULL;
 
 /***************************************************************************
  *
@@ -55,10 +55,10 @@ static GnomeCanvasGroup *pcap_stats_text_group = NULL;
 typedef struct
 {
   node_id_t canvas_node_id;
-  GnomeCanvasItem *node_item;
-  GnomeCanvasItem *text_item;
-  GnomeCanvasGroup *group_item;
-  GdkColor color;
+  GooCanvasItem *node_item;
+  GooCanvasItem *text_item;
+  GooCanvasGroup *group_item;
+  guint rgbcolor;
   gboolean is_new;
   gboolean shown;		/* True if it is to be displayed. */
   gboolean centered;            /* true if is a center node */
@@ -68,7 +68,8 @@ typedef struct
   guint column_idx; /* Which position within its column this node is */
 }
 canvas_node_t;
-static gint canvas_node_compare(const node_id_t *a, const node_id_t *b, 
+
+static gint canvas_node_compare(const node_id_t *a, const node_id_t *b,
                                 gpointer dummy);
 static void canvas_node_delete(canvas_node_t *cn);
 static gint canvas_node_update(node_id_t  * ether_addr,
@@ -83,12 +84,12 @@ static gint canvas_node_update(node_id_t  * ether_addr,
 typedef struct
 {
   link_id_t canvas_link_id; /* id of the link */
-  GnomeCanvasItem *src_item;    /* triangle for src side */
-  GnomeCanvasItem *dst_item;    /* triangle for dst side */
+  GooCanvasItem *src_item;    /* triangle for src side */
+  GooCanvasItem *dst_item;    /* triangle for dst side */
   GdkColor color;
 }
 canvas_link_t;
-static gint canvas_link_compare(const link_id_t *a, const link_id_t *b, 
+static gint canvas_link_compare(const link_id_t *a, const link_id_t *b,
                                 gpointer dummy);
 static void canvas_link_delete(canvas_link_t *canvas_link);
 static gint canvas_link_update(link_id_t * link_id,
@@ -104,7 +105,7 @@ struct node_ring
 
 typedef struct
 {
-  GtkWidget * canvas;
+  GooCanvas * canvas;
 
   struct node_ring outer;
   struct node_ring center;
@@ -129,7 +130,7 @@ typedef struct
 
 typedef struct
 {
-  GnomeCanvasGroup *group;
+  //GooCanvasGroup *group;
   gboolean use_image;
 
   GdkColor color;
@@ -137,11 +138,11 @@ typedef struct
   {
     GdkPixbuf *image;
     gchar *path;
-    GnomeCanvasItem *item;
+    GooCanvasItem *item;
   } image;
 } canvas_background_t;
 
-static void init_canvas_background(GtkWidget *canvas);
+static void init_canvas_background(GooCanvasItem *rootitem);
 
 /***************************************************************************
  *
@@ -149,66 +150,91 @@ static void init_canvas_background(GtkWidget *canvas);
  *
  **************************************************************************/
 
-static GTree *canvas_nodes;	/* We don't use the nodes tree directly in order to 
+static GTree *canvas_nodes = NULL;	/* We don't use the nodes tree directly in order to
 				 * separate data from presentation: that is, we need to
 				 * keep a list of CanvasItems, but we do not want to keep
 				 * that info on the nodes tree itself */
 static GTree *canvas_links;	/* See canvas_nodes */
 static guint known_protocols = 0;
 static canvas_background_t canvas_background;
-static gboolean is_idle = FALSE;
 static guint displayed_nodes;
 static gboolean need_reposition = TRUE;	/* Force a diagram relayout */
 static gboolean need_font_refresh = TRUE;/* Force font refresh during layout */
-static gint diagram_timeout;	/* Descriptor of the diagram timeout function
-				 * (Used to change the refresh_period in the callback */
+static gint diagram_timeout = 0;	/* Descriptor of the diagram timeout function
+				        * (Used to change the refresh_period in the callback */
 
 static long canvas_obj_count = 0; /* counter of canvas objects */
+static GooCanvas *goocanvas_ = NULL; /* drawing canvas */
 
 /***************************************************************************
  *
  * local Function definitions
  *
  **************************************************************************/
-static void diagram_update_nodes(GtkWidget * canvas); /* updates ALL nodes */
-static void diagram_update_links(GtkWidget * canvas); /* updates ALL links */
-static void diagram_update_background_image(GtkWidget *canvas); /* updates background image */
+static gboolean update_diagram(GooCanvas *canvas); /* full diagram update */
+static void diagram_update_nodes(GooCanvas *canvas); /* updates ALL nodes */
+static void diagram_update_links(GooCanvas *canvas); /* updates ALL links */
+static void diagram_update_background_image(GooCanvas *canvas); /* updates background image */
 
-static void check_new_protocol (GtkWidget *prot_table, const protostack_t *pstk);
-static gint check_new_node (node_t * node, GtkWidget * canvas);
-static gboolean display_node (node_t * node);
-static void limit_nodes (void);
-static gint add_ordered_node (node_id_t * node_id,
-			      canvas_node_t * canvas_node,
-			      GTree * ordered_nodes);
-static gint check_ordered_node (gdouble * traffic, canvas_node_t * node,
-				guint * count);
-static gint traffic_compare (gconstpointer a, gconstpointer b);
-static gint reposition_canvas_nodes (node_id_t * node_id,
-				     canvas_node_t * canvas_node,
-				     reposition_node_t *data);
-static gint reposition_canvas_nodes_prep(const node_id_t * node_id,
-                                         canvas_node_t * canvas_node,
+static void check_new_protocol(GtkWidget *prot_table, const protostack_t *pstk);
+static gint check_new_node(node_t *node, GooCanvas *canvas);
+static gboolean display_node(node_t *node);
+static void limit_nodes(void);
+static gint add_ordered_node(node_id_t *node_id,
+                             canvas_node_t *canvas_node,
+                             GTree *ordered_nodes);
+static gint check_ordered_node(gdouble *traffic, canvas_node_t *node,
+                               guint *count);
+static gint traffic_compare(gconstpointer a, gconstpointer b);
+static gint reposition_canvas_nodes(node_id_t *node_id,
+                                    canvas_node_t *canvas_node,
+                                    reposition_node_t *data);
+static gint reposition_canvas_nodes_prep(const node_id_t *node_id,
+                                         canvas_node_t *canvas_node,
                                          reposition_node_t *data);
-static gint check_new_link (link_id_t * link_id,
-			    link_t * link, GtkWidget * canvas);
-static gdouble get_node_size (gdouble average);
+static gint check_new_link(link_id_t *link_id,
+                           link_t *link,
+                           GooCanvas *canvas);
+static gdouble get_node_size(gdouble average);
 static gdouble get_link_size(const basic_stats_t *link_stats);
-static gint link_item_event (GnomeCanvasItem * item,
-			     GdkEvent * event, canvas_link_t * canvas_link);
-static gint node_item_event (GnomeCanvasItem * item,
-			     GdkEvent * event, canvas_node_t * canvas_node);
-static gint pcap_stats_text_item_event(GnomeCanvasItem *item, GdkEvent *event,
+static gint pcap_stats_text_item_event(GooCanvasItem *item, GdkEvent *event,
                                        void *unused);
+static gboolean link_item_event(GooCanvasItem *item,
+                                GooCanvasItem *target_item,
+                                GdkEventButton *event,
+                                canvas_link_t *canvas_link);
+static gboolean node_item_event(GooCanvasItem *item,
+                                GooCanvasItem *target_item,
+                                GdkEventButton *event,
+                                canvas_node_t *canvas_node);
+
 static void update_legend(void);
 static void draw_oneside_link(double xs, double ys, double xd, double yd,
-                              const basic_stats_t *link_data, 
-                              guint32 scaledColor, GnomeCanvasItem *item);
+                              const basic_stats_t *link_data,
+                              guint32 scaledColor, GooCanvasItem *item);
 static void init_reposition(reposition_node_t *data,
-                            GtkWidget * canvas, 
+                            GooCanvas *canvas,
                             guint total_nodes);
 static void clear_reposition(reposition_node_t *rdata);
+static void redraw_canvas_background(GooCanvas *canvas);
 
+/***************************************************************************
+ *
+ * implementation
+ *
+ **************************************************************************/
+static void goo_canvas_item_show(GooCanvasItem *it)
+{
+  g_object_set(G_OBJECT (it),
+               "visibility", GOO_CANVAS_ITEM_VISIBLE, 
+               NULL);
+}
+static void goo_canvas_item_hide(GooCanvasItem *it)
+{
+  g_object_set(G_OBJECT (it),
+               "visibility", GOO_CANVAS_ITEM_INVISIBLE, 
+               NULL);
+}
 
 void ask_reposition(gboolean r_font)
 {
@@ -224,15 +250,15 @@ void dump_stats(guint32 diff_msecs)
     _("Nodes: %d (on canvas: %d, shown: %u), Links: %d, Conversations: %ld, "
       "names %ld, protocols %ld. Total Packets seen: %lu (in memory: %ld, "
       "on list %ld). IP cache entries %ld. Canvas objs: %ld. Refreshed: %u ms"),
-                                   node_count(), 
-                                   g_tree_nnodes(canvas_nodes), displayed_nodes, 
-                                   links_catalog_size(), active_conversations(), 
+                                   node_count(),
+                                   g_tree_nnodes(canvas_nodes), displayed_nodes,
+                                   links_catalog_size(), active_conversations(),
                                    active_names(), protocol_summary_size(),
-                                   appdata.n_packets, appdata.total_mem_packets, 
+                                   appdata.n_packets, appdata.total_mem_packets,
                                    packet_list_item_count(), ipc,
                                    canvas_obj_count,
                                    (unsigned int) diff_msecs);
-  
+
   g_my_info ("%s", status_string);
   g_free(status_string);
 }
@@ -242,7 +268,7 @@ static void finalize_callback(gpointer data, GObject *obj)
 {
   --canvas_obj_count;
 }
-/* increase reference to object and optionally register a callback to check 
+/* increase reference to object and optionally register a callback to check
  * for reference leaks */
 static void addref_canvas_obj(GObject *obj)
 {
@@ -257,34 +283,50 @@ static void addref_canvas_obj(GObject *obj)
     }
 }
 
-/* sets anti-aliasing */
-void set_aa(void)
-{
-  GnomeCanvas *gc = GNOME_CANVAS (glade_xml_get_widget (appdata.xml, "canvas1"));
-  if (gc)
-    gc->aa = TRUE;
-}
-
 /* It updates controls from values of variables, and connects control
  * signals to callback functions */
-void
-init_diagram (GladeXML *xml)
+void init_diagram(GladeXML *xml)
 {
-  GtkWidget *canvas;
   GtkWidget *viewport;
+  GtkContainer *area;
   GtkStyle *style;
+  GooCanvasItem *rootitem;
+  GooCanvasItem *item;
+
+  g_assert(goocanvas_ == NULL);
 
   /* Creates trees */
-  canvas_nodes = g_tree_new_full ( (GCompareDataFunc)canvas_node_compare, 
+  canvas_nodes = g_tree_new_full( (GCompareDataFunc)canvas_node_compare,
                             NULL, NULL, (GDestroyNotify)canvas_node_delete);
   canvas_links = g_tree_new_full( (GCompareDataFunc)canvas_link_compare,
                             NULL, NULL, (GDestroyNotify)canvas_link_delete);
 
   initialize_pref_controls();
 
+  /* canvas */
+  goocanvas_ = GOO_CANVAS(goo_canvas_new());
+  g_assert(goocanvas_ != NULL);
+
+  g_object_set (G_OBJECT(goocanvas_),
+//                "automatic-bounds", TRUE,
+//                "bounds-from-origin", FALSE,
+//                "bounds-padding", 4.0,
+                "background-color", "black",
+//                "has-tooltip", TRUE,
+                "visibility", GOO_CANVAS_ITEM_VISIBLE,
+                NULL);
+  goo_canvas_set_bounds(goocanvas_, -280, -200, 280, 200);
+
+  gtk_widget_show(GTK_WIDGET(goocanvas_));
+
+  area = GTK_CONTAINER(glade_xml_get_widget (xml, "diagramwindow"));
+  gtk_container_add(area, GTK_WIDGET(goocanvas_));
+
+  rootitem = goo_canvas_get_root_item(goocanvas_);
+
   /* Initialize background image */
-  canvas = glade_xml_get_widget (appdata.xml, "canvas1");
-  init_canvas_background(canvas);
+  g_object_set(G_OBJECT(goocanvas_), "background-color", "black", NULL);
+  init_canvas_background(rootitem);
 
   /* Make legend background color match main display background color */
   style = gtk_style_new();
@@ -292,25 +334,29 @@ init_diagram (GladeXML *xml)
   style->base[GTK_STATE_NORMAL] = canvas_background.color;
 
   /* Set protocol legend background to black */
-  viewport = glade_xml_get_widget (appdata.xml, "legend_viewport");
+  viewport = glade_xml_get_widget(appdata.xml, "legend_viewport");
   gtk_widget_set_style(viewport, style);
   gtk_style_set_background(style, gtk_widget_get_window(viewport), GTK_STATE_NORMAL);
 
   /* Create pcap stats text */
-  pcap_stats_text_group = gnome_canvas_root(GNOME_CANVAS(canvas));
-  pcap_stats_text_group = GNOME_CANVAS_GROUP(gnome_canvas_item_new(pcap_stats_text_group,
-                                                                   GNOME_TYPE_CANVAS_GROUP,
-                                                                   "x", 0.0,
-                                                                   "y", 0.0,
-                                                                   NULL));
+/*  item = goo_canvas_group_new(,
+                                               "x", 0.0,
+                                               "y", 0.0,
+                                               NULL);
+  pcap_stats_text_group = GOO_CANVAS_GROUP(item);
   addref_canvas_obj(G_OBJECT(pcap_stats_text_group));
-
-  pcap_stats_text_item = gnome_canvas_item_new(pcap_stats_text_group,
-                                               GNOME_TYPE_CANVAS_TEXT, NULL);
+  pcap_stats_text_item = goo_canvas_text_new(pcap_stats_text_group,
+*/
+  item = goo_canvas_text_new(rootitem,
+                             "",
+                             0, 0, -1,
+                             GTK_ANCHOR_NW,
+                             NULL);
+  pcap_stats_text_item = GOO_CANVAS_TEXT(item);
   addref_canvas_obj(G_OBJECT(pcap_stats_text_item));
 
   g_signal_connect(G_OBJECT(pcap_stats_text_item), "event",
-                   (GtkSignalFunc)pcap_stats_text_item_event, NULL);
+                   G_CALLBACK(pcap_stats_text_item_event), NULL);
 
   /* Initialize the known_protocols table */
   delete_gui_protocols ();
@@ -323,49 +369,41 @@ init_diagram (GladeXML *xml)
 /*
  * Initialize the canvas_background structure.
  * Create a new group and add it to the root group.
- * Create a new GnomeCanvasPixbufItem and add it to the new group.
+ * Create a new GooCanvasPixbufItem and add it to the new group.
  */
-static void init_canvas_background(GtkWidget *canvas)
+static void init_canvas_background(GooCanvasItem *rootitem)
 {
-  GnomeCanvasGroup *group;
-  GtkAllocation allocation;
-  GtkStyle *style;
-
-  group = gnome_canvas_root(GNOME_CANVAS(canvas));
-  canvas_background.group = GNOME_CANVAS_GROUP(gnome_canvas_item_new(group,
-                                                                     GNOME_TYPE_CANVAS_GROUP,
-                                                                     "x", 0.0, "y", 0.0,
-                                                                     NULL));
-  addref_canvas_obj(G_OBJECT(group));
-
-  canvas_background.image.item = gnome_canvas_item_new(canvas_background.group,
-                                                       gnome_canvas_pixbuf_get_type(),
-                                                       "anchor", GTK_ANCHOR_NW,
-                                                       NULL);
+//  GtkAllocation allocation;
+/*
+  canvas_background.group = goo_canvas_group_new(rootitem,
+                                                 "x", 0.0, 
+                                                 "y", 0.0,
+                                                 NULL);
+  addref_canvas_obj(G_OBJECT(canvas_background.group));
+  canvas_background.image.item = 
+                            goo_canvas_image_new(canvas_background.group,
+                                                 "anchor", GTK_ANCHOR_NW,
+                                                 NULL);
+*/
+  canvas_background.image.item = 
+                            goo_canvas_image_new(rootitem,
+                                                 NULL,
+                                                 0, 0,
+                                                 NULL);
   addref_canvas_obj(G_OBJECT(canvas_background.image.item));
 
   canvas_background.use_image = pref.bck_image_enabled;
   canvas_background.image.path = g_strdup(pref.bck_image_path);
-
-  gdk_color_parse("black", &canvas_background.color);
-  gdk_colormap_alloc_color(gdk_colormap_get_system(), &canvas_background.color, TRUE, TRUE);
-
-  style = gtk_style_new();
-  style->bg[GTK_STATE_NORMAL] = canvas_background.color;
-  style->base[GTK_STATE_NORMAL] = canvas_background.color;
-
-  gtk_widget_set_style(canvas, style);
-  gtk_style_set_background(style, gtk_widget_get_window(canvas), GTK_STATE_NORMAL);
 
   /**
    * Have to set the scrolling region to the real allocated size of the canvas
    * If not the image won't scale well in the redraw_canvas_background
    * function until the on_canvas1_size_allocate callback is called
    */
-  gtk_widget_get_allocation(canvas, &allocation);
-  gnome_canvas_set_scroll_region(GNOME_CANVAS(canvas),
-                                 -(allocation.width)/2, -(allocation.height)/2,
-                                 (allocation.width)/2, (allocation.height)/2);
+//  gtk_widget_get_allocation(canvas, &allocation);
+//  gnome_canvas_set_scroll_region(canvas,
+//                                 -(allocation.width)/2, -(allocation.height)/2,
+//                                 (allocation.width)/2, (allocation.height)/2);
 }
 
 /*
@@ -374,14 +412,14 @@ static void init_canvas_background(GtkWidget *canvas)
  * On success image is scaled to the canvas size and printed.
  * On error a blank black image is made and printed.
  */
-void redraw_canvas_background(GtkWidget *canvas)
+static void redraw_canvas_background(GooCanvas *canvas)
 {
   GError* error = NULL;
   GtkAllocation canvas_size;
 
   if (canvas_background.use_image) {
     /* Get canvas dimensions */
-    gtk_widget_get_allocation(canvas, &canvas_size);
+    gtk_widget_get_allocation(GTK_WIDGET(canvas), &canvas_size);
 
     if (canvas_background.image.image) {
       g_object_unref(G_OBJECT(canvas_background.image.image));
@@ -393,15 +431,16 @@ void redraw_canvas_background(GtkWidget *canvas)
                                                                         canvas_size.width, canvas_size.height,
                                                                         FALSE, &error);
 
-    gnome_canvas_item_set(canvas_background.image.item,
-                          "pixbuf", canvas_background.image.image,
-                          "x", (double)-canvas_size.width/2,
-                          "y", (double)-canvas_size.height/2,
-                          NULL);
-
-    gnome_canvas_item_show(canvas_background.image.item);
+    g_object_set(G_OBJECT(canvas_background.image.item),
+                 "pixbuf", canvas_background.image.image,
+                 "x", (double)-canvas_size.width/2,
+                 "y", (double)-canvas_size.height/2,
+                 "visibility", GOO_CANVAS_ITEM_VISIBLE,
+                 NULL);
   } else {
-    gnome_canvas_item_hide(canvas_background.image.item);
+    g_object_set(G_OBJECT(canvas_background.image.item),
+                 "visibility", GOO_CANVAS_ITEM_HIDDEN,
+                 NULL);
   }
 }
 
@@ -409,7 +448,7 @@ void redraw_canvas_background(GtkWidget *canvas)
  * Update the background image.  Load new image if user selected another path
  * in preferences.  Place the background image behind the nodes and links.
  */
-static void diagram_update_background_image(GtkWidget *canvas)
+static void diagram_update_background_image(GooCanvas *canvas)
 {
   /*
    * If the background image enable toggle or the image path has changed, we
@@ -424,49 +463,34 @@ static void diagram_update_background_image(GtkWidget *canvas)
   }
 
   /* Draw the background first */
-  gnome_canvas_item_lower_to_bottom(GNOME_CANVAS_ITEM(canvas_background.group));
-  gnome_canvas_item_request_update(canvas_background.image.item);
-}
-
-void destroying_timeout(gpointer data)
-{
-  diagram_timeout = g_idle_add_full(G_PRIORITY_DEFAULT,
-				     update_diagram,
-				     data, 
-				     destroying_idle);
-  is_idle = TRUE;
-}
-
-void destroying_idle(gpointer data)
-{
-  diagram_timeout = g_timeout_add_full (G_PRIORITY_DEFAULT,
-					pref.refresh_period,
-					update_diagram,
-					data,
-					destroying_timeout);
-  is_idle = FALSE;
+  if (canvas_background.image.item) {
+    goo_canvas_item_lower(GOO_CANVAS_ITEM(canvas_background.image.item), NULL);
+    goo_canvas_item_request_update(GOO_CANVAS_ITEM(canvas_background.image.item));
+  }
 }
 
 /* delete the specified canvas node */
-static void 
-canvas_node_delete(canvas_node_t *canvas_node)
+static void canvas_node_delete(canvas_node_t *canvas_node)
 {
   if (canvas_node->node_item)
     {
-      gtk_object_destroy (GTK_OBJECT (canvas_node->node_item));
-      g_object_unref (G_OBJECT (canvas_node->node_item));
+      goo_canvas_item_remove(canvas_node->node_item);
+//      gtk_object_destroy(GTK_OBJECT(canvas_node->node_item));
+//      g_object_unref(G_OBJECT (canvas_node->node_item));
       canvas_node->node_item = NULL;
     }
   if (canvas_node->text_item)
     {
-      gtk_object_destroy (GTK_OBJECT (canvas_node->text_item));
-      g_object_unref (G_OBJECT (canvas_node->text_item));
+      goo_canvas_item_remove(canvas_node->text_item);
+//      gtk_object_destroy(GTK_OBJECT (canvas_node->text_item));
+//      g_object_unref(G_OBJECT (canvas_node->text_item));
       canvas_node->text_item = NULL;
     }
   if (canvas_node->group_item)
     {
-      gtk_object_destroy (GTK_OBJECT (canvas_node->group_item));
-      g_object_unref (G_OBJECT (canvas_node->group_item));
+      goo_canvas_item_remove(GOO_CANVAS_ITEM(canvas_node->group_item));
+//      gtk_object_destroy(GTK_OBJECT (canvas_node->group_item));
+//      g_object_unref(G_OBJECT (canvas_node->group_item));
       canvas_node->group_item = NULL;
     }
 
@@ -474,21 +498,18 @@ canvas_node_delete(canvas_node_t *canvas_node)
 }
 
 /* used to remove nodes */
-static void 
-gfunc_remove_canvas_node(gpointer data, gpointer user_data)
+static void gfunc_remove_canvas_node(gpointer data, gpointer user_data)
 {
-  g_tree_remove (canvas_nodes, (const node_id_t *)data);
+  g_tree_remove(canvas_nodes, (const node_id_t *)data);
 }
 
 /* used to remove links */
-static void 
-gfunc_remove_canvas_link(gpointer data, gpointer user_data)
+static void gfunc_remove_canvas_link(gpointer data, gpointer user_data)
 {
-  g_tree_remove (canvas_links, (const link_id_t *)data);
+  g_tree_remove(canvas_links, (const link_id_t *)data);
 }
 
-static void
-diagram_update_nodes(GtkWidget * canvas)
+static void diagram_update_nodes(GooCanvas *canvas)
 {
   GList *delete_list = NULL;
   node_t *new_node = NULL;
@@ -502,7 +523,7 @@ diagram_update_nodes(GtkWidget * canvas)
 
   /* Check if there are any new nodes */
   while ((new_node = new_nodes_pop()))
-    check_new_node (new_node, canvas);
+    check_new_node(new_node, canvas);
 
   /* Update nodes look and queue outdated canvas_nodes for deletion */
   g_tree_foreach(canvas_nodes,
@@ -544,8 +565,7 @@ diagram_update_nodes(GtkWidget * canvas)
     }
 }
 
-static void
-diagram_update_links(GtkWidget * canvas)
+static void diagram_update_links(GooCanvas *canvas)
 {
   GList *delete_list = NULL;
 
@@ -555,7 +575,7 @@ diagram_update_links(GtkWidget * canvas)
   /* Check if there are any new links */
   links_catalog_foreach((GTraverseFunc) check_new_link, canvas);
 
-  /* Update links look 
+  /* Update links look
    * We also queue timedout links for deletion */
   delete_list = NULL;
   g_tree_foreach(canvas_links,
@@ -585,7 +605,7 @@ static gchar *get_pcap_stats_string(void)
 }
 
 /* Update libpcap stats counters display */
-static void update_pcap_stats_text(GtkWidget *canvas)
+static void update_pcap_stats_text(GooCanvas *canvas)
 {
   gdouble xmin, xmax, ymin, ymax, xpos, ypos;
   GtkAnchorType anchor;
@@ -593,16 +613,16 @@ static void update_pcap_stats_text(GtkWidget *canvas)
 
   if (pref.pcap_stats_pos == STATSPOS_NONE)
     {
-      gnome_canvas_item_hide(pcap_stats_text_item);
+      g_object_set(G_OBJECT(pcap_stats_text_item),
+                   "visibility", GOO_CANVAS_ITEM_HIDDEN,
+                   NULL);
       return;
     }
-  else
-    gnome_canvas_item_show(pcap_stats_text_item);
 
   if (get_capture_status() != PLAY)
     return;
 
-  gnome_canvas_get_scroll_region(GNOME_CANVAS(canvas), &xmin, &ymin, &xmax, &ymax);
+  goo_canvas_get_bounds(canvas, &xmin, &ymin, &xmax, &ymax);
 
   switch (pref.pcap_stats_pos)
     {
@@ -636,12 +656,13 @@ static void update_pcap_stats_text(GtkWidget *canvas)
     }
 
   tmpstr = get_pcap_stats_string();
-  gnome_canvas_item_set(pcap_stats_text_item,
+  g_object_set(G_OBJECT(pcap_stats_text_item),
                         "text", tmpstr,
                         "x", xpos, "y", ypos,
                         "font", pref.fontname,
                         "fill_color", pref.text_color,
                         "anchor", anchor,
+                        "visibility", GOO_CANVAS_ITEM_VISIBLE,
                         NULL);
   g_free(tmpstr);
 }
@@ -651,11 +672,9 @@ static void update_pcap_stats_text(GtkWidget *canvas)
  * 2. Updates nodes looks
  * 3. Updates links looks
  */
-gboolean update_diagram(gpointer data)
+static gboolean update_diagram(GooCanvas *canvas)
 {
   static struct timeval last_refresh_time = { 0, 0 };
-  GtkWidget *canvas = (GtkWidget *)data;
-  double diffms;
   capstatus_t status;
 
   /* if requested and enabled, dump to xml */
@@ -663,9 +682,9 @@ gboolean update_diagram(gpointer data)
     {
       g_warning (_("SIGUSR1 received: exporting to %s"), appdata.export_file_signal);
       dump_xml(appdata.export_file_signal);
-      appdata.request_dump = FALSE; 
+      appdata.request_dump = FALSE;
     }
-  
+
   status = get_capture_status();
   if (status == PAUSE)
     return FALSE;
@@ -675,8 +694,8 @@ gboolean update_diagram(gpointer data)
       gui_eof_capture ();
       return FALSE;
     }
-  
-  /* 
+
+  /*
    * It could happen that during an intensive calculation, in order
    * to update the GUI and make the application responsive gtk_main_iteration
    * is called. But that could also trigger this very function's timeout.
@@ -701,7 +720,7 @@ gboolean update_diagram(gpointer data)
 
   /* update background image */
   diagram_update_background_image(canvas);
-  
+
   /* Update protocol information */
   protocol_summary_update_all();
 
@@ -724,30 +743,17 @@ gboolean update_diagram(gpointer data)
     gtk_main_iteration ();
 
   gettimeofday(&appdata.gui_now, NULL);
-  diffms = subtract_times_ms(&appdata.gui_now, &last_refresh_time);
   last_refresh_time = appdata.gui_now;
 
   already_updating = FALSE;
 
-  if (!is_idle)
-    {
-      if (diffms > pref.refresh_period * 1.2)
-        return FALSE;		/* Removes the timeout */
-    }
-  else
-    {
-      if (diffms < pref.refresh_period)
-        return FALSE;		/* removes the idle */
-    }
-
   if (stop_requested)
     gui_stop_capture();
-  
+
   return TRUE;			/* Keep on calling this function */
 }				/* update_diagram */
 
-static void
-purge_expired_legend_protocol(GtkWidget *widget, gpointer data)
+static void purge_expired_legend_protocol(GtkWidget *widget, gpointer data)
 {
   GtkLabel *lab = GTK_LABEL(widget);
   if (lab &&
@@ -760,8 +766,7 @@ purge_expired_legend_protocol(GtkWidget *widget, gpointer data)
 }
 
 /* updates the legend */
-static void
-update_legend()
+static void update_legend()
 {
   GtkWidget *prot_table;
 
@@ -770,7 +775,7 @@ update_legend()
   if (!prot_table)
     return;
 
-  gtk_container_foreach(GTK_CONTAINER(prot_table), 
+  gtk_container_foreach(GTK_CONTAINER(prot_table),
                         (GtkCallback)purge_expired_legend_protocol, NULL);
 
   /* then search for new protocols */
@@ -778,7 +783,7 @@ update_legend()
 }
 
 
-/* Checks whether there is already a legend entry for each known 
+/* Checks whether there is already a legend entry for each known
  * protocol. If not, create it */
 static void
 check_new_protocol (GtkWidget *prot_table, const protostack_t *pstk)
@@ -802,7 +807,7 @@ check_new_protocol (GtkWidget *prot_table, const protostack_t *pstk)
       protocol = protocol_item->data;
 
       /* prepare next */
-      protocol_item = protocol_item->next; 
+      protocol_item = protocol_item->next;
 
       /* First, we check whether the diagram already knows about this protocol,
        * checking whether it is shown on the legend. */
@@ -814,15 +819,15 @@ check_new_protocol (GtkWidget *prot_table, const protostack_t *pstk)
             break; /* found */
           cur = cur->next;
         }
-      
+
       if (cur)
           continue; /* found, skip to next */
 
-      g_my_debug ("Protocol '%s' not found. Creating legend item", 
+      g_my_debug ("Protocol '%s' not found. Creating legend item",
                   protocol->name);
-    
+
       /* It's not, so we build a new entry on the legend */
-    
+
       /* we add the new label widgets */
       newlab = gtk_label_new (protocol->name);
       gtk_widget_show (newlab);
@@ -846,8 +851,7 @@ check_new_protocol (GtkWidget *prot_table, const protostack_t *pstk)
 }				/* check_new_protocol */
 
 /* empties the table of protocols */
-void
-delete_gui_protocols (void)
+void delete_gui_protocols(void)
 {
   GList *item;
   GtkContainer *prot_table;
@@ -873,67 +877,72 @@ delete_gui_protocols (void)
 
 /* Checks if there is a canvas_node per each node. If not, one canvas_node
  * must be created and initiated */
-static gint
-check_new_node (node_t * node, GtkWidget * canvas)
+static gint check_new_node(node_t * node, GooCanvas *canvas)
 {
   canvas_node_t *new_canvas_node;
-  GnomeCanvasGroup *group;
+  gulong sig_id; 
 
   if (!node)
     return FALSE;
 
-  if (display_node (node) && !g_tree_lookup (canvas_nodes, &node->node_id))
+  if (display_node(node) && !g_tree_lookup(canvas_nodes, &node->node_id))
     {
+      GooCanvasItem *rootgroup;
+      GooCanvasItem *newgroup;
+      
       new_canvas_node = g_malloc (sizeof (canvas_node_t));
       g_assert(new_canvas_node);
-      
+
       new_canvas_node->canvas_node_id = node->node_id;
 
       /* Create a new group to hold the node and its labels */
-      group = gnome_canvas_root (GNOME_CANVAS (canvas));
-      group = GNOME_CANVAS_GROUP (gnome_canvas_item_new (group,
-							 GNOME_TYPE_CANVAS_GROUP,
-							 "x", 100.0, 
-                                                         "y", 100.0, NULL));
-      addref_canvas_obj(G_OBJECT (group));
-      new_canvas_node->group_item = group;
+      rootgroup = goo_canvas_get_root_item(canvas);
+      newgroup = goo_canvas_group_new(rootgroup,
+                                      "x", 100.0,
+                                      "y", 100.0, 
+                                      NULL);
+      addref_canvas_obj(G_OBJECT(newgroup));
+      new_canvas_node->group_item = GOO_CANVAS_GROUP(newgroup);
 
-      new_canvas_node->node_item
-	= gnome_canvas_item_new (group,
-				 GNOME_TYPE_CANVAS_ELLIPSE,
-				 "x1", 0.0,
-				 "x2", 0.0,
-				 "y1", 0.0,
-				 "y2", 0.0,
-				 "fill_color", "white",
-				 "outline_color", "black",
-				 "width_pixels", 0, NULL);
-      addref_canvas_obj(G_OBJECT (new_canvas_node->node_item));
+      /* create circle and text, initially hidden until proper repositioned */
+      new_canvas_node->node_item = goo_canvas_ellipse_new(newgroup,
+				                 0.0,
+				                 0.0,
+				                 0.0,
+				                 0.0,
+				                 "fill-color", "white",
+				                 "stroke-color", "black",
+				                 "line-width", 0,
+                                 "visibility", GOO_CANVAS_ITEM_INVISIBLE,
+                                 NULL);
+      addref_canvas_obj(G_OBJECT(new_canvas_node->node_item));
 
-      new_canvas_node->text_item =
-	gnome_canvas_item_new (group, GNOME_TYPE_CANVAS_TEXT,
-			       "text", node->name->str,
-			       "x", 0.0,
-			       "y", 0.0,
-			       "anchor", GTK_ANCHOR_CENTER,
+      new_canvas_node->text_item = goo_canvas_text_new(newgroup,
+			       node->name->str,
+			       0.0,
+			       0.0,
+                   -1,
+			       GTK_ANCHOR_CENTER,
 			       "font", pref.fontname,
-			       "fill_color", pref.text_color, NULL);
-      addref_canvas_obj(G_OBJECT (new_canvas_node->text_item));
+			       "fill-color", pref.text_color,
+                   "visibility", GOO_CANVAS_ITEM_INVISIBLE,
+                    NULL);
+      addref_canvas_obj(G_OBJECT(new_canvas_node->text_item));
 
-      gnome_canvas_item_raise_to_top (GNOME_CANVAS_ITEM
-				      (new_canvas_node->text_item));
-      g_signal_connect (G_OBJECT (new_canvas_node->group_item), "event",
-			G_CALLBACK(node_item_event), new_canvas_node);
+      goo_canvas_item_raise(new_canvas_node->text_item, NULL);
+      sig_id = g_signal_connect(G_OBJECT(new_canvas_node->text_item),
+                                "button-release-event",
+                                G_CALLBACK(node_item_event),
+                                new_canvas_node);
+      g_assert(sig_id > 0);
+      sig_id = g_signal_connect(G_OBJECT(new_canvas_node->node_item),
+                                "button-release-event",
+		  	                    G_CALLBACK(node_item_event), 
+                                new_canvas_node);
+      g_assert(sig_id > 0);
 
       if (!new_canvas_node->node_item || !new_canvas_node->text_item)
         g_log(G_LOG_DOMAIN, G_LOG_LEVEL_DEBUG, _("Canvas node null"));
-      
-      /*
-       * We hide them until we are sure that they will get a proper position
-       * in reposition_nodes
-       */
-      gnome_canvas_item_hide (new_canvas_node->node_item);
-      gnome_canvas_item_hide (new_canvas_node->text_item);
 
       new_canvas_node->is_new = TRUE;
       new_canvas_node->shown = TRUE;
@@ -953,9 +962,8 @@ check_new_node (node_t * node, GtkWidget * canvas)
 
 
 /* - updates sizes, names, etc */
-static gint
-canvas_node_update(node_id_t * node_id, canvas_node_t * canvas_node,
-		     GList **delete_list)
+static gint canvas_node_update(node_id_t *node_id, canvas_node_t *canvas_node,
+		                       GList **delete_list)
 {
   node_t *node;
   gdouble node_size;
@@ -979,78 +987,78 @@ canvas_node_update(node_id_t * node_id, canvas_node_t * canvas_node,
   switch (pref.node_size_variable)
     {
     case INST_TOTAL:
-      node_size = get_node_size (node->node_stats.stats.average);
+      node_size = get_node_size(node->node_stats.stats.average);
       break;
     case INST_INBOUND:
-      node_size = get_node_size (node->node_stats.stats_in.average);
+      node_size = get_node_size(node->node_stats.stats_in.average);
       break;
     case INST_OUTBOUND:
-      node_size = get_node_size (node->node_stats.stats_out.average);
+      node_size = get_node_size(node->node_stats.stats_out.average);
       break;
     case INST_PACKETS:
-      node_size = get_node_size (node->node_stats.pkt_list.length);
+      node_size = get_node_size(node->node_stats.pkt_list.length);
       break;
     case ACCU_TOTAL:
-      node_size = get_node_size (node->node_stats.stats.accumulated);
+      node_size = get_node_size(node->node_stats.stats.accumulated);
       break;
     case ACCU_INBOUND:
-      node_size = get_node_size (node->node_stats.stats_in.accumulated);
+      node_size = get_node_size(node->node_stats.stats_in.accumulated);
       break;
     case ACCU_OUTBOUND:
-      node_size = get_node_size (node->node_stats.stats_out.accumulated);
+      node_size = get_node_size(node->node_stats.stats_out.accumulated);
       break;
     case ACCU_PACKETS:
-      node_size = get_node_size (node->node_stats.stats.accu_packets);
+      node_size = get_node_size(node->node_stats.stats.accu_packets);
       break;
     case ACCU_AVG_SIZE:
-      node_size = get_node_size (node->node_stats.stats.avg_size);
+      node_size = get_node_size(node->node_stats.stats.avg_size);
       break;
     default:
-      node_size = get_node_size (node->node_stats.stats_out.average);
+      node_size = get_node_size(node->node_stats.stats_out.average);
       g_warning (_("Unknown value or node_size_variable"));
     }
 
   /* limit the maximum size to avoid overload */
   if (node_size > MAX_NODE_SIZE)
-    node_size = MAX_NODE_SIZE; 
+    node_size = MAX_NODE_SIZE;
 
   if (node->main_prot[pref.stack_level])
     {
-      canvas_node->color = protohash_color(node->main_prot[pref.stack_level]);
+      canvas_node->rgbcolor = protohash_rgbcolor(node->main_prot[pref.stack_level]);
 
-      gnome_canvas_item_set (canvas_node->node_item,
-			     "x1", -node_size / 2,
-			     "x2", node_size / 2,
-			     "y1", -node_size / 2,
-			     "y2", node_size / 2,
-			     "fill_color_gdk", &(canvas_node->color), NULL);
+      g_object_set(G_OBJECT(canvas_node->node_item),
+                   "radius-x", node_size / 2,
+                   "radius-y", node_size / 2,
+                   "fill-color-rgba", canvas_node->rgbcolor,
+                   "visibility", GOO_CANVAS_ITEM_VISIBLE,
+                   NULL);
+      goo_canvas_item_show(canvas_node->text_item);
     }
   else
     {
       guint32 black = 0x000000ff;
-      gnome_canvas_item_set (canvas_node->node_item,
-			     "x1", -node_size / 2,
-			     "x2", node_size / 2,
-			     "y1", -node_size / 2,
-			     "y2", node_size / 2,
-			     "fill_color_rgba", black, NULL);
+      g_object_set(G_OBJECT(canvas_node->node_item),
+                   "radius-x", node_size / 2,
+                   "radius-y", node_size / 2,
+                   "fill_color_rgba", black, 
+                   "visibility", GOO_CANVAS_ITEM_VISIBLE,
+                   NULL);
     }
 
   /* We check the name of the node, and update the canvas node name
    * if it has changed (useful for non blocking dns resolving) */
-  /*TODO why is it exactly that sometimes it is NULL? */
   if (canvas_node->text_item)
     {
-      g_object_get (G_OBJECT (canvas_node->text_item), 
-                    "text", &nametmp,
-		    NULL);
-      if (strcmp (nametmp, node->name->str))
-	{
-	  gnome_canvas_item_set (canvas_node->text_item,
-				 "text", node->name->str, 
-                                 NULL);
-	  gnome_canvas_item_request_update (canvas_node->text_item);
-	}
+      g_object_get(G_OBJECT(canvas_node->text_item),
+                   "text", &nametmp,
+		           NULL);
+      if (strcmp(nametmp, node->name->str))
+	    {
+          g_object_set(G_OBJECT(canvas_node->text_item),
+                       "text", node->name->str,
+                       NULL);
+	      goo_canvas_item_request_update(canvas_node->text_item);
+	    }
       g_free (nametmp);
     }
 
@@ -1061,7 +1069,7 @@ canvas_node_update(node_id_t * node_id, canvas_node_t * canvas_node,
     {
       /* Force redraw */
       while (gtk_events_pending ())
-	gtk_main_iteration ();
+        gtk_main_iteration ();
       start = end;
     }
   return FALSE;			/* False means keep on calling the function */
@@ -1071,8 +1079,7 @@ canvas_node_update(node_id_t * node_id, canvas_node_t * canvas_node,
 
 /* Returns whether the node in question should be displayed in the
  * diagram or not */
-static gboolean
-display_node (node_t * node)
+static gboolean display_node(node_t *node)
 {
   double diffms;
 
@@ -1086,7 +1093,7 @@ display_node (node_t * node)
 
   /* Remove canvas_node if node is too old */
   if (diffms >= pref.gui_node_timeout_time
-      && pref.gui_node_timeout_time 
+      && pref.gui_node_timeout_time
       && !node->node_stats.pkt_list.length)
     return FALSE;
 
@@ -1100,8 +1107,7 @@ display_node (node_t * node)
 
 /* Sorts canvas nodes with the criterium set in preferences and sets
  * which will be displayed in the diagram */
-static void
-limit_nodes (void)
+static void limit_nodes(void)
 {
   static GTree *ordered_nodes = NULL;
   static guint limit;
@@ -1125,9 +1131,8 @@ limit_nodes (void)
   ordered_nodes = NULL;
 }				/* limit_nodes */
 
-static gint
-add_ordered_node (node_id_t * node_id, canvas_node_t * node,
-		  GTree * ordered_nodes)
+static gint add_ordered_node(node_id_t *node_id, canvas_node_t *node,
+                             GTree * ordered_nodes)
 {
   g_tree_insert (ordered_nodes, node, node);
   g_my_debug ("Adding ordered node. Number of nodes: %d",
@@ -1135,8 +1140,7 @@ add_ordered_node (node_id_t * node_id, canvas_node_t * node,
   return FALSE;			/* keep on traversing */
 }				/* add_ordered_node */
 
-static gint
-check_ordered_node (gdouble * traffic, canvas_node_t * node, guint * count)
+static gint check_ordered_node(gdouble *traffic, canvas_node_t *node, guint *count)
 {
   /* TODO We can probably optimize this by stopping the traversion once
    * the limit has been reached */
@@ -1159,8 +1163,7 @@ check_ordered_node (gdouble * traffic, canvas_node_t * node, guint * count)
 
 /* Comparison function used to order the (GTree *) nodes
  * and canvas_nodes heard on the network */
-static gint
-traffic_compare (gconstpointer a, gconstpointer b)
+static gint traffic_compare(gconstpointer a, gconstpointer b)
 {
   node_t *node_a, *node_b;
 
@@ -1184,7 +1187,7 @@ traffic_compare (gconstpointer a, gconstpointer b)
 
 /* initialize reposition struct */
 static void init_reposition(reposition_node_t *data,
-                            GtkWidget * canvas,
+                            GooCanvas *canvas,
                             guint total_nodes)
 {
   gdouble text_compensation = 50;
@@ -1204,9 +1207,9 @@ static void init_reposition(reposition_node_t *data,
     data->column_populations = g_malloc0(appdata.column_patterns->len + 1 *
                                            sizeof(*data->column_populations));
 
-  gnome_canvas_get_scroll_region(GNOME_CANVAS (canvas),
-                                 &data->xmin, &data->ymin,
-                                 &data->xmax, &data->ymax);
+  goo_canvas_get_bounds(canvas,
+                        &data->xmin, &data->ymin,
+                        &data->xmax, &data->ymax);
 
 
   data->xmin += text_compensation;
@@ -1296,7 +1299,7 @@ static gdouble scale_within(gdouble min, gdouble max, guint pos, guint num)
  * is set. It rearranges the nodes*/
 /* TODO I think I should update all links as well, so as not having
  * stale graphics if the diagram has been resized */
-static gint reposition_canvas_nodes(node_id_t * node_id, 
+static gint reposition_canvas_nodes(node_id_t * node_id,
                                     canvas_node_t * canvas_node,
                                     reposition_node_t *data)
 {
@@ -1306,8 +1309,8 @@ static gint reposition_canvas_nodes(node_id_t * node_id,
 
   if (!canvas_node->shown)
     {
-      gnome_canvas_item_hide (canvas_node->node_item);
-      gnome_canvas_item_hide (canvas_node->text_item);
+      goo_canvas_item_hide(canvas_node->node_item);
+      goo_canvas_item_hide(canvas_node->text_item);
       return FALSE;
     }
 
@@ -1393,32 +1396,34 @@ static gint reposition_canvas_nodes(node_id_t * node_id,
 
   if (!appdata.stationary_layout || canvas_node->is_new)
     {
-      gnome_canvas_item_set(GNOME_CANVAS_ITEM (canvas_node->group_item),
-			     "x", x, "y", y, NULL);
+      g_object_set( G_OBJECT(canvas_node->group_item),
+                    "x", x,
+                    "y", y,
+                    NULL);
       canvas_node->is_new = FALSE;
     }
 
   if (need_font_refresh)
     {
-      /* We update the text font */
-      gnome_canvas_item_set (canvas_node->text_item, 
-                             "font", pref.fontname, 
-                             "fill_color", pref.text_color, 
-                             NULL);
+      /* update text font */
+      g_object_set( G_OBJECT(canvas_node->text_item),
+                    "font", pref.fontname,
+                    "fill_color", pref.text_color,
+                    NULL);
     }
-  
+
   if (pref.diagram_only)
     {
-      gnome_canvas_item_hide (canvas_node->text_item);
+      goo_canvas_item_hide(canvas_node->text_item);
     }
   else
     {
-      gnome_canvas_item_show (canvas_node->text_item);
-      gnome_canvas_item_request_update (canvas_node->text_item);
+      goo_canvas_item_show(canvas_node->text_item);
+      goo_canvas_item_request_update(canvas_node->text_item);
     }
 
-  gnome_canvas_item_show (canvas_node->node_item);
-  gnome_canvas_item_request_update (canvas_node->node_item);
+  goo_canvas_item_show(canvas_node->node_item);
+  goo_canvas_item_request_update(canvas_node->node_item);
 
   ring->node_i--;
 
@@ -1436,52 +1441,63 @@ static gint reposition_canvas_nodes(node_id_t * node_id,
 
 /* Goes through all known links and checks whether there already exists
  * a corresponding canvas_link. If not, create it.*/
-static gint
-check_new_link (link_id_t * link_id, link_t * link, GtkWidget * canvas)
+static gint check_new_link(link_id_t * link_id, link_t * link, GooCanvas *canvas)
 {
   canvas_link_t *new_canvas_link;
-  GnomeCanvasGroup *group;
-  GnomeCanvasPoints *points;
-  guint i = 0;
+  gulong sig_id;
+  GooCanvasItem *rootgroup;
 
   if (!g_tree_lookup (canvas_links, link_id))
     {
-      group = gnome_canvas_root (GNOME_CANVAS (canvas));
+      rootgroup = goo_canvas_get_root_item(canvas);
 
       new_canvas_link = g_malloc (sizeof (canvas_link_t));
       g_assert(new_canvas_link);
       new_canvas_link->canvas_link_id = *link_id;
 
-      /* We set the lines position using groups positions */
-      points = gnome_canvas_points_new (3);
+      /* set the lines position using groups positions */
+      new_canvas_link->src_item =
+            goo_canvas_polyline_new(rootgroup, TRUE, 2,
+                                    0,0,
+                                    1,1,
+                                    "fill-color", "tan",
+                                    NULL);
+      g_object_ref(G_OBJECT (new_canvas_link->src_item));
 
-      for (; i <= 5; i++)
-	points->coords[i] = 0.0;
+      new_canvas_link->dst_item =
+            goo_canvas_polyline_new(rootgroup, TRUE, 2,
+                                    0,0,
+                                    1,1,
+                                    "fill-color", "tan",
+                                    NULL);
+      g_object_ref(G_OBJECT (new_canvas_link->dst_item));
 
-      new_canvas_link->src_item
-	= gnome_canvas_item_new (group,
-				 gnome_canvas_polygon_get_type (),
-				 "points", points, "fill_color", "tan", NULL);
-      addref_canvas_obj(G_OBJECT (new_canvas_link->src_item));
-
-      new_canvas_link->dst_item
-	= gnome_canvas_item_new (group,
-				 gnome_canvas_polygon_get_type (),
-				 "points", points, "fill_color", "tan", NULL);
-      addref_canvas_obj(G_OBJECT (new_canvas_link->dst_item));
 
       g_tree_insert (canvas_links,
 		     &new_canvas_link->canvas_link_id, new_canvas_link);
-      gnome_canvas_item_lower_to_bottom (new_canvas_link->src_item);
-      gnome_canvas_item_lower_to_bottom (new_canvas_link->dst_item);
+      goo_canvas_item_lower(new_canvas_link->src_item, NULL);
+      goo_canvas_item_lower(new_canvas_link->dst_item, NULL);
 
-      gnome_canvas_points_unref (points);
+      sig_id = g_signal_connect(G_OBJECT(new_canvas_link->src_item), 
+                                "button-release-event",
+                                G_CALLBACK(link_item_event),
+                                new_canvas_link);
+      g_assert(sig_id > 0);
+      sig_id = g_signal_connect(G_OBJECT(new_canvas_link->dst_item), 
+                                "button-release-event",
+			                    G_CALLBACK(link_item_event),
+                                new_canvas_link);
 
-      g_signal_connect (G_OBJECT (new_canvas_link->src_item), "event",
-			G_CALLBACK(link_item_event), new_canvas_link);
-      g_signal_connect (G_OBJECT (new_canvas_link->dst_item), "event",
-			G_CALLBACK(link_item_event), new_canvas_link);
-
+      sig_id = g_signal_connect(G_OBJECT(new_canvas_link->src_item),
+                                "enter-notify-event",
+                                G_CALLBACK(link_item_event),
+                                new_canvas_link);
+      g_assert(sig_id > 0);
+      sig_id = g_signal_connect(G_OBJECT(new_canvas_link->src_item),
+                                "leave-notify-event",
+                                G_CALLBACK(link_item_event),
+                                new_canvas_link);
+      g_assert(sig_id > 0);
     }
 
   return FALSE;
@@ -1491,9 +1507,8 @@ check_new_link (link_id_t * link_id, link_t * link, GtkWidget * canvas)
 /* - calls update_links, so that the related link updates its average
  *   traffic and main protocol, and old links are deleted
  * - caculates link size and color fading */
-static gint
-canvas_link_update(link_id_t * link_id, canvas_link_t * canvas_link,
-		     GList **delete_list)
+static gint canvas_link_update(link_id_t * link_id, canvas_link_t * canvas_link,
+                               GList **delete_list)
 {
   const link_t *link;
   const canvas_node_t *canvas_dst;
@@ -1501,7 +1516,7 @@ canvas_link_update(link_id_t * link_id, canvas_link_t * canvas_link,
   guint32 scaledColor;
   double xs, ys, xd, yd, scale;
 
-  /* We used to run update_link here, but that was a major performance penalty, 
+  /* We used to run update_link here, but that was a major performance penalty,
    * and now it is done in update_diagram */
   link = links_catalog_find(link_id);
   if (!link)
@@ -1512,14 +1527,14 @@ canvas_link_update(link_id_t * link_id, canvas_link_t * canvas_link,
     }
 
   /* If either source or destination has disappeared, we hide the link
-   * until it can be show again */
+       * until it can be show again */
 
   /* We get coords for the destination node */
   canvas_dst = g_tree_lookup (canvas_nodes, &link_id->dst);
   if (!canvas_dst || !canvas_dst->shown)
     {
-      gnome_canvas_item_hide (canvas_link->src_item);
-      gnome_canvas_item_hide (canvas_link->dst_item);
+      goo_canvas_item_hide(canvas_link->src_item);
+      goo_canvas_item_hide(canvas_link->dst_item);
       return FALSE;
     }
 
@@ -1527,8 +1542,8 @@ canvas_link_update(link_id_t * link_id, canvas_link_t * canvas_link,
   canvas_src = g_tree_lookup (canvas_nodes, &link_id->src);
   if (!canvas_src || !canvas_src->shown)
     {
-      gnome_canvas_item_hide (canvas_link->src_item);
-      gnome_canvas_item_hide (canvas_link->dst_item);
+      goo_canvas_item_hide(canvas_link->src_item);
+      goo_canvas_item_hide(canvas_link->dst_item);
       return FALSE;
     }
 
@@ -1555,35 +1570,35 @@ canvas_link_update(link_id_t * link_id, canvas_link_t * canvas_link,
     }
 
   /* retrieve coordinates of node centers */
-  g_object_get (G_OBJECT (canvas_src->group_item), "x", &xs, "y", &ys, NULL);
-  g_object_get (G_OBJECT (canvas_dst->group_item), "x", &xd, "y", &yd, NULL);
+  g_object_get(G_OBJECT(canvas_src->group_item), "x", &xs, "y", &ys, NULL);
+  g_object_get(G_OBJECT(canvas_dst->group_item), "x", &xd, "y", &yd, NULL);
 
   /* first draw triangle for src->dst */
-  draw_oneside_link(xs, ys, xd, yd, &(link->link_stats.stats_out), scaledColor, 
+  draw_oneside_link(xs, ys, xd, yd, &(link->link_stats.stats_out), scaledColor,
                     canvas_link->src_item);
 
   /* then draw triangle for dst->src */
-  draw_oneside_link(xd, yd, xs, ys, &(link->link_stats.stats_in), scaledColor, 
+  draw_oneside_link(xd, yd, xs, ys, &(link->link_stats.stats_in), scaledColor,
                     canvas_link->dst_item);
 
   return FALSE;
 
 }				/* update_canvas_links */
 
-/* given the src and dst node centers, plus a size, draws a triangle in the 
+/* given the src and dst node centers, plus a size, draws a triangle in the
  * specified color on the provided canvas item*/
 static void draw_oneside_link(double xs, double ys, double xd, double yd,
-                              const basic_stats_t *link_stats, 
-                              guint32 scaledColor, GnomeCanvasItem *item)
+                              const basic_stats_t *link_stats,
+                              guint32 scaledColor, GooCanvasItem *item)
 {
-  GnomeCanvasPoints *points;
+  GooCanvasPoints *points;
   gdouble versorx, versory, modulus, link_size;
 
   link_size = get_link_size(link_stats) / 2;
 
   /* limit the maximum size to avoid overload */
   if (link_size > MAX_LINK_SIZE)
-    link_size = MAX_LINK_SIZE; 
+    link_size = MAX_LINK_SIZE;
 
   versorx = -(yd - ys);
   versory = xd - xs;
@@ -1594,7 +1609,7 @@ static void draw_oneside_link(double xs, double ys, double xd, double yd,
       modulus = 1;
     }
 
-  points = gnome_canvas_points_new (3);
+  points = goo_canvas_points_new(3);
   points->coords[0] = xd;
   points->coords[1] = yd;
   points->coords[2] = xs + versorx * link_size / modulus;
@@ -1602,20 +1617,21 @@ static void draw_oneside_link(double xs, double ys, double xd, double yd,
   points->coords[4] = xs - versorx * link_size / modulus;
   points->coords[5] = ys - versory * link_size / modulus;
 
-  gnome_canvas_item_set (item, 
-                          "points", points,
-                          "fill_color_rgba", scaledColor, NULL);
-
   /* If we got this far, the link can be shown. Make sure it is */
-  gnome_canvas_item_show (item);
-  gnome_canvas_points_unref (points);
+  g_object_set(G_OBJECT(item),
+               "points", points,
+               "fill-color-rgba", scaledColor,
+               "stroke-color-rgba", scaledColor,
+               "visibility", GOO_CANVAS_ITEM_VISIBLE,
+               NULL);
+
+  goo_canvas_points_unref(points);
 }
 
 
 
 /* Returs the radius in pixels given average traffic and size mode */
-static gdouble
-get_node_size (gdouble average)
+static gdouble get_node_size (gdouble average)
 {
   gdouble result = 0.0;
   switch (pref.size_mode)
@@ -1681,68 +1697,76 @@ static gdouble get_link_size (const basic_stats_t *link_stats)
 
 
 
-/* Called for every event a link receives. Right now it's used to 
- * set a message in the statusbar */
-static gint
-link_item_event (GnomeCanvasItem * item, GdkEvent * event,
-		 canvas_link_t * canvas_link)
+/* Called for every event a link receives. Right now it's used to
+ * set a message in the statusbar and launch the popup */
+static gboolean link_item_event(GooCanvasItem *item,
+                                GooCanvasItem *target_item,
+                                GdkEventButton *event,
+                                canvas_link_t * canvas_link)
 {
   gchar *str;
   const link_t *link=NULL;
 
   switch (event->type)
-    {
+  {
+    case GDK_BUTTON_PRESS:
+    case GDK_BUTTON_RELEASE:
     case GDK_2BUTTON_PRESS:
+    case GDK_3BUTTON_PRESS:
       if (canvas_link)
-        link_info_window_create( &canvas_link->canvas_link_id );
+        link_info_window_create(&canvas_link->canvas_link_id);
       break;
 
     case GDK_ENTER_NOTIFY:
       if (canvas_link)
         link = links_catalog_find(&canvas_link->canvas_link_id);
       if (link && link->main_prot[pref.stack_level])
-	str = g_strdup_printf (_("Link main protocol: %s"),
-			   link->main_prot[pref.stack_level]);
+        str = g_strdup_printf(_("Link main protocol: %s"),
+                              link->main_prot[pref.stack_level]);
       else
-	str = g_strdup_printf (_("Link main protocol unknown"));
+        str = g_strdup_printf(_("Link main protocol: unknown"));
       gtk_statusbar_push(appdata.statusbar, 1, str);
-      g_free (str);
+      g_free(str);
       break;
     case GDK_LEAVE_NOTIFY:
       gtk_statusbar_pop(appdata.statusbar, 1);
       break;
     default:
       break;
-    }
+  }
 
   return FALSE;
 }				/* link_item_event */
 
 
-/* Called for every event a node receives. Right now it's used to 
- * set a message in the statusbar and launch the popup timeout */
-static gint
-node_item_event (GnomeCanvasItem * item, GdkEvent * event,
-		 canvas_node_t * canvas_node)
+/* Called for every event a node receives. Right now it's used to
+ * launch the popup */
+static gint node_item_event(GooCanvasItem *item,
+                            GooCanvasItem *target_item,
+                            GdkEventButton *event,
+		                    canvas_node_t * canvas_node)
 {
 
-  gdouble item_x, item_y;
+//  gdouble item_x, item_y;
   const node_t *node = NULL;
 
   /* This is not used yet, but it will be. */
-  item_x = event->button.x;
+/*  item_x = event->button.x;
   item_y = event->button.y;
   gnome_canvas_item_w2i (item->parent, &item_x, &item_y);
-
+*/
   switch (event->type)
     {
 
-    case GDK_2BUTTON_PRESS:
-      if (canvas_node)
-        node = nodes_catalog_find(&canvas_node->canvas_node_id);
+      case GDK_BUTTON_PRESS:
+      case GDK_BUTTON_RELEASE:
+      case GDK_2BUTTON_PRESS:
+      case GDK_3BUTTON_PRESS:
+        if (canvas_node)
+          node = nodes_catalog_find(&canvas_node->canvas_node_id);
       if (node)
         {
-          node_protocols_window_create( &canvas_node->canvas_node_id );
+          node_protocols_window_create(&canvas_node->canvas_node_id);
           g_my_info ("Nodes: %d (shown %u)", nodes_catalog_size(),
                      displayed_nodes);
           if (DEBUG_ENABLED)
@@ -1762,7 +1786,7 @@ node_item_event (GnomeCanvasItem * item, GdkEvent * event,
 }				/* node_item_event */
 
 /* Explain pcap stats in status bar when moused over */
-static gint pcap_stats_text_item_event(GnomeCanvasItem *item, GdkEvent *event,
+static gint pcap_stats_text_item_event(GooCanvasItem *item, GdkEvent *event,
                                        void *unused)
 {
   switch (event->type)
@@ -1786,7 +1810,7 @@ static gint pcap_stats_text_item_event(GnomeCanvasItem *item, GdkEvent *event,
 
 /* Pushes a string into the statusbar stack */
 void
-set_statusbar_msg (gchar * str)
+set_statusbar_msg(gchar * str)
 {
   static gchar *status_string = NULL;
 
@@ -1816,33 +1840,47 @@ static gint canvas_link_compare(const link_id_t *a, const link_id_t *b,
   return link_id_compare(a, b);
 }
 
-static void 
-canvas_link_delete(canvas_link_t *canvas_link)
+static void canvas_link_delete(canvas_link_t *canvas_link)
 {
    /* Right now I'm not very sure in which cases there could be a canvas_link but not a link_item, but
    * I had a not in update_canvas_nodes that if the test is not done it can lead to corruption */
   if (canvas_link->src_item)
     {
-      gtk_object_destroy (GTK_OBJECT (canvas_link->src_item));
-      g_object_unref (G_OBJECT (canvas_link->src_item));
+      goo_canvas_item_remove(canvas_link->src_item);
       canvas_link->src_item = NULL;
     }
   if (canvas_link->dst_item)
     {
-      gtk_object_destroy (GTK_OBJECT (canvas_link->dst_item));
-      g_object_unref (G_OBJECT (canvas_link->dst_item));
+      goo_canvas_item_remove(canvas_link->dst_item);
       canvas_link->dst_item = NULL;
     }
 
   g_free (canvas_link);
 }
 
-void timeout_changed(void)
+/* diagram timeout was changed. Remove old timer and register new */
+void diagram_timeout_changed(void)
 {
-  /* When removing the source (which could either be an idle or a timeout
-   * function, I'm also forcing the callback for the corresponding 
-   * destroying function, which in turn will install a timeout or idle
-   * function using the new refresh_period. It might take a while for it
-   * to settle down, but I think it works now */
-  g_source_remove (diagram_timeout);
+  g_source_remove(diagram_timeout);
+  diagram_timeout = g_timeout_add(pref.refresh_period,
+					                        update_diagram_callback,
+					                        NULL);
+}
+
+void resize_diagram(const GtkAllocation *allocation)
+{
+  goo_canvas_set_bounds(goocanvas_,
+                        -allocation->width / 2,
+                        -allocation->height / 2,
+                        allocation->width / 2,
+                        allocation->height / 2);
+  ask_reposition(FALSE);
+  redraw_canvas_background(goocanvas_);
+  update_diagram(goocanvas_);
+}
+
+gboolean update_diagram_callback(gpointer data)
+{
+   update_diagram(goocanvas_);
+   return TRUE;
 }

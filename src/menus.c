@@ -1,11 +1,11 @@
 /* EtherApe
  * Copyright (C) 2001 Juan Toledo, Riccardo Ghetta
- * 
+ *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
  * (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -348,7 +348,7 @@ void on_about1_activate(GtkMenuItem * menuitem, gpointer user_data)
 
   gtk_about_dialog_set_version(GTK_ABOUT_DIALOG(about), VERSION);
 #ifdef PACKAGE_SCM_REV
-  msg = g_strdup_printf("HG revision: %s", 
+  msg = g_strdup_printf("HG revision: %s",
                         (*PACKAGE_SCM_REV) ? PACKAGE_SCM_REV : _("-unknown-"));
   gtk_about_dialog_set_comments(GTK_ABOUT_DIALOG(about), msg);
   g_free(msg);
@@ -536,10 +536,8 @@ void gui_eof_capture(void)
 
 
 /* Sets up the GUI to reflect changes and calls stop_capture() */
-gboolean
-gui_stop_capture (void)
+gboolean gui_stop_capture (void)
 {
-  GtkWidget *widget;
   GString *status_string = NULL;
   gchar *err;
 
@@ -573,8 +571,8 @@ gui_stop_capture (void)
   /* Delete and free protocol information */
   delete_gui_protocols ();
 
-  widget = glade_xml_get_widget (appdata.xml, "canvas1");
-  update_diagram (widget);
+  /* final diagram update */
+  update_diagram_callback(NULL);
 
   /* Sets the statusbar */
   status_string = g_string_new (_("Ready to capture from "));
@@ -629,4 +627,3 @@ void set_active_interface()
   widget = glade_xml_get_widget(appdata.xml, "interfaces_menu");
   gtk_container_foreach(GTK_CONTAINER(widget), setmenus, (gpointer)NULL);
 }
-

@@ -29,7 +29,6 @@
 #include <glib/gi18n.h>
 #include <popt.h>
 #include <gtk/gtk.h>
-#include <libgnomecanvas/libgnomecanvas.h>
 #include "appdata.h"
 #include "names/ip-cache.h"
 #include "main.h"
@@ -60,7 +59,7 @@ static void (*old_sighup_handler) (int);
  **************************************************************************/
 static void free_static_data(void);
 static void set_debug_level (void);
-static void log_handler (gchar * log_domain, GLogLevelFlags mask, 
+static void log_handler (gchar * log_domain, GLogLevelFlags mask,
                          const gchar * message, gpointer user_data);
 static GPtrArray *parse_position_file(const gchar *path);
 
@@ -235,7 +234,7 @@ int main (int argc, char *argv[])
     }
   else
       g_message("Invalid minimum delay %ld, ignored", midelay);
-  
+
   if (madelay >= 0 && madelay <= G_MAXLONG)
     {
       if (madelay < appdata.min_delay)
@@ -257,6 +256,7 @@ int main (int argc, char *argv[])
   /* Glade */
   glade_init ();
   glade_require("gnome");
+  glade_require("goocanvas");
   if (!appdata_init_glade(cl_glade_file))
     return 1;
 
@@ -297,16 +297,11 @@ int main (int argc, char *argv[])
 
   install_handlers();
 
-  /* With this we force an update of the diagram every x ms 
+  /* With this we force an update of the diagram every x ms
    * Data in the diagram is updated, and then the canvas redraws itself when
    * the gtk loop is idle. If the CPU can't handle the set refresh_period,
    * then it will just do a best effort */
-
-  widget = glade_xml_get_widget (appdata.xml, "canvas1");
-  destroying_idle (widget);
-
-  /* Enable anti-aliasing */
-  GNOME_CANVAS(widget)->aa = TRUE;
+  diagram_timeout_changed();
 
   /* This other timeout makes sure that the info windows are updated */
   g_timeout_add(500, update_info_windows, NULL);
@@ -421,7 +416,7 @@ static GPtrArray *parse_position_file(const gchar *path)
   return colpos;
 }
 
-/* releases all static and cached data. Called just before exiting. Obviously 
+/* releases all static and cached data. Called just before exiting. Obviously
  * it's not stricly needed, since the memory will be returned to the OS anyway,
  * but makes finding memory leaks much easier. */
 static void free_static_data(void)
@@ -456,7 +451,7 @@ set_debug_level (void)
   // unfortunately it can be controlled only by environment vars ...
   // Silly change!
   g_setenv("G_MESSAGES_DEBUG", "all", TRUE);
-        
+
   if (quiet)
     appdata.debug_mask = 0;
 
@@ -481,7 +476,7 @@ log_handler (gchar * log_domain,
 /* installs signal handlers */
 static void install_handlers(void)
 {
-  /* 
+  /*
    * Signal handling
    * Catch SIGINT and SIGTERM and, if we get either of them, clean up
    * and exit.
