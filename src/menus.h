@@ -25,7 +25,7 @@
 void on_open_activate (GtkMenuItem * menuitem, gpointer user_data);
 void on_export_activate (GtkMenuItem * menuitem, gpointer user_data);
 void on_interface_radio_activate (gchar * gui_device);
-void on_mode_radio_activate (GtkMenuItem * menuitem, gpointer user_data);
+void on_mode_radio_activate (GtkRadioMenuItem * menuitem, gpointer user_data);
 void on_start_menuitem_activate (GtkMenuItem * menuitem, gpointer user_data);
 void on_stop_menuitem_activate (GtkMenuItem * menuitem, gpointer user_data);
 void on_pause_menuitem_activate (GtkMenuItem * menuitem, gpointer user_data);

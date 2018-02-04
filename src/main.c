@@ -309,7 +309,7 @@ int main (int argc, char *argv[])
   GNOME_CANVAS(widget)->aa = TRUE;
 
   /* This other timeout makes sure that the info windows are updated */
-  g_timeout_add (500, (GtkFunction) update_info_windows, NULL);
+  g_timeout_add(500, update_info_windows, NULL);
 
   if (pref.name_res && dns_open())
     g_warning(_("DNS resolver initialization failed"));

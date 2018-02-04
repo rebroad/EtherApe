@@ -606,8 +606,8 @@ on_protocols_check_activate (GtkCheckMenuItem * menuitem, gpointer user_data)
     return;
   if (gtk_check_menu_item_get_active (menuitem))
     {
-      gtk_widget_show (protocols_window);
-      gdk_window_raise (protocols_window->window);
+      gtk_widget_show(protocols_window);
+      gdk_window_raise(gtk_widget_get_window(protocols_window));
       update_protocols_window ();
     }
   else
@@ -678,8 +678,7 @@ node_info_window_compare(gconstpointer a, gconstpointer b)
   return node_id_compare( id_a, b);
 }
 
-guint
-update_info_windows (void)
+gboolean update_info_windows(gpointer dummy)
 {
   capstatus_t status;
 
@@ -692,9 +691,8 @@ update_info_windows (void)
   update_prot_info_windows ();
   nodes_wnd_update();
 
-  return TRUE;			/* Keep on calling this function */
-
-}				/* update_info_windows */
+  return G_SOURCE_CONTINUE;	/* Keep on calling this function */
+}
 
 /* It's called when a node info window is closed by the user 
  * It has to free memory and delete the window from the list

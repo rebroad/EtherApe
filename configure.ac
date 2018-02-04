@@ -5,7 +5,7 @@ AC_PREREQ(2.53)
 AC_INIT([etherape],[0.9.17])
 AC_CONFIG_SRCDIR([config.h.in])
 AC_CONFIG_MACRO_DIR([m4])
-AM_CONFIG_HEADER([config.h])
+AC_CONFIG_HEADER([config.h])
 AM_INIT_AUTOMAKE([-Wall foreign])
 
 # defines

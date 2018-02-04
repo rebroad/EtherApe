@@ -34,10 +34,9 @@
 
 static gboolean in_start_capture = FALSE;
 
-static void set_active_interface (void);
+static void set_active_interface(void);
 
-void
-init_menus (void)
+void init_menus(void)
 {
   GtkWidget *widget = NULL, *item = NULL;
   GList *interfaces;
@@ -78,7 +77,7 @@ init_menus (void)
       gtk_menu_shell_append(GTK_MENU_SHELL(widget), item);
       gtk_widget_show(item);
       g_signal_connect_swapped(G_OBJECT(item), "activate",
-                               GTK_SIGNAL_FUNC(on_interface_radio_activate),
+                               G_CALLBACK(on_interface_radio_activate),
                                (gpointer) g_strdup(iface->data));
       g_string_append(info_string, " ");
       g_string_append(info_string, (gchar *) (iface->data));
@@ -94,8 +93,7 @@ init_menus (void)
 
 /* FILE MENU */
 
-void
-on_open_activate (GtkMenuItem * menuitem, gpointer user_data)
+void on_open_activate(GtkMenuItem * menuitem, gpointer user_data)
 {
   GtkWidget *dialog;
 
@@ -111,7 +109,7 @@ on_open_activate (GtkMenuItem * menuitem, gpointer user_data)
   if (appdata.source.type == ST_FILE && appdata.source.file)
     gtk_file_chooser_set_filename(GTK_FILE_CHOOSER(dialog), appdata.source.file);
 
-  if (gtk_dialog_run (GTK_DIALOG (dialog)) == GTK_RESPONSE_ACCEPT)
+  if (gtk_dialog_run (GTK_DIALOG(dialog)) == GTK_RESPONSE_ACCEPT)
     {
       GtkRecentManager *manager;
       manager = gtk_recent_manager_get_default ();
@@ -128,8 +126,7 @@ on_open_activate (GtkMenuItem * menuitem, gpointer user_data)
     gtk_widget_destroy (dialog);
 }
 
-void
-on_export_activate (GtkMenuItem * menuitem, gpointer user_data)
+void on_export_activate (GtkMenuItem * menuitem, gpointer user_data)
 {
   GtkWidget *dialog;
 
@@ -162,8 +159,7 @@ on_export_activate (GtkMenuItem * menuitem, gpointer user_data)
 
 /* Capture menu */
 
-void
-on_interface_radio_activate (gchar * gui_device)
+void on_interface_radio_activate(gchar * gui_device)
 {
   g_assert (gui_device != NULL);
 
@@ -188,8 +184,7 @@ on_interface_radio_activate (gchar * gui_device)
   g_my_info (_("Capture interface set to %s in GUI"), gui_device);
 }
 
-void
-on_mode_radio_activate (GtkMenuItem * menuitem, gpointer user_data)
+void on_mode_radio_activate(GtkRadioMenuItem * menuitem, gpointer user_data)
 {
   apemode_t new_mode = APEMODE_DEFAULT;
   const gchar *menuname = NULL;
@@ -200,7 +195,7 @@ on_mode_radio_activate (GtkMenuItem * menuitem, gpointer user_data)
 				 * of interface look change from
 				 * start_capture */
 
-  menuname = gtk_widget_get_name (GTK_WIDGET (menuitem));
+  menuname = gtk_widget_get_name(GTK_WIDGET (menuitem));
   g_assert (menuname);
   g_my_debug ("Initial mode in on_mode_radio_activate %s",
 	      (gchar *) menuname);
@@ -224,8 +219,8 @@ on_mode_radio_activate (GtkMenuItem * menuitem, gpointer user_data)
    * of once. This forces me to make sure we are not trying to set
    * anything impossible */
 
-  g_my_debug ("Mode menuitem active: %d",
-	      GTK_CHECK_MENU_ITEM (menuitem)->active);
+  g_my_debug("Mode menuitem active: %d",
+	     gtk_check_menu_item_get_active(GTK_CHECK_MENU_ITEM(menuitem)));
 
   if (!has_linklevel() && new_mode == LINK6)
     return;
@@ -246,29 +241,26 @@ on_mode_radio_activate (GtkMenuItem * menuitem, gpointer user_data)
 
 }				/* on_mode_radio_activate */
 
-void
-on_start_menuitem_activate (GtkMenuItem * menuitem, gpointer user_data)
+void on_start_menuitem_activate (GtkMenuItem * menuitem, gpointer user_data)
 {
   g_my_debug ("on_start_menuitem_activate called");
   gui_start_capture ();
 }				/* on_start_menuitem_activate */
 
-void
-on_pause_menuitem_activate (GtkMenuItem * menuitem, gpointer user_data)
+void on_pause_menuitem_activate(GtkMenuItem * menuitem, gpointer user_data)
 {
   g_my_debug ("on_pause_menuitem_activate called");
   gui_pause_capture ();
 
 }				/* on_pause_menuitem_activate */
 
-void on_next_menuitem_activate (GtkMenuItem * menuitem, gpointer user_data)
+void on_next_menuitem_activate(GtkMenuItem * menuitem, gpointer user_data)
 {
   g_my_debug ("on_next_menuitem_activate called");
   force_next_packet();
 }
 
-void
-on_stop_menuitem_activate (GtkMenuItem * menuitem, gpointer user_data)
+void on_stop_menuitem_activate(GtkMenuItem * menuitem, gpointer user_data)
 {
   g_my_debug ("on_stop_menuitem_activate called");
   gui_stop_capture ();
@@ -278,10 +270,9 @@ on_stop_menuitem_activate (GtkMenuItem * menuitem, gpointer user_data)
 
 /* View menu */
 
-void
-on_full_screen_activate(GtkCheckMenuItem * menuitem, gpointer user_data)
+void on_full_screen_activate(GtkCheckMenuItem * menuitem, gpointer user_data)
 {
-  if (menuitem->active)
+  if (gtk_check_menu_item_get_active(menuitem))
     gtk_window_fullscreen((GtkWindow *)appdata.app1);
   else
     gtk_window_unfullscreen((GtkWindow *)appdata.app1);
@@ -292,11 +283,10 @@ void edit_prefs_show_toolbar(struct pref_struct *p, void *data)
   p->show_toolbar = *(gboolean*)data;
 }
 
-void
-on_toolbar_check_activate(GtkCheckMenuItem * menuitem, gpointer user_data)
+void on_toolbar_check_activate(GtkCheckMenuItem * menuitem, gpointer user_data)
 {
   GtkWidget *widget;
-  gboolean active = menuitem->active;
+  gboolean active = gtk_check_menu_item_get_active(menuitem);
 
   widget = glade_xml_get_widget(appdata.xml, "handlebox_toolbar");
   if (active)
@@ -313,11 +303,10 @@ void edit_prefs_show_legend(struct pref_struct *p, void *data)
   p->show_legend = *(gboolean*)data;
 }
 
-void
-on_legend_check_activate(GtkCheckMenuItem * menuitem, gpointer user_data)
+void on_legend_check_activate(GtkCheckMenuItem * menuitem, gpointer user_data)
 {
   GtkWidget *widget;
-  gboolean active = menuitem->active;
+  gboolean active = gtk_check_menu_item_get_active(menuitem);
 
   widget = glade_xml_get_widget(appdata.xml, "handlebox_legend");
   if (active)
@@ -334,10 +323,9 @@ void edit_prefs_show_statusbar(struct pref_struct *p, void *data)
   p->show_statusbar = *(gboolean*)data;
 }
 
-void
-on_status_bar_check_activate(GtkCheckMenuItem * menuitem, gpointer user_data)
+void on_status_bar_check_activate(GtkCheckMenuItem * menuitem, gpointer user_data)
 {
-  gboolean active = menuitem->active;
+  gboolean active = gtk_check_menu_item_get_active(menuitem);
 
   if (active)
     gtk_widget_show(GTK_WIDGET(appdata.statusbar));
@@ -353,8 +341,7 @@ on_status_bar_check_activate(GtkCheckMenuItem * menuitem, gpointer user_data)
 
 
 
-void
-on_about1_activate (GtkMenuItem * menuitem, gpointer user_data)
+void on_about1_activate(GtkMenuItem * menuitem, gpointer user_data)
 {
   GtkWidget *about;
   about = glade_xml_get_widget (appdata.xml, "about1");
@@ -370,8 +357,7 @@ on_about1_activate (GtkMenuItem * menuitem, gpointer user_data)
 }				/* on_about1_activate */
 
 
-void
-on_help_activate (GtkMenuItem * menuitem, gpointer user_data)
+void on_help_activate(GtkMenuItem * menuitem, gpointer user_data)
 {
   GError *err = NULL;
 
@@ -408,8 +394,7 @@ static void set_ctrl_enablestate(guint32 flags)
 }
 
 /* Sets up the GUI to reflect changes and calls start_capture() */
-void
-gui_start_capture (void)
+void gui_start_capture (void)
 {
   GtkWidget *widget;
   gchar *errorbuf = NULL;
@@ -514,7 +499,7 @@ gui_pause_capture (void)
    * Make sure the data in the info windows is updated
    * so that it is consistent
    */
-  update_info_windows ();
+  update_info_windows(NULL);
 
   err = pause_capture();
   if (err)
@@ -609,8 +594,7 @@ gui_stop_capture (void)
   return TRUE;
 }				/* gui_stop_capture */
 
-void
-fatal_error_dialog (const gchar * message)
+void fatal_error_dialog(const gchar * message)
 {
   GtkWidget *error_messagebox;
 
@@ -620,37 +604,29 @@ fatal_error_dialog (const gchar * message)
   gtk_dialog_run (GTK_DIALOG (error_messagebox));
   gtk_widget_destroy (error_messagebox);
 
-}				/* fatal_error_dialog */
+}
 
-void
-set_active_interface ()
+void setmenus(GtkWidget *widget, gpointer data)
 {
-  GtkWidget *widget;
-  GList *menu_items = NULL;
-  gchar *label;
+  const gchar *label;
 
-
-  widget = glade_xml_get_widget (appdata.xml, "interfaces_menu");
-
-  menu_items = GTK_MENU_SHELL (widget)->children;
-
-  while (menu_items)
+  if (appdata.source.type == ST_FILE)
     {
-      widget = (GtkWidget *) (menu_items->data);
-
-      if (appdata.source.type == ST_FILE)
-        {
-          gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(widget), TRUE);
-          return;
-        }
-
-      label = GTK_LABEL (GTK_BIN (widget)->child)->label;
-
-      if (appdata.source.type == ST_LIVE && !strcmp(label, appdata.source.interface))
-        gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(widget), TRUE);
-
-      menu_items = menu_items->next;
+      gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(widget), TRUE);
+      return;
     }
 
-}				/* set_active_interface */
+  label = gtk_label_get_text(GTK_LABEL(gtk_bin_get_child(GTK_BIN(widget))));
+
+  if (appdata.source.type == ST_LIVE && !strcmp(label, appdata.source.interface))
+    gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM(widget), TRUE);
+}
+
+void set_active_interface()
+{
+  GtkWidget *widget;
+
+  widget = glade_xml_get_widget(appdata.xml, "interfaces_menu");
+  gtk_container_foreach(GTK_CONTAINER(widget), setmenus, (gpointer)NULL);
+}
 

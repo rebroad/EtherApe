@@ -58,11 +58,11 @@ void nodes_wnd_show(void)
       g_free(nodemsg);
     }
   
-  if (!nodes_wnd || GTK_WIDGET_VISIBLE (nodes_wnd))
+  if (!nodes_wnd || gtk_widget_get_visible(nodes_wnd))
     return;
 
-  gtk_widget_show (nodes_wnd);
-  gdk_window_raise (nodes_wnd->window);
+  gtk_widget_show(nodes_wnd);
+  gdk_window_raise(gtk_widget_get_window(nodes_wnd));
   if (nodes_check && !gtk_check_menu_item_get_active(nodes_check))
     gtk_check_menu_item_set_active(nodes_check, TRUE);
   nodes_wnd_update();
@@ -70,7 +70,7 @@ void nodes_wnd_show(void)
 
 void nodes_wnd_hide(void)
 {
-  if (!nodes_wnd || !GTK_WIDGET_VISIBLE (nodes_wnd))
+  if (!nodes_wnd || !gtk_widget_get_visible(nodes_wnd))
     return;
 
   gtk_widget_hide (nodes_wnd);
@@ -81,7 +81,7 @@ void nodes_wnd_hide(void)
 
 void nodes_wnd_update(void)
 {
-  if (!nodes_wnd || !GTK_WIDGET_VISIBLE (nodes_wnd))
+  if (!nodes_wnd || !gtk_widget_get_visible(nodes_wnd))
     return;
 
   nodes_table_update(nodes_wnd);

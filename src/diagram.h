@@ -23,7 +23,7 @@
 extern gboolean already_updating; /* True while an instance of update_diagram is running */
 extern gboolean stop_requested; /* True if there is a pending stop request */
 
-guint update_diagram (GtkWidget * canvas);
+gboolean update_diagram(gpointer data);
 void init_diagram (GladeXML *xml);
 void destroying_timeout (gpointer data);
 void destroying_idle (gpointer data);
@@ -32,6 +32,7 @@ void delete_gui_protocols (void);
 void ask_reposition(gboolean refresh_font); /* request diagram relayout */
 void dump_stats(guint32 diff_msecs);
 void timeout_changed(void);
+void set_aa(void);
 void redraw_canvas_background(GtkWidget *canvas); /* Called by on_canvas1_size_allocate */
 
 #endif /* DIAGRAM_H */

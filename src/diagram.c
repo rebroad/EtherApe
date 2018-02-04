@@ -75,7 +75,6 @@ static gint canvas_node_update(node_id_t  * ether_addr,
 				 canvas_node_t * canvas_node,
 				 GList ** delete_list);
 
-
 /***************************************************************************
  *
  * canvas_link_t definition and methods
@@ -258,6 +257,14 @@ static void addref_canvas_obj(GObject *obj)
     }
 }
 
+/* sets anti-aliasing */
+void set_aa(void)
+{
+  GnomeCanvas *gc = GNOME_CANVAS (glade_xml_get_widget (appdata.xml, "canvas1"));
+  if (gc)
+    gc->aa = TRUE;
+}
+
 /* It updates controls from values of variables, and connects control
  * signals to callback functions */
 void
@@ -280,14 +287,14 @@ init_diagram (GladeXML *xml)
   init_canvas_background(canvas);
 
   /* Make legend background color match main display background color */
-  style = gtk_style_new ();
+  style = gtk_style_new();
   style->bg[GTK_STATE_NORMAL] = canvas_background.color;
   style->base[GTK_STATE_NORMAL] = canvas_background.color;
 
   /* Set protocol legend background to black */
   viewport = glade_xml_get_widget (appdata.xml, "legend_viewport");
-  gtk_widget_set_style (viewport, style);
-  gtk_style_set_background (viewport->style, viewport->window, GTK_STATE_NORMAL);
+  gtk_widget_set_style(viewport, style);
+  gtk_style_set_background(style, gtk_widget_get_window(viewport), GTK_STATE_NORMAL);
 
   /* Create pcap stats text */
   pcap_stats_text_group = gnome_canvas_root(GNOME_CANVAS(canvas));
@@ -321,6 +328,7 @@ init_diagram (GladeXML *xml)
 static void init_canvas_background(GtkWidget *canvas)
 {
   GnomeCanvasGroup *group;
+  GtkAllocation allocation;
   GtkStyle *style;
 
   group = gnome_canvas_root(GNOME_CANVAS(canvas));
@@ -347,16 +355,17 @@ static void init_canvas_background(GtkWidget *canvas)
   style->base[GTK_STATE_NORMAL] = canvas_background.color;
 
   gtk_widget_set_style(canvas, style);
-  gtk_style_set_background(canvas->style, canvas->window, GTK_STATE_NORMAL);
+  gtk_style_set_background(style, gtk_widget_get_window(canvas), GTK_STATE_NORMAL);
 
   /**
    * Have to set the scrolling region to the real allocated size of the canvas
    * If not the image won't scale well in the redraw_canvas_background
    * function until the on_canvas1_size_allocate callback is called
    */
+  gtk_widget_get_allocation(canvas, &allocation);
   gnome_canvas_set_scroll_region(GNOME_CANVAS(canvas),
-                                 -(canvas->allocation.width)/2, -(canvas->allocation.height)/2,
-                                 (canvas->allocation.width)/2, (canvas->allocation.height)/2);
+                                 -(allocation.width)/2, -(allocation.height)/2,
+                                 (allocation.width)/2, (allocation.height)/2);
 }
 
 /*
@@ -372,8 +381,7 @@ void redraw_canvas_background(GtkWidget *canvas)
 
   if (canvas_background.use_image) {
     /* Get canvas dimensions */
-    canvas_size.width = canvas->allocation.width;
-    canvas_size.height = canvas->allocation.height;
+    gtk_widget_get_allocation(canvas, &canvas_size);
 
     if (canvas_background.image.image) {
       g_object_unref(G_OBJECT(canvas_background.image.image));
@@ -420,23 +428,22 @@ static void diagram_update_background_image(GtkWidget *canvas)
   gnome_canvas_item_request_update(canvas_background.image.item);
 }
 
-void
-destroying_timeout (gpointer data)
+void destroying_timeout(gpointer data)
 {
-  diagram_timeout = g_idle_add_full (G_PRIORITY_DEFAULT,
-				     (GtkFunction) update_diagram,
-				     data, (GDestroyNotify) destroying_idle);
+  diagram_timeout = g_idle_add_full(G_PRIORITY_DEFAULT,
+				     update_diagram,
+				     data, 
+				     destroying_idle);
   is_idle = TRUE;
 }
 
-void
-destroying_idle (gpointer data)
+void destroying_idle(gpointer data)
 {
   diagram_timeout = g_timeout_add_full (G_PRIORITY_DEFAULT,
 					pref.refresh_period,
-					(GtkFunction) update_diagram,
+					update_diagram,
 					data,
-					(GDestroyNotify) destroying_timeout);
+					destroying_timeout);
   is_idle = FALSE;
 }
 
@@ -644,9 +651,10 @@ static void update_pcap_stats_text(GtkWidget *canvas)
  * 2. Updates nodes looks
  * 3. Updates links looks
  */
-guint update_diagram(GtkWidget * canvas)
+gboolean update_diagram(gpointer data)
 {
   static struct timeval last_refresh_time = { 0, 0 };
+  GtkWidget *canvas = (GtkWidget *)data;
   double diffms;
   capstatus_t status;
 
@@ -701,7 +709,7 @@ guint update_diagram(GtkWidget * canvas)
   update_legend();
 
   /* Now update info windows */
-  update_info_windows ();
+  update_info_windows(NULL);
 
   update_pcap_stats_text(canvas);
 
@@ -915,7 +923,7 @@ check_new_node (node_t * node, GtkWidget * canvas)
       gnome_canvas_item_raise_to_top (GNOME_CANVAS_ITEM
 				      (new_canvas_node->text_item));
       g_signal_connect (G_OBJECT (new_canvas_node->group_item), "event",
-			(GtkSignalFunc) node_item_event, new_canvas_node);
+			G_CALLBACK(node_item_event), new_canvas_node);
 
       if (!new_canvas_node->node_item || !new_canvas_node->text_item)
         g_log(G_LOG_DOMAIN, G_LOG_LEVEL_DEBUG, _("Canvas node null"));
@@ -1470,9 +1478,9 @@ check_new_link (link_id_t * link_id, link_t * link, GtkWidget * canvas)
       gnome_canvas_points_unref (points);
 
       g_signal_connect (G_OBJECT (new_canvas_link->src_item), "event",
-			(GtkSignalFunc) link_item_event, new_canvas_link);
+			G_CALLBACK(link_item_event), new_canvas_link);
       g_signal_connect (G_OBJECT (new_canvas_link->dst_item), "event",
-			(GtkSignalFunc) link_item_event, new_canvas_link);
+			G_CALLBACK(link_item_event), new_canvas_link);
 
     }
 

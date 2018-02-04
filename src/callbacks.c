@@ -26,17 +26,16 @@
 #include "diagram.h"
 #include "preferences.h"
 
-void
-on_canvas1_size_allocate (GtkWidget * widget,
-			  GtkAllocation * allocation, gpointer user_data)
+void on_canvas1_size_allocate(GtkWidget *widget,
+			      GtkAllocation *allocation, gpointer user_data)
 {
 
   GtkWidget *canvas;
   gnome_canvas_set_scroll_region (GNOME_CANVAS (widget),
-				  -widget->allocation.width / 2,
-				  -widget->allocation.height / 2,
-				  widget->allocation.width / 2,
-				  widget->allocation.height / 2);
+				  -allocation->width / 2,
+				  -allocation->height / 2,
+				  allocation->width / 2,
+				  allocation->height / 2);
   ask_reposition(FALSE);
   canvas = glade_xml_get_widget (appdata.xml, "canvas1");
   redraw_canvas_background(canvas);

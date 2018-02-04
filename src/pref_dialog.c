@@ -20,6 +20,8 @@
 #include <config.h>
 #endif
 
+#include <gtk/gtk.h>
+
 #include "pref_dialog.h"
 #include "preferences.h"
 #include "diagram.h"
@@ -33,7 +35,7 @@
 
 static void color_list_to_pref (void);
 static void pref_to_color_list (void);
-static void on_stack_level_changed(GtkComboBox * combo, gpointer data);
+static void on_stack_level_changed(GtkWidget * combo, gpointer data);
 static void on_size_variable_changed(GtkComboBox * combo, gpointer data);
 static void on_size_mode_changed(GtkComboBox * combo, gpointer data);
 static void on_text_color_changed(GtkColorButton * wdg, gpointer data);
@@ -91,19 +93,19 @@ initialize_pref_controls(void)
 
   /* Updates controls from values of variables */
   widget = glade_xml_get_widget (appdata.xml, "node_radius_slider");
-  gtk_adjustment_set_value (GTK_RANGE (widget)->adjustment,
+  gtk_adjustment_set_value(gtk_range_get_adjustment(GTK_RANGE(widget)),
 			    log (pref.node_radius_multiplier) / log (10));
-  g_signal_emit_by_name (G_OBJECT (GTK_RANGE (widget)->adjustment),
+  g_signal_emit_by_name (G_OBJECT(gtk_range_get_adjustment(GTK_RANGE(widget))),
 			 "changed");
   widget = glade_xml_get_widget (appdata.xml, "link_width_slider");
-  gtk_adjustment_set_value (GTK_RANGE (widget)->adjustment,
+  gtk_adjustment_set_value(gtk_range_get_adjustment(GTK_RANGE(widget)),
 			    pref.link_node_ratio);
-  g_signal_emit_by_name (GTK_OBJECT (GTK_RANGE (widget)->adjustment),
+  g_signal_emit_by_name(GTK_OBJECT(gtk_range_get_adjustment(GTK_RANGE(widget))),
 			 "changed");
   widget = glade_xml_get_widget (appdata.xml, "inner_ring_scale_slider");
-  gtk_adjustment_set_value (GTK_RANGE (widget)->adjustment,
+  gtk_adjustment_set_value(gtk_range_get_adjustment(GTK_RANGE(widget)),
                             pref.inner_ring_scale);
-  g_signal_emit_by_name (GTK_OBJECT (GTK_RANGE (widget)->adjustment),
+  g_signal_emit_by_name(GTK_OBJECT(gtk_range_get_adjustment(GTK_RANGE(widget))),
 			 "changed");
   spin = GTK_SPIN_BUTTON (glade_xml_get_widget (appdata.xml, "averaging_spin"));
   gtk_spin_button_set_value (spin, pref.averaging_time);
@@ -180,95 +182,81 @@ initialize_pref_controls(void)
 
   /* Connects signals */
   widget = glade_xml_get_widget (appdata.xml, "diag_pref");
-  g_signal_connect (G_OBJECT (widget),
-		    "delete_event",
-		    GTK_SIGNAL_FUNC
-		    (on_cancel_pref_button_clicked ), NULL);
+  g_signal_connect(G_OBJECT (widget),
+		   "delete_event",
+		   G_CALLBACK(on_cancel_pref_button_clicked ), NULL);
   widget = glade_xml_get_widget (appdata.xml, "node_radius_slider");
-  g_signal_connect (G_OBJECT (GTK_RANGE (widget)->adjustment),
-		    "value_changed",
-		    GTK_SIGNAL_FUNC
-		    (on_node_radius_slider_adjustment_changed), NULL);
+  g_signal_connect(G_OBJECT(gtk_range_get_adjustment(GTK_RANGE(widget))),
+		   "value_changed",
+		   G_CALLBACK(on_node_radius_slider_adjustment_changed), NULL);
   widget = glade_xml_get_widget (appdata.xml, "link_width_slider");
-  g_signal_connect (G_OBJECT (GTK_RANGE (widget)->adjustment),
-		    "value_changed",
-		    GTK_SIGNAL_FUNC
-		    (on_link_width_slider_adjustment_changed), NULL);
+  g_signal_connect(G_OBJECT(gtk_range_get_adjustment(GTK_RANGE(widget))),
+		   "value_changed",
+		   G_CALLBACK(on_link_width_slider_adjustment_changed), NULL);
   widget = glade_xml_get_widget (appdata.xml, "inner_ring_scale_slider");
-  g_signal_connect (G_OBJECT (GTK_RANGE (widget)->adjustment),
+  g_signal_connect(G_OBJECT(gtk_range_get_adjustment(GTK_RANGE(widget))),
 		    "value_changed",
-		    GTK_SIGNAL_FUNC
-		    (on_inner_ring_scale_slider_adjustment_changed), NULL);
+		    G_CALLBACK(on_inner_ring_scale_slider_adjustment_changed), NULL);
   widget = glade_xml_get_widget (appdata.xml, "averaging_spin");
-  g_signal_connect (G_OBJECT (GTK_SPIN_BUTTON (widget)->adjustment),
+  g_signal_connect (G_OBJECT(gtk_spin_button_get_adjustment(GTK_SPIN_BUTTON(widget))),
 		    "value_changed",
-		    GTK_SIGNAL_FUNC
-		    (on_averaging_spin_adjustment_changed), NULL);
+		    G_CALLBACK(on_averaging_spin_adjustment_changed), NULL);
   widget = glade_xml_get_widget (appdata.xml, "refresh_spin");
-  g_signal_connect (G_OBJECT (GTK_SPIN_BUTTON (widget)->adjustment),
+  g_signal_connect (G_OBJECT(gtk_spin_button_get_adjustment(GTK_SPIN_BUTTON(widget))),
 		    "value_changed",
-		    GTK_SIGNAL_FUNC
-		    (on_refresh_spin_adjustment_changed),
+		    G_CALLBACK(on_refresh_spin_adjustment_changed),
 		    glade_xml_get_widget (appdata.xml, "canvas1"));
   widget = glade_xml_get_widget (appdata.xml, "node_to_spin");
-  g_signal_connect (G_OBJECT (GTK_SPIN_BUTTON (widget)->adjustment),
+  g_signal_connect (G_OBJECT(gtk_spin_button_get_adjustment(GTK_SPIN_BUTTON(widget))),
 		    "value_changed",
-		    GTK_SIGNAL_FUNC
-		    (on_node_to_spin_adjustment_changed), NULL);
+		    G_CALLBACK(on_node_to_spin_adjustment_changed), NULL);
   widget = glade_xml_get_widget (appdata.xml, "gui_node_to_spin");
-  g_signal_connect (G_OBJECT (GTK_SPIN_BUTTON (widget)->adjustment),
+  g_signal_connect (G_OBJECT(gtk_spin_button_get_adjustment(GTK_SPIN_BUTTON(widget))),
 		    "value_changed",
-		    GTK_SIGNAL_FUNC
-		    (on_gui_node_to_spin_adjustment_changed), NULL);
+		    G_CALLBACK(on_gui_node_to_spin_adjustment_changed), NULL);
   widget = glade_xml_get_widget (appdata.xml, "proto_node_to_spin");
-  g_signal_connect (G_OBJECT (GTK_SPIN_BUTTON (widget)->adjustment),
+  g_signal_connect (G_OBJECT(gtk_spin_button_get_adjustment(GTK_SPIN_BUTTON(widget))),
 		    "value_changed",
-		    GTK_SIGNAL_FUNC
-		    (on_proto_node_to_spin_adjustment_changed), NULL);
+		    G_CALLBACK(on_proto_node_to_spin_adjustment_changed), NULL);
   widget = glade_xml_get_widget (appdata.xml, "link_to_spin");
-  g_signal_connect (G_OBJECT (GTK_SPIN_BUTTON (widget)->adjustment),
+  g_signal_connect (G_OBJECT(gtk_spin_button_get_adjustment(GTK_SPIN_BUTTON(widget))),
 		    "value_changed",
-		    GTK_SIGNAL_FUNC
-		    (on_link_to_spin_adjustment_changed), NULL);
+		    G_CALLBACK(on_link_to_spin_adjustment_changed), NULL);
   widget = glade_xml_get_widget (appdata.xml, "gui_link_to_spin");
-  g_signal_connect (G_OBJECT (GTK_SPIN_BUTTON (widget)->adjustment),
+  g_signal_connect (G_OBJECT(gtk_spin_button_get_adjustment(GTK_SPIN_BUTTON(widget))),
 		    "value_changed",
-		    GTK_SIGNAL_FUNC
-		    (on_gui_link_to_spin_adjustment_changed), NULL);
+		    G_CALLBACK(on_gui_link_to_spin_adjustment_changed), NULL);
   widget = glade_xml_get_widget (appdata.xml, "proto_link_to_spin");
-  g_signal_connect (G_OBJECT (GTK_SPIN_BUTTON (widget)->adjustment),
+  g_signal_connect (G_OBJECT(gtk_spin_button_get_adjustment(GTK_SPIN_BUTTON(widget))),
 		    "value_changed",
-		    GTK_SIGNAL_FUNC
-		    (on_proto_link_to_spin_adjustment_changed), NULL);
+		    G_CALLBACK(on_proto_link_to_spin_adjustment_changed), NULL);
   widget = glade_xml_get_widget (appdata.xml, "proto_to_spin");
-  g_signal_connect (G_OBJECT (GTK_SPIN_BUTTON (widget)->adjustment),
+  g_signal_connect (G_OBJECT(gtk_spin_button_get_adjustment(GTK_SPIN_BUTTON(widget))),
 		    "value_changed",
-		    GTK_SIGNAL_FUNC
-		    (on_proto_to_spin_adjustment_changed), NULL);
+		    G_CALLBACK(on_proto_to_spin_adjustment_changed), NULL);
   widget = glade_xml_get_widget (appdata.xml, "stack_level");
   g_signal_connect (G_OBJECT (widget), 
                     "changed",
-		    GTK_SIGNAL_FUNC (on_stack_level_changed), NULL);
+		    G_CALLBACK(on_stack_level_changed), NULL);
   widget = glade_xml_get_widget (appdata.xml, "size_variable");
   g_signal_connect (G_OBJECT (widget), 
                     "changed",
-		    GTK_SIGNAL_FUNC (on_size_variable_changed), NULL);
+		    G_CALLBACK(on_size_variable_changed), NULL);
   widget = glade_xml_get_widget (appdata.xml, "size_mode");
   g_signal_connect (G_OBJECT (widget), 
                     "changed",
-		    GTK_SIGNAL_FUNC (on_size_mode_changed), NULL);
+		    G_CALLBACK(on_size_mode_changed), NULL);
   widget = glade_xml_get_widget (appdata.xml, "text_font");
   g_signal_connect (G_OBJECT (widget), 
                     "font_set",
-		    GTK_SIGNAL_FUNC (on_text_font_changed), NULL);
+		    G_CALLBACK(on_text_font_changed), NULL);
   widget = glade_xml_get_widget (appdata.xml, "text_color");
   g_signal_connect (G_OBJECT (widget), 
                     "color_set",
-		    GTK_SIGNAL_FUNC (on_text_color_changed), NULL);
+		    G_CALLBACK(on_text_color_changed), NULL);
 }
 
-void
-on_preferences1_activate (GtkMenuItem * menuitem, gpointer user_data)
+void on_preferences1_activate (GtkMenuItem * menuitem, gpointer user_data)
 {
   GtkComboBoxEntry *cbox;
 
@@ -283,94 +271,83 @@ on_preferences1_activate (GtkMenuItem * menuitem, gpointer user_data)
   cbox = GTK_COMBO_BOX_ENTRY(glade_xml_get_widget (appdata.xml, "center_combo"));
   cbox_add_select(cbox, pref.centered_nodes);
 
-  gtk_widget_show (diag_pref);
-  gdk_window_raise (diag_pref->window);
+  gtk_widget_show(diag_pref);
+  gdk_window_raise(gtk_widget_get_window(diag_pref));
 }
 
-void
-on_node_radius_slider_adjustment_changed (GtkAdjustment * adj)
+void on_node_radius_slider_adjustment_changed(GtkAdjustment * adj)
 {
-
-  pref.node_radius_multiplier = exp ((double) adj->value * log (10));
-  g_log (G_LOG_DOMAIN, G_LOG_LEVEL_DEBUG,
-	 _("Adjustment value: %g. Radius multiplier %g"),
-	 adj->value, pref.node_radius_multiplier);
-
-}
-
-void
-on_link_width_slider_adjustment_changed (GtkAdjustment * adj)
-{
-
-  pref.link_node_ratio = adj->value;
-  g_log (G_LOG_DOMAIN, G_LOG_LEVEL_DEBUG,
-	 _("Adjustment value: %g. Link-node ratio %g"),
-	 adj->value, pref.link_node_ratio);
+  double value = gtk_adjustment_get_value(adj);
+  pref.node_radius_multiplier = exp(value * log(10));
+  g_log(G_LOG_DOMAIN, G_LOG_LEVEL_DEBUG,
+	_("Adjustment value: %g. Radius multiplier %g"),
+	value, pref.node_radius_multiplier);
 
 }
 
-void
-on_inner_ring_scale_slider_adjustment_changed (GtkAdjustment * adj)
+void on_link_width_slider_adjustment_changed(GtkAdjustment * adj)
 {
-  pref.inner_ring_scale = adj->value;
-  g_log (G_LOG_DOMAIN, G_LOG_LEVEL_DEBUG,
-         _("Adjustment value: %g. Inner ring scale %g"),
-         adj->value, pref.inner_ring_scale);
+  double value = gtk_adjustment_get_value(adj);
+  pref.link_node_ratio = value;
+  g_log(G_LOG_DOMAIN, G_LOG_LEVEL_DEBUG,
+	_("Adjustment value: %g. Link-node ratio %g"),
+	value, pref.link_node_ratio);
+
+}
+
+void on_inner_ring_scale_slider_adjustment_changed(GtkAdjustment * adj)
+{
+  double value = gtk_adjustment_get_value(adj);
+  pref.inner_ring_scale = value;
+  g_log(G_LOG_DOMAIN, G_LOG_LEVEL_DEBUG,
+        _("Adjustment value: %g. Inner ring scale %g"),
+        value, pref.inner_ring_scale);
   ask_reposition(FALSE);
 }
 
-void
-on_averaging_spin_adjustment_changed (GtkAdjustment * adj)
+void on_averaging_spin_adjustment_changed (GtkAdjustment * adj)
 {
-  pref.averaging_time = adj->value;	/* Control and value in ms */
+  pref.averaging_time = gtk_adjustment_get_value(adj);	/* Control and value in ms */
 }
 
-void
-on_refresh_spin_adjustment_changed (GtkAdjustment * adj, GtkWidget * canvas)
+void on_refresh_spin_adjustment_changed (GtkAdjustment * adj, GtkWidget * canvas)
 {
-  change_refresh_period(adj->value);
+  change_refresh_period(gtk_adjustment_get_value(adj));
 }
 
-void
-on_node_to_spin_adjustment_changed (GtkAdjustment * adj)
+void on_node_to_spin_adjustment_changed (GtkAdjustment * adj)
 {
-  pref.node_timeout_time = adj->value*MILLI;	/* value in ms */
-}				/* on_node_to_spin_adjustment_changed */
-
-void
-on_gui_node_to_spin_adjustment_changed (GtkAdjustment * adj)
-{
-  pref.gui_node_timeout_time = adj->value*MILLI;	/* value in ms */
+  pref.node_timeout_time = gtk_adjustment_get_value(adj)*MILLI;	/* value in ms */
 }
 
-void
-on_proto_node_to_spin_adjustment_changed (GtkAdjustment * adj)
+void on_gui_node_to_spin_adjustment_changed (GtkAdjustment * adj)
 {
-  pref.proto_node_timeout_time = adj->value*MILLI;	/* value in ms */
+  pref.gui_node_timeout_time = gtk_adjustment_get_value(adj)*MILLI;	/* value in ms */
 }
 
-void
-on_link_to_spin_adjustment_changed (GtkAdjustment * adj)
+void on_proto_node_to_spin_adjustment_changed (GtkAdjustment * adj)
 {
-  pref.link_timeout_time = adj->value*MILLI;	/* value in ms */
+  pref.proto_node_timeout_time = gtk_adjustment_get_value(adj)*MILLI;	/* value in ms */
 }
 
-void
-on_gui_link_to_spin_adjustment_changed (GtkAdjustment * adj)
+void on_link_to_spin_adjustment_changed (GtkAdjustment * adj)
 {
-  pref.gui_link_timeout_time = adj->value*MILLI;	/* value in ms */
+  pref.link_timeout_time = gtk_adjustment_get_value(adj)*MILLI;	/* value in ms */
 }
 
-void
-on_proto_link_to_spin_adjustment_changed (GtkAdjustment * adj)
+void on_gui_link_to_spin_adjustment_changed (GtkAdjustment * adj)
 {
-  pref.proto_link_timeout_time = adj->value*MILLI;	/* value in ms */
+  pref.gui_link_timeout_time = gtk_adjustment_get_value(adj)*MILLI;	/* value in ms */
 }
 
-void
-on_proto_to_spin_adjustment_changed (GtkAdjustment * adj)
+void on_proto_link_to_spin_adjustment_changed (GtkAdjustment * adj)
 {
-  pref.proto_timeout_time = adj->value*MILLI;	/* value in ms */
+  pref.proto_link_timeout_time = gtk_adjustment_get_value(adj)*MILLI;	/* value in ms */
+}
+
+void on_proto_to_spin_adjustment_changed (GtkAdjustment * adj)
+{
+  pref.proto_timeout_time = gtk_adjustment_get_value(adj)*MILLI;	/* value in ms */
 }
 
 static void on_size_mode_changed(GtkComboBox * combo, gpointer data)
@@ -387,9 +364,9 @@ static void on_size_variable_changed(GtkComboBox * combo, gpointer data)
   pref.node_size_variable = (node_size_variable_t)gtk_combo_box_get_active (combo);
 }
 
-static void on_stack_level_changed(GtkComboBox * combo, gpointer data)
+static void on_stack_level_changed(GtkWidget * combo, gpointer data)
 {
-  pref.stack_level = gtk_combo_box_get_active (combo);
+  pref.stack_level = gtk_combo_box_get_active(GTK_COMBO_BOX(combo));
   delete_gui_protocols();
 }
 
@@ -432,8 +409,7 @@ on_group_unk_check_toggled (GtkToggleButton * togglebutton,
 /*
  * confirm changes
  */
-void
-on_ok_pref_button_clicked (GtkButton * button, gpointer user_data)
+void on_ok_pref_button_clicked (GtkWidget * button, gpointer user_data)
 {
   confirm_changes();
   hide_pref_dialog();
@@ -441,8 +417,7 @@ on_ok_pref_button_clicked (GtkButton * button, gpointer user_data)
 
 
 /* reset configuration to saved and close dialog */
-void
-on_cancel_pref_button_clicked (GtkButton * button, gpointer user_data)
+void on_cancel_pref_button_clicked (GtkWidget * button, gpointer user_data)
 {
   /* reset configuration to saved */
   copy_config(&pref, &tmp_pref);
@@ -457,8 +432,7 @@ on_cancel_pref_button_clicked (GtkButton * button, gpointer user_data)
   hide_pref_dialog();
 }				/* on_cancel_pref_button_clicked */
 
-void
-on_save_pref_button_clicked (GtkButton * button, gpointer user_data)
+void on_save_pref_button_clicked (GtkWidget * button, gpointer user_data)
 {
   confirm_changes();	/* to save we simulate confirmation */
   save_config(&pref);
@@ -469,28 +443,26 @@ on_save_pref_button_clicked (GtkButton * button, gpointer user_data)
 /* Makes a new filter */
 static void on_filter_entry_changed(GtkComboBoxEntry * cbox, gpointer user_data)
 {
-  gchar *str;
+  const gchar *str;
   /* TODO should make sure that for each mode the filter is set up
    * correctly */
-  str = gtk_combo_box_get_active_text(GTK_COMBO_BOX(cbox));
+  str = gtk_entry_get_text(GTK_ENTRY(gtk_bin_get_child(GTK_BIN(cbox))));
   if (pref.filter)
-    g_free (pref.filter);
-  pref.filter = g_strdup (str);
+    g_free(pref.filter);
+  pref.filter = g_strdup(str);
   /* TODO We should look at the error code from set_filter and pop
    * up a window accordingly */
   set_filter(pref.filter);
-  g_free (str);
   cbox_add_select(cbox, pref.filter);
 }				/* on_filter_entry_changed */
 
 /* Makes a new center node */
 static void on_center_node_changed(GtkComboBoxEntry * cbox, gpointer user_data)
 {
-  gchar *str;
-  str = gtk_combo_box_get_active_text(GTK_COMBO_BOX(cbox));
+  const gchar *str;
+  str = gtk_entry_get_text(GTK_ENTRY(gtk_bin_get_child(GTK_BIN(cbox))));
   g_free(pref.centered_nodes);
   pref.centered_nodes = g_strdup(str);
-  g_free(str);
   free_nodeset_spec_list(centered_node_speclist);
   centered_node_speclist = parse_nodeset_spec_list(pref.centered_nodes);
   cbox_add_select(cbox, pref.centered_nodes);
@@ -609,10 +581,10 @@ on_color_change_button_clicked (GtkButton * button, gpointer user_data)
 
   gtk_tree_model_get (GTK_TREE_MODEL (ep.gs), &it, 1, &gdk_color, -1);
 
-  dlg = GTK_COLOR_SELECTION_DIALOG
-          (glade_xml_get_widget (appdata.xml, "colorselectiondialog"));
+  dlg = GTK_COLOR_SELECTION_DIALOG(
+          glade_xml_get_widget (appdata.xml, "colorselectiondialog"));
 
-  csel = GTK_COLOR_SELECTION(dlg->colorsel);
+  csel = GTK_COLOR_SELECTION(gtk_color_selection_dialog_get_color_selection(dlg));
   gtk_color_selection_set_current_color(csel, gdk_color);
   gtk_color_selection_set_previous_color(csel, gdk_color);
   
@@ -696,8 +668,9 @@ on_colordiag_ok_clicked (GtkButton * button, gpointer user_data)
     }
 
   /* get the selected color */
-  colorsel = GTK_COLOR_SELECTION_DIALOG (colorseldiag)->colorsel;
-  gtk_color_selection_get_current_color (GTK_COLOR_SELECTION (colorsel),
+  colorsel = gtk_color_selection_dialog_get_color_selection(
+		  GTK_COLOR_SELECTION_DIALOG(colorseldiag));
+  gtk_color_selection_get_current_color(GTK_COLOR_SELECTION(colorsel),
 					 &gdk_color);
 
   /* Since we are only going to save 24bit precision, we might as well
