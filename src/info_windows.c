@@ -728,7 +728,7 @@ update_stats_info_windows (void)
   /* Update info windows at most twice a second */
   diffms = subtract_times_ms(&appdata.now, &last_update_time);
   if (pref.refresh_period < 500)
-    if (diffms < 500)
+    if (diffms >= 0 && diffms < 500)
       return;
 
   list_item = stats_info_windows;
