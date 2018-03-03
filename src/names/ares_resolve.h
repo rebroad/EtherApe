@@ -1,6 +1,5 @@
 /*
    Etherape
-   Copyright (C) 2000 Juan Toledo, Riccardo Ghetta
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -15,18 +14,15 @@
    You should have received a copy of the GNU General Public License
    along with this program; if not, write to the Free Software
    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
-   
-   ----------------------------------------------------------------
-   
-   dns wrapper routines
+
+  * optional libcares support by Zev Weiss, (c) 2016
 */
 
-/* initialize dns interface. returns 0 on success */
-int dns_open (void);
+/* initialize dns interface - returns 0 on success */
+int ares_open (void);
 
-/* close dns interface */
-void dns_close(void);
+/* closes dns interface */
+void ares_close(void);
 
 /* resolves address and returns its fqdn */
-const char *dns_lookup(address_t *address);
-
+const char *ares_lookup(address_t *address);

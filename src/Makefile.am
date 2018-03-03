@@ -63,7 +63,9 @@ etherape_SOURCES = \
 	preferences.c preferences.h \
 	ui_utils.c ui_utils.h
 
-if !HAVE_LIBCARES
+if HAVE_LIBCARES
+etherape_SOURCES += names/ares_resolve.c names/ares_resolve.h
+else
 etherape_SOURCES += names/thread_resolve.c names/thread_resolve.h
 endif
 
