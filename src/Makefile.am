@@ -12,7 +12,8 @@ etherape_CPPFLAGS  = \
 	-DCONFDIR=\""$(confdir)"\" \
 	$(WARN_CFLAGS) \
 	$(PTHREAD_CFLAGS) \
-	$(ETHERAPE_CFLAGS) 
+	$(ETHERAPE_CFLAGS) \
+	$(CANVAS_CFLAGS)
 
 bin_PROGRAMS = etherape
 

@@ -175,6 +175,7 @@ static gboolean update_diagram(GooCanvas *canvas); /* full diagram update */
 static void diagram_update_nodes(GooCanvas *canvas); /* updates ALL nodes */
 static void diagram_update_links(GooCanvas *canvas); /* updates ALL links */
 static void diagram_update_background_image(GooCanvas *canvas); /* updates background image */
+static void diagram_reposition(); /* reposition nodes */
 
 static void check_new_protocol(GtkWidget *prot_table, const protostack_t *pstk);
 static gint check_new_node(node_t *node, GooCanvas *canvas);
@@ -217,6 +218,9 @@ static void init_reposition(reposition_node_t *data,
                             guint total_nodes);
 static void clear_reposition(reposition_node_t *rdata);
 static void redraw_canvas_background(GooCanvas *canvas);
+static gboolean diagram_resize_event(GtkWidget *widget,
+                                     const GdkEventConfigure *event,
+                                     GooCanvas *canvas);
 
 /***************************************************************************
  *
@@ -292,8 +296,15 @@ void init_diagram(GladeXML *xml)
   GtkStyle *style;
   GooCanvasItem *rootitem;
   GooCanvasItem *item;
+  GtkAllocation windowsize;
+  gulong sig_id;
 
   g_assert(goocanvas_ == NULL);
+
+  /* get containing window and size */
+  area = GTK_CONTAINER(glade_xml_get_widget(xml, "diagramwindow"));
+  g_assert(area != NULL);
+  gtk_widget_get_allocation(GTK_WIDGET(area), &windowsize);
 
   /* Creates trees */
   canvas_nodes = g_tree_new_full( (GCompareDataFunc)canvas_node_compare,
@@ -315,11 +326,13 @@ void init_diagram(GladeXML *xml)
 //                "has-tooltip", TRUE,
                 "visibility", GOO_CANVAS_ITEM_VISIBLE,
                 NULL);
-  goo_canvas_set_bounds(goocanvas_, -280, -200, 280, 200);
+
+  goo_canvas_set_bounds(goocanvas_,
+                        -windowsize.width/2, -windowsize.height/2,
+                        windowsize.width/2, windowsize.height/2);
 
   gtk_widget_show(GTK_WIDGET(goocanvas_));
 
-  area = GTK_CONTAINER(glade_xml_get_widget (xml, "diagramwindow"));
   gtk_container_add(area, GTK_WIDGET(goocanvas_));
 
   rootitem = goo_canvas_get_root_item(goocanvas_);
@@ -355,8 +368,15 @@ void init_diagram(GladeXML *xml)
   pcap_stats_text_item = GOO_CANVAS_TEXT(item);
   addref_canvas_obj(G_OBJECT(pcap_stats_text_item));
 
-  g_signal_connect(G_OBJECT(pcap_stats_text_item), "event",
-                   G_CALLBACK(pcap_stats_text_item_event), NULL);
+  sig_id = g_signal_connect(G_OBJECT(area), "size-allocate",
+                            G_CALLBACK(diagram_resize_event), goocanvas_);
+  g_assert(sig_id > 0);
+  sig_id = g_signal_connect(G_OBJECT(pcap_stats_text_item), "enter-notify-event",
+                          G_CALLBACK(pcap_stats_text_item_event), NULL);
+  g_assert(sig_id > 0);
+  sig_id = g_signal_connect(G_OBJECT(pcap_stats_text_item), "leave-notify-event",
+                            G_CALLBACK(pcap_stats_text_item_event), NULL);
+  g_assert(sig_id > 0);
 
   /* Initialize the known_protocols table */
   delete_gui_protocols ();
@@ -469,6 +489,26 @@ static void diagram_update_background_image(GooCanvas *canvas)
   }
 }
 
+static gboolean diagram_resize_event(GtkWidget *widget,
+                                     const GdkEventConfigure *event,
+                                     GooCanvas *canvas)
+{
+  GtkAllocation windowsize;
+  g_assert(widget != NULL);
+  g_assert(canvas == goocanvas_);
+
+
+  gtk_widget_get_allocation(GTK_WIDGET(widget), &windowsize);
+  goo_canvas_set_bounds(canvas,
+                        -windowsize.width/2, -windowsize.height/2,
+                        windowsize.width/2, windowsize.height/2);
+
+  redraw_canvas_background(canvas);
+  diagram_reposition(canvas);
+  return FALSE;
+}
+
+
 /* delete the specified canvas node */
 static void canvas_node_delete(canvas_node_t *canvas_node)
 {
@@ -543,26 +583,30 @@ static void diagram_update_nodes(GooCanvas *canvas)
 
   /* Reposition canvas_nodes */
   if (need_reposition)
-    {
-      reposition_node_t rdata;
-      init_reposition(&rdata, canvas, displayed_nodes);
+      diagram_reposition(canvas);
+}
 
-      g_tree_foreach(canvas_nodes,
-                    (GTraverseFunc) reposition_canvas_nodes_prep,
-                    &rdata);
+/* handle node repositioning */
+static void diagram_reposition(GooCanvas *canvas)
+{
+  reposition_node_t rdata;
+  init_reposition(&rdata, canvas, displayed_nodes);
 
-      rdata.center.node_i = rdata.center.n_nodes;
-      rdata.outer.node_i = rdata.outer.n_nodes;
+  g_tree_foreach(canvas_nodes,
+                 (GTraverseFunc) reposition_canvas_nodes_prep,
+                 &rdata);
 
-      g_tree_foreach(canvas_nodes,
-                    (GTraverseFunc) reposition_canvas_nodes,
-                    &rdata);
+  rdata.center.node_i = rdata.center.n_nodes;
+  rdata.outer.node_i = rdata.outer.n_nodes;
 
-      clear_reposition(&rdata);
+  g_tree_foreach(canvas_nodes,
+                 (GTraverseFunc) reposition_canvas_nodes,
+                 &rdata);
 
-      need_reposition = FALSE;
-      need_font_refresh = FALSE;
-    }
+  clear_reposition(&rdata);
+
+  need_reposition = FALSE;
+  need_font_refresh = FALSE;
 }
 
 static void diagram_update_links(GooCanvas *canvas)
@@ -785,8 +829,7 @@ static void update_legend()
 
 /* Checks whether there is already a legend entry for each known
  * protocol. If not, create it */
-static void
-check_new_protocol (GtkWidget *prot_table, const protostack_t *pstk)
+static void check_new_protocol (GtkWidget *prot_table, const protostack_t *pstk)
 {
   const GList *protocol_item;
   const protocol_t *protocol;
@@ -1134,9 +1177,9 @@ static void limit_nodes(void)
 static gint add_ordered_node(node_id_t *node_id, canvas_node_t *node,
                              GTree * ordered_nodes)
 {
-  g_tree_insert (ordered_nodes, node, node);
-  g_my_debug ("Adding ordered node. Number of nodes: %d",
-	      g_tree_nnodes (ordered_nodes));
+  g_tree_insert(ordered_nodes, node, node);
+  g_my_debug("Adding ordered node. Number of nodes: %d",
+	         g_tree_nnodes(ordered_nodes));
   return FALSE;			/* keep on traversing */
 }				/* add_ordered_node */
 
@@ -1144,22 +1187,19 @@ static gint check_ordered_node(gdouble *traffic, canvas_node_t *node, guint *cou
 {
   /* TODO We can probably optimize this by stopping the traversion once
    * the limit has been reached */
-  if (*count)
-    {
-      if (!node->shown)
-	need_reposition = TRUE;
-      node->shown = TRUE;
-      displayed_nodes++;
-      (*count)--;
-    }
-  else
-    {
-      if (node->shown)
-	need_reposition = TRUE;
-      node->shown = FALSE;
-    }
-  return FALSE;			/* keep on traversing */
-}				/* check_ordered_node */
+  if (*count) {
+    if (!node->shown)
+      need_reposition = TRUE;
+    node->shown = TRUE;
+    ++displayed_nodes;
+    (*count)--;
+  } else {
+    if (node->shown)
+      need_reposition = TRUE;
+    node->shown = FALSE;
+  }
+  return FALSE;            /* keep on traversing */
+}
 
 /* Comparison function used to order the (GTree *) nodes
  * and canvas_nodes heard on the network */
@@ -1297,8 +1337,6 @@ static gdouble scale_within(gdouble min, gdouble max, guint pos, guint num)
 
 /* Called from update_diagram if the global need_reposition
  * is set. It rearranges the nodes*/
-/* TODO I think I should update all links as well, so as not having
- * stale graphics if the diagram has been resized */
 static gint reposition_canvas_nodes(node_id_t * node_id,
                                     canvas_node_t * canvas_node,
                                     reposition_node_t *data)

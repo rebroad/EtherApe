@@ -13,7 +13,7 @@ arch=('i686' 'x86_64')
 url="http://etherape.sourceforge.net/"
 license=('GPL2')
 # as of 03/2017 'libglvnd' 'mesa' are needed only for OBS
-depends=('libgoocanvas' 'libpcap' 'popt' 'libglvnd' 'mesa')
+depends=('goocanvas' 'libpcap' 'popt' 'libglvnd' 'mesa')
 makedepends=('yelp-tools' 'itstool')
 source=(http://downloads.sourceforge.net/${pkgname}/${pkgname}-${pkgver}.tar.gz)
 #sha1ums=('')     # building for release - add sha of tar package
