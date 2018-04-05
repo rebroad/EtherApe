@@ -164,7 +164,8 @@ static gint diagram_timeout;	/* Descriptor of the diagram timeout function
 				 * (Used to change the refresh_period in the callback */
 
 static long canvas_obj_count = 0; /* counter of canvas objects */
-
+static GnomeCanvas *gcanvas_ = NULL; /* drawing canvas */
+ 
 /***************************************************************************
  *
  * local Function definitions
@@ -208,6 +209,11 @@ static void init_reposition(reposition_node_t *data,
                             GtkWidget * canvas, 
                             guint total_nodes);
 static void clear_reposition(reposition_node_t *rdata);
+
+GtkWidget *canvas_widget()
+{
+   return GTK_WIDGET(gcanvas_);
+}
 
 
 void ask_reposition(gboolean r_font)
@@ -257,22 +263,14 @@ static void addref_canvas_obj(GObject *obj)
     }
 }
 
-/* sets anti-aliasing */
-void set_aa(void)
-{
-  GnomeCanvas *gc = GNOME_CANVAS (glade_xml_get_widget (appdata.xml, "canvas1"));
-  if (gc)
-    gc->aa = TRUE;
-}
 
 /* It updates controls from values of variables, and connects control
  * signals to callback functions */
-void
-init_diagram (GladeXML *xml)
+void init_diagram (GladeXML *xml)
 {
-  GtkWidget *canvas;
   GtkWidget *viewport;
   GtkStyle *style;
+  GtkContainer *area;
 
   /* Creates trees */
   canvas_nodes = g_tree_new_full ( (GCompareDataFunc)canvas_node_compare, 
@@ -282,9 +280,32 @@ init_diagram (GladeXML *xml)
 
   initialize_pref_controls();
 
+
+  /* canvas */
+  gcanvas_ = GNOME_CANVAS(gnome_canvas_new_aa());
+  g_assert(gcanvas_ != NULL);
+
+  g_object_set(G_OBJECT(gcanvas_),
+                "visible", TRUE,
+                "can_focus", TRUE,
+//                "width", 560,
+//                "height", 400,
+                "visibility", GNOME_CANVAS_ITEM_VISIBLE,
+                NULL);
+  g_signal_connect(G_OBJECT(gcanvas_), "size_allocate",
+                   (GtkSignalFunc)on_canvas1_size_allocate, NULL);
+
+  gtk_widget_show(GTK_WIDGET(gcanvas_));
+
+  area = GTK_CONTAINER(glade_xml_get_widget (xml, "diagramwindow"));
+  gtk_container_add(area, GTK_WIDGET(gcanvas_));
+  gnome_canvas_set_scroll_region(gcanvas_, -280, -200, 280, 200);
+  gnome_canvas_set_pixels_per_unit(gcanvas_, 1);
+
+//  rootitem = gnome_canvas_get_root_item(gcanvas_);
+
   /* Initialize background image */
-  canvas = glade_xml_get_widget (appdata.xml, "canvas1");
-  init_canvas_background(canvas);
+  init_canvas_background(GTK_WIDGET(gcanvas_));
 
   /* Make legend background color match main display background color */
   style = gtk_style_new();
@@ -297,7 +318,7 @@ init_diagram (GladeXML *xml)
   gtk_style_set_background(style, gtk_widget_get_window(viewport), GTK_STATE_NORMAL);
 
   /* Create pcap stats text */
-  pcap_stats_text_group = gnome_canvas_root(GNOME_CANVAS(canvas));
+  pcap_stats_text_group = gnome_canvas_root(GNOME_CANVAS(gcanvas_));
   pcap_stats_text_group = GNOME_CANVAS_GROUP(gnome_canvas_item_new(pcap_stats_text_group,
                                                                    GNOME_TYPE_CANVAS_GROUP,
                                                                    "x", 0.0,
@@ -891,10 +912,12 @@ check_new_node (node_t * node, GtkWidget * canvas)
 
       /* Create a new group to hold the node and its labels */
       group = gnome_canvas_root (GNOME_CANVAS (canvas));
+      g_assert(group);
       group = GNOME_CANVAS_GROUP (gnome_canvas_item_new (group,
 							 GNOME_TYPE_CANVAS_GROUP,
 							 "x", 100.0, 
-                                                         "y", 100.0, NULL));
+                             "y", 100.0, NULL));
+      g_assert(group);
       addref_canvas_obj(G_OBJECT (group));
       new_canvas_node->group_item = group;
 

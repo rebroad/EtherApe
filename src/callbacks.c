@@ -29,17 +29,14 @@
 void on_canvas1_size_allocate(GtkWidget *widget,
 			      GtkAllocation *allocation, gpointer user_data)
 {
-
-  GtkWidget *canvas;
-  gnome_canvas_set_scroll_region (GNOME_CANVAS (widget),
+  gnome_canvas_set_scroll_region(GNOME_CANVAS(widget),
 				  -allocation->width / 2,
 				  -allocation->height / 2,
 				  allocation->width / 2,
 				  allocation->height / 2);
   ask_reposition(FALSE);
-  canvas = glade_xml_get_widget (appdata.xml, "canvas1");
-  redraw_canvas_background(canvas);
-  update_diagram (canvas);
+  redraw_canvas_background(widget);
+  update_diagram(widget);
 }
 
 /* TODO this is not necessary, can be set directly in etherape.glade */

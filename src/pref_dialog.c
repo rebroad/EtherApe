@@ -205,7 +205,7 @@ initialize_pref_controls(void)
   g_signal_connect (G_OBJECT(gtk_spin_button_get_adjustment(GTK_SPIN_BUTTON(widget))),
 		    "value_changed",
 		    G_CALLBACK(on_refresh_spin_adjustment_changed),
-		    glade_xml_get_widget (appdata.xml, "canvas1"));
+		    canvas_widget());
   widget = glade_xml_get_widget (appdata.xml, "node_to_spin");
   g_signal_connect (G_OBJECT(gtk_spin_button_get_adjustment(GTK_SPIN_BUTTON(widget))),
 		    "value_changed",

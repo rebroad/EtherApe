@@ -539,7 +539,6 @@ void gui_eof_capture(void)
 gboolean
 gui_stop_capture (void)
 {
-  GtkWidget *widget;
   GString *status_string = NULL;
   gchar *err;
 
@@ -573,8 +572,7 @@ gui_stop_capture (void)
   /* Delete and free protocol information */
   delete_gui_protocols ();
 
-  widget = glade_xml_get_widget (appdata.xml, "canvas1");
-  update_diagram (widget);
+  update_diagram (canvas_widget());
 
   /* Sets the statusbar */
   status_string = g_string_new (_("Ready to capture from "));

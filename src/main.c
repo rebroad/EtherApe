@@ -256,7 +256,6 @@ int main (int argc, char *argv[])
 
   /* Glade */
   glade_init ();
-  glade_require("gnome");
   if (!appdata_init_glade(cl_glade_file))
     return 1;
 
@@ -302,11 +301,8 @@ int main (int argc, char *argv[])
    * the gtk loop is idle. If the CPU can't handle the set refresh_period,
    * then it will just do a best effort */
 
-  widget = glade_xml_get_widget (appdata.xml, "canvas1");
-  destroying_idle (widget);
-
-  /* Enable anti-aliasing */
-  GNOME_CANVAS(widget)->aa = TRUE;
+  widget = canvas_widget();
+  destroying_idle(widget);
 
   /* This other timeout makes sure that the info windows are updated */
   g_timeout_add(500, update_info_windows, NULL);
