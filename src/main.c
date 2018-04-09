@@ -254,41 +254,40 @@ int main (int argc, char *argv[])
   if (position_file_path)
     appdata.column_patterns = parse_position_file(position_file_path);
 
-  /* Glade */
-  glade_init ();
-  if (!appdata_init_glade(cl_glade_file))
+  /* GtkBuilder */
+  if (!appdata_init_builder(cl_glade_file))
     return 1;
 
   /* prepare decoders */
   services_init();
 
   /* Sets controls to the values of variables and connects signals */
-  init_diagram (appdata.xml);
+  init_diagram(appdata.xml);
 
   if (!pref.show_statusbar)
     {
       widget = GTK_WIDGET(appdata.statusbar);
       gtk_widget_hide(widget);
 
-      widget = glade_xml_get_widget(appdata.xml, "status_bar_check");
+      widget = GTK_WIDGET(gtk_builder_get_object(appdata.xml, "status_bar_check"));
       gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(widget), FALSE);
     }
 
   if (!pref.show_toolbar)
     {
-      widget = glade_xml_get_widget(appdata.xml, "handlebox_toolbar");
+      widget = GTK_WIDGET(gtk_builder_get_object(appdata.xml, "handlebox_toolbar"));
       gtk_widget_hide(widget);
 
-      widget = glade_xml_get_widget(appdata.xml, "toolbar_check");
+      widget = GTK_WIDGET(gtk_builder_get_object(appdata.xml, "toolbar_check"));
       gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(widget), FALSE);
     }
 
   if (!pref.show_legend)
     {
-      widget = glade_xml_get_widget(appdata.xml, "handlebox_legend");
+      widget = GTK_WIDGET(gtk_builder_get_object(appdata.xml, "handlebox_legend"));
       gtk_widget_hide(widget);
 
-      widget = glade_xml_get_widget(appdata.xml, "legend_check");
+      widget = GTK_WIDGET(gtk_builder_get_object(appdata.xml, "legend_check"));
       gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(widget), FALSE);
     }
 
@@ -503,9 +502,9 @@ static void install_handlers(void)
  */
 void cleanup(int signum)
 {
-  cleanup_capture ();
+  cleanup_capture();
   free_static_data();
-  gtk_exit (0);
+  exit(0);
 }
 
 /* activates a flag requesting an xml dump */

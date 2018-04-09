@@ -39,7 +39,7 @@
 #define G_SOURCE_CONTINUE TRUE
 #endif
 
-typedef enum 
+typedef enum
 {
   PROTO_COLUMN_COLOR = 0,
   PROTO_COLUMN_NAME,
@@ -64,7 +64,7 @@ typedef struct protocol_list_item_t_tag
   gchar *name; /* protocol name */
   uint port;     /* protocol port */
   GdkColor color; /* protocol color */
-  basic_stats_t rowstats; 
+  basic_stats_t rowstats;
 } protocol_list_item_t;
 
 
@@ -98,12 +98,40 @@ prot_info_compare (gconstpointer a, gconstpointer b)
   return strcmp (((prot_info_window_t *) a)->prot_name, (gchar *) b);
 }				/* prot_info_compare */
 
-static void
-create_prot_info_window (protocol_t * protocol)
+
+static GtkBuilder *new_bldr_instance(const gchar *id)
+{
+  GtkBuilder *bldr;
+  gchar *ids[2];
+
+  ids[0] = id;
+  ids[1] = NULL;
+
+  bldr = gtk_builder_new();
+  if (!bldr)
+    {
+      g_error(_("We could not load the interface! (%s)"),
+               appdata.itf_file);
+      return NULL;
+    }
+
+  if (!gtk_builder_add_objects_from_file(bldr, appdata.itf_file, ids, NULL)) {
+      g_error(_("Cannot create widget %s from file %s!"),
+               id,
+               appdata.itf_file);
+      g_object_unref(bldr);
+      return NULL;
+  }
+
+  gtk_builder_connect_signals(bldr, NULL);
+  return bldr;
+}
+
+
+static void create_prot_info_window(protocol_t * protocol)
 {
   GtkWidget *window;
   prot_info_window_t *prot_info_window;
-  GladeXML *xml_info_window;
   GtkWidget *widget;
   GList *list_item;
 
@@ -112,32 +140,43 @@ create_prot_info_window (protocol_t * protocol)
 	g_list_find_custom (prot_info_windows,
 			    protocol->name, prot_info_compare)))
     {
-      xml_info_window =
-	glade_xml_new (appdata.glade_file, "prot_info", NULL);
+/*     GtkWidget *protwin;
+     protwin =
+	        GTK_WIDGET(gtk_builder_get_object(appdata.xml, "prot_info"));*/
+/*      guint err;
+      GError *gerror = NULL;
+      static gchar *objs[] = {"prot_info", NULL};
+      err = gtk_builder_add_objects_from_file(GtkBuilder *builder,
+                                              const gchar *filename,
+                                              objs,
+                                              &gerror);
+     xml_info_window =
+	        GTK_WIDGET(glade_xml_new(appdata.itf_file, "prot_info", NULL));
       if (!xml_info_window)
-	{
-	  g_error (_("We could not load the interface! (%s)"),
-		   appdata.glade_file);
-	  return;
-	}
+	    {
+	      g_error (_("We could not load the interface! (%s)"),
+		       appdata.itf_file);
+	      return;
+	    }
       glade_xml_signal_autoconnect (xml_info_window);
-      window = glade_xml_get_widget (xml_info_window, "prot_info");
+*/
+      window = GTK_WIDGET(gtk_builder_get_object(appdata.xml, "prot_info"));
+
       gtk_widget_show (window);
-      widget = glade_xml_get_widget (xml_info_window, "prot_info_name_label");
-      g_object_set_data (G_OBJECT (window), "name_label", widget);
+      widget = GTK_WIDGET(gtk_builder_get_object(appdata.xml, "prot_info_name_label"));
+      g_object_set_data(G_OBJECT(window), "name_label", widget);
       widget =
-	glade_xml_get_widget (xml_info_window, "prot_info_last_heard_label");
-      g_object_set_data (G_OBJECT (window), "last_heard_label", widget);
-      widget = glade_xml_get_widget (xml_info_window, "prot_info_average");
-      g_object_set_data (G_OBJECT (window), "average", widget);
+	        GTK_WIDGET(gtk_builder_get_object(appdata.xml, "prot_info_last_heard_label"));
+      g_object_set_data(G_OBJECT(window), "last_heard_label", widget);
+      widget = GTK_WIDGET(gtk_builder_get_object(appdata.xml, "prot_info_average"));
+      g_object_set_data(G_OBJECT(window), "average", widget);
       widget =
-	glade_xml_get_widget (xml_info_window, "prot_info_accumulated");
-      g_object_set_data (G_OBJECT (window), "accumulated", widget);
-      g_object_unref (xml_info_window);
+	        GTK_WIDGET(gtk_builder_get_object(appdata.xml, "prot_info_accumulated"));
+      g_object_set_data(G_OBJECT (window), "accumulated", widget);
 
       prot_info_window = g_malloc (sizeof (prot_info_window_t));
       prot_info_window->prot_name = g_strdup (protocol->name);
-      g_object_set_data (G_OBJECT (window), "prot_name",
+      g_object_set_data(G_OBJECT (window), "prot_name",
 			 prot_info_window->prot_name);
       prot_info_window->window = window;
       prot_info_windows =
@@ -152,7 +191,7 @@ create_prot_info_window (protocol_t * protocol)
 }				/* create_prot_info_window */
 
 
-/* It's called when a prot info window is closed by the user 
+/* It's called when a prot info window is closed by the user
  * It has to free memory and delete the window from the list
  * of windows */
 gboolean
@@ -264,7 +303,7 @@ update_prot_info_windows (void)
 
 /***************************************************************
  *
- * protocol table handling functions 
+ * protocol table handling functions
  *
  ***************************************************************/
 #define MAX_C(a,b) ((a) > (b) ? (a) : (b))
@@ -335,7 +374,7 @@ protocols_table_compare (GtkTreeModel * gs, GtkTreeIter * a, GtkTreeIter * b,
 	ret = 1;
       break;
     case PROTO_COLUMN_LASTHEARD:
-      diffms = subtract_times_ms(&prot1->rowstats.last_time, 
+      diffms = subtract_times_ms(&prot1->rowstats.last_time,
                                   &prot2->rowstats.last_time);
       if (diffms == 0)
 	ret = 0;
@@ -367,29 +406,29 @@ static GtkListStore *create_protocols_table (GtkWidget *window)
   /* get the treeview, if present */
   gv = retrieve_treeview(window);
   if (!gv)
-    return NULL; 
+    return NULL;
 
   gs = GTK_LIST_STORE (gtk_tree_view_get_model (gv));
   if (gs)
     return gs;
 
-  /* create the store  - it uses 9 values, 7 displayable, one proto color 
+  /* create the store  - it uses 9 values, 7 displayable, one proto color
      and the data pointer */
   gs = gtk_list_store_new (9, GDK_TYPE_COLOR, G_TYPE_STRING, G_TYPE_STRING,
-			   G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING, 
+			   G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING,
 			   G_TYPE_STRING, G_TYPE_STRING, G_TYPE_POINTER);
   gtk_tree_view_set_model (gv, GTK_TREE_MODEL (gs));
 
-  /* the view columns and cell renderers must be also created ... 
+  /* the view columns and cell renderers must be also created ...
      the first column is the proto color; is a text column wich renders
      only a space with a colored background. We must set some special properties
    */
-  
+
   gc = gtk_tree_view_column_new_with_attributes
-    (" ", gtk_cell_renderer_text_new(), "background-gdk", PROTO_COLUMN_COLOR, 
+    (" ", gtk_cell_renderer_text_new(), "background-gdk", PROTO_COLUMN_COLOR,
      NULL);
-  g_object_set (G_OBJECT (gc), "resizable", TRUE, 
-                               "reorderable", TRUE, 
+  g_object_set (G_OBJECT (gc), "resizable", TRUE,
+                               "reorderable", TRUE,
                                NULL);
 //  gtk_tree_view_column_set_sort_column_id(gc, PROTO_COLUMN_COLOR);
   gtk_tree_view_append_column (gv, gc);
@@ -409,7 +448,7 @@ static GtkListStore *create_protocols_table (GtkWidget *window)
                                     protocols_table_compare, gs, NULL);
 
   /* initial sort order is by protocol */
-  gtk_tree_sortable_set_sort_column_id (GTK_TREE_SORTABLE (gs), 
+  gtk_tree_sortable_set_sort_column_id (GTK_TREE_SORTABLE (gs),
                                         PROTO_COLUMN_NAME,
 					GTK_SORT_ASCENDING);
 
@@ -425,7 +464,7 @@ static void protocols_table_clear(GtkListStore *gs)
   while (res)
     {
       protocol_list_item_t *row_proto = NULL;
-      gtk_tree_model_get (GTK_TREE_MODEL (gs), &it, PROTO_COLUMN_N, 
+      gtk_tree_model_get (GTK_TREE_MODEL (gs), &it, PROTO_COLUMN_N,
                           &row_proto, -1);
       if (row_proto)
         {
@@ -436,12 +475,12 @@ static void protocols_table_clear(GtkListStore *gs)
     }
 }
 
-static void update_protocols_row(GtkListStore *gs, GtkTreeIter *it, 
+static void update_protocols_row(GtkListStore *gs, GtkTreeIter *it,
                                  const protocol_list_item_t *row_proto)
 {
   gchar *ga, *gb, *gc, *gd, *ge, *gf;
   const port_service_t *ps;
-  
+
   ga = traffic_to_str (row_proto->rowstats.accumulated, FALSE);
   gb = g_strdup_printf ("%lu", row_proto->rowstats.accu_packets);
   ps = services_port_find(row_proto->name);
@@ -453,13 +492,13 @@ static void update_protocols_row(GtkListStore *gs, GtkTreeIter *it,
   ge = timeval_to_str (row_proto->rowstats.last_time);
   gf = traffic_to_str (row_proto->rowstats.avg_size, FALSE);
 
-  gtk_list_store_set (gs, it, 
-                      PROTO_COLUMN_ACCUMULATED, ga, 
+  gtk_list_store_set (gs, it,
+                      PROTO_COLUMN_ACCUMULATED, ga,
                       PROTO_COLUMN_PACKETS, gb,
                       PROTO_COLUMN_PORT, gc,
                       PROTO_COLUMN_INSTANTANEOUS, gd,
-                      PROTO_COLUMN_LASTHEARD, ge, 
-                      PROTO_COLUMN_AVGSIZE, gf, 
+                      PROTO_COLUMN_LASTHEARD, ge,
+                      PROTO_COLUMN_AVGSIZE, gf,
                       -1);
 
   g_free(ga);
@@ -485,7 +524,7 @@ static void update_protocols_table(GtkWidget *window, const protostack_t *pstk)
     item = pstk->protostack[pref.stack_level];
   else
     item = NULL;
-  
+
   res = gtk_tree_model_get_iter_first (GTK_TREE_MODEL (gs), &it);
   while (res || item)
     {
@@ -494,7 +533,7 @@ static void update_protocols_table(GtkWidget *window, const protostack_t *pstk)
 
       /* retrieve current row proto (if present) */
       if (res)
-        gtk_tree_model_get (GTK_TREE_MODEL (gs), &it, PROTO_COLUMN_N, 
+        gtk_tree_model_get (GTK_TREE_MODEL (gs), &it, PROTO_COLUMN_N,
                             &row_proto, -1);
 
       if ( !item )
@@ -517,15 +556,15 @@ static void update_protocols_table(GtkWidget *window, const protostack_t *pstk)
           /* current protocol missing on list, create a new row */
 	  row_proto = g_malloc(sizeof(protocol_list_item_t));
           g_assert(row_proto);
-          
+
           row_proto->name = g_strdup(stack_proto->name);
 	  row_proto->color = protohash_color(stack_proto->name);
 
 	  gtk_list_store_append(gs, &it);
-	  gtk_list_store_set (gs, &it, 
-                              PROTO_COLUMN_NAME, row_proto->name, 
-                              PROTO_COLUMN_COLOR, &row_proto->color, 
-                              PROTO_COLUMN_N, row_proto, 
+	  gtk_list_store_set (gs, &it,
+                              PROTO_COLUMN_NAME, row_proto->name,
+                              PROTO_COLUMN_COLOR, &row_proto->color,
+                              PROTO_COLUMN_N, row_proto,
                               -1);
         }
       else
@@ -565,12 +604,12 @@ update_protocols_window (void)
   GtkWidget *window;
   GtkTreeView *gv;
 
-  window = glade_xml_get_widget (appdata.xml, "protocols_window");
+  window = GTK_WIDGET(gtk_builder_get_object(appdata.xml, "protocols_window"));
   gv = retrieve_treeview(window);
   if (!gv)
     {
       /* register gv */
-      gv = GTK_TREE_VIEW (glade_xml_get_widget (appdata.xml, "prot_clist"));
+      gv = GTK_TREE_VIEW (gtk_builder_get_object (appdata.xml, "prot_clist"));
       if (!gv)
         {
           g_critical("can't find prot_clist");
@@ -578,14 +617,14 @@ update_protocols_window (void)
         }
       register_treeview(window, gv);
     }
-  
+
   update_protocols_table(window, protocol_summary_stack());
 }				/* update_protocols_window */
 
 void
 toggle_protocols_window (void)
 {
-  GtkWidget *protocols_check = glade_xml_get_widget (appdata.xml, "protocols_check");
+  GtkWidget *protocols_check = GTK_WIDGET(gtk_builder_get_object(appdata.xml, "protocols_check"));
   if (!protocols_check)
     return;
   gtk_menu_item_activate (GTK_MENU_ITEM (protocols_check));
@@ -601,7 +640,7 @@ on_delete_protocol_window (GtkWidget * wdg, GdkEvent * evt, gpointer ud)
 void
 on_protocols_check_activate (GtkCheckMenuItem * menuitem, gpointer user_data)
 {
-  GtkWidget *protocols_window = glade_xml_get_widget (appdata.xml, "protocols_window");
+  GtkWidget *protocols_window = GTK_WIDGET(gtk_builder_get_object(appdata.xml, "protocols_window"));
   if (!protocols_window)
     return;
   if (gtk_check_menu_item_get_active (menuitem))
@@ -614,7 +653,7 @@ on_protocols_check_activate (GtkCheckMenuItem * menuitem, gpointer user_data)
     {
       /* retrieve view and model (store) */
       GtkListStore *gs;
-      GtkTreeView *gv = GTK_TREE_VIEW(glade_xml_get_widget(appdata.xml, "prot_clist"));
+      GtkTreeView *gv = GTK_TREE_VIEW(gtk_builder_get_object(appdata.xml, "prot_clist"));
       if (gv)
         {
           gs = GTK_LIST_STORE (gtk_tree_view_get_model (gv));
@@ -694,7 +733,7 @@ gboolean update_info_windows(gpointer dummy)
   return G_SOURCE_CONTINUE;	/* Keep on calling this function */
 }
 
-/* It's called when a node info window is closed by the user 
+/* It's called when a node info window is closed by the user
  * It has to free memory and delete the window from the list
  * of windows */
 gboolean
@@ -762,63 +801,68 @@ update_stats_info_windows (void)
 }				/* update_stats_info_windows */
 
 
+
 /****************************************************************************
  *
  * node protocols display
  *
  ***************************************************************************/
-static GtkWidget *
-stats_info_create(const gchar *idkey, gpointer key)
+static GtkWidget *stats_info_create(const gchar *idkey, gpointer key)
 {
+  GtkBuilder *bldr;
   GtkWidget *window;
-  GladeXML *xml_info_window;
   GtkTreeView *gv;
 
-  xml_info_window =
-    glade_xml_new (appdata.glade_file, "node_proto_info", NULL);
-  if (!xml_info_window)
+  bldr = new_bldr_instance("node_proto_info");
+  if (!bldr)
     {
-      g_error (_("We could not load the interface! (%s)"),
-               appdata.glade_file);
+      g_error(_("We could not load the interface! (%s)"),
+               appdata.itf_file);
       return NULL;
     }
-  glade_xml_signal_autoconnect (xml_info_window);
-  window = glade_xml_get_widget (xml_info_window, "node_proto_info");
-  gtk_widget_show (window);
+  window = GTK_WIDGET(gtk_builder_get_object(bldr, "node_proto_info"));
+  if (!window)
+    {
+      g_error(_("We could not load the interface! (%s)"),
+               appdata.itf_file);
+      g_object_unref(bldr);
+      return NULL;
+    }
+
+  gtk_widget_show(window);
 
   /* register the widgets in the window */
-  register_glade_widget(xml_info_window, G_OBJECT (window), "src_label");
-  register_glade_widget(xml_info_window, G_OBJECT (window), "dst_label");
-  register_glade_widget(xml_info_window, G_OBJECT (window), "node_iproto_name");
-  register_glade_widget(xml_info_window, G_OBJECT (window), 
-                          "node_iproto_numeric_name");
-  register_glade_widget(xml_info_window, G_OBJECT (window), "node_iproto_name_b");
-  register_glade_widget(xml_info_window, G_OBJECT (window), 
-                          "node_iproto_numeric_name_b");
-  register_glade_widget(xml_info_window, G_OBJECT (window), "total_label");
-  register_glade_widget(xml_info_window, G_OBJECT (window), "inbound_label");
-  register_glade_widget(xml_info_window, G_OBJECT (window), "outbound_label");
-  register_glade_widget(xml_info_window, G_OBJECT (window), "node_iproto_avg");
-  register_glade_widget(xml_info_window, G_OBJECT (window), "node_iproto_avg_in");
-  register_glade_widget(xml_info_window, G_OBJECT (window), "node_iproto_avg_out");
-  register_glade_widget(xml_info_window, G_OBJECT (window), "node_iproto_accum");
-  register_glade_widget(xml_info_window, G_OBJECT (window), "node_iproto_accum_in");
-  register_glade_widget(xml_info_window, G_OBJECT (window), "node_iproto_accum_out");
-  register_glade_widget(xml_info_window, G_OBJECT (window), "node_iproto_avgsize");
-  register_glade_widget(xml_info_window, G_OBJECT (window), "node_iproto_avgsize_in");
-  register_glade_widget(xml_info_window, G_OBJECT (window), "node_iproto_avgsize_out");
+  register_glade_widget(bldr, window, "src_label");
+  register_glade_widget(bldr, window, "dst_label");
+  register_glade_widget(bldr, window, "node_iproto_name");
+  register_glade_widget(bldr, window, "node_iproto_numeric_name");
+  register_glade_widget(bldr, window, "node_iproto_name_b");
+  register_glade_widget(bldr, window, "node_iproto_numeric_name_b");
+  register_glade_widget(bldr, window, "total_label");
+  register_glade_widget(bldr, window, "inbound_label");
+  register_glade_widget(bldr, window, "outbound_label");
+  register_glade_widget(bldr, window, "node_iproto_avg");
+  register_glade_widget(bldr, window, "node_iproto_avg_in");
+  register_glade_widget(bldr, window, "node_iproto_avg_out");
+  register_glade_widget(bldr, window, "node_iproto_accum");
+  register_glade_widget(bldr, window, "node_iproto_accum_in");
+  register_glade_widget(bldr, window, "node_iproto_accum_out");
+  register_glade_widget(bldr, window, "node_iproto_avgsize");
+  register_glade_widget(bldr, window, "node_iproto_avgsize_in");
+  register_glade_widget(bldr, window, "node_iproto_avgsize_out");
 
   /* get and register the tree view */
-  gv = GTK_TREE_VIEW (glade_xml_get_widget (xml_info_window, "node_iproto_proto"));
+  gv = GTK_TREE_VIEW(gtk_builder_get_object(bldr, "node_iproto_proto"));
   register_treeview(window, gv);
 
   /* create columns of proto list */
-  create_protocols_table (window);
+  create_protocols_table(window);
 
-  g_object_unref (xml_info_window);
-  
+  // builder is not needed anymore
+  g_object_unref(bldr);
+
   /* register key info */
-  g_object_set_data (G_OBJECT (window), idkey, key);
+  g_object_set_data(G_OBJECT (window), idkey, key);
 
   /* insert into list */
   stats_info_windows = g_list_prepend (stats_info_windows, window);
@@ -887,7 +931,7 @@ node_protocols_window_create(const node_id_t * node_id)
   GList *list_item;
 
   /* If there is already a window, we don't need to create it again */
-  list_item = g_list_find_custom (stats_info_windows, 
+  list_item = g_list_find_custom (stats_info_windows,
                                   node_id, node_info_window_compare);
   if (!list_item)
     {
@@ -921,10 +965,10 @@ update_node_protocols_window (GtkWidget *window)
     }
 
   gtk_window_set_title (GTK_WINDOW (window), node->name->str);
-  
+
   update_gtklabel(window, "node_iproto_name", node->name->str);
   update_gtklabel(window, "node_iproto_numeric_name", node->numeric_name->str);
-  
+
   stats_info_update(window, &node->node_stats);
 }
 
@@ -955,7 +999,7 @@ link_info_window_create(const link_id_t * link_id)
   GList *list_item;
 
   /* If there is already a window, we don't need to create it again */
-  list_item = g_list_find_custom (stats_info_windows, 
+  list_item = g_list_find_custom (stats_info_windows,
                                   link_id, link_info_window_compare);
   if (!list_item)
     {
@@ -969,7 +1013,7 @@ link_info_window_create(const link_id_t * link_id)
 }
 
 static void
-update_link_info_window (GtkWidget *window)
+update_link_info_window(GtkWidget *window)
 {
   const link_id_t *link_id;
   const link_t *link;

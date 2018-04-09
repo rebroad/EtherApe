@@ -30,4 +30,4 @@ src/stats/node_id.c
 src/stats/protocols.c
 src/stats/traffic_stats.c
 src/stats/util.c
-glade/etherape.glade
+glade/etherape.ui

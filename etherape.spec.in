@@ -63,7 +63,6 @@ BuildRequires: popt-devel
 
 # Mageia
 %if 0%{?mageia}|| 0%{?mgaversion}
-BuildRequires: libglade2.0-devel
 BuildRequires: libgnomecanvas2-devel
 BuildRequires: desktop-file-utils
 BuildRequires: polkit-gnome
@@ -73,7 +72,6 @@ BuildRequires: autoconf-archive
 
 # OpenSuSe - SLES
 %if 0%{?suse_version} || 0%{?sles_version} || 0%{?sle_version}
-BuildRequires: libglade2-devel
 BuildRequires: libgnomecanvas-devel
 BuildRequires: gettext-tools
 BuildRequires: fdupes
@@ -85,21 +83,18 @@ BuildRequires: autoconf-archive
 
 # CentOS
 %if 0%{?centos_version}
-BuildRequires: libglade2-devel
 BuildRequires: libgnomecanvas-devel
 BuildRequires: gettext-devel
 %endif
 
 # ScientificLinux
 %if 0%{?scientificlinux_version}
-BuildRequires: libglade2-devel
 BuildRequires: libgnomecanvas-devel
 BuildRequires: gettext-devel
 %endif
 
 # RHEL
 %if 0%{?rhel_version}
-BuildRequires: libglade2-devel
 BuildRequires: libgnomecanvas-devel
 BuildRequires: gettext-devel
 %if 0%{?centos_version} > 600
@@ -109,7 +104,6 @@ BuildRequires: autoconf-archive
 
 # Fedora
 %if 0%{?fedora_version}
-BuildRequires: libglade2-devel
 BuildRequires: libgnomecanvas-devel
 BuildRequires: gettext-devel
 BuildRequires: autoconf-archive

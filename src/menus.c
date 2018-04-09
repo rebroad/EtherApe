@@ -58,7 +58,7 @@ void init_menus(void)
   if (err_str)
     g_string_free(err_str, TRUE);
 
-  widget = glade_xml_get_widget (appdata.xml, "interfaces_menu");
+  widget = GTK_WIDGET(gtk_builder_get_object(appdata.xml, "interfaces_menu"));
 
   info_string = g_string_new (_("Available interfaces for capture:"));
 
@@ -288,7 +288,7 @@ void on_toolbar_check_activate(GtkCheckMenuItem * menuitem, gpointer user_data)
   GtkWidget *widget;
   gboolean active = gtk_check_menu_item_get_active(menuitem);
 
-  widget = glade_xml_get_widget(appdata.xml, "handlebox_toolbar");
+  widget = GTK_WIDGET(gtk_builder_get_object(appdata.xml, "handlebox_toolbar"));
   if (active)
     gtk_widget_show(widget);
   else
@@ -308,7 +308,7 @@ void on_legend_check_activate(GtkCheckMenuItem * menuitem, gpointer user_data)
   GtkWidget *widget;
   gboolean active = gtk_check_menu_item_get_active(menuitem);
 
-  widget = glade_xml_get_widget(appdata.xml, "handlebox_legend");
+  widget = GTK_WIDGET(gtk_builder_get_object(appdata.xml, "handlebox_legend"));
   if (active)
     gtk_widget_show(widget);
   else
@@ -344,7 +344,7 @@ void on_status_bar_check_activate(GtkCheckMenuItem * menuitem, gpointer user_dat
 void on_about1_activate(GtkMenuItem * menuitem, gpointer user_data)
 {
   GtkWidget *about;
-  about = glade_xml_get_widget (appdata.xml, "about1");
+  about = GTK_WIDGET(gtk_builder_get_object (appdata.xml, "about1"));
 
   gtk_about_dialog_set_version(GTK_ABOUT_DIALOG(about), VERSION);
 #ifdef PACKAGE_SCM_REV
@@ -360,12 +360,7 @@ void on_about1_activate(GtkMenuItem * menuitem, gpointer user_data)
 void on_help_activate(GtkMenuItem * menuitem, gpointer user_data)
 {
   GError *err = NULL;
-
-#if GTK_CHECK_VERSION(2, 13, 1)
   gtk_show_uri (NULL, "help:" PACKAGE_NAME, GDK_CURRENT_TIME, &err);
-#else
-  gnome_help_display (PACKAGE_NAME ".xml", NULL, &err);
-#endif
 }
 
 /* Helper functions */
@@ -377,7 +372,7 @@ void on_help_activate(GtkMenuItem * menuitem, gpointer user_data)
 
 static inline void set_widget_enabled_by_id(const gchar *id, gboolean onoff)
 {
-  GtkWidget *w = glade_xml_get_widget(appdata.xml, id);
+  GtkWidget *w = GTK_WIDGET(gtk_builder_get_object(appdata.xml, id));
   gtk_widget_set_sensitive(w, onoff);
 }
 
@@ -439,13 +434,13 @@ void gui_start_capture (void)
   switch (appdata.mode)
     {
     case LINK6:
-      widget = glade_xml_get_widget (appdata.xml, "link_radio");
+      widget = GTK_WIDGET(gtk_builder_get_object(appdata.xml, "link_radio"));
       break;
     case IP:
-      widget = glade_xml_get_widget (appdata.xml, "ip_radio");
+      widget = GTK_WIDGET(gtk_builder_get_object(appdata.xml, "ip_radio"));
       break;
     case TCP:
-      widget = glade_xml_get_widget (appdata.xml, "tcp_radio");
+      widget = GTK_WIDGET(gtk_builder_get_object(appdata.xml, "tcp_radio"));
       break;
     default:
       g_warning (_("Invalid mode: %d"), appdata.mode);
@@ -624,7 +619,7 @@ void set_active_interface()
 {
   GtkWidget *widget;
 
-  widget = glade_xml_get_widget(appdata.xml, "interfaces_menu");
+  widget = GTK_WIDGET(gtk_builder_get_object(appdata.xml, "interfaces_menu"));
   gtk_container_foreach(GTK_CONTAINER(widget), setmenus, (gpointer)NULL);
 }
 

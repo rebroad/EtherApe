@@ -20,14 +20,13 @@
 
 #include "common.h"
 #include <glib/gprintf.h>
-#include <glade/glade.h>
 #include <gtk/gtk.h>
 
 /* Variables */
 
 struct appdata_struct
 {
-  GladeXML *xml;
+  GtkBuilder *xml;
   GtkWidget *app1;		/* Pointer to the main app window */
   GtkStatusbar *statusbar;        /* Main window statusbar */
 
@@ -35,7 +34,7 @@ struct appdata_struct
   struct timeval now; /* Where in packet-capture time we are */
   struct timeval gui_now; /* Real (as in wall-clock gettimeofday()) time */
 
-  gchar *glade_file;            /* fullspec of xml glade file */
+  gchar *itf_file;            /* fullspec of xml glade file */
   gchar *export_file;		/* file to export to */
   gchar *export_file_final;     /* file to export to at end of replay */
   gchar *export_file_signal;    /* file to export to at receipt of usr1 */
@@ -75,7 +74,7 @@ extern struct appdata_struct appdata;
 
 void appdata_init(struct appdata_struct *p);
 void appdata_clear_source(struct appdata_struct *p);
-gboolean appdata_init_glade(gchar *new_glade_file);
+gboolean appdata_init_builder(const gchar *builder_fname);
 void appdata_free(struct appdata_struct *p);
 
 static inline gchar *appdata_source_name(const struct appdata_struct *p)

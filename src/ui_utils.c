@@ -31,11 +31,12 @@
 */
 
 /* registers the named glade widget on the specified object */
-void register_glade_widget(GladeXML *xm, GObject *tgt, const gchar *widgetName)
+void register_glade_widget(GtkBuilder *bldr, GtkWidget *tgt, const gchar *widgetName)
 {
   GtkWidget *widget;
-  widget = glade_xml_get_widget (xm, widgetName);
-  g_object_set_data (tgt, widgetName, widget);
+  widget = GTK_WIDGET(gtk_builder_get_object(bldr, widgetName));
+  g_assert(widget);
+  g_object_set_data(G_OBJECT(tgt), widgetName, widget);
 }
 
 void update_gtklabel(GtkWidget *window, const gchar *lblname, const gchar *value)

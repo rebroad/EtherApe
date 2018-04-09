@@ -586,7 +586,11 @@ static gchar *cleanup_live_capture(void)
   struct capctl_resp_t resp;
   int pktcap_status;
   pid_t pid;
+  pid_t oldpid;
 
+  if (pktcap_pid == -1)
+    return NULL;
+    
   zeroreq(&req);
 
   req.type = CRQ_EXIT;
@@ -600,8 +604,12 @@ static gchar *cleanup_live_capture(void)
   close(ctrlsock);
   ctrlsock = -1;
 
-  pid = waitpid(pktcap_pid, &pktcap_status, 0);
-  if (pid != pktcap_pid)
+  // always reset pid
+  oldpid = pktcap_pid;
+  pktcap_pid = -1;
+
+  pid = waitpid(oldpid, &pktcap_status, 0);
+  if (pid != oldpid)
     return g_strdup_printf("waitpid() returned %d on capture process", pid);
   else if (!WIFEXITED(pktcap_status) || WEXITSTATUS(pktcap_status))
     return g_strdup_printf("capture process exited abnormally");

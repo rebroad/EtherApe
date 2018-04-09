@@ -11,7 +11,7 @@ filter ] [
 .B --final-export
 outfile ] [
 .B --glade-file
-gladefile ] [
+interfacefile ] [
 .B -i
 interface ] [
 .B -l
@@ -58,7 +58,7 @@ set capture filter
 when replaying, export to named file at end of replay
 .TP
 .BR "--glade-file " "<filename>"
-uses the named libglade file to load interface instead of the default.
+loads interface definitions from the specified GtkBuilder file instead of the default one.
 .TP
 .BR "-i, --interface " "<interface name>"
 set interface to listen to
