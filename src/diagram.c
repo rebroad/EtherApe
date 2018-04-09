@@ -266,7 +266,7 @@ static void addref_canvas_obj(GObject *obj)
 
 /* It updates controls from values of variables, and connects control
  * signals to callback functions */
-void init_diagram (GladeXML *xml)
+void init_diagram(GtkBuilder *xml)
 {
   GtkWidget *viewport;
   GtkStyle *style;
@@ -288,32 +288,27 @@ void init_diagram (GladeXML *xml)
   g_object_set(G_OBJECT(gcanvas_),
                 "visible", TRUE,
                 "can_focus", TRUE,
-//                "width", 560,
-//                "height", 400,
-                "visibility", GNOME_CANVAS_ITEM_VISIBLE,
                 NULL);
   g_signal_connect(G_OBJECT(gcanvas_), "size_allocate",
                    (GtkSignalFunc)on_canvas1_size_allocate, NULL);
 
   gtk_widget_show(GTK_WIDGET(gcanvas_));
 
-  area = GTK_CONTAINER(glade_xml_get_widget (xml, "diagramwindow"));
+  area = GTK_CONTAINER(gtk_builder_get_object(xml, "diagramwindow"));
   gtk_container_add(area, GTK_WIDGET(gcanvas_));
   gnome_canvas_set_scroll_region(gcanvas_, -280, -200, 280, 200);
   gnome_canvas_set_pixels_per_unit(gcanvas_, 1);
 
-//  rootitem = gnome_canvas_get_root_item(gcanvas_);
-
   /* Initialize background image */
   init_canvas_background(GTK_WIDGET(gcanvas_));
 
-  /* Make legend background color match main display background color */
+  // Make legend background color match main display background color 
   style = gtk_style_new();
   style->bg[GTK_STATE_NORMAL] = canvas_background.color;
   style->base[GTK_STATE_NORMAL] = canvas_background.color;
 
-  /* Set protocol legend background to black */
-  viewport = glade_xml_get_widget (appdata.xml, "legend_viewport");
+  // Set protocol legend background to black 
+  viewport = GTK_WIDGET(gtk_builder_get_object(appdata.xml, "legend_viewport"));
   gtk_widget_set_style(viewport, style);
   gtk_style_set_background(style, gtk_widget_get_window(viewport), GTK_STATE_NORMAL);
 
@@ -787,7 +782,7 @@ update_legend()
   GtkWidget *prot_table;
 
   /* first, check if there are expired protocols */
-  prot_table = glade_xml_get_widget (appdata.xml, "prot_table");
+  prot_table = GTK_WIDGET(gtk_builder_get_object(appdata.xml, "prot_table"));
   if (!prot_table)
     return;
 
@@ -879,7 +874,7 @@ delete_gui_protocols (void)
   protohash_reset_cycle();
 
   /* remove proto labels from legend */
-  prot_table = GTK_CONTAINER (glade_xml_get_widget (appdata.xml, "prot_table"));
+  prot_table = GTK_CONTAINER(gtk_builder_get_object(appdata.xml, "prot_table"));
   item = gtk_container_get_children (GTK_CONTAINER (prot_table));
   while (item)
     {

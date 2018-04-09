@@ -56,7 +56,7 @@ find_expired(gpointer key, gpointer value, gpointer data)
   struct prune_ctx *ctx = data;
 
   /* Don't prune items that are still being resolved */
-  if (item->expiry != 0 && item->state != ICS_RESOLVING && item->expiry < ctx->now)
+  if (item && item->expiry != 0 && item->state != ICS_RESOLVING && item->expiry < ctx->now)
       ctx->to_free = g_slist_prepend(ctx->to_free, item);
 
   return FALSE; /* don't terminate traversal */

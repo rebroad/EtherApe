@@ -1,8 +1,7 @@
 gladedir   = $(datadir)/etherape/glade
 glade_DATA = 				\
-	etherape.glade			\
-	etherape.png			\
-	nodes.xpm
+	etherape.ui			\
+	etherape.png
 
 EXTRA_DIST = \
 	$(glade_DATA)		

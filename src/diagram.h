@@ -25,7 +25,7 @@ extern gboolean already_updating; /* True while an instance of update_diagram is
 extern gboolean stop_requested; /* True if there is a pending stop request */
 
 gboolean update_diagram(gpointer data);
-void init_diagram (GladeXML *xml);
+void init_diagram(GtkBuilder *xml);
 void destroying_timeout (gpointer data);
 void destroying_idle (gpointer data);
 void set_statusbar_msg (gchar * str);
