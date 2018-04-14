@@ -2,7 +2,7 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ(2.53)
-AC_INIT([etherape],[0.9.17])
+AC_INIT([etherape],[0.9.18])
 AC_CONFIG_SRCDIR([config.h.in])
 AC_CONFIG_MACRO_DIR([m4])
 AC_CONFIG_HEADER([config.h])
@@ -26,7 +26,7 @@ AC_PROG_LIBTOOL
 #AC_PROG_INTLTOOL(0.27)
 
 # Checks for libraries.
-PKG_CHECK_MODULES(ETHERAPE, glib-2.0 libglade-2.0 goocanvas)
+PKG_CHECK_MODULES(ETHERAPE, glib-2.0 goocanvas)
 AC_SUBST(ETHERAPE_CFLAGS)
 AC_SUBST(ETHERAPE_LDFLAGS)
 AC_SUBST(ETHERAPE_LIBS)
@@ -115,23 +115,23 @@ if test $use_gdk_input_add = no; then
   AC_MSG_NOTICE([gtk_input_add disabled])
 fi
 
-AC_CHECK_FUNC(gethostbyaddr_r, [has_gethostbyaddr_r=yes],
-  AC_CHECK_LIB(bind, gethostbyaddr_r, [has_gethostbyaddr_r=yes],
-   AC_CHECK_LIB(resolv, gethostbyaddr_r, [has_gethostbyaddr_r=yes],
-    AC_CHECK_LIB(nsl, gethostbyaddr_r, [has_gethostbyaddr_r=yes],[has_gethostbyaddr_r=no]))))
+AC_CHECK_FUNC(getnameinfo, [has_getnameinfo=yes],
+  AC_CHECK_LIB(bind, getnameinfo, [has_getnameinfo=yes],
+   AC_CHECK_LIB(resolv, getnameinfo, [has_getnameinfo=yes],
+    AC_CHECK_LIB(nsl, getnameinfo, [has_getnameinfo=yes],[has_getnameinfo=no]))))
 
-if test $has_gethostbyaddr_r = no; then
- AC_MSG_NOTICE([gethostbyaddr_r not found, trying with gethostbyaddr])
+if test $has_getnameinfo = no; then
+ AC_MSG_NOTICE([getnameinfo not found, trying with gethostbyaddr])
  AC_CHECK_FUNC(gethostbyaddr, [has_gethostbyaddr=yes],
   AC_CHECK_LIB(bind, gethostbyaddr, [has_gethostbyaddr=yes],
    AC_CHECK_LIB(resolv, gethostbyaddr, [has_gethostbyaddr=yes],
      AC_CHECK_LIB(nsl, gethostbyaddr, [has_gethostbyaddr=yes],
-      [AC_MSG_ERROR([Missing both gethostbyaddr and gethostbyaddr_r. Please install a resolver library.])]
+      [AC_MSG_ERROR([Missing both getnameinfo and gethostbyaddr. Please install a resolver library.])]
       ))))
 
  if test $has_gethostbyaddr = yes; then
-   AC_MSG_WARN([Found only gethostbyaddr, while gethostbyaddr_r does not exists, resolving is restricted to single thread.])
-   AC_DEFINE([FORCE_SINGLE_THREAD], [1], [found only gethostbyaddr, while gethostbyaddr_r does not exists, resolving is restricted to single thread.])
+   AC_MSG_WARN([Found only gethostbyaddr, while getnameinfo does not exists, resolving is restricted to single thread.])
+   AC_DEFINE([FORCE_SINGLE_THREAD], [1], [found only gethostbyaddr, while getnameinfo does not exists, resolving is restricted to single thread.])
  fi
 fi
 

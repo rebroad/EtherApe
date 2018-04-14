@@ -19,6 +19,7 @@
 #define DIAGRAM_H
 
 #include "appdata.h"
+#include "callbacks.h"
 
 extern gboolean already_updating; /* True while an instance of update_diagram is running */
 extern gboolean stop_requested; /* True if there is a pending stop request */
@@ -31,5 +32,6 @@ void dump_stats(guint32 diff_msecs);
 void diagram_timeout_changed(void);
 void resize_diagram(const GtkAllocation *allocation);
 void ask_reposition(gboolean refresh_font); /* request diagram relayout */
+GtkWidget *canvas_widget();
 
 #endif /* DIAGRAM_H */

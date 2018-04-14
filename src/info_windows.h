@@ -15,9 +15,7 @@
  * along with this program; if not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <gtk/gtkbutton.h>
-#include <gtk/gtkclist.h>
-#include <gtk/gtkcheckmenuitem.h>
+#include <gtk/gtk.h>
 
 #include "stats/links.h"
 

@@ -64,7 +64,9 @@ etherape_SOURCES = \
 	preferences.c preferences.h \
 	ui_utils.c ui_utils.h
 
-if !HAVE_LIBCARES
+if HAVE_LIBCARES
+etherape_SOURCES += names/ares_resolve.c names/ares_resolve.h
+else
 etherape_SOURCES += names/thread_resolve.c names/thread_resolve.h
 endif
 
@@ -72,7 +74,7 @@ etherape_LDADD = $(ETHERAPE_LIBS) $(PCAP_LIBS) $(PTHREAD_LIBS) $(PTHREAD_CFLAGS)
 etherape_LDFLAGS = $(ETHERAPE_LDFLAGS) 
 
 .indent: $(etherape_SOURCES) $(etherape_INCLUDES)
-	indent $? 
+	uncrustify --no-backup -c ../uncrustify.cfg $? 
 	touch .indent
 indent: .indent 
 

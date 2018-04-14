@@ -164,8 +164,8 @@ static gint diagram_timeout = 0;	/* Descriptor of the diagram timeout function
 				        * (Used to change the refresh_period in the callback */
 
 static long canvas_obj_count = 0; /* counter of canvas objects */
-static GooCanvas *goocanvas_ = NULL; /* drawing canvas */
-
+static GooCanvas *gcanvas_ = NULL; /* drawing canvas */
+ 
 /***************************************************************************
  *
  * local Function definitions
@@ -227,6 +227,11 @@ static gboolean diagram_resize_event(GtkWidget *widget,
  * implementation
  *
  **************************************************************************/
+GtkWidget *canvas_widget()
+{
+   return GTK_WIDGET(gcanvas_);
+}
+
 static void goo_canvas_item_show(GooCanvasItem *it)
 {
   g_object_set(G_OBJECT (it),
@@ -287,9 +292,10 @@ static void addref_canvas_obj(GObject *obj)
     }
 }
 
+
 /* It updates controls from values of variables, and connects control
  * signals to callback functions */
-void init_diagram(GladeXML *xml)
+void init_diagram(GtkBuilder *xml)
 {
   GtkWidget *viewport;
   GtkContainer *area;
@@ -341,13 +347,13 @@ void init_diagram(GladeXML *xml)
   g_object_set(G_OBJECT(goocanvas_), "background-color", "black", NULL);
   init_canvas_background(rootitem);
 
-  /* Make legend background color match main display background color */
+  // Make legend background color match main display background color 
   style = gtk_style_new();
   style->bg[GTK_STATE_NORMAL] = canvas_background.color;
   style->base[GTK_STATE_NORMAL] = canvas_background.color;
 
-  /* Set protocol legend background to black */
-  viewport = glade_xml_get_widget(appdata.xml, "legend_viewport");
+  // Set protocol legend background to black 
+  viewport = GTK_WIDGET(gtk_builder_get_object(appdata.xml, "legend_viewport"));
   gtk_widget_set_style(viewport, style);
   gtk_style_set_background(style, gtk_widget_get_window(viewport), GTK_STATE_NORMAL);
 
@@ -421,7 +427,7 @@ static void init_canvas_background(GooCanvasItem *rootitem)
    * function until the on_canvas1_size_allocate callback is called
    */
 //  gtk_widget_get_allocation(canvas, &allocation);
-//  gnome_canvas_set_scroll_region(canvas,
+//  gnome_canvas_set_scroll_region(GNOME_CANVAS(canvas),
 //                                 -(allocation.width)/2, -(allocation.height)/2,
 //                                 (allocation.width)/2, (allocation.height)/2);
 }
@@ -719,6 +725,7 @@ static void update_pcap_stats_text(GooCanvas *canvas)
 static gboolean update_diagram(GooCanvas *canvas)
 {
   static struct timeval last_refresh_time = { 0, 0 };
+  GtkWidget *canvas = (GtkWidget *)data;
   capstatus_t status;
 
   /* if requested and enabled, dump to xml */
@@ -815,7 +822,7 @@ static void update_legend()
   GtkWidget *prot_table;
 
   /* first, check if there are expired protocols */
-  prot_table = glade_xml_get_widget (appdata.xml, "prot_table");
+  prot_table = GTK_WIDGET(gtk_builder_get_object(appdata.xml, "prot_table"));
   if (!prot_table)
     return;
 
@@ -905,7 +912,7 @@ void delete_gui_protocols(void)
   protohash_reset_cycle();
 
   /* remove proto labels from legend */
-  prot_table = GTK_CONTAINER (glade_xml_get_widget (appdata.xml, "prot_table"));
+  prot_table = GTK_CONTAINER(gtk_builder_get_object(appdata.xml, "prot_table"));
   item = gtk_container_get_children (GTK_CONTAINER (prot_table));
   while (item)
     {

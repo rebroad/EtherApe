@@ -27,13 +27,12 @@
 #include "preferences.h"
 
 void on_canvas1_size_allocate(GtkWidget *widget,
-			      									GtkAllocation *allocation,
-															gpointer user_data)
+			      GtkAllocation *allocation, gpointer user_data)
 {
 	resize_diagram(allocation);
 }
 
-/* TODO this is not necessary, can be set directly in etherape.glade */
+/* TODO this is not necessary, can be set directly in .ui */
 gboolean on_node_popup_motion_notify_event(GtkWidget *widget,
 				   																 GdkEventMotion *event,
 																					 gpointer user_data)

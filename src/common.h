@@ -110,9 +110,7 @@ typedef struct __attribute__ ((packed))
       guint32 type; /* address family: AF_INET or AF_INET6 */
       union __attribute__ ((packed))
       {
-        guint8 addr8[16];
-        guint32 addr32[4];
-        guint32 addr32_v4;
+        guint8 addr8[16];   /* 128-bit */
         guint8 addr_v4[4];  /* 32-bit  */
         guint8 addr_v6[16]; /* 128-bit */
       };

@@ -21,9 +21,7 @@
 #define UI_UTILS_H
 
 #include "appdata.h"
-#include <gtk/gtkbutton.h>
-#include <gtk/gtkclist.h>
-#include <gtk/gtkcheckmenuitem.h>
+#include <gtk/gtk.h>
 
 
 #define MAX_C(a,b) ((a) > (b) ? (a) : (b))
@@ -38,7 +36,7 @@
 gchar *traffic_to_str(gdouble traffic, gboolean is_speed);
 
 /* registers the named glade widget on the specified object */
-void register_glade_widget(GladeXML *xm, GObject *tgt, const gchar *widgetName);
+void register_glade_widget(GtkBuilder *bldr, GtkWidget *tgt, const gchar *widgetName);
 
 /* changes text of label lblname on window wnd */
 void update_gtklabel(GtkWidget *wnd, const gchar *lblname, const gchar *value);

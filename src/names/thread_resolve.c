@@ -92,15 +92,17 @@ close_mutex(void)
 }
 
 /* thread routine */
-static void *
-thread_pool_routine(void *dt)
+static void *thread_pool_routine(void *dt)
 {
    struct ipcache_item *curitem;
    struct ipresolve_link *el;   
-   struct hostent resultbuf;
    struct hostent *resultptr;
+   struct sockaddr_in sa;
+   struct sockaddr_in6 sa6;
+   struct sockaddr *saptr;
+   socklen_t salen;
+   
    char extrabuf[4096];
-   int errnovar;
    int result;
 
    while (!request_stop_thread)
@@ -140,15 +142,6 @@ thread_pool_routine(void *dt)
          result=0;
          resultptr = gethostbyaddr (&curitem->ip.addr8, 
                           address_len(curitem->ip.type), curitem->ip.type);
-#else
-         /* full multithreading, use thread safe gethostbyaddr_r */
-         result = gethostbyaddr_r (&curitem->ip.addr8, 
-                          address_len(curitem->ip.type), curitem->ip.type, 
-                          &resultbuf, extrabuf, sizeof(extrabuf), 
-                          &resultptr, &errnovar);
-         if (result != 0 && errnovar == ERANGE)
-            g_my_critical("Insufficient memory allocated to gethostbyaddr_r\n");
-#endif
          if (request_stop_thread)
             break;
 
@@ -158,6 +151,42 @@ thread_pool_routine(void *dt)
             ipcache_request_failed(curitem); 
          else
             ipcache_request_succeeded(curitem, 3600L*24L, resultptr->h_name);
+#else
+         /* full multithreading, use thread safe getnameinfo */
+         if (curitem->ip.type == AF_INET) {
+           memset(&sa, 0, sizeof sa);
+           sa.sin_family = curitem->ip.type;
+           g_assert(sizeof(sa.sin_addr) == sizeof(curitem->ip.addr_v4));
+           memmove(&sa.sin_addr, curitem->ip.addr_v4, sizeof sa.sin_addr);
+           saptr = (struct sockaddr *)&sa;
+           salen = sizeof sa;
+         } else {
+           memset(&sa6, 0, sizeof sa6);
+           sa6.sin6_family = curitem->ip.type;
+           g_assert(sizeof(sa6.sin6_addr) == sizeof(curitem->ip.addr_v6));
+           memmove(&sa6.sin6_addr, curitem->ip.addr_v6, sizeof sa6.sin6_addr);
+           saptr = (struct sockaddr *)&sa6;
+           salen = sizeof sa6;
+         }
+         
+         result = getnameinfo(saptr, salen, 
+                              extrabuf,  sizeof(extrabuf), 
+                              NULL, 0,
+                              0);
+         if (result != 0 && result != EAI_AGAIN) {
+           g_my_critical("getnameinfo error %d (%s)\n", 
+                         result, gai_strerror(result));
+         }
+         if (request_stop_thread)
+            break;
+
+         /* resolving completed or failed, lock again and notify ip-cache */
+         pthread_mutex_lock(&resolvemtx);
+         if (result)
+            ipcache_request_failed(curitem); 
+         else
+            ipcache_request_succeeded(curitem, 3600L*24L, extrabuf);
+#endif
       }
 
       pthread_mutex_unlock(&resolvemtx);

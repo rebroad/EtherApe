@@ -1,6 +1,6 @@
                             Changelog for EtherApe
 
-  Overview of changes in EtherApe 0.9.17 ():
+  Overview of changes in EtherApe  ():
 
    EtherApe now is a pure GTK application, with canvas supplied by GooCanvas
    (https://wiki.gnome.org/Projects/GooCanvas).
@@ -12,6 +12,18 @@
    Changes summary:
      * EtherApe now uses GooCanvas instead of the obsolete GnomeCanvas.
  
+
+  Overview of changes in EtherApe 0.9.17 (Thursday, April 5, 2018):
+
+   This is a bugfix release, because a bug made 0.9.16 still runtime-dependent
+   on gnomeui and other gnome 2 libraries.
+ 
+   Changes summary:
+     * EtherApe now requires Gtk 2.24
+     
+     * fixed a bug making libglade load gnome2 libraries
+     
+     * Sometimes node/links windows were freezing.
 
 
   Overview of changes in EtherApe 0.9.16 (Sunday, January 14, 2018):

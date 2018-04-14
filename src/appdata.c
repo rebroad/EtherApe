@@ -23,7 +23,7 @@
 #include "appdata.h"
 #include "stats/node.h"
 
-#define ETHERAPE_GLADE_FILE "etherape.glade"	/* glade 3 file */
+#define ETHERAPE_GTKBUILDER_FILE "etherape.ui"	/* GtkBuilder file */
 
 struct appdata_struct appdata;
 
@@ -36,7 +36,7 @@ void appdata_init(struct appdata_struct *p)
   p->app1 = NULL;
   p->statusbar = NULL;
 
-  p->glade_file = NULL;
+  p->itf_file = NULL;
   p->export_file = NULL;
   p->export_file_final = NULL;
   p->export_file_signal = NULL;
@@ -72,24 +72,29 @@ void appdata_clear_source(struct appdata_struct *p)
     }
 }
 
-gboolean appdata_init_glade(gchar *new_glade_file)
+gboolean appdata_init_builder(const gchar *builder_fname)
 {
-  if (new_glade_file)
-    appdata.glade_file = g_strdup(new_glade_file);
+  GError* error = NULL;
+
+  if (builder_fname)
+    appdata.itf_file = g_strdup(builder_fname);
   else
-    appdata.glade_file = g_strdup(GLADEDIR "/" ETHERAPE_GLADE_FILE);
+    appdata.itf_file = g_strdup(GLADEDIR "/" ETHERAPE_GTKBUILDER_FILE);
 
-  appdata.xml = glade_xml_new (appdata.glade_file, NULL, NULL);
-  if (!appdata.xml)
+  appdata.xml = gtk_builder_new();
+  if (!gtk_builder_add_from_file(appdata.xml, appdata.itf_file, &error))
     {
-      g_error (_("Could not load glade interface file '%s'!"),
-	       appdata.glade_file);
+      g_error (_("Could not load interface file '%s'!: %s"),
+	       appdata.itf_file,
+           error->message);
+      g_error_free (error);
       return FALSE;
-    }
-  glade_xml_signal_autoconnect (appdata.xml);
+  }
+    
+  gtk_builder_connect_signals(appdata.xml, NULL);
 
-  appdata.app1 = glade_xml_get_widget (appdata.xml, "app1");
-  appdata.statusbar = GTK_STATUSBAR(glade_xml_get_widget (appdata.xml, "statusbar1"));
+  appdata.app1 = GTK_WIDGET(gtk_builder_get_object(appdata.xml, "app1"));
+  appdata.statusbar = GTK_STATUSBAR(gtk_builder_get_object (appdata.xml, "statusbar1"));
   return TRUE;
 }
 
@@ -98,8 +103,8 @@ void appdata_free(struct appdata_struct *p)
 {
   appdata_clear_source(p);
 
-  g_free(p->glade_file);
-  p->glade_file = NULL;
+  g_free(p->itf_file);
+  p->itf_file = NULL;
 
   g_free(p->export_file);
   p->export_file = NULL;
