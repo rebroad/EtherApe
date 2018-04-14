@@ -305,10 +305,10 @@ void init_diagram(GtkBuilder *xml)
   GtkAllocation windowsize;
   gulong sig_id;
 
-  g_assert(goocanvas_ == NULL);
+  g_assert(gcanvas_ == NULL);
 
   /* get containing window and size */
-  area = GTK_CONTAINER(glade_xml_get_widget(xml, "diagramwindow"));
+  area = GTK_CONTAINER(gtk_builder_get_object(xml, "diagramwindow"));
   g_assert(area != NULL);
   gtk_widget_get_allocation(GTK_WIDGET(area), &windowsize);
 
@@ -321,10 +321,10 @@ void init_diagram(GtkBuilder *xml)
   initialize_pref_controls();
 
   /* canvas */
-  goocanvas_ = GOO_CANVAS(goo_canvas_new());
-  g_assert(goocanvas_ != NULL);
+  gcanvas_ = GOO_CANVAS(goo_canvas_new());
+  g_assert(gcanvas_ != NULL);
 
-  g_object_set (G_OBJECT(goocanvas_),
+  g_object_set (G_OBJECT(gcanvas_),
 //                "automatic-bounds", TRUE,
 //                "bounds-from-origin", FALSE,
 //                "bounds-padding", 4.0,
@@ -333,18 +333,18 @@ void init_diagram(GtkBuilder *xml)
                 "visibility", GOO_CANVAS_ITEM_VISIBLE,
                 NULL);
 
-  goo_canvas_set_bounds(goocanvas_,
+  goo_canvas_set_bounds(gcanvas_,
                         -windowsize.width/2, -windowsize.height/2,
                         windowsize.width/2, windowsize.height/2);
 
-  gtk_widget_show(GTK_WIDGET(goocanvas_));
+  gtk_widget_show(GTK_WIDGET(gcanvas_));
 
-  gtk_container_add(area, GTK_WIDGET(goocanvas_));
+  gtk_container_add(area, GTK_WIDGET(gcanvas_));
 
-  rootitem = goo_canvas_get_root_item(goocanvas_);
+  rootitem = goo_canvas_get_root_item(gcanvas_);
 
   /* Initialize background image */
-  g_object_set(G_OBJECT(goocanvas_), "background-color", "black", NULL);
+  g_object_set(G_OBJECT(gcanvas_), "background-color", "black", NULL);
   init_canvas_background(rootitem);
 
   // Make legend background color match main display background color 
@@ -375,7 +375,7 @@ void init_diagram(GtkBuilder *xml)
   addref_canvas_obj(G_OBJECT(pcap_stats_text_item));
 
   sig_id = g_signal_connect(G_OBJECT(area), "size-allocate",
-                            G_CALLBACK(diagram_resize_event), goocanvas_);
+                            G_CALLBACK(diagram_resize_event), gcanvas_);
   g_assert(sig_id > 0);
   sig_id = g_signal_connect(G_OBJECT(pcap_stats_text_item), "enter-notify-event",
                           G_CALLBACK(pcap_stats_text_item_event), NULL);
@@ -501,7 +501,7 @@ static gboolean diagram_resize_event(GtkWidget *widget,
 {
   GtkAllocation windowsize;
   g_assert(widget != NULL);
-  g_assert(canvas == goocanvas_);
+  g_assert(canvas == gcanvas_);
 
 
   gtk_widget_get_allocation(GTK_WIDGET(widget), &windowsize);
@@ -725,7 +725,6 @@ static void update_pcap_stats_text(GooCanvas *canvas)
 static gboolean update_diagram(GooCanvas *canvas)
 {
   static struct timeval last_refresh_time = { 0, 0 };
-  GtkWidget *canvas = (GtkWidget *)data;
   capstatus_t status;
 
   /* if requested and enabled, dump to xml */
@@ -1914,18 +1913,18 @@ void diagram_timeout_changed(void)
 
 void resize_diagram(const GtkAllocation *allocation)
 {
-  goo_canvas_set_bounds(goocanvas_,
+  goo_canvas_set_bounds(gcanvas_,
                         -allocation->width / 2,
                         -allocation->height / 2,
                         allocation->width / 2,
                         allocation->height / 2);
   ask_reposition(FALSE);
-  redraw_canvas_background(goocanvas_);
-  update_diagram(goocanvas_);
+  redraw_canvas_background(gcanvas_);
+  update_diagram(gcanvas_);
 }
 
 gboolean update_diagram_callback(gpointer data)
 {
-   update_diagram(goocanvas_);
+   update_diagram(gcanvas_);
    return TRUE;
 }

@@ -623,6 +623,3 @@ void set_active_interface()
   gtk_container_foreach(GTK_CONTAINER(widget), setmenus, (gpointer)NULL);
 }
 
-  widget = glade_xml_get_widget(appdata.xml, "interfaces_menu");
-  gtk_container_foreach(GTK_CONTAINER(widget), setmenus, (gpointer)NULL);
-}

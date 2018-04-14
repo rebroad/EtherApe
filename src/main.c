@@ -255,7 +255,6 @@ int main (int argc, char *argv[])
 
   /* GtkBuilder */
   if (!appdata_init_builder(cl_glade_file))
-  glade_require("goocanvas");
     return 1;
 
   /* prepare decoders */
