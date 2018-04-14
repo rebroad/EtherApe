@@ -73,7 +73,7 @@ etherape_LDADD = $(ETHERAPE_LIBS) $(PCAP_LIBS) $(PTHREAD_LIBS) $(PTHREAD_CFLAGS)
 etherape_LDFLAGS = $(ETHERAPE_LDFLAGS) 
 
 .indent: $(etherape_SOURCES) $(etherape_INCLUDES)
-	indent $? 
+	uncrustify --no-backup -c ../uncrustify.cfg $? 
 	touch .indent
 indent: .indent 
 
