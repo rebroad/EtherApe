@@ -288,7 +288,7 @@ void on_toolbar_check_activate(GtkCheckMenuItem * menuitem, gpointer user_data)
   GtkWidget *widget;
   gboolean active = gtk_check_menu_item_get_active(menuitem);
 
-  widget = GTK_WIDGET(gtk_builder_get_object(appdata.xml, "handlebox_toolbar"));
+  widget = GTK_WIDGET(gtk_builder_get_object(appdata.xml, "toolbar"));
   if (active)
     gtk_widget_show(widget);
   else
@@ -308,7 +308,7 @@ void on_legend_check_activate(GtkCheckMenuItem * menuitem, gpointer user_data)
   GtkWidget *widget;
   gboolean active = gtk_check_menu_item_get_active(menuitem);
 
-  widget = GTK_WIDGET(gtk_builder_get_object(appdata.xml, "handlebox_legend"));
+  widget = GTK_WIDGET(gtk_builder_get_object(appdata.xml, "legend_frame"));
   if (active)
     gtk_widget_show(widget);
   else

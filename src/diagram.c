@@ -44,9 +44,6 @@
 gboolean already_updating;
 gboolean stop_requested;
 
-static GooCanvasText *pcap_stats_text_item = NULL;
-//static GooCanvasGroup *pcap_stats_text_group = NULL;
-
 /***************************************************************************
  *
  * canvas_node_t definition and methods
@@ -130,10 +127,8 @@ typedef struct
 
 typedef struct
 {
-  //GooCanvasGroup *group;
   gboolean use_image;
 
-  GdkColor color;
   struct
   {
     GdkPixbuf *image;
@@ -165,6 +160,7 @@ static gint diagram_timeout = 0;	/* Descriptor of the diagram timeout function
 
 static long canvas_obj_count = 0; /* counter of canvas objects */
 static GooCanvas *gcanvas_ = NULL; /* drawing canvas */
+static GooCanvasText *pcap_stats_text_item = NULL;
  
 /***************************************************************************
  *
@@ -299,11 +295,12 @@ void init_diagram(GtkBuilder *xml)
 {
   GtkWidget *viewport;
   GtkContainer *area;
-  GtkStyle *style;
+  GtkStyleContext *style;
   GooCanvasItem *rootitem;
   GooCanvasItem *item;
   GtkAllocation windowsize;
   gulong sig_id;
+  GdkRGBA black = {0,0,0,0};
 
   g_assert(gcanvas_ == NULL);
 
@@ -325,12 +322,7 @@ void init_diagram(GtkBuilder *xml)
   g_assert(gcanvas_ != NULL);
 
   g_object_set (G_OBJECT(gcanvas_),
-//                "automatic-bounds", TRUE,
-//                "bounds-from-origin", FALSE,
-//                "bounds-padding", 4.0,
                 "background-color", "black",
-//                "has-tooltip", TRUE,
-                "visibility", GOO_CANVAS_ITEM_VISIBLE,
                 NULL);
 
   goo_canvas_set_bounds(gcanvas_,
@@ -347,6 +339,7 @@ void init_diagram(GtkBuilder *xml)
   g_object_set(G_OBJECT(gcanvas_), "background-color", "black", NULL);
   init_canvas_background(rootitem);
 
+/* TODO: gtk3 handles background color via CSS... 
   // Make legend background color match main display background color 
   style = gtk_style_new();
   style->bg[GTK_STATE_NORMAL] = canvas_background.color;
@@ -356,20 +349,12 @@ void init_diagram(GtkBuilder *xml)
   viewport = GTK_WIDGET(gtk_builder_get_object(appdata.xml, "legend_viewport"));
   gtk_widget_set_style(viewport, style);
   gtk_style_set_background(style, gtk_widget_get_window(viewport), GTK_STATE_NORMAL);
-
-  /* Create pcap stats text */
-/*  item = goo_canvas_group_new(,
-                                               "x", 0.0,
-                                               "y", 0.0,
-                                               NULL);
-  pcap_stats_text_group = GOO_CANVAS_GROUP(item);
-  addref_canvas_obj(G_OBJECT(pcap_stats_text_group));
-  pcap_stats_text_item = goo_canvas_text_new(pcap_stats_text_group,
 */
+
   item = goo_canvas_text_new(rootitem,
                              "",
                              0, 0, -1,
-                             GTK_ANCHOR_NW,
+                             GOO_CANVAS_ANCHOR_NORTH_WEST,
                              NULL);
   pcap_stats_text_item = GOO_CANVAS_TEXT(item);
   addref_canvas_obj(G_OBJECT(pcap_stats_text_item));
@@ -399,18 +384,6 @@ void init_diagram(GtkBuilder *xml)
  */
 static void init_canvas_background(GooCanvasItem *rootitem)
 {
-//  GtkAllocation allocation;
-/*
-  canvas_background.group = goo_canvas_group_new(rootitem,
-                                                 "x", 0.0, 
-                                                 "y", 0.0,
-                                                 NULL);
-  addref_canvas_obj(G_OBJECT(canvas_background.group));
-  canvas_background.image.item = 
-                            goo_canvas_image_new(canvas_background.group,
-                                                 "anchor", GTK_ANCHOR_NW,
-                                                 NULL);
-*/
   canvas_background.image.item = 
                             goo_canvas_image_new(rootitem,
                                                  NULL,
@@ -420,16 +393,6 @@ static void init_canvas_background(GooCanvasItem *rootitem)
 
   canvas_background.use_image = pref.bck_image_enabled;
   canvas_background.image.path = g_strdup(pref.bck_image_path);
-
-  /**
-   * Have to set the scrolling region to the real allocated size of the canvas
-   * If not the image won't scale well in the redraw_canvas_background
-   * function until the on_canvas1_size_allocate callback is called
-   */
-//  gtk_widget_get_allocation(canvas, &allocation);
-//  gnome_canvas_set_scroll_region(GNOME_CANVAS(canvas),
-//                                 -(allocation.width)/2, -(allocation.height)/2,
-//                                 (allocation.width)/2, (allocation.height)/2);
 }
 
 /*
@@ -658,7 +621,7 @@ static gchar *get_pcap_stats_string(void)
 static void update_pcap_stats_text(GooCanvas *canvas)
 {
   gdouble xmin, xmax, ymin, ymax, xpos, ypos;
-  GtkAnchorType anchor;
+  GooCanvasAnchorType anchor;
   gchar *tmpstr;
 
   if (pref.pcap_stats_pos == STATSPOS_NONE)
@@ -679,25 +642,25 @@ static void update_pcap_stats_text(GooCanvas *canvas)
     case STATSPOS_UPPER_LEFT:
       xpos = xmin;
       ypos = ymin;
-      anchor = GTK_ANCHOR_NW;
+      anchor = GOO_CANVAS_ANCHOR_NORTH_WEST;
       break;
 
     case STATSPOS_UPPER_RIGHT:
       xpos = xmax;
       ypos = ymin;
-      anchor = GTK_ANCHOR_NE;
+      anchor = GOO_CANVAS_ANCHOR_NORTH_EAST;
       break;
 
     case STATSPOS_LOWER_LEFT:
       xpos = xmin;
       ypos = ymax;
-      anchor = GTK_ANCHOR_SW;
+      anchor = GOO_CANVAS_ANCHOR_SOUTH_WEST;
       break;
 
     case STATSPOS_LOWER_RIGHT:
       xpos = xmax;
       ypos = ymax;
-      anchor = GTK_ANCHOR_SE;
+      anchor = GOO_CANVAS_ANCHOR_SOUTH_EAST;
       break;
 
     default:
@@ -883,11 +846,11 @@ static void check_new_protocol (GtkWidget *prot_table, const protostack_t *pstk)
       gtk_misc_set_alignment(GTK_MISC(newlab), 0, 0);
 
       color = protohash_color(protocol->name);
-      if (!gdk_colormap_alloc_color
+/*      if (!gdk_colormap_alloc_color
           (gdk_colormap_get_system(), &color, FALSE, TRUE))
         g_warning (_("Unable to allocate color for new protocol %s"),
                    protocol->name);
-
+*/
       style = gtk_style_new ();
       style->fg[GTK_STATE_NORMAL] = color;
       gtk_widget_set_style (newlab, style);
@@ -971,7 +934,7 @@ static gint check_new_node(node_t * node, GooCanvas *canvas)
 			       0.0,
 			       0.0,
                    -1,
-			       GTK_ANCHOR_CENTER,
+			       GOO_CANVAS_ANCHOR_CENTER,
 			       "font", pref.fontname,
 			       "fill-color", pref.text_color,
                    "visibility", GOO_CANVAS_ITEM_INVISIBLE,
