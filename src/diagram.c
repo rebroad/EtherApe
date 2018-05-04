@@ -55,7 +55,7 @@ typedef struct
   GooCanvasItem *node_item;
   GooCanvasItem *text_item;
   GooCanvasGroup *group_item;
-  guint rgbcolor;
+  GdkRGBA color;
   gboolean is_new;
   gboolean shown;		/* True if it is to be displayed. */
   gboolean centered;            /* true if is a center node */
@@ -83,7 +83,7 @@ typedef struct
   link_id_t canvas_link_id; /* id of the link */
   GooCanvasItem *src_item;    /* triangle for src side */
   GooCanvasItem *dst_item;    /* triangle for dst side */
-  GdkColor color;
+  GdkRGBA color;
 }
 canvas_link_t;
 static gint canvas_link_compare(const link_id_t *a, const link_id_t *b,
@@ -208,7 +208,7 @@ static gboolean node_item_event(GooCanvasItem *item,
 static void update_legend(void);
 static void draw_oneside_link(double xs, double ys, double xd, double yd,
                               const basic_stats_t *link_data,
-                              guint32 scaledColor, GooCanvasItem *item);
+                              const GdkRGBA *scaledColor, GooCanvasItem *item);
 static void init_reposition(reposition_node_t *data,
                             GooCanvas *canvas,
                             guint total_nodes);
@@ -300,7 +300,7 @@ void init_diagram(GtkBuilder *xml)
   GooCanvasItem *item;
   GtkAllocation windowsize;
   gulong sig_id;
-  GdkRGBA black = {0,0,0,0};
+  static GdkRGBA black = {0,0,0,0};
 
   g_assert(gcanvas_ == NULL);
 
@@ -349,6 +349,12 @@ void init_diagram(GtkBuilder *xml)
   viewport = GTK_WIDGET(gtk_builder_get_object(appdata.xml, "legend_viewport"));
   gtk_widget_set_style(viewport, style);
   gtk_style_set_background(style, gtk_widget_get_window(viewport), GTK_STATE_NORMAL);
+
+  // should be gtk3 compatible, but doesn't work ...
+  viewport = GTK_WIDGET(gtk_builder_get_object(appdata.xml, "legend_viewport"));
+  gtk_widget_override_background_color(viewport,
+                                      GTK_STATE_FLAG_NORMAL|GTK_STATE_FLAG_ACTIVE,
+                                      &black);
 */
 
   item = goo_canvas_text_new(rootitem,
@@ -802,11 +808,12 @@ static void check_new_protocol (GtkWidget *prot_table, const protostack_t *pstk)
 {
   const GList *protocol_item;
   const protocol_t *protocol;
-  GdkColor color;
-  GtkStyle *style;
+  const GdkRGBA *color;
+//  GtkStyle *style;
   GtkLabel *lab;
   GtkWidget *newlab;
   GList *childlist;
+  gchar *mkupbuf = NULL;
 
   if (!pstk)
     return; /* nothing to do */
@@ -840,22 +847,32 @@ static void check_new_protocol (GtkWidget *prot_table, const protostack_t *pstk)
 
       /* It's not, so we build a new entry on the legend */
 
+      
       /* we add the new label widgets */
-      newlab = gtk_label_new (protocol->name);
+      newlab = gtk_label_new(NULL);
       gtk_widget_show (newlab);
-      gtk_misc_set_alignment(GTK_MISC(newlab), 0, 0);
+//      gtk_misc_set_alignment(GTK_MISC(newlab), 0, 0);
 
       color = protohash_color(protocol->name);
+      mkupbuf = g_markup_printf_escaped(
+                        "<span foreground=\"#%02x%02x%02x\">%s</span>",
+                        (unsigned int)(color->red * 255),
+                        (unsigned int)(color->green * 255),
+                        (unsigned int)(color->blue * 255),
+                        protocol->name);    
+      gtk_label_set_markup(GTK_LABEL(newlab), mkupbuf);
+      g_free(mkupbuf);
+      
 /*      if (!gdk_colormap_alloc_color
           (gdk_colormap_get_system(), &color, FALSE, TRUE))
         g_warning (_("Unable to allocate color for new protocol %s"),
                    protocol->name);
-*/
       style = gtk_style_new ();
       style->fg[GTK_STATE_NORMAL] = color;
       gtk_widget_set_style (newlab, style);
       g_object_unref (style);
-
+*/
+     
       gtk_container_add(GTK_CONTAINER(prot_table), newlab);
       known_protocols++;
     }
@@ -883,6 +900,9 @@ void delete_gui_protocols(void)
     }
 
   /* resize legend */
+  // Feature in GTK: gtk_widget_preferred_size() has to be called before
+  // resizing, otherwise a warning is thrown ...  
+  gtk_widget_get_preferred_size(GTK_WIDGET(prot_table), NULL, NULL);
   gtk_container_resize_children(prot_table);
   gtk_widget_queue_resize (GTK_WIDGET (appdata.app1));
 }				/* delete_gui_protocols */
@@ -1036,12 +1056,12 @@ static gint canvas_node_update(node_id_t *node_id, canvas_node_t *canvas_node,
 
   if (node->main_prot[pref.stack_level])
     {
-      canvas_node->rgbcolor = protohash_rgbcolor(node->main_prot[pref.stack_level]);
+      canvas_node->color = *protohash_color(node->main_prot[pref.stack_level]);
 
       g_object_set(G_OBJECT(canvas_node->node_item),
                    "radius-x", node_size / 2,
                    "radius-y", node_size / 2,
-                   "fill-color-rgba", canvas_node->rgbcolor,
+                   "fill-color-gdk-rgba", &canvas_node->color,
                    "visibility", GOO_CANVAS_ITEM_VISIBLE,
                    NULL);
       goo_canvas_item_show(canvas_node->text_item);
@@ -1520,7 +1540,7 @@ static gint canvas_link_update(link_id_t * link_id, canvas_link_t * canvas_link,
   const link_t *link;
   const canvas_node_t *canvas_dst;
   const canvas_node_t *canvas_src;
-  guint32 scaledColor;
+  GdkRGBA scaledColor;
   double xs, ys, xd, yd, scale;
 
   /* We used to run update_link here, but that was a major performance penalty,
@@ -1559,21 +1579,24 @@ static gint canvas_link_update(link_id_t * link_id, canvas_link_t * canvas_link,
   if (link->main_prot[pref.stack_level])
     {
       double diffms;
-      canvas_link->color = protohash_color(link->main_prot[pref.stack_level]);
+      canvas_link->color = *protohash_color(link->main_prot[pref.stack_level]);
 
       /* scale color down to 10% at link timeout */
       diffms = subtract_times_ms(&appdata.now, &link->link_stats.stats.last_time);
       scale = pow(0.10, diffms / pref.gui_link_timeout_time);
 
-      scaledColor =
-        (((guint32) (scale * canvas_link->color.red) & 0xFF00) << 16) |
-        (((guint32) (scale * canvas_link->color.green) & 0xFF00) << 8) |
-        ((guint32) (scale * canvas_link->color.blue) & 0xFF00) | 0xFF;
+      scaledColor.red = scale * canvas_link->color.red;
+      scaledColor.green = scale * canvas_link->color.green;
+      scaledColor.blue = scale * canvas_link->color.blue;
+      scaledColor.alpha = 1;
     }
   else
     {
-      guint32 black = 0x000000ff;
-      scaledColor = black;
+      // black
+      scaledColor.red = 0;
+      scaledColor.green = 0;
+      scaledColor.blue = 0;
+      scaledColor.alpha = 1;
     }
 
   /* retrieve coordinates of node centers */
@@ -1581,11 +1604,11 @@ static gint canvas_link_update(link_id_t * link_id, canvas_link_t * canvas_link,
   g_object_get(G_OBJECT(canvas_dst->group_item), "x", &xd, "y", &yd, NULL);
 
   /* first draw triangle for src->dst */
-  draw_oneside_link(xs, ys, xd, yd, &(link->link_stats.stats_out), scaledColor,
+  draw_oneside_link(xs, ys, xd, yd, &(link->link_stats.stats_out), &scaledColor,
                     canvas_link->src_item);
 
   /* then draw triangle for dst->src */
-  draw_oneside_link(xd, yd, xs, ys, &(link->link_stats.stats_in), scaledColor,
+  draw_oneside_link(xd, yd, xs, ys, &(link->link_stats.stats_in), &scaledColor,
                     canvas_link->dst_item);
 
   return FALSE;
@@ -1596,7 +1619,7 @@ static gint canvas_link_update(link_id_t * link_id, canvas_link_t * canvas_link,
  * specified color on the provided canvas item*/
 static void draw_oneside_link(double xs, double ys, double xd, double yd,
                               const basic_stats_t *link_stats,
-                              guint32 scaledColor, GooCanvasItem *item)
+                              const GdkRGBA *scaledColor, GooCanvasItem *item)
 {
   GooCanvasPoints *points;
   gdouble versorx, versory, modulus, link_size;
@@ -1627,8 +1650,8 @@ static void draw_oneside_link(double xs, double ys, double xd, double yd,
   /* If we got this far, the link can be shown. Make sure it is */
   g_object_set(G_OBJECT(item),
                "points", points,
-               "fill-color-rgba", scaledColor,
-               "stroke-color-rgba", scaledColor,
+               "fill-color-gdk-rgba", scaledColor,
+               "stroke-color-gdk-rgba", scaledColor,
                "visibility", GOO_CANVAS_ITEM_VISIBLE,
                NULL);
 
@@ -1868,7 +1891,8 @@ static void canvas_link_delete(canvas_link_t *canvas_link)
 /* diagram timeout was changed. Remove old timer and register new */
 void diagram_timeout_changed(void)
 {
-  g_source_remove(diagram_timeout);
+  if (diagram_timeout)
+    g_source_remove(diagram_timeout);
   diagram_timeout = g_timeout_add(pref.refresh_period,
 					                        update_diagram_callback,
 					                        NULL);

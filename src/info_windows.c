@@ -63,7 +63,7 @@ typedef struct protocol_list_item_t_tag
 {
   gchar *name; /* protocol name */
   uint port;     /* protocol port */
-  GdkColor color; /* protocol color */
+  GdkRGBA color; /* protocol color */
   basic_stats_t rowstats;
 } protocol_list_item_t;
 
@@ -414,7 +414,7 @@ static GtkListStore *create_protocols_table (GtkWidget *window)
 
   /* create the store  - it uses 9 values, 7 displayable, one proto color
      and the data pointer */
-  gs = gtk_list_store_new (9, GDK_TYPE_COLOR, G_TYPE_STRING, G_TYPE_STRING,
+  gs = gtk_list_store_new (9, GDK_TYPE_RGBA, G_TYPE_STRING, G_TYPE_STRING,
 			   G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING,
 			   G_TYPE_STRING, G_TYPE_STRING, G_TYPE_POINTER);
   gtk_tree_view_set_model (gv, GTK_TREE_MODEL (gs));
@@ -425,7 +425,7 @@ static GtkListStore *create_protocols_table (GtkWidget *window)
    */
 
   gc = gtk_tree_view_column_new_with_attributes
-    (" ", gtk_cell_renderer_text_new(), "background-gdk", PROTO_COLUMN_COLOR,
+    (" ", gtk_cell_renderer_text_new(), "background-rgba", PROTO_COLUMN_COLOR,
      NULL);
   g_object_set (G_OBJECT (gc), "resizable", TRUE,
                                "reorderable", TRUE,
@@ -558,7 +558,7 @@ static void update_protocols_table(GtkWidget *window, const protostack_t *pstk)
           g_assert(row_proto);
 
           row_proto->name = g_strdup(stack_proto->name);
-	  row_proto->color = protohash_color(stack_proto->name);
+	  row_proto->color = *protohash_color(stack_proto->name);
 
 	  gtk_list_store_append(gs, &it);
 	  gtk_list_store_set (gs, &it,

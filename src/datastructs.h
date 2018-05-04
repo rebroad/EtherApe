@@ -25,7 +25,7 @@
 
 typedef struct
 {
-  GdkColor color;
+  GdkRGBA color;
   gboolean preferred;
 } ColorHashItem;
 
@@ -33,9 +33,8 @@ typedef struct
 /* clears the proto hash */
 void  protohash_clear(void);
 
-/* returns the proto color as GdkColor or rgb guint */
-GdkColor protohash_color(const gchar *protoname);
-guint protohash_rgbcolor(const gchar *protoname);
+/* returns the proto color as GdkRGBA or rgb guint */
+const GdkRGBA *protohash_color(const gchar *protoname);
 
 /* returns the preferred flag */
 gboolean protohash_is_preferred(const gchar *protoname);

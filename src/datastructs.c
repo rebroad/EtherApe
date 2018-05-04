@@ -51,7 +51,7 @@ static GList *cycle_color_list = NULL; /* the list of colors without protocol */
 static GList *current_cycle = NULL; /* current ptr to free color */
 
 /* adds or replaces the protoname item */
-static gboolean protohash_set(gchar *protoname, GdkColor protocolor);
+static gboolean protohash_set(gchar *protoname, const GdkRGBA *protocolor);
 
 static void freehash(gpointer data)
 {
@@ -91,13 +91,15 @@ protohash_clear(void)
 
 /* adds or replaces the protoname item */
 static gboolean
-protohash_set(gchar *protoname, GdkColor protocolor)
+protohash_set(gchar *protoname, const GdkRGBA *protocolor)
 {
   ColorHashItem item;
+
+  g_assert(protocolor);
   if (!protohash && ! protohash_init())
     return FALSE;
 
-  item.color = protocolor;
+  item.color = *protocolor;
 
   /* if a protocol is specified, we put the pair (proto,color) in the hash,
    * marking it as preferred (a color obtained from user mappings) */
@@ -155,26 +157,12 @@ static const ColorHashItem *protohash_itemproto(const gchar *protoname)
   return item;
 }
 
-GdkColor protohash_color(const gchar *protoname)
+const GdkRGBA *protohash_color(const gchar *protoname)
 {
   g_assert(protoname); /* proto must be valid - note: empty IS valid, NULL no*/
   g_assert(protohash);
-  return protohash_itemproto(protoname)->color;
+  return &(protohash_itemproto(protoname)->color);
 }
-
-guint protohash_rgbcolor(const gchar *protoname)
-{
-  const ColorHashItem *item = protohash_itemproto(protoname);
-  if (!item)
-    return 0;
-  /* GdkColor uses 16bit color values, while we need 8 bits, so color values
-     need to be rescaled before encoding */
-  return ((item->color.red >> 8) << 24) +
-         ((item->color.green >> 8) << 16) +
-         ((item->color.blue >> 8) << 8) +
-         0xff; /* alpha always full */
-}
-
 
 /* returns the preferred flag */
 gboolean protohash_is_preferred(const gchar *protoname)
@@ -195,7 +183,7 @@ gboolean
 protohash_read_prefvect(gchar **colors)
 {
   int i;
-  GdkColor gdk_color;
+  GdkRGBA color;
 
   protohash_clear();
 
@@ -210,17 +198,17 @@ protohash_read_prefvect(gchar **colors)
 	continue;
 
       /* converting color */
-      gdk_color_parse (colors_protocols[0], &gdk_color);
+      gdk_rgba_parse(&color, colors_protocols[0]);
 
       if (!colors_protocols[1] || !strlen(colors_protocols[1]))
-        protohash_set(colors_protocols[1], gdk_color);
+        protohash_set(colors_protocols[1], &color);
       else
         {
           /* multiple protos, split them */
           protos = g_strsplit_set(colors_protocols[1], ", \t\n", 0);
           for (j = 0 ; protos[j] ; ++j)
             if (protos[j] && *protos[j])
-              protohash_set(protos[j], gdk_color);
+              protohash_set(protos[j], &color);
           g_strfreev(protos);
         }
       g_strfreev(colors_protocols);
@@ -230,8 +218,8 @@ protohash_read_prefvect(gchar **colors)
     {
       /* the list of color available for unmapped protocols is empty,
        * so we add a grey */
-      gdk_color_parse ("#7f7f7f", &gdk_color);
-      protohash_set(NULL, gdk_color);
+      gdk_rgba_parse(&color, "#7f7f7f");
+      protohash_set(NULL, &color);
     }
   else
     cycle_color_list = g_list_reverse(cycle_color_list); /* list was reversed */
