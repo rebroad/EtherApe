@@ -261,7 +261,8 @@ void free_capture_interfaces(GList *ifs)
   g_list_free(ifs);
 }
 
-static void pktpipe_read_cb(gpointer data, gint source, GdkInputCondition cond)
+static gboolean pktpipe_read_cb(GIOChannel *source, GIOCondition condition,
+                                gpointer data)
 {
   struct pcap_pkthdr pkthdr;
   char pktdata[MAXCAPSIZE];
@@ -275,6 +276,7 @@ static void pktpipe_read_cb(gpointer data, gint source, GdkInputCondition cond)
   appdata.now = pkthdr.ts;
 
   packet_acquired((guint8*)pktdata, pkthdr.caplen, pkthdr.len);
+  return TRUE;
 }
 
 static gchar *start_live_capture(unsigned int *linktype, int *select_fd)
@@ -473,9 +475,14 @@ gchar *start_capture(void)
 
   capture_status = PLAY;
 
-  if (appdata.source.type == ST_LIVE)
-    capture_source = gdk_input_add(select_fd, GDK_INPUT_READ, pktpipe_read_cb,
-                                   NULL);
+  if (appdata.source.type == ST_LIVE) {
+    GIOChannel *channel = g_io_channel_unix_new(select_fd);
+    capture_source = g_io_add_watch(channel,
+                            G_IO_IN | G_IO_HUP | G_IO_ERR,
+                            pktpipe_read_cb,
+                            NULL);
+    g_io_channel_unref(channel);      
+  }
   else
     capture_source = g_timeout_add_full(G_PRIORITY_DEFAULT, 1,
                                         filecap_get_packet, NULL,
@@ -513,7 +520,7 @@ static gchar *stop_live_capture(void)
 
   zeroreq(&req);
 
-  gdk_input_remove(capture_source);
+  g_source_remove(capture_source);
 
   req.type = CRQ_STOPCAP;
   sendreq(&req);
