@@ -103,8 +103,8 @@ void on_open_activate(GtkMenuItem * menuitem, gpointer user_data)
   dialog = gtk_file_chooser_dialog_new ("Open Capture File",
 				      NULL,
 				      GTK_FILE_CHOOSER_ACTION_OPEN,
-				      GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
-				      GTK_STOCK_OPEN, GTK_RESPONSE_ACCEPT,
+				      _("_Cancel"), GTK_RESPONSE_CANCEL,
+				      _("_Open"), GTK_RESPONSE_ACCEPT,
 				      NULL);
   if (appdata.source.type == ST_FILE && appdata.source.file)
     gtk_file_chooser_set_filename(GTK_FILE_CHOOSER(dialog), appdata.source.file);
@@ -133,8 +133,8 @@ void on_export_activate (GtkMenuItem * menuitem, gpointer user_data)
   dialog = gtk_file_chooser_dialog_new ("Export to XML File",
 				      NULL,
 				      GTK_FILE_CHOOSER_ACTION_SAVE,
-				      GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
-				      GTK_STOCK_SAVE, GTK_RESPONSE_ACCEPT,
+				      _("_Cancel"), GTK_RESPONSE_CANCEL,
+				      _("_Save"), GTK_RESPONSE_ACCEPT,
 				      NULL);
   gtk_file_chooser_set_do_overwrite_confirmation (GTK_FILE_CHOOSER (dialog), TRUE);
 
@@ -360,7 +360,7 @@ void on_about1_activate(GtkMenuItem * menuitem, gpointer user_data)
 void on_help_activate(GtkMenuItem * menuitem, gpointer user_data)
 {
   GError *err = NULL;
-  gtk_show_uri (NULL, "help:" PACKAGE_NAME, GDK_CURRENT_TIME, &err);
+  gtk_show_uri_on_window(NULL, "help:" PACKAGE_NAME, GDK_CURRENT_TIME, &err);
 }
 
 /* Helper functions */

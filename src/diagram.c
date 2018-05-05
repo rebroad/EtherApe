@@ -293,14 +293,14 @@ static void addref_canvas_obj(GObject *obj)
  * signals to callback functions */
 void init_diagram(GtkBuilder *xml)
 {
-  GtkWidget *viewport;
   GtkContainer *area;
-  GtkStyleContext *style;
   GooCanvasItem *rootitem;
   GooCanvasItem *item;
   GtkAllocation windowsize;
   gulong sig_id;
-  static GdkRGBA black = {0,0,0,0};
+//  GtkWidget *viewport;
+//  GtkStyleContext *style;
+//  static GdkRGBA black = {0,0,0,0};
 
   g_assert(gcanvas_ == NULL);
 
@@ -899,11 +899,6 @@ void delete_gui_protocols(void)
       item = item->next;
     }
 
-  /* resize legend */
-  // Feature in GTK: gtk_widget_preferred_size() has to be called before
-  // resizing, otherwise a warning is thrown ...  
-  gtk_widget_get_preferred_size(GTK_WIDGET(prot_table), NULL, NULL);
-  gtk_container_resize_children(prot_table);
   gtk_widget_queue_resize (GTK_WIDGET (appdata.app1));
 }				/* delete_gui_protocols */
 
