@@ -8,7 +8,7 @@
     <property name="window_position">center</property>
     <property name="type_hint">normal</property>
     <property name="program_name">EtherApe</property>
-    <property name="copyright" translatable="yes">Copyright 2001-2013 Juan Toledo, Riccardo Ghetta</property>
+    <property name="copyright" translatable="yes">Copyright 2001-2018 Juan Toledo, Riccardo Ghetta</property>
     <property name="comments" translatable="yes">A Graphical Network Browser.</property>
     <property name="website">http://etherape.sourceforge.net/</property>
     <property name="authors">Juan Toledo &lt;toledo@users.sourceforge.net&gt;
