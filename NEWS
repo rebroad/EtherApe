@@ -1,17 +1,19 @@
                             Changelog for EtherApe
 
-  Overview of changes in EtherApe  ():
+  Overview of changes in EtherApe 0.9.18 (Sunday, June 3, 2018):
 
-   EtherApe now is a pure GTK application, with canvas supplied by GooCanvas
+   EtherApe now is a pure GTK 3 application, with canvas supplied by GooCanvas
    (https://wiki.gnome.org/Projects/GooCanvas).
-   While GooCanvas itself is in maintenance mode, is still the best canvas
+
+   While GooCanvas itself is in maintenance mode, is still the simpler canvas
    library available and with an API almost identical to gnome-canvas, too!
    Longer term, EtherApe ui should be completely redesigned and modernized,
    but this is for another day.
 
    Changes summary:
-     * EtherApe now uses GooCanvas instead of the obsolete GnomeCanvas.
- 
+     * EtherApe ported to GTK3 using GooCanvas instead of the obsolete
+       GnomeCanvas. 
+
 
   Overview of changes in EtherApe 0.9.17 (Thursday, April 5, 2018):
 
