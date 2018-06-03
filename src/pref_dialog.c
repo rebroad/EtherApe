@@ -1,7 +1,7 @@
 /* EtherApe
  * Copyright (C) 2001 Juan Toledo
  * Copyright (C) 2011 Riccardo Ghetta
- * 
+ *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
@@ -85,7 +85,7 @@ void initialize_pref_controls(void)
 {
   GtkWidget *widget;
   GtkSpinButton *spin;
-  GdkColor color;
+  GdkRGBA color;
   GtkTreeModel *model;
 
   diag_pref = GTK_WIDGET(gtk_builder_get_object(appdata.xml, "diag_pref"));
@@ -143,9 +143,9 @@ void initialize_pref_controls(void)
   widget = GTK_WIDGET(gtk_builder_get_object(appdata.xml, "text_font"));
   gtk_font_button_set_font_name(GTK_FONT_BUTTON(widget), pref.fontname);
   widget = GTK_WIDGET(gtk_builder_get_object(appdata.xml, "text_color"));
-  if (!gdk_color_parse(pref.text_color, &color))
-    gdk_color_parse("#ffff00", &color);
-  gtk_color_button_set_color(GTK_COLOR_BUTTON(widget), &color);
+  if (!gdk_rgba_parse(&color, pref.text_color))
+    gdk_rgba_parse(&color, "#ffff00");
+  gtk_color_chooser_set_rgba(GTK_COLOR_CHOOSER(widget), &color);
 
   widget = GTK_WIDGET(gtk_builder_get_object(appdata.xml, "pcap_stats_pos"));
   gtk_combo_box_set_active(GTK_COMBO_BOX(widget), pref.pcap_stats_pos);
@@ -235,23 +235,23 @@ void initialize_pref_controls(void)
 		    "value_changed",
 		    G_CALLBACK(on_proto_to_spin_adjustment_changed), NULL);
   widget = GTK_WIDGET(gtk_builder_get_object(appdata.xml, "stack_level"));
-  g_signal_connect (G_OBJECT (widget), 
+  g_signal_connect (G_OBJECT (widget),
                     "changed",
 		    G_CALLBACK(on_stack_level_changed), NULL);
   widget = GTK_WIDGET(gtk_builder_get_object(appdata.xml, "size_variable"));
-  g_signal_connect (G_OBJECT (widget), 
+  g_signal_connect (G_OBJECT (widget),
                     "changed",
 		    G_CALLBACK(on_size_variable_changed), NULL);
   widget = GTK_WIDGET(gtk_builder_get_object(appdata.xml, "size_mode"));
-  g_signal_connect (G_OBJECT (widget), 
+  g_signal_connect (G_OBJECT (widget),
                     "changed",
 		    G_CALLBACK(on_size_mode_changed), NULL);
   widget = GTK_WIDGET(gtk_builder_get_object(appdata.xml, "text_font"));
-  g_signal_connect (G_OBJECT (widget), 
+  g_signal_connect (G_OBJECT (widget),
                     "font_set",
 		    G_CALLBACK(on_text_font_changed), NULL);
   widget = GTK_WIDGET(gtk_builder_get_object(appdata.xml, "text_color"));
-  g_signal_connect (G_OBJECT (widget), 
+  g_signal_connect (G_OBJECT (widget),
                     "color_set",
 		    G_CALLBACK(on_text_color_changed), NULL);
 }
@@ -384,10 +384,10 @@ static void on_text_font_changed(GtkFontButton * wdg, gpointer data)
 
 static void on_text_color_changed(GtkColorButton * wdg, gpointer data)
 {
-  GdkColor new_color;
-  gtk_color_button_get_color(wdg, &new_color);
+  GdkRGBA new_color;
+  gtk_color_chooser_get_rgba(GTK_COLOR_CHOOSER(wdg), &new_color);
   g_free(pref.text_color);
-  pref.text_color = gdk_color_to_string(&new_color);
+  pref.text_color = gdk_rgba_to_string(&new_color);
   ask_reposition(TRUE);
 }
 
@@ -475,7 +475,7 @@ on_numeric_toggle_toggled (GtkToggleButton * togglebutton, gpointer user_data)
   pref.name_res = gtk_toggle_button_get_active (togglebutton);
 }				/* on_numeric_toggle_toggled */
 
-void 
+void
 on_background_image_path_selected (GtkFileChooserButton * filechooser, gpointer user_data)
 {
   pref.bck_image_path = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER (filechooser));
@@ -525,19 +525,19 @@ get_color_store (EATreePos * ep)
   if (ep->gs)
     return TRUE;		/* model already initialized, finished */
 
-  /* store not found, must be created  - it uses 3 values: 
+  /* store not found, must be created  - it uses 3 values:
      First the color string, then the gdk color, lastly the protocol */
   ep->gs = gtk_list_store_new(3, 
-                              G_TYPE_STRING, GDK_TYPE_COLOR, G_TYPE_STRING);
+                              G_TYPE_STRING, GDK_TYPE_RGBA, G_TYPE_STRING);
   gtk_tree_view_set_model(ep->gv, GTK_TREE_MODEL(ep->gs));
 
-  /* the view columns and cell renderers must be also created ... 
+  /* the view columns and cell renderers must be also created ...
      Note: the bkg color is linked to the second column of store
    */
   gtk_tree_view_append_column (ep->gv,
 			       gtk_tree_view_column_new_with_attributes
 			       ("Color", gtk_cell_renderer_text_new (),
-				"text", 0, "background-gdk", 1, NULL));
+				"text", 0, "background-rgba", 1, NULL));
   gtk_tree_view_append_column (ep->gv,
 			       gtk_tree_view_column_new_with_attributes
 			       ("Protocol", gtk_cell_renderer_text_new (),
@@ -562,7 +562,7 @@ on_color_change_button_clicked (GtkButton * button, gpointer user_data)
   GtkTreePath *gpath;
   GtkTreeViewColumn *gcol;
   GtkTreeIter it;
-  GdkColor *gdk_color;
+  GdkRGBA *color;
   GtkColorSelectionDialog *dlg;
   GtkColorSelection *csel;
   EATreePos ep;
@@ -579,15 +579,15 @@ on_color_change_button_clicked (GtkButton * button, gpointer user_data)
   if (!gtk_tree_model_get_iter (GTK_TREE_MODEL (ep.gs), &it, gpath))
     return;
 
-  gtk_tree_model_get (GTK_TREE_MODEL (ep.gs), &it, 1, &gdk_color, -1);
+  gtk_tree_model_get (GTK_TREE_MODEL (ep.gs), &it, 1, &color, -1);
 
   dlg = GTK_COLOR_SELECTION_DIALOG(
           gtk_builder_get_object(appdata.xml, "colorselectiondialog"));
 
   csel = GTK_COLOR_SELECTION(gtk_color_selection_dialog_get_color_selection(dlg));
-  gtk_color_selection_set_current_color(csel, gdk_color);
-  gtk_color_selection_set_previous_color(csel, gdk_color);
-  
+  gtk_color_selection_set_current_rgba(csel, color);
+  gtk_color_selection_set_previous_rgba(csel, color);
+
   g_object_set_data( G_OBJECT(dlg), "isadd", GINT_TO_POINTER(FALSE));
   gtk_widget_show (GTK_WIDGET(dlg));
 }				/* on_color_change_button_clicked */
@@ -632,7 +632,7 @@ void
 on_colordiag_ok_clicked (GtkButton * button, gpointer user_data)
 {
   GtkWidget *colorsel, *colorseldiag;
-  GdkColor gdk_color;
+  GdkRGBA color;
   GtkTreePath *gpath = NULL;
   GtkTreeViewColumn *gcol = NULL;
   GtkTreeIter it;
@@ -662,7 +662,7 @@ on_colordiag_ok_clicked (GtkButton * button, gpointer user_data)
     }
   else
     {
-      if (!gpath || 
+      if (!gpath ||
           !gtk_tree_model_get_iter(GTK_TREE_MODEL (ep.gs), &it, gpath))
 	return;			/* path not found */
     }
@@ -670,20 +670,14 @@ on_colordiag_ok_clicked (GtkButton * button, gpointer user_data)
   /* get the selected color */
   colorsel = gtk_color_selection_dialog_get_color_selection(
 		  GTK_COLOR_SELECTION_DIALOG(colorseldiag));
-  gtk_color_selection_get_current_color(GTK_COLOR_SELECTION(colorsel),
-					 &gdk_color);
-
-  /* Since we are only going to save 24bit precision, we might as well
-   * make sure we don't display any more than that */
-  gdk_color.red = (gdk_color.red >> 8) << 8;
-  gdk_color.green = (gdk_color.green >> 8) << 8;
-  gdk_color.blue = (gdk_color.blue >> 8) << 8;
+  gtk_color_selection_get_current_rgba(GTK_COLOR_SELECTION(colorsel),
+					 &color);
 
   /* fill data */
   if (isadd)
-    gtk_list_store_set (ep.gs, &it, 0, COLSPACES, 1, &gdk_color, 2, "", -1);
+    gtk_list_store_set (ep.gs, &it, 0, COLSPACES, 1, &color, 2, "", -1);
   else
-    gtk_list_store_set (ep.gs, &it, 0, COLSPACES, 1, &gdk_color, -1);
+    gtk_list_store_set (ep.gs, &it, 0, COLSPACES, 1, &color, -1);
 
   gtk_widget_hide (colorseldiag);
 
@@ -756,7 +750,7 @@ on_protocol_edit_ok_clicked (GtkButton * button, gpointer user_data)
   combo_string = gtk_entry_get_text(GTK_ENTRY(gtk_bin_get_child(GTK_BIN(cbox))));
   proto_string = g_utf8_strup(g_strdup(combo_string), -1);
   proto_string = remove_spaces(proto_string);
-  
+
   cbox_add_select(cbox, proto_string);
   gtk_list_store_set (ep.gs, &it, 2, proto_string, -1);
 
@@ -782,7 +776,7 @@ pref_to_color_list (void)
 
   for (i = 0; pref.colors[i]; ++i)
     {
-      GdkColor gdk_color;
+      GdkRGBA color;
       gchar **colors_protocols = NULL;
       gchar *protocol = NULL;
       GtkTreeIter it;
@@ -790,17 +784,17 @@ pref_to_color_list (void)
       colors_protocols = g_strsplit (pref.colors[i], ";", 0);
 
       /* converting color */
-      gdk_color_parse (colors_protocols[0], &gdk_color);
-      
+      gdk_rgba_parse(&color, colors_protocols[0]);
+
       /* converting proto name */
       if (!colors_protocols[1])
-	protocol = "";
+        protocol = "";
       else
-	protocol = colors_protocols[1];
+        protocol = colors_protocols[1];
 
       /* adds a new row */
       gtk_list_store_append (ep.gs, &it);
-      gtk_list_store_set (ep.gs, &it, 0, COLSPACES, 1, &gdk_color, 
+      gtk_list_store_set (ep.gs, &it, 0, COLSPACES, 1, &color,
                           2, protocol, -1);
       g_strfreev(colors_protocols);
     }
@@ -830,23 +824,23 @@ color_list_to_pref (void)
   for (i = 0; i < ncolors; i++)
     {
       gchar *protocol;
-      GdkColor *gdk_color;
+      GdkRGBA *color;
 
       /* reads the list */
       gtk_tree_model_get (GTK_TREE_MODEL (ep.gs), &it,
-                          1, &gdk_color, 2, &protocol, -1);
+                          1, &color, 2, &protocol, -1);
 
-      pref.colors[i] = g_strdup_printf ("#%02x%02x%02x;%s", 
-                                        gdk_color->red >> 8, 
-                                        gdk_color->green >> 8, 
-                                        gdk_color->blue >> 8,
+      pref.colors[i] = g_strdup_printf ("#%02x%02x%02x;%s",
+                                        (unsigned int)(color->red * 255),
+                                        (unsigned int)(color->green * 255),
+                                        (unsigned int)(color->blue * 255),
                                         protocol);
       g_free (protocol);
 
       gtk_tree_model_iter_next (GTK_TREE_MODEL (ep.gs), &it);
     }
   pref.colors[ncolors] = NULL;
-  
+
   pref.colors = protohash_compact(pref.colors);
   protohash_read_prefvect(pref.colors);
 }
@@ -863,7 +857,7 @@ static void cbox_add_select(GtkComboBox *cbox, const gchar *str)
 
   if (!str)
      str = "";
-  
+
   entry = gtk_bin_get_child (GTK_BIN (cbox));
   gtk_entry_set_text (GTK_ENTRY (entry), str);
 
@@ -879,12 +873,12 @@ static void cbox_add_select(GtkComboBox *cbox, const gchar *str)
             {
               /* already present */
               g_free(modelstr);
-              return; 
+              return;
             }
           g_free(modelstr);
         }
 
-      gtk_list_store_insert_with_values(GTK_LIST_STORE(model), 
+      gtk_list_store_insert_with_values(GTK_LIST_STORE(model),
                                         &iter3, 0, 0, str, -1);
     }
 }
@@ -892,6 +886,5 @@ static void cbox_add_select(GtkComboBox *cbox, const gchar *str)
 void change_refresh_period(guint32 newperiod)
 {
   pref.refresh_period = newperiod;
-  timeout_changed();
+  diagram_timeout_changed();
 }
-

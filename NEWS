@@ -1,5 +1,17 @@
                             Changelog for EtherApe
 
+  Overview of changes in EtherApe  ():
+
+   EtherApe now is a pure GTK application, with canvas supplied by GooCanvas
+   (https://wiki.gnome.org/Projects/GooCanvas).
+   While GooCanvas itself is in maintenance mode, is still the best canvas
+   library available and with an API almost identical to gnome-canvas, too!
+   Longer term, EtherApe ui should be completely redesigned and modernized,
+   but this is for another day.
+
+   Changes summary:
+     * EtherApe now uses GooCanvas instead of the obsolete GnomeCanvas.
+ 
 
   Overview of changes in EtherApe 0.9.17 (Thursday, April 5, 2018):
 
@@ -144,10 +156,10 @@
    Translations and documentation updates, plus some fixes.
 
    Changes summary:
-     * Optional central node, based on work of Javier Fernandez-Sanguino 
+     * Optional central node, based on work of Javier Fernandez-Sanguino
        Peña.
      * re-enabled full-screen mode, thanks to nrvale0
-     * Updated spanish translation, thanks to Javier Fernandez-Sanguino 
+     * Updated spanish translation, thanks to Javier Fernandez-Sanguino
        Peña.
      * Added German translation, and fixed typos, thanks to Chris Leick.
      * Updated documentation.
@@ -155,12 +167,12 @@
 
   Overview of changes in EtherApe 0.9.12 (Tuesday May 31, 2011):
    This is a bug fix release.
-   David Goldfarb discovered a critical bug in EtherApe, causing a 
+   David Goldfarb discovered a critical bug in EtherApe, causing a
    NULL pointer indirection with RPC traffic.
-   This bug has security implications, because can be exploited to a 
+   This bug has security implications, because can be exploited to a
    (remote) DOS attack.
-   Packet content is not involved, however, so no privilege escalation 
-   should happen (unless the machine is already subverted by other means). 
+   Packet content is not involved, however, so no privilege escalation
+   should happen (unless the machine is already subverted by other means).
 
    Changes summary:
      * fix bug 3309061 (CVE-2011-3369)
@@ -171,7 +183,7 @@
    EtherApe now can save a snapshot with all known nodes and relevant
    information to an XML file. With option --final-export, a dump is
    automatically generated when a capture file is fully replayed.
-   Additionally, option --signal-export enables SIGUSR1 handling, to 
+   Additionally, option --signal-export enables SIGUSR1 handling, to
    dump on signal.
 
    EtherApe used to have two links for connection, one for each traffic
@@ -186,7 +198,7 @@
    easily be built for OpenSUSE 11.3, SLE11, Centos5/RHEL5, Fedora and
    Mandriva.
    The spec file is somewhat generic, lacking the nicer integrations of
-   official distribution packages, so you are advised to build with EtherApe 
+   official distribution packages, so you are advised to build with EtherApe
    spec file only as a last resort.
 
    OSX compatibility improved, thanks to Zack Perry.
@@ -204,14 +216,14 @@
      * fixed a long-standing bug affecting expiry timeouts. EtherApe was
        overestimating traffic averages.
      * used stock icons when possible to improve consistency with themes.
-     * EtherApe now builds natively on CENTOS5/RHEL5. 
+     * EtherApe now builds natively on CENTOS5/RHEL5.
      * rewrote spec file for use with OpenSUSE Build Service.
      * updated documentation.
-     * removed several (harmless) compiler warnings to make packager's life 
+     * removed several (harmless) compiler warnings to make packager's life
        easier.
      * imported debian-specific patches and a swedish translation by Daniel
        Nylander.
-     * workaround for OSX troubles with gtk_input_add. Thanks to Zack Perry 
+     * workaround for OSX troubles with gtk_input_add. Thanks to Zack Perry
        persistence for helping diagnose and fix.
      * removed obsolete preference "cycle assigned colors".
      * removed deprecated direct resolver
@@ -230,7 +242,7 @@
 
    In 0.9.9 relnotes I forgot to mention a fix from Sotiris Sotiropoulos.
    Many apologies for the mistake.
-   
+
    Note: the old non-threaded name resolver is deprecated and will be
    removed on the next release. If you really need it, speak up *now*.
    Works only with IPV4 addresses, anyway.
@@ -252,23 +264,23 @@
 
   Overview of changes in EtherApe 0.9.9 (Monday Jan 04, 2010):
    The most interesting change of this release is *basic* 802.11 WLAN support.
-   WLAN is one of the most complex protocols around ('crazy' sometimes seems a 
-   better description) and there's no way to support it completely without a 
+   WLAN is one of the most complex protocols around ('crazy' sometimes seems a
+   better description) and there's no way to support it completely without a
    dedicated display mode.
    As an example, a single WLAN packet could contain up to four (4) addresses,
    source and destination, plus AP interchange. Showing the exact packet route
    could be interesting for someone trying to understand WLANs, but not very
    useful to monitor application traffic.
    So EtherApe tries to treat APs like routers, ignoring them if not directly
-   addressed.  Thus a packet starting from node X and ending with node Y will be 
-   shown as a straight link between the two nodes, even if the real path was 
+   addressed.  Thus a packet starting from node X and ending with node Y will be
+   shown as a straight link between the two nodes, even if the real path was
    X-AP and AP-Y.
 
    The other notable improvement is 802.1Q VLAN tagging support.  VLAN tags are
    decoded but ignored, showing all traffic as being in a normal LAN.
    Filtering a single vlan could be accomplished with pcap expressions.
    Note:
-   Due to pcap limitations, to correctly filter VLAN traffic the pcap filter 
+   Due to pcap limitations, to correctly filter VLAN traffic the pcap filter
    must start with the keyword "vlan" (e.g.  vlan and ip) and *all* traffic must
    be VLAN-tagged.
 
@@ -297,38 +309,38 @@
   Overview of changes in EtherApe 0.9.8 (Sunday Sep 27 2009):
 
    Apart for the usual bug fixes, this release see a the switch to glade-3, the
-   overdue removal of bonobo dock and several other deprecated widgets. 
+   overdue removal of bonobo dock and several other deprecated widgets.
    Most of the ui now uses directly Gtk+ instead of Gnome. At this time
-   there isn't a real alternative to GnomeCanvas, so quite a bit of Gnome 
+   there isn't a real alternative to GnomeCanvas, so quite a bit of Gnome
    still remains.
    To make partially up for the long delay, there are some new functionality as
-   well: a node listing window, substantial performance enhancements, and some 
+   well: a node listing window, substantial performance enhancements, and some
    improvements here and there. See the details below.
-   Note the new timing defaults: out of the box, Etherape will react faster to 
+   Note the new timing defaults: out of the box, Etherape will react faster to
    traffic changes and give a better "feel" of current the network state.
    The faster expiration will also help to reduce memory and cpu requirements.
-   On the other hand, "forgetting" inactive nodes faster makes Etherape less 
+   On the other hand, "forgetting" inactive nodes faster makes Etherape less
    suited for mid-term monitoring; the new values will be too small.
    I believe this change will be useful to most people, though, and especially
-   suited to newcomers, who often have difficulties understanding the different 
-   timing types. Experienced users can still easily adapt Etherape to their 
+   suited to newcomers, who often have difficulties understanding the different
+   timing types. Experienced users can still easily adapt Etherape to their
    needs.
-   I have already mentioned the switch to mercurial. A couple months from now 
+   I have already mentioned the switch to mercurial. A couple months from now
    the CVS repository will be shut down.
 
    Changes summary:
-     * Fixed bug 1713590, bad replaying of out-of-order packets (Bug report 
+     * Fixed bug 1713590, bad replaying of out-of-order packets (Bug report
        by "haywire_dk")
      * Fixed bug 1435271, about box doesn't report version (Bug report
        by Cullen Newsom, who had to wait more than three years for this
-       fix). 
+       fix).
      * Fixed bug 2839050, a massive memory leak reported by "psistormyamato".
      * Fixed a bug causing no-data tcp packets to have incorrect port.
      * Improved performance in several key areas.
      * Upgraded to glade-3, removed deprecated widgets and functions, tweaked
        the looks a bit.
      * Added --glade-file option to load a different glade file.
-     * Renamed --infile to --replay-file to be more consistent with the 
+     * Renamed --infile to --replay-file to be more consistent with the
        shortcut (-r).
      * Option --zero-delay (-z) is now replaced by --max-delay, receiving a
        maximum delay in ms between packet when replaying from file.
@@ -342,42 +354,42 @@
        ones).
      * Removed several outdated preferences: diagram is always anti-aliased,
        links always fade on timeout and info windows show protocol data.
-     * Revised default timings, now geared toward instant monitoring. 
+     * Revised default timings, now geared toward instant monitoring.
        Previous values where more suited for mid-term analisys.
        Since sub-second timeouts aren't very useful, and reading milliseconds
        less than ideal, all expire periods now are entered in seconds.
-     * Etherape had always the ability to map multiple protocols to a single 
+     * Etherape had always the ability to map multiple protocols to a single
        color, but you had to create multiple rows, manually matching the RGB
-       code. Now the preferences dialog accepts protocols separated by ',' for 
-       the same row and also compacts automatically previously distinct rows. 
+       code. Now the preferences dialog accepts protocols separated by ',' for
+       the same row and also compacts automatically previously distinct rows.
        You can also change the row color.
      * The link width slider now controls the link width/node radius ratio, so
        changing both node and link size will be easier, while retaining the
        ability to have a links smaller or greater than nodes.
      * Expanded internal consistency checks.
-     * Info and debug levels are now enabled by defining the environment 
-       variable APE_DEBUG with values respectively info or debug (case 
+     * Info and debug levels are now enabled by defining the environment
+       variable APE_DEBUG with values respectively info or debug (case
        insensitive).
- 
+
 
   Development repository switched to Mercurial (Tuesday Sep 08 2009):
 
-   Now that SourceForge officially supports Mercurial, there's no reason 
+   Now that SourceForge officially supports Mercurial, there's no reason
    to still use CVS.
-   DVCs are faster, have much more features and imho much better suited 
+   DVCs are faster, have much more features and imho much better suited
    to open source work.
    Using hg should also lower the barrier for anyone wishing to hack on
    Etherape.
    The old CVS repo will be occasionally (e.g. on releases) synchronized
-   for a while to make life easier for packagers. Full history will be 
+   for a while to make life easier for packagers. Full history will be
    available only on hg, however.
    Note:
-   The new mercurial repo contains almost all the past project history, 
-   but since it's a conversion between two very different systems (for 
+   The new mercurial repo contains almost all the past project history,
+   but since it's a conversion between two very different systems (for
    example, CVS doesn't have changesets, so the converter must infer them
-   from timestamps and commit messages), there are some differences. 
-   So, if you really want to know how the project evolved before release 
-   0.9.7, please consult the CVS repo.  
+   from timestamps and commit messages), there are some differences.
+   So, if you really want to know how the project evolved before release
+   0.9.7, please consult the CVS repo.
 
 
   Overview of changes in EtherApe 0.9.7 (Saturday Sep 30 2006):

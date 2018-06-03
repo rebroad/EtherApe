@@ -1,11 +1,11 @@
 /* EtherApe
  * Copyright (C) 2001 Juan Toledo, Riccardo Ghetta
- * 
+ *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
  * (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -103,8 +103,8 @@ void on_open_activate(GtkMenuItem * menuitem, gpointer user_data)
   dialog = gtk_file_chooser_dialog_new ("Open Capture File",
 				      NULL,
 				      GTK_FILE_CHOOSER_ACTION_OPEN,
-				      GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
-				      GTK_STOCK_OPEN, GTK_RESPONSE_ACCEPT,
+				      _("_Cancel"), GTK_RESPONSE_CANCEL,
+				      _("_Open"), GTK_RESPONSE_ACCEPT,
 				      NULL);
   if (appdata.source.type == ST_FILE && appdata.source.file)
     gtk_file_chooser_set_filename(GTK_FILE_CHOOSER(dialog), appdata.source.file);
@@ -133,8 +133,8 @@ void on_export_activate (GtkMenuItem * menuitem, gpointer user_data)
   dialog = gtk_file_chooser_dialog_new ("Export to XML File",
 				      NULL,
 				      GTK_FILE_CHOOSER_ACTION_SAVE,
-				      GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
-				      GTK_STOCK_SAVE, GTK_RESPONSE_ACCEPT,
+				      _("_Cancel"), GTK_RESPONSE_CANCEL,
+				      _("_Save"), GTK_RESPONSE_ACCEPT,
 				      NULL);
   gtk_file_chooser_set_do_overwrite_confirmation (GTK_FILE_CHOOSER (dialog), TRUE);
 
@@ -288,7 +288,7 @@ void on_toolbar_check_activate(GtkCheckMenuItem * menuitem, gpointer user_data)
   GtkWidget *widget;
   gboolean active = gtk_check_menu_item_get_active(menuitem);
 
-  widget = GTK_WIDGET(gtk_builder_get_object(appdata.xml, "handlebox_toolbar"));
+  widget = GTK_WIDGET(gtk_builder_get_object(appdata.xml, "toolbar"));
   if (active)
     gtk_widget_show(widget);
   else
@@ -308,7 +308,7 @@ void on_legend_check_activate(GtkCheckMenuItem * menuitem, gpointer user_data)
   GtkWidget *widget;
   gboolean active = gtk_check_menu_item_get_active(menuitem);
 
-  widget = GTK_WIDGET(gtk_builder_get_object(appdata.xml, "handlebox_legend"));
+  widget = GTK_WIDGET(gtk_builder_get_object(appdata.xml, "legend_frame"));
   if (active)
     gtk_widget_show(widget);
   else
@@ -348,7 +348,7 @@ void on_about1_activate(GtkMenuItem * menuitem, gpointer user_data)
 
   gtk_about_dialog_set_version(GTK_ABOUT_DIALOG(about), VERSION);
 #ifdef PACKAGE_SCM_REV
-  msg = g_strdup_printf("HG revision: %s", 
+  msg = g_strdup_printf("HG revision: %s",
                         (*PACKAGE_SCM_REV) ? PACKAGE_SCM_REV : _("-unknown-"));
   gtk_about_dialog_set_comments(GTK_ABOUT_DIALOG(about), msg);
   g_free(msg);
@@ -360,7 +360,7 @@ void on_about1_activate(GtkMenuItem * menuitem, gpointer user_data)
 void on_help_activate(GtkMenuItem * menuitem, gpointer user_data)
 {
   GError *err = NULL;
-  gtk_show_uri (NULL, "help:" PACKAGE_NAME, GDK_CURRENT_TIME, &err);
+  gtk_show_uri_on_window(NULL, "help:" PACKAGE_NAME, GDK_CURRENT_TIME, &err);
 }
 
 /* Helper functions */
@@ -531,8 +531,7 @@ void gui_eof_capture(void)
 
 
 /* Sets up the GUI to reflect changes and calls stop_capture() */
-gboolean
-gui_stop_capture (void)
+gboolean gui_stop_capture (void)
 {
   GString *status_string = NULL;
   gchar *err;
@@ -567,7 +566,8 @@ gui_stop_capture (void)
   /* Delete and free protocol information */
   delete_gui_protocols ();
 
-  update_diagram (canvas_widget());
+  /* final diagram update */
+  update_diagram_callback(NULL);
 
   /* Sets the statusbar */
   status_string = g_string_new (_("Ready to capture from "));

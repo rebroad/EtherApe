@@ -147,8 +147,9 @@ static const struct preference preferences[] = {
 
   MKPREF(text_color, string, "#ffff00"),
   MKPREF(fontname, string, "Sans 8"),
-  MKPREF(colors, strvec, ((char*[]){ "#ff0000;WWW,HTTP", "#0000ff;DOMAIN",
-                                     "#00ff00", "#ffff00", "#ff00ff", "#00ffff",
+  MKPREF(colors, strvec, ((char*[]){ "#ff0000;WWW,HTTP,HTTPS", "#0000ff;DOMAIN",
+                                     "#00ff00", "#ffff00", "#ff00ff", 
+                                     "#00ffff;ICMP,ICMPV6",
                                      "#ffffff", "#ff7700", "#ff0077", "#ffaa77",
                                      "#7777ff", "#aaaa33", NULL, })),
 

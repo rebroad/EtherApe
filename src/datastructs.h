@@ -1,6 +1,6 @@
 /* EtherApe
  * Copyright (C) 2000 Juan Toledo, Riccardo Ghetta
- * 
+ *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
@@ -25,7 +25,7 @@
 
 typedef struct
 {
-  GdkColor color;
+  GdkRGBA color;
   gboolean preferred;
 } ColorHashItem;
 
@@ -33,8 +33,8 @@ typedef struct
 /* clears the proto hash */
 void  protohash_clear(void);
 
-/* returns the proto color */
-GdkColor protohash_color(const gchar *protoname);
+/* returns the proto color as GdkRGBA or rgb guint */
+const GdkRGBA *protohash_color(const gchar *protoname);
 
 /* returns the preferred flag */
 gboolean protohash_is_preferred(const gchar *protoname);
