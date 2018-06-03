@@ -360,7 +360,11 @@ void on_about1_activate(GtkMenuItem * menuitem, gpointer user_data)
 void on_help_activate(GtkMenuItem * menuitem, gpointer user_data)
 {
   GError *err = NULL;
+#if GTK_CHECK_VERSION(3,22,0)  
   gtk_show_uri_on_window(NULL, "help:" PACKAGE_NAME, GDK_CURRENT_TIME, &err);
+#else
+  gtk_show_uri (NULL, "help:" PACKAGE_NAME, GDK_CURRENT_TIME, &err);
+#endif
 }
 
 /* Helper functions */
