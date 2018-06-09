@@ -23,13 +23,6 @@ etherape --help for the current set of options.
 You will have to have superuser privileges in order to use this
 program, as is the case with any libpcap based application.
 
-If you are not running on a high-color or better display, you
-might want to use the --no-fade option.
-
-Note: EtherApe is being _actively_ developed: I tend to release
-daily. If you liked the program, I suggest you take a look at
-the webpage and look for the latest version.
-
 
 Installation:
 -------------
@@ -50,32 +43,20 @@ in the INSTALL file.
 
 Porting:
 --------
-EtherApe has been compiled in at least:
+Historically EtherApe has been compiled and run at least for:
 * Linux: Debian 2.2, Slackware 4.0 and 7.0, RedHat 6.1,
   modified linuxppc 1999, Debian m68k
 * NetBSD 1.4T (i386)
 * Sparc Solaris 7 with gcc 2.95.2
 
-EtherApe should probably compile and run in other Unix-like OS. If
-you manage to compile it in a configuration other than the ones
-listed, please post it to the mailing list
-<etherape-users@lists.sourceforge.net> No need to subscribe.
+EtherApe should probably compile and run in other Unix-like OS. 
 
 
 Further information:
 --------------------
 
 See the EtherApe web page at
-http://etherape.sourceforge.net/
-
-	   
-Subscribe to the EtherApe mailing list. To subscribe, point your 
-browser to http://lists.sourceforge.net/mailman/listinfo/etherape-users
-To post a message, mail to 'etherape-users@lists.sourceforge.net'
-Be advised that emails sent to me will always be replied to the
-list, and bcc'ed to you as an attempt to minimise the number 
-of times I have to answer a question. Being so you might as 
-well write to the list directly. :-)
+https://etherape.sourceforge.io/
 
 To receive a message whenever a new version of EtherApe is 
 available, go to http://sourceforge.net/project/?group_id=2712 and
@@ -83,5 +64,3 @@ click on the "Monitor this module" link.
 
 See README.bugs for instructions on how to send a bug report.
 
---
-$Id$
