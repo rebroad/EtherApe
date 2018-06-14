@@ -1481,16 +1481,18 @@ static gint check_new_link(link_id_t * link_id, link_t * link, GooCanvas *canvas
       new_canvas_link->src_item =
             goo_canvas_polyline_new(rootgroup, TRUE, 2,
                                     0,0,
-                                    1,1,
+                                    1,0,
                                     "fill-color", "tan",
+                                    "line-width", 10,
                                     NULL);
       g_object_ref(G_OBJECT (new_canvas_link->src_item));
 
       new_canvas_link->dst_item =
             goo_canvas_polyline_new(rootgroup, TRUE, 2,
                                     0,0,
-                                    1,1,
+                                    1,0,
                                     "fill-color", "tan",
+                                    "line-width", 10,
                                     NULL);
       g_object_ref(G_OBJECT (new_canvas_link->dst_item));
 
@@ -1645,6 +1647,7 @@ static void draw_oneside_link(double xs, double ys, double xd, double yd,
   /* If we got this far, the link can be shown. Make sure it is */
   g_object_set(G_OBJECT(item),
                "points", points,
+	       "line-width", 0.5,
                "fill-color-gdk-rgba", scaledColor,
                "stroke-color-gdk-rgba", scaledColor,
                "visibility", GOO_CANVAS_ITEM_VISIBLE,
