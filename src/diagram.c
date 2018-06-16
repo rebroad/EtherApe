@@ -1481,18 +1481,18 @@ static gint check_new_link(link_id_t * link_id, link_t * link, GooCanvas *canvas
       new_canvas_link->src_item =
             goo_canvas_polyline_new(rootgroup, TRUE, 2,
                                     0,0,
-                                    1,0,
+                                    1,1,
                                     "fill-color", "tan",
-                                    "line-width", 10,
+                                    "line-width", 0.5,
                                     NULL);
       g_object_ref(G_OBJECT (new_canvas_link->src_item));
 
       new_canvas_link->dst_item =
             goo_canvas_polyline_new(rootgroup, TRUE, 2,
                                     0,0,
-                                    1,0,
+                                    1,1,
                                     "fill-color", "tan",
-                                    "line-width", 10,
+                                    "line-width", 0.5,
                                     NULL);
       g_object_ref(G_OBJECT (new_canvas_link->dst_item));
 
