@@ -241,6 +241,7 @@ Daniel Nylander
                             <property name="can_focus">False</property>
                             <child>
                               <object class="GtkRadioMenuItem" id="link_radio">
+                                <property name="name">link_radio</property>
                                 <property name="visible">True</property>
                                 <property name="sensitive">False</property>
                                 <property name="can_focus">False</property>
@@ -260,6 +261,7 @@ Daniel Nylander
                             </child>
                             <child>
                               <object class="GtkRadioMenuItem" id="ip_radio">
+                                <property name="name">ip_radio</property>
                                 <property name="visible">True</property>
                                 <property name="can_focus">False</property>
                                 <property name="has_tooltip">True</property>
@@ -273,6 +275,7 @@ Daniel Nylander
                             </child>
                             <child>
                               <object class="GtkRadioMenuItem" id="tcp_radio">
+                                <property name="name">tcp_radio</property>
                                 <property name="visible">True</property>
                                 <property name="can_focus">False</property>
                                 <property name="has_tooltip">True</property>
