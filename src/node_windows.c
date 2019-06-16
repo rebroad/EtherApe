@@ -224,13 +224,13 @@ static GtkListStore *nodes_table_create(GtkWidget *window)
   sort_model = gtk_tree_model_sort_new_with_model (GTK_TREE_MODEL(gls));
   gtk_tree_view_set_model (gv, GTK_TREE_MODEL (sort_model));
 
-  create_add_text_column(gv, "Name", NODES_COLUMN_NAME, FALSE);
-  create_add_text_column(gv, "Address", NODES_COLUMN_NUMERIC, TRUE);
-  create_add_text_column(gv, "Inst Traffic", NODES_COLUMN_INSTANTANEOUS, FALSE);
-  create_add_text_column(gv, "Accum Traffic", NODES_COLUMN_ACCUMULATED, FALSE);
-  create_add_text_column(gv, "Avg Size", NODES_COLUMN_AVGSIZE, FALSE);
-  create_add_text_column(gv, "Last Heard", NODES_COLUMN_LASTHEARD, FALSE);
-  create_add_text_column(gv, "Packets", NODES_COLUMN_PACKETS, FALSE);
+  create_add_text_column(gv, _("Name"), NODES_COLUMN_NAME, FALSE);
+  create_add_text_column(gv, _("Address"), NODES_COLUMN_NUMERIC, TRUE);
+  create_add_text_column(gv, _("Inst Traffic"), NODES_COLUMN_INSTANTANEOUS, FALSE);
+  create_add_text_column(gv, _("Accum Traffic"), NODES_COLUMN_ACCUMULATED, FALSE);
+  create_add_text_column(gv, _("Avg Size"), NODES_COLUMN_AVGSIZE, FALSE);
+  create_add_text_column(gv, _("Last Heard"), NODES_COLUMN_LASTHEARD, FALSE);
+  create_add_text_column(gv, _("Packets"), NODES_COLUMN_PACKETS, FALSE);
 
   /* the sort functions ... */
   for (i = 0 ; i < NODES_COLUMN_N ; ++i)

@@ -1,7 +1,7 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR Free Software Foundation, Inc.
 # This file is distributed under the same license as the PACKAGE package.
-# 
+#
 # Translators:
 # AlexL <loginov.alex.valer@gmail.com>, 2015,2019
 # Kашицин Роман <calorus@gmail.com>, 2015
@@ -11,15 +11,18 @@ msgid ""
 msgstr ""
 "Project-Id-Version: rus-etherape\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-06-03 20:50+0200\n"
+"POT-Creation-Date: 2019-06-16 12:24+0200\n"
 "PO-Revision-Date: 2019-05-03 00:12+0000\n"
 "Last-Translator: AlexL <loginov.alex.valer@gmail.com>\n"
-"Language-Team: Russian (http://www.transifex.com/rus-open-source/rus-etherape/language/ru/)\n"
+"Language-Team: Russian (http://www.transifex.com/rus-open-source/rus-"
+"etherape/language/ru/)\n"
+"Language: ru\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: ru\n"
-"Plural-Forms: nplurals=4; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || (n%100>=11 && n%100<=14)? 2 : 3);\n"
+"Plural-Forms: nplurals=4; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
+"%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || (n"
+"%100>=11 && n%100<=14)? 2 : 3);\n"
 
 #: src/appdata.c:87
 #, c-format
@@ -37,7 +40,10 @@ msgid ""
 "Nodes: %d (on canvas: %d, shown: %u), Links: %d, Conversations: %ld, names "
 "%ld, protocols %ld. Total Packets seen: %lu (in memory: %ld, on list %ld). "
 "IP cache entries %ld. Canvas objs: %ld. Refreshed: %u ms"
-msgstr "Узлы: %d (на холсте: %d, показано: %u), Каналы: %d, Переговоры: %ld, имена %ld, протоколы %ld. Всего увиденных пакетов: %lu (в памяти: %ld, в списке %ld). Записи IP кэша %ld. Объекты холста: %ld. Освежено: %u мсек"
+msgstr ""
+"Узлы: %d (на холсте: %d, показано: %u), Каналы: %d, Переговоры: %ld, имена "
+"%ld, протоколы %ld. Всего увиденных пакетов: %lu (в памяти: %ld, в списке "
+"%ld). Записи IP кэша %ld. Объекты холста: %ld. Освежено: %u мсек"
 
 #: src/diagram.c:617
 msgid "(Capture statistics unavailable in offline mode.)"
@@ -66,24 +72,26 @@ msgstr "Создание узла холста: %s. Количество узл�
 msgid "Unknown value or node_size_variable"
 msgstr "Неизвестное значение для переменной размера узла"
 
-#: src/diagram.c:1706
+#: src/diagram.c:1709
 msgid "Unknown value for link_size_variable"
 msgstr "Неизвестное значение для переменной размера канала"
 
-#: src/diagram.c:1749
+#: src/diagram.c:1752
 #, c-format
 msgid "Link main protocol: %s"
 msgstr "Главный протокол канала: %s"
 
-#: src/diagram.c:1752
+#: src/diagram.c:1755
 msgid "Link main protocol: unknown"
 msgstr "Главный протокол канала: неизвестен"
 
-#: src/diagram.c:1820
+#: src/diagram.c:1823
 msgid ""
-"'recv': packets received; 'drop': packets dropped by OS buffering; 'ifdrop':"
-" packets dropped by interface or driver."
-msgstr "'recv': полученные пакеты; 'drop': пакеты, отброшенные буферизацией ОС; 'ifdrop': пакеты, отброшенные интерфейсом или драйвером."
+"'recv': packets received; 'drop': packets dropped by OS buffering; 'ifdrop': "
+"packets dropped by interface or driver."
+msgstr ""
+"'recv': полученные пакеты; 'drop': пакеты, отброшенные буферизацией ОС; "
+"'ifdrop': пакеты, отброшенные интерфейсом или драйвером."
 
 #: src/info_windows.c:113 src/info_windows.c:819 src/info_windows.c:826
 #, c-format
@@ -101,7 +109,39 @@ msgstr "Нету имени протокола в событии на удале
 
 #: src/info_windows.c:215
 msgid "No prot_info_window in on_prot_info_delete_event"
-msgstr "Нету окна информации протокола в событии на удаление информации о протоколе"
+msgstr ""
+"Нету окна информации протокола в событии на удаление информации о протоколе"
+
+#: src/info_windows.c:437 src/pref_dialog.c:543
+#, fuzzy
+msgid "Protocol"
+msgstr "Протоколы"
+
+#: src/info_windows.c:438
+msgid "Port"
+msgstr ""
+
+#: src/info_windows.c:439 src/node_windows.c:229
+msgid "Inst Traffic"
+msgstr ""
+
+#: src/info_windows.c:440 src/node_windows.c:230
+#, fuzzy
+msgid "Accum Traffic"
+msgstr "Накопленный трафик (Вх+Исх)"
+
+#: src/info_windows.c:441 src/node_windows.c:231
+msgid "Avg Size"
+msgstr ""
+
+#: src/info_windows.c:442 src/node_windows.c:232
+#, fuzzy
+msgid "Last Heard"
+msgstr "Последнее услышанное: "
+
+#: src/info_windows.c:443 src/node_windows.c:233
+msgid "Packets"
+msgstr ""
 
 #: src/info_windows.c:962 src/info_windows.c:1052 src/info_windows.c:1053
 #: src/info_windows.c:1064 src/info_windows.c:1065
@@ -198,7 +238,8 @@ msgstr "Отключить информационные сообщения"
 
 #: src/main.c:119
 msgid "minimum packet delay in ms for reading capture files [cli only]"
-msgstr "минимальная задержка пакетов в мсек для чтения файлов захвата [только в CLI]"
+msgstr ""
+"минимальная задержка пакетов в мсек для чтения файлов захвата [только в CLI]"
 
 #: src/main.c:120 src/main.c:123
 msgid "<delay>"
@@ -206,7 +247,8 @@ msgstr "<задержка>"
 
 #: src/main.c:122
 msgid "maximum packet delay in ms for reading capture files [cli only]"
-msgstr "максимальная задержка пакетов в мсек для чтения файлов захвата [только в CLI]"
+msgstr ""
+"максимальная задержка пакетов в мсек для чтения файлов захвата [только в CLI]"
 
 #: src/main.c:125
 msgid "uses the named libglade file for widgets"
@@ -260,6 +302,11 @@ msgstr "Соответствующих интерфейсов для захва�
 msgid "Available interfaces for capture:"
 msgstr "Доступные интерфейсы для захвата:"
 
+#: src/menus.c:103
+#, fuzzy
+msgid "Open Capture File"
+msgstr "_Фильтр захвата"
+
 #: src/menus.c:106 src/menus.c:136
 msgid "_Cancel"
 msgstr "_Отмена"
@@ -267,6 +314,10 @@ msgstr "_Отмена"
 #: src/menus.c:107
 msgid "_Open"
 msgstr "_Открыть"
+
+#: src/menus.c:133
+msgid "Export to XML File"
+msgstr ""
 
 #: src/menus.c:137
 msgid "_Save"
@@ -277,6 +328,11 @@ msgstr "_Сохранить"
 msgid "Capture interface set to %s in GUI"
 msgstr "Интерфейс захвата установлен в %s в GUI"
 
+#: src/menus.c:211
+#, fuzzy
+msgid "Unsupported mode in on_mode_radio_activate"
+msgstr "Неподдерживаемый режим ape в сравнении идентификаторов узлов"
+
 #: src/menus.c:239
 #, c-format
 msgid "Mode set to %s in GUI"
@@ -286,59 +342,72 @@ msgstr "Режим установлен в %s в GUI"
 msgid "-unknown-"
 msgstr "-неизвестный-"
 
-#: src/menus.c:412
+#: src/menus.c:416
 msgid "Status already PLAY at gui_start_capture"
 msgstr "Статус уже ИГРАТЬ в gui начала захвата"
 
-#: src/menus.c:446 src/menus.c:476
+#: src/menus.c:450 src/menus.c:480
 #, c-format
 msgid "Invalid mode: %d"
 msgstr "Неверный режим: %d"
 
-#: src/menus.c:455
+#: src/menus.c:459
 msgid "Reading data from "
 msgstr "Чтение данных из "
 
-#: src/menus.c:462 src/menus.c:580
+#: src/menus.c:466 src/menus.c:584
 msgid "default interface"
 msgstr "интерфейс по умолчанию"
 
-#: src/menus.c:467
+#: src/menus.c:471
 msgid " in Data Link mode"
 msgstr " в режиме канала данных"
 
-#: src/menus.c:470
+#: src/menus.c:474
 msgid " in IP mode"
 msgstr " в режиме IP"
 
-#: src/menus.c:473
+#: src/menus.c:477
 msgid " in TCP mode"
 msgstr " в режиме TCP"
 
-#: src/menus.c:485
+#: src/menus.c:489
 msgid "Diagram started"
 msgstr "Диаграмма начата"
 
-#: src/menus.c:509
+#: src/menus.c:513
 msgid "Paused"
 msgstr "Приостановлено"
 
-#: src/menus.c:511
+#: src/menus.c:515
 msgid "Diagram paused"
 msgstr "Диаграмма приостановлена"
 
-#: src/menus.c:527
+#: src/menus.c:531
 #, c-format
 msgid "Replay from file '%s' completed."
 msgstr "Повтор из файла '%s' завершён."
 
-#: src/menus.c:573
+#: src/menus.c:563
+#, fuzzy, c-format
+msgid "Failed to stop capture: %s"
+msgstr "Не удалось прочитать позицию файла %s: %s"
+
+#: src/menus.c:577
 msgid "Ready to capture from "
 msgstr "Готов к захвату из "
 
-#: src/menus.c:585
+#: src/menus.c:589
 msgid "Diagram stopped"
 msgstr "Диаграмма остановлена"
+
+#: src/node_windows.c:227
+msgid "Name"
+msgstr ""
+
+#: src/node_windows.c:228
+msgid "Address"
+msgstr ""
 
 #: src/pref_dialog.c:283
 #, c-format
@@ -354,6 +423,11 @@ msgstr "Значение корректировки: %g. Соотношение 
 #, c-format
 msgid "Adjustment value: %g. Inner ring scale %g"
 msgstr "Значение корректировки: %g. Шкала внутреннего кольца %g"
+
+#: src/pref_dialog.c:539
+#, fuzzy
+msgid "Color"
+msgstr "Цвета"
 
 #: src/preferences.c:348
 #, c-format
@@ -397,23 +471,31 @@ msgstr "Не удалось переключиться на пользовате
 msgid ""
 "%s uses unsupported link type %d, cannot proceed.  Please choose another "
 "source."
-msgstr "%s использует неподдерживаемый тип канала %d, невозможно продолжить. Пожалуйста, выберите другой источник."
+msgstr ""
+"%s использует неподдерживаемый тип канала %d, невозможно продолжить. "
+"Пожалуйста, выберите другой источник."
 
 #: src/capture/capctl.c:470
 msgid ""
 "This device does not support link-layer mode.  Please use IP or TCP modes."
-msgstr "Это устройство не поддерживает режим канального уровня. Пожалуйста, используйте режимы IP или TCP."
+msgstr ""
+"Это устройство не поддерживает режим канального уровня. Пожалуйста, "
+"используйте режимы IP или TCP."
 
 #: src/names/names.c:109
 #, c-format
 msgid ""
 "not enough captured data, terminating protocol decode for '%s' (level %d)"
-msgstr "недостаточно захваченных данных, завершение протокола декодирования для '%s' (уровень %d)"
+msgstr ""
+"недостаточно захваченных данных, завершение протокола декодирования для "
+"'%s' (уровень %d)"
 
 #: src/names/names.c:113
 #, c-format
 msgid "not enough captured data, terminating protocol decode at level %d"
-msgstr "недостаточно захваченных данных, завершение протокола декодирования на уровне %d"
+msgstr ""
+"недостаточно захваченных данных, завершение протокола декодирования на "
+"уровне %d"
 
 #: src/names/names.c:223
 msgid "Unsupported ape mode in fill_node_id"
@@ -453,13 +535,15 @@ msgstr "Поле tofromds в WLAN пакетах неверно: 0x%x"
 #: src/stats/decode_proto.c:763 src/stats/decode_proto.c:796
 #, c-format
 msgid "wlan:captured size too small (read %u, needed %u), packet discarded"
-msgstr "WLAN: захваченный размер слишком мал (прочитано %u, нужно %u), пакет отброшен"
+msgstr ""
+"WLAN: захваченный размер слишком мал (прочитано %u, нужно %u), пакет отброшен"
 
 #: src/stats/decode_proto.c:779
 #, c-format
-msgid ""
-"wlan:captured size too small (read %u, needed %u), RTS packet discarded"
-msgstr "WLAN: захваченный размер слишком мал (прочитано %u, нужно %u), RTS-пакет отброшен"
+msgid "wlan:captured size too small (read %u, needed %u), RTS packet discarded"
+msgstr ""
+"WLAN: захваченный размер слишком мал (прочитано %u, нужно %u), RTS-пакет "
+"отброшен"
 
 #: src/stats/decode_proto.c:830
 #, c-format
@@ -519,578 +603,610 @@ msgstr "%ld\" ранее"
 msgid "%ld'%ld\" ago"
 msgstr "%ld'%ld\" ранее"
 
-#: src/stats/util.c:352
-#, c-format
-msgid "%d/%d %d:%d"
-msgstr "%d/%d %d:%d"
-
-#: glade/etherape.ui:11
-msgid "Copyright 2001-2018 Juan Toledo, Riccardo Ghetta"
-msgstr "Copyright 2001-2018 Juan Toledo, Riccardo Ghetta"
-
 #: glade/etherape.ui:12
 msgid "A Graphical Network Browser."
 msgstr "Графический обзор сети."
 
 #: glade/etherape.ui:36
+#, fuzzy
 msgid ""
+"Vincent van Adrighem <vincent@dirck.mine.nu>\n"
+"AlexL <alexl000@users.sourceforge.net>\n"
+"Gôrkem Cetin <gorkem@gelecek.com.tr>\n"
+"Javier Fernandez-Sanguino Peña\n"
+"Chris Leick <c.leick@vollbio.de>\n"
+"Frederic Peters <fpeters@debian.org>\n"
+"Daniel Nylander\n"
+msgstr ""
 "Vincent van Adrighem <vincent@dirck.mine.nu>\n"
 "Gôrkem Cetin <gorkem@gelecek.com.tr>\n"
 "Javier Fernandez-Sanguino Peña\n"
 "Chris Leick <c.leick@vollbio.de>\n"
 "Frederic Peters <fpeters@debian.org>\n"
 "Daniel Nylander\n"
-msgstr "Vincent van Adrighem <vincent@dirck.mine.nu>\nGôrkem Cetin <gorkem@gelecek.com.tr>\nJavier Fernandez-Sanguino Peña\nChris Leick <c.leick@vollbio.de>\nFrederic Peters <fpeters@debian.org>\nDaniel Nylander\n"
 
-#: glade/etherape.ui:152
-msgid "EtherApe"
-msgstr "EtherApe"
-
-#: glade/etherape.ui:170
+#: glade/etherape.ui:171
 msgid "_File"
 msgstr "_Файл"
 
-#: glade/etherape.ui:189
+#: glade/etherape.ui:190
 msgid "_export"
 msgstr "_экспорт"
 
-#: glade/etherape.ui:228
+#: glade/etherape.ui:229
 msgid "_Capture"
 msgstr "_Захват"
 
-#: glade/etherape.ui:237
+#: glade/etherape.ui:238
 msgid "_Mode"
 msgstr "_Режим"
 
-#: glade/etherape.ui:248
+#: glade/etherape.ui:250
 msgid "_Link Layer"
 msgstr "Слой _канала"
 
-#: glade/etherape.ui:266
+#: glade/etherape.ui:269
 msgid "_IP"
 msgstr "_IP"
 
-#: glade/etherape.ui:279
+#: glade/etherape.ui:283
 msgid "_TCP"
 msgstr "_TCP"
 
-#: glade/etherape.ui:295
+#: glade/etherape.ui:299
 msgid "_Interfaces"
 msgstr "_Интерфейсы"
 
-#: glade/etherape.ui:365
+#: glade/etherape.ui:338
+#, fuzzy
+msgid "_Pause"
+msgstr "Пауза"
+
+#: glade/etherape.ui:350
+msgid "St_op"
+msgstr ""
+
+#: glade/etherape.ui:369
 msgid "_View"
 msgstr "_Вид"
 
-#: glade/etherape.ui:375
+#: glade/etherape.ui:379
 msgid "_Protocols"
 msgstr "_Протоколы"
 
-#: glade/etherape.ui:384
+#: glade/etherape.ui:388
 msgid "_Nodes"
 msgstr "_Узлы"
 
-#: glade/etherape.ui:399
+#: glade/etherape.ui:403
 msgid "_Full Screen"
 msgstr "_Полноэкранный  режим"
 
-#: glade/etherape.ui:410
+#: glade/etherape.ui:414
 msgid "_Toolbar"
 msgstr "_Панель инструментов"
 
-#: glade/etherape.ui:421
+#: glade/etherape.ui:425
 msgid "_Legend"
 msgstr "_Легенда"
 
-#: glade/etherape.ui:432
+#: glade/etherape.ui:436
 msgid "_Status Bar"
 msgstr "_Строка статуса"
 
-#: glade/etherape.ui:446
+#: glade/etherape.ui:450
 msgid "_Help"
 msgstr "_Справка"
 
-#: glade/etherape.ui:494
+#: glade/etherape.ui:498
 msgid "Start capture"
 msgstr "Начать захват"
 
-#: glade/etherape.ui:495
+#: glade/etherape.ui:499
 msgid "Start"
 msgstr "Начать"
 
-#: glade/etherape.ui:509
+#: glade/etherape.ui:513
 msgid "Next"
 msgstr "Далее"
 
-#: glade/etherape.ui:524
+#: glade/etherape.ui:528
 msgid "Pause capture"
 msgstr "Приостановить захват"
 
-#: glade/etherape.ui:525
+#: glade/etherape.ui:529
 msgid "Pause"
 msgstr "Пауза"
 
-#: glade/etherape.ui:540
+#: glade/etherape.ui:544
 msgid "Stop capture"
 msgstr "Остановить захват"
 
-#: glade/etherape.ui:541
+#: glade/etherape.ui:545
 msgid "Stop"
 msgstr "Остановить"
 
-#: glade/etherape.ui:566
+#: glade/etherape.ui:570
 msgid "Preferences (Ctrl-P)"
 msgstr "Предпочтения (Ctrl-P)"
 
-#: glade/etherape.ui:567
+#: glade/etherape.ui:571
 msgid "Pref."
 msgstr "Предпочтения"
 
-#: glade/etherape.ui:583
+#: glade/etherape.ui:587
 msgid "Display the protocols window"
 msgstr "Отобразить окна протоколов"
 
-#: glade/etherape.ui:584
+#: glade/etherape.ui:588
 msgid "Prot."
 msgstr "Протоколы"
 
-#: glade/etherape.ui:598 glade/etherape.ui:2796
+#: glade/etherape.ui:602 glade/etherape.ui:2800
 msgid "Nodes"
 msgstr "Узлы"
 
-#: glade/etherape.ui:662
+#: glade/etherape.ui:666
 msgid "Protocols"
 msgstr "Протоколы"
 
-#: glade/etherape.ui:713
+#: glade/etherape.ui:717
 msgid "Select color"
 msgstr "Выбор цвета"
 
-#: glade/etherape.ui:798
+#: glade/etherape.ui:802
 msgid "Topmost recognized protocol"
 msgstr "Самый признанный протокол"
 
-#: glade/etherape.ui:801
+#: glade/etherape.ui:805
 msgid "Level 2 (Eg: ETH_II)"
 msgstr "Уровень 2 (Напр.: ETH_II)"
 
-#: glade/etherape.ui:804
+#: glade/etherape.ui:808
 msgid "Level 3 (Eg: IP)"
 msgstr "Уровень 3 (Напр.: IP)"
 
-#: glade/etherape.ui:807
+#: glade/etherape.ui:811
 msgid "Level 4 (Eg: TCP)"
 msgstr "Уровень 4 (Напр.: TCP)"
 
-#: glade/etherape.ui:810
+#: glade/etherape.ui:814
 msgid "Level 5 (Eg: HTTP)"
 msgstr "Уровень 5 (Напр.: HTTP)"
 
-#: glade/etherape.ui:821
+#: glade/etherape.ui:825
 msgid "Instant. traffic (In+Out)"
 msgstr "Мгновенный трафик (Вх+Исх)"
 
-#: glade/etherape.ui:824
+#: glade/etherape.ui:828
 msgid "Instant. traffic (Inbound)"
 msgstr "Мгновенный трафик (Входящий)"
 
-#: glade/etherape.ui:827
+#: glade/etherape.ui:831
 msgid "Instant. traffic (Outbound)"
 msgstr "Мгновенный трафик (Исходящий)"
 
-#: glade/etherape.ui:830
+#: glade/etherape.ui:834
 msgid "Instant. packets (In+Out)"
 msgstr "Мгновенные пакеты (Вх+Исх)"
 
-#: glade/etherape.ui:833
+#: glade/etherape.ui:837
 msgid "Accum. traffic (In+Out)"
 msgstr "Накопленный трафик (Вх+Исх)"
 
-#: glade/etherape.ui:836
+#: glade/etherape.ui:840
 msgid "Accum. traffic (Inbound)"
 msgstr "Накопленный трафик (Входящий)"
 
-#: glade/etherape.ui:839
+#: glade/etherape.ui:843
 msgid "Accum. traffic (Outbound)"
 msgstr "Накопленный трафик (Исходящий)"
 
-#: glade/etherape.ui:842
+#: glade/etherape.ui:846
 msgid "Accum. packets (In+Out)"
 msgstr "Накопленные пакеты (Вх+Исх)"
 
-#: glade/etherape.ui:845
+#: glade/etherape.ui:849
 msgid "Average pkt size (In+Out)"
 msgstr "Средний размер пакета (Вх+Исх)"
 
-#: glade/etherape.ui:856
+#: glade/etherape.ui:860
 msgid "(Off)"
 msgstr "(Выкл)"
 
-#: glade/etherape.ui:859
+#: glade/etherape.ui:863
 msgid "Upper left"
 msgstr "Верхний левый"
 
-#: glade/etherape.ui:862
+#: glade/etherape.ui:866
 msgid "Upper right"
 msgstr "Верхний правый"
 
-#: glade/etherape.ui:865
+#: glade/etherape.ui:869
 msgid "Lower left"
 msgstr "Нижний левый"
 
-#: glade/etherape.ui:868
+#: glade/etherape.ui:872
 msgid "Lower right"
 msgstr "Нижний правый"
 
-#: glade/etherape.ui:879
+#: glade/etherape.ui:883
 msgid "Linear"
 msgstr "Линейный"
 
-#: glade/etherape.ui:882
+#: glade/etherape.ui:886
 msgid "Logarithmic"
 msgstr "Логарифмический"
 
-#: glade/etherape.ui:885
+#: glade/etherape.ui:889
 msgid "Square Root"
 msgstr "Квадратный корень"
 
-#: glade/etherape.ui:891
+#: glade/etherape.ui:895
 msgid "EtherApe: Preferences"
 msgstr "EtherApe: Предпочтения"
 
-#: glade/etherape.ui:907
+#: glade/etherape.ui:911
 msgid "Save"
 msgstr "Сохранить"
 
-#: glade/etherape.ui:912
+#: glade/etherape.ui:916
 msgid "Saves changes to preferences file"
 msgstr "Сохранить изменения в файл предпочтений"
 
-#: glade/etherape.ui:929
+#: glade/etherape.ui:933
 msgid "Confirm changes"
 msgstr "Подтвердить изменения"
 
-#: glade/etherape.ui:946
+#: glade/etherape.ui:950
 msgid "Cancel changes"
 msgstr "Отменить изменения"
 
-#: glade/etherape.ui:988
+#: glade/etherape.ui:992
 msgid "Protocol Stack _Level"
 msgstr "_Уровень протокола стека"
 
-#: glade/etherape.ui:1002
+#: glade/etherape.ui:1006
 msgid "Set what level of the protocol stack is displayed in the legend"
 msgstr "Установите, какой уровень протокола стека отображается в легенде"
 
-#: glade/etherape.ui:1032
+#: glade/etherape.ui:1036
 msgid "The statistic used to compute node and link sizes"
 msgstr "Статистика, используемая для вычисления размеров узлов и каналов"
 
-#: glade/etherape.ui:1034
+#: glade/etherape.ui:1038
 msgid "Size _Variable"
 msgstr "Размер  _переменной"
 
-#: glade/etherape.ui:1048
+#: glade/etherape.ui:1052
 msgid ""
 "Set the kind of instantaneous or accumulated traffic that the node radius "
 "indicates"
-msgstr "Установите мгновенный или накопленный объём трафика, что радиус узла указывает"
+msgstr ""
+"Установите мгновенный или накопленный объём трафика, что радиус узла "
+"указывает"
 
-#: glade/etherape.ui:1079
+#: glade/etherape.ui:1083
 msgid "_Inner Ring Scale"
 msgstr "Масштаб _внутреннего кольца"
 
-#: glade/etherape.ui:1093
+#: glade/etherape.ui:1097
 msgid "Inner ring radius as a fraction of outer ring size"
 msgstr "Внутренний радиус кольца как часть размера внешнего кольца"
 
-#: glade/etherape.ui:1120
+#: glade/etherape.ui:1124
 msgid "Display pcap _stats:"
 msgstr "Отображать _статистику захваченных пакетов:"
 
-#: glade/etherape.ui:1133
+#: glade/etherape.ui:1137
 msgid ""
 "Set where to display pcap stats: packets received, dropped by OS buffering, "
 "and dropped by the interface or driver"
-msgstr "Укажите, где отображать статистику захваченных пакетов: пакеты получены, отброшены буферизацией ОС, и отброшены интерфейсом или драйвером"
+msgstr ""
+"Укажите, где отображать статистику захваченных пакетов: пакеты получены, "
+"отброшены буферизацией ОС, и отброшены интерфейсом или драйвером"
 
-#: glade/etherape.ui:1165
+#: glade/etherape.ui:1169
 msgid "Link _Width - Node Radius Ratio"
 msgstr "Отношение: _ширина канала - радиус узла"
 
-#: glade/etherape.ui:1179
+#: glade/etherape.ui:1183
 msgid "Ratio between link width and node radius"
 msgstr "Соотношение между шириной канала и радиусом узла"
 
-#: glade/etherape.ui:1205
+#: glade/etherape.ui:1209
 msgid "Node _Radius Multiplier"
 msgstr "Множитель _радиуса узла"
 
-#: glade/etherape.ui:1246
+#: glade/etherape.ui:1250
 msgid "Size _Mode"
 msgstr "_Режим размера"
 
-#: glade/etherape.ui:1259
+#: glade/etherape.ui:1263
 msgid ""
 "Choose how node radius and link width are calculated as a function of "
 "average traffic"
-msgstr "Выберите способ расчёта радиуса узла и ширины канала в зависимости от среднего трафика"
+msgstr ""
+"Выберите способ расчёта радиуса узла и ширины канала в зависимости от "
+"среднего трафика"
 
-#: glade/etherape.ui:1287
+#: glade/etherape.ui:1291
 msgid "_Hide node names"
 msgstr "_Скрыть имена узлов"
 
-#: glade/etherape.ui:1291
+#: glade/etherape.ui:1295
 msgid "Toggle whether the node names are displayed on top of the nodes"
 msgstr "Переключить, отображаются ли имена узлов поверх узлов"
 
-#: glade/etherape.ui:1304
+#: glade/etherape.ui:1308
 msgid "_Group unknown ports"
 msgstr "_Группировать неизвестные порты"
 
-#: glade/etherape.ui:1331
+#: glade/etherape.ui:1335
 msgid "_Name Resolution"
 msgstr "_Разрешить отображение имён"
 
-#: glade/etherape.ui:1335
+#: glade/etherape.ui:1339
 msgid ""
 "Enable name resolution. If unchecked, all addresses are in numeric form."
-msgstr "Включить отображение имён. Если флажок не установлен, все адреса в числовом формате."
+msgstr ""
+"Включить отображение имён. Если флажок не установлен, все адреса в числовом "
+"формате."
 
-#: glade/etherape.ui:1365
+#: glade/etherape.ui:1369
 msgid "_Capture filter"
 msgstr "_Фильтр захвата"
 
-#: glade/etherape.ui:1378
+#: glade/etherape.ui:1382
 msgid "Sets the capture filter"
 msgstr "Устанавливает фильтра захвата"
 
-#: glade/etherape.ui:1409
+#: glade/etherape.ui:1413
 msgid "Node Label _Font"
 msgstr "_Шрифт метки узла"
 
-#: glade/etherape.ui:1424
+#: glade/etherape.ui:1428
 msgid "Node Label Font"
 msgstr "Шрифт метки узла"
 
-#: glade/etherape.ui:1450
+#: glade/etherape.ui:1454
 msgid "Node Label C_olor"
 msgstr "Цвет метки узла"
 
-#: glade/etherape.ui:1465
+#: glade/etherape.ui:1469
 msgid "Choose the color used to display node labels"
 msgstr "Выберите цвет, используемый для отображения меток узлов"
 
-#: glade/etherape.ui:1466
+#: glade/etherape.ui:1470
 msgid "Pick a Color "
 msgstr "Выберите цвет "
 
-#: glade/etherape.ui:1491
+#: glade/etherape.ui:1495
 msgid "C_entral Node"
 msgstr "_Центральный узел"
 
-#: glade/etherape.ui:1504
+#: glade/etherape.ui:1508
 msgid "Optional central node"
 msgstr "Опциональный центральный узел"
 
-#: glade/etherape.ui:1534
+#: glade/etherape.ui:1538
 msgid "Background Image"
 msgstr "Фоновое изображение"
 
-#: glade/etherape.ui:1545
+#: glade/etherape.ui:1549
 msgid "Use _background image"
 msgstr "Использовать _фоновое изображение"
 
-#: glade/etherape.ui:1549
+#: glade/etherape.ui:1553
 msgid "Enable selection of a background image for the main display"
 msgstr "Включить выбор фонового изображения для основного дисплея"
 
-#: glade/etherape.ui:1584 glade/etherape.ui:1861 glade/etherape.ui:2025
+#: glade/etherape.ui:1588 glade/etherape.ui:1865 glade/etherape.ui:2029
 msgid "Diagram"
 msgstr "Диаграмма"
 
-#: glade/etherape.ui:1633
+#: glade/etherape.ui:1637
 msgid "Add color"
 msgstr "Добавить цвет"
 
-#: glade/etherape.ui:1637
+#: glade/etherape.ui:1641
 msgid ""
-"Add a new color to the list of colors that can be used to represent "
-"protocols"
-msgstr "Добавить новый цвет в список цветов, которые можно использовать для представления протоколов"
+"Add a new color to the list of colors that can be used to represent protocols"
+msgstr ""
+"Добавить новый цвет в список цветов, которые можно использовать для "
+"представления протоколов"
 
-#: glade/etherape.ui:1649
+#: glade/etherape.ui:1653
 msgid "Remove color"
 msgstr "Удалить цвет"
 
-#: glade/etherape.ui:1664
+#: glade/etherape.ui:1668
 msgid "Change color"
 msgstr "Изменить цвет"
 
-#: glade/etherape.ui:1668
+#: glade/etherape.ui:1672
 msgid "Changes selected row color"
 msgstr "Изменяет цвет выбранной строки"
 
-#: glade/etherape.ui:1679
+#: glade/etherape.ui:1683
 msgid "Edit protocol"
 msgstr "Редактировать протокол"
 
-#: glade/etherape.ui:1717
+#: glade/etherape.ui:1721
 msgid "Colors"
 msgstr "Цвета"
 
-#: glade/etherape.ui:1751
+#: glade/etherape.ui:1755
 msgid "Diagram Refresh _Period (ms)"
 msgstr "_Период освежения диаграммы (мсек)"
 
-#: glade/etherape.ui:1764
+#: glade/etherape.ui:1768
 msgid "Refresh diagram every this many miliseconds"
 msgstr "Каждые сколько миллисекунд освежать диаграмму"
 
-#: glade/etherape.ui:1794
+#: glade/etherape.ui:1798
 msgid "Averaging Time (ms)"
 msgstr "Среднее время  (мсек)"
 
-#: glade/etherape.ui:1806
+#: glade/etherape.ui:1810
 msgid "Packet information is averaged for this amount of time"
 msgstr "Информация о пакете усредняется за это время"
 
-#: glade/etherape.ui:1874
+#: glade/etherape.ui:1878
 msgid ""
 "Remove this node from the diagram after this much time. 0 means never "
 "timeout."
-msgstr "Удалить этот узел из диаграммы через это время. 0 означает никогда не тайм-аут."
+msgstr ""
+"Удалить этот узел из диаграммы через это время. 0 означает никогда не тайм-"
+"аут."
 
-#: glade/etherape.ui:1904 glade/etherape.ui:2068
+#: glade/etherape.ui:1908 glade/etherape.ui:2072
 msgid "Traffic Statistics"
 msgstr "Статистика трафика"
 
-#: glade/etherape.ui:1916
+#: glade/etherape.ui:1920
 msgid ""
 "Delete this node from memory after this much time. 0 means never timeout."
-msgstr "Удалить этот узел из памяти через это время. 0 означает никогда не тайм-аут."
+msgstr ""
+"Удалить этот узел из памяти через это время. 0 означает никогда не тайм-аут."
 
-#: glade/etherape.ui:1946 glade/etherape.ui:2110
+#: glade/etherape.ui:1950 glade/etherape.ui:2114
 msgid "Protocol Statistics"
 msgstr "Статистика протоколов"
 
-#: glade/etherape.ui:1958 glade/etherape.ui:2122
+#: glade/etherape.ui:1962 glade/etherape.ui:2126
 msgid ""
 "Expire protocol statistics for a node after this much time. 0 means never "
 "timeout."
-msgstr "По истечении этого времени истекает статистика протокола для узла. 0 означает никогда не тайм-аут."
+msgstr ""
+"По истечении этого времени истекает статистика протокола для узла. 0 "
+"означает никогда не тайм-аут."
 
-#: glade/etherape.ui:1986
+#: glade/etherape.ui:1990
 msgid "<i>Node Timeouts (s)</i>"
 msgstr "<i>Тайм-аут(ы) узла</i>"
 
-#: glade/etherape.ui:2038
+#: glade/etherape.ui:2042
 msgid ""
 "Remove this link from the diagram after this much time. 0 means never "
 "timeout."
-msgstr "Удалить этот канал из диаграммы через это время. 0 означает никогда не тайм-аут."
+msgstr ""
+"Удалить этот канал из диаграммы через это время. 0 означает никогда не тайм-"
+"аут."
 
-#: glade/etherape.ui:2080
+#: glade/etherape.ui:2084
 msgid ""
 "Delete this link from memory after this much time. 0 means never timeout."
-msgstr "Удалить этот канал из памяти через это время. 0 означает никогда не тайм-аут."
+msgstr ""
+"Удалить этот канал из памяти через это время. 0 означает никогда не тайм-аут."
 
-#: glade/etherape.ui:2150
+#: glade/etherape.ui:2154
 msgid "<i>Link Timeouts (s)</i>"
 msgstr "<i>Тайм-аут(ы) канала</i>"
 
-#: glade/etherape.ui:2188
+#: glade/etherape.ui:2192
 msgid "Remove this protocol from memory after this much time. "
 msgstr "Удалить этот протокол из памяти после этого времени. "
 
-#: glade/etherape.ui:2238
+#: glade/etherape.ui:2242
 msgid "<i>Global Protocol Timeouts (s)</i>"
 msgstr "<i>Глобальный тайм-аут(ы) протокола</i>"
 
-#: glade/etherape.ui:2257
+#: glade/etherape.ui:2261
 msgid "Timings"
 msgstr "Тайминги"
 
-#: glade/etherape.ui:2287
+#: glade/etherape.ui:2291
 msgid "WWW"
 msgstr "WWW"
 
-#: glade/etherape.ui:2293
+#: glade/etherape.ui:2297
 msgid "EtherApe: assign protocol"
 msgstr "EtherApe: назначить протокол"
 
-#: glade/etherape.ui:2375
+#: glade/etherape.ui:2379
 msgid "Type protocol name..."
 msgstr "Введите имя протокола..."
 
-#: glade/etherape.ui:2389
+#: glade/etherape.ui:2393
 msgid "Type the protocol name"
 msgstr "Введите имя протокола"
 
-#: glade/etherape.ui:2510
+#: glade/etherape.ui:2514
 msgid "Numeric Name:"
 msgstr "Числовое имя:"
 
-#: glade/etherape.ui:2522
+#: glade/etherape.ui:2526
 msgid "Resolved Name:"
 msgstr "Резолвенное имя:"
 
-#: glade/etherape.ui:2533
+#: glade/etherape.ui:2537
 msgid "node A"
 msgstr "узел А"
 
-#: glade/etherape.ui:2544
+#: glade/etherape.ui:2548
 msgid "node B"
 msgstr "узел В"
 
-#: glade/etherape.ui:2602
+#: glade/etherape.ui:2606
 msgid "Total"
 msgstr "Итого"
 
-#: glade/etherape.ui:2614
+#: glade/etherape.ui:2618
 msgid "Inbound"
 msgstr "Входящий"
 
-#: glade/etherape.ui:2627
+#: glade/etherape.ui:2631
 msgid "Outbound"
 msgstr "Исходящий"
 
-#: glade/etherape.ui:2640 glade/etherape.ui:2953
+#: glade/etherape.ui:2644 glade/etherape.ui:2957
 msgid "Instantaneous"
 msgstr "Мгновенный"
 
-#: glade/etherape.ui:2652 glade/etherape.ui:2994
+#: glade/etherape.ui:2656 glade/etherape.ui:2998
 msgid "Accumulated"
 msgstr "Накопленный"
 
-#: glade/etherape.ui:2708
+#: glade/etherape.ui:2712
 msgid "Average size"
 msgstr "Средний размер"
 
-#: glade/etherape.ui:2811
+#: glade/etherape.ui:2815
 msgid "_Show all nodes"
 msgstr "_Показать все узлы"
 
-#: glade/etherape.ui:2816
+#: glade/etherape.ui:2820
 msgid "Controls display of nodes timed out from diagram, but still in memory"
-msgstr "Управляет отображением узлов, вышедших из диаграммы, но всё ещё находящихся в памяти"
+msgstr ""
+"Управляет отображением узлов, вышедших из диаграммы, но всё ещё находящихся "
+"в памяти"
 
-#: glade/etherape.ui:2876
+#: glade/etherape.ui:2880
 msgid "name"
 msgstr "имя"
 
-#: glade/etherape.ui:2901
+#: glade/etherape.ui:2905
 msgid "Last Heard: "
 msgstr "Последнее услышанное: "
 
-#: glade/etherape.ui:2914
+#: glade/etherape.ui:2918
 msgid "label73"
 msgstr "метка73"
 
-#: glade/etherape.ui:2967 glade/etherape.ui:3008
+#: glade/etherape.ui:2971 glade/etherape.ui:3012
 msgid "test label"
 msgstr "тестовая метка"
 
-#: glade/etherape.ui:3038
+#: glade/etherape.ui:3042
 msgid "EtherApe: Protocols"
 msgstr "EtherApe: Протоколы"
+
+#~ msgid "%d/%d %d:%d"
+#~ msgstr "%d/%d %d:%d"
+
+#~ msgid "Copyright 2001-2018 Juan Toledo, Riccardo Ghetta"
+#~ msgstr "Copyright 2001-2018 Juan Toledo, Riccardo Ghetta"
+
+#~ msgid "EtherApe"
+#~ msgstr "EtherApe"

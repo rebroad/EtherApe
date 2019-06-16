@@ -349,7 +349,7 @@ gchar *timeval_to_str(struct timeval last_heard)
   else
     {
       /* Watch out! The first is month, the second day of the month */
-      str = g_strdup_printf (_("%d/%d %d:%d"),
+      str = g_strdup_printf ("%d/%d %d:%d",
 			     broken_time.tm_mon, broken_time.tm_mday,
 			     broken_time.tm_hour, broken_time.tm_min);
     }

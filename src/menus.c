@@ -47,10 +47,10 @@ void init_menus(void)
 
   interfaces = get_capture_interfaces(err_str);
   if (err_str)
-     g_my_info (_("get_interface result: '%s'"), err_str->str);
+     g_my_info(_("get_interface result: '%s'"), err_str->str);
   if (!interfaces)
     {
-      g_my_info (_("No suitables interfaces for capture have been found"));
+      g_my_info(_("No suitables interfaces for capture have been found"));
       if (err_str)
          g_string_free(err_str, TRUE);
       return;
@@ -100,7 +100,7 @@ void on_open_activate(GtkMenuItem * menuitem, gpointer user_data)
   if (!gui_stop_capture ())
     return;
 
-  dialog = gtk_file_chooser_dialog_new ("Open Capture File",
+  dialog = gtk_file_chooser_dialog_new(_("Open Capture File"),
 				      NULL,
 				      GTK_FILE_CHOOSER_ACTION_OPEN,
 				      _("_Cancel"), GTK_RESPONSE_CANCEL,
@@ -130,7 +130,7 @@ void on_export_activate (GtkMenuItem * menuitem, gpointer user_data)
 {
   GtkWidget *dialog;
 
-  dialog = gtk_file_chooser_dialog_new ("Export to XML File",
+  dialog = gtk_file_chooser_dialog_new(_("Export to XML File"),
 				      NULL,
 				      GTK_FILE_CHOOSER_ACTION_SAVE,
 				      _("_Cancel"), GTK_RESPONSE_CANCEL,
@@ -181,7 +181,7 @@ void on_interface_radio_activate(gchar * gui_device)
 
   gui_start_capture ();
 
-  g_my_info (_("Capture interface set to %s in GUI"), gui_device);
+  g_my_info(_("Capture interface set to %s in GUI"), gui_device);
 }
 
 void on_mode_radio_activate(GtkRadioMenuItem * menuitem, gpointer user_data)
@@ -197,18 +197,18 @@ void on_mode_radio_activate(GtkRadioMenuItem * menuitem, gpointer user_data)
 
   menuname = gtk_widget_get_name(GTK_WIDGET (menuitem));
   g_assert (menuname);
-  g_my_debug ("Initial mode in on_mode_radio_activate %s",
+  g_my_debug("Initial mode in on_mode_radio_activate %s",
 	      (gchar *) menuname);
 
-  if (!strcmp ("link_radio", menuname))
+  if (!strcmp("link_radio", menuname))
     new_mode = LINK6;
-  else if (!strcmp ("ip_radio", menuname))
+  else if (!strcmp("ip_radio", menuname))
     new_mode = IP;
-  else if (!strcmp ("tcp_radio", menuname))
+  else if (!strcmp("tcp_radio", menuname))
     new_mode = TCP;
   else
     {
-      g_my_critical ("Unsopported mode in on_mode_radio_activate");
+      g_my_critical(_("Unsupported mode in on_mode_radio_activate"));
       exit (1);
     }
 
@@ -236,14 +236,14 @@ void on_mode_radio_activate(GtkRadioMenuItem * menuitem, gpointer user_data)
       pref.filter = get_default_filter(new_mode);
     }
   appdata.mode = new_mode;
-  g_my_info (_("Mode set to %s in GUI"), (gchar *) menuitem);
+  g_my_info(_("Mode set to %s in GUI"), (gchar *) menuitem);
   gui_start_capture ();
 
 }				/* on_mode_radio_activate */
 
 void on_start_menuitem_activate (GtkMenuItem * menuitem, gpointer user_data)
 {
-  g_my_debug ("on_start_menuitem_activate called");
+  g_my_debug("on_start_menuitem_activate called");
   gui_start_capture ();
 }				/* on_start_menuitem_activate */
 
@@ -560,7 +560,7 @@ gboolean gui_stop_capture (void)
   err = stop_capture();
   if (err)
     {
-      g_error("Failed to stop capture: %s", err);
+      g_error(_("Failed to stop capture: %s"), err);
       g_free(err);
       return FALSE;
     }

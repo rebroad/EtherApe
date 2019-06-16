@@ -536,11 +536,11 @@ get_color_store (EATreePos * ep)
    */
   gtk_tree_view_append_column (ep->gv,
 			       gtk_tree_view_column_new_with_attributes
-			       ("Color", gtk_cell_renderer_text_new (),
+			       (_("Color"), gtk_cell_renderer_text_new (),
 				"text", 0, "background-rgba", 1, NULL));
   gtk_tree_view_append_column (ep->gv,
 			       gtk_tree_view_column_new_with_attributes
-			       ("Protocol", gtk_cell_renderer_text_new (),
+			       (_("Protocol"), gtk_cell_renderer_text_new (),
 				"text", 2, NULL));
 
   return TRUE;

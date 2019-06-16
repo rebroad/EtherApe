@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: etherape\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-06-03 20:50+0200\n"
+"POT-Creation-Date: 2019-06-16 12:24+0200\n"
 "PO-Revision-Date: 2001-08-12 16:37+0200\n"
 "Last-Translator: Görkem Çetin <gorkem@gelecek.com.tr>\n"
 "Language-Team: Görkem <gorkem@gelecek.com.tr>\n"
@@ -60,20 +60,20 @@ msgstr ""
 msgid "Unknown value or node_size_variable"
 msgstr ""
 
-#: src/diagram.c:1706
+#: src/diagram.c:1709
 msgid "Unknown value for link_size_variable"
 msgstr ""
 
-#: src/diagram.c:1749
+#: src/diagram.c:1752
 #, c-format
 msgid "Link main protocol: %s"
 msgstr ""
 
-#: src/diagram.c:1752
+#: src/diagram.c:1755
 msgid "Link main protocol: unknown"
 msgstr ""
 
-#: src/diagram.c:1820
+#: src/diagram.c:1823
 msgid ""
 "'recv': packets received; 'drop': packets dropped by OS buffering; 'ifdrop': "
 "packets dropped by interface or driver."
@@ -96,6 +96,39 @@ msgstr ""
 #: src/info_windows.c:215
 msgid "No prot_info_window in on_prot_info_delete_event"
 msgstr ""
+
+#: src/info_windows.c:437 src/pref_dialog.c:543
+#, fuzzy
+msgid "Protocol"
+msgstr "Protokoller"
+
+#: src/info_windows.c:438
+msgid "Port"
+msgstr ""
+
+#: src/info_windows.c:439 src/node_windows.c:229
+#, fuzzy
+msgid "Inst Traffic"
+msgstr "Anlık Trafik"
+
+#: src/info_windows.c:440 src/node_windows.c:230
+#, fuzzy
+msgid "Accum Traffic"
+msgstr "Toplam Trafik"
+
+#: src/info_windows.c:441 src/node_windows.c:231
+msgid "Avg Size"
+msgstr ""
+
+#: src/info_windows.c:442 src/node_windows.c:232
+#, fuzzy
+msgid "Last Heard"
+msgstr "Son Görülme"
+
+#: src/info_windows.c:443 src/node_windows.c:233
+#, fuzzy
+msgid "Packets"
+msgstr "Paket"
 
 #: src/info_windows.c:962 src/info_windows.c:1052 src/info_windows.c:1053
 #: src/info_windows.c:1064 src/info_windows.c:1065
@@ -258,12 +291,21 @@ msgstr ""
 msgid "Available interfaces for capture:"
 msgstr ""
 
+#: src/menus.c:103
+#, fuzzy
+msgid "Open Capture File"
+msgstr "Yakalama filtresi"
+
 #: src/menus.c:106 src/menus.c:136
 msgid "_Cancel"
 msgstr ""
 
 #: src/menus.c:107
 msgid "_Open"
+msgstr ""
+
+#: src/menus.c:133
+msgid "Export to XML File"
 msgstr ""
 
 #: src/menus.c:137
@@ -276,6 +318,10 @@ msgstr "Kaydet"
 msgid "Capture interface set to %s in GUI"
 msgstr ""
 
+#: src/menus.c:211
+msgid "Unsupported mode in on_mode_radio_activate"
+msgstr ""
+
 #: src/menus.c:239
 #, c-format
 msgid "Mode set to %s in GUI"
@@ -285,63 +331,77 @@ msgstr ""
 msgid "-unknown-"
 msgstr ""
 
-#: src/menus.c:412
+#: src/menus.c:416
 msgid "Status already PLAY at gui_start_capture"
 msgstr ""
 
-#: src/menus.c:446 src/menus.c:476
+#: src/menus.c:450 src/menus.c:480
 #, c-format
 msgid "Invalid mode: %d"
 msgstr ""
 
 #  Sets the appbar
-#: src/menus.c:455
+#: src/menus.c:459
 msgid "Reading data from "
 msgstr " "
 
-#: src/menus.c:462 src/menus.c:580
+#: src/menus.c:466 src/menus.c:584
 msgid "default interface"
 msgstr "öntanımlı arayüz"
 
-#: src/menus.c:467
+#: src/menus.c:471
 #, fuzzy
 msgid " in Data Link mode"
 msgstr " (UDP konumunda)"
 
-#: src/menus.c:470
+#: src/menus.c:474
 msgid " in IP mode"
 msgstr " (IP konumunda)"
 
-#: src/menus.c:473
+#: src/menus.c:477
 msgid " in TCP mode"
 msgstr " (TCP konumunda)"
 
-#: src/menus.c:485
+#: src/menus.c:489
 msgid "Diagram started"
 msgstr "Pencere başlatıldı"
 
 #  Sets the appbar
-#: src/menus.c:509
+#: src/menus.c:513
 msgid "Paused"
 msgstr "Bekletiliyor"
 
-#: src/menus.c:511
+#: src/menus.c:515
 msgid "Diagram paused"
 msgstr "Pencere bekletiliyor"
 
-#: src/menus.c:527
+#: src/menus.c:531
 #, c-format
 msgid "Replay from file '%s' completed."
 msgstr ""
 
+#: src/menus.c:563
+#, c-format
+msgid "Failed to stop capture: %s"
+msgstr ""
+
 #  Sets the appbar
-#: src/menus.c:573
+#: src/menus.c:577
 msgid "Ready to capture from "
 msgstr "Arayüzden yakalamaya hazır: "
 
-#: src/menus.c:585
+#: src/menus.c:589
 msgid "Diagram stopped"
 msgstr "Pencere durduruldu"
+
+#: src/node_windows.c:227
+#, fuzzy
+msgid "Name"
+msgstr "İsim:"
+
+#: src/node_windows.c:228
+msgid "Address"
+msgstr ""
 
 #: src/pref_dialog.c:283
 #, c-format
@@ -357,6 +417,11 @@ msgstr ""
 #, c-format
 msgid "Adjustment value: %g. Inner ring scale %g"
 msgstr ""
+
+#: src/pref_dialog.c:539
+#, fuzzy
+msgid "Color"
+msgstr "Renkler"
 
 #: src/preferences.c:348
 #, fuzzy, c-format
@@ -523,17 +588,6 @@ msgstr "%d\" önce"
 msgid "%ld'%ld\" ago"
 msgstr "%d'%d\" ago"
 
-#  Watch out! The first is month, the second day of the month
-#: src/stats/util.c:352
-#, c-format
-msgid "%d/%d %d:%d"
-msgstr "%d/%d %d:%d"
-
-#: glade/etherape.ui:11
-#, fuzzy
-msgid "Copyright 2001-2018 Juan Toledo, Riccardo Ghetta"
-msgstr "Copyright 2001 Juan Toledo"
-
 #: glade/etherape.ui:12
 #, fuzzy
 msgid "A Graphical Network Browser."
@@ -544,6 +598,7 @@ msgstr ""
 #: glade/etherape.ui:36
 msgid ""
 "Vincent van Adrighem <vincent@dirck.mine.nu>\n"
+"AlexL <alexl000@users.sourceforge.net>\n"
 "Gôrkem Cetin <gorkem@gelecek.com.tr>\n"
 "Javier Fernandez-Sanguino Peña\n"
 "Chris Leick <c.leick@vollbio.de>\n"
@@ -551,595 +606,610 @@ msgid ""
 "Daniel Nylander\n"
 msgstr ""
 
+#: glade/etherape.ui:171
+#, fuzzy
+msgid "_File"
+msgstr "Dosya:"
+
+#: glade/etherape.ui:190
+#, fuzzy
+msgid "_export"
+msgstr "Prot."
+
+#: glade/etherape.ui:229
+msgid "_Capture"
+msgstr "_Yakala"
+
+#: glade/etherape.ui:238
+msgid "_Mode"
+msgstr "_Kaynak"
+
+#: glade/etherape.ui:250
+msgid "_Link Layer"
+msgstr ""
+
+#: glade/etherape.ui:269
+msgid "_IP"
+msgstr "_IP"
+
+#: glade/etherape.ui:283
+msgid "_TCP"
+msgstr "_TCP"
+
+#: glade/etherape.ui:299
+msgid "_Interfaces"
+msgstr "_Arayüzler"
+
+#: glade/etherape.ui:338
+msgid "_Pause"
+msgstr "_Beklet"
+
+#: glade/etherape.ui:350
+msgid "St_op"
+msgstr "_Durdur"
+
+#: glade/etherape.ui:369
+#, fuzzy
+msgid "_View"
+msgstr "Dosya:"
+
+#: glade/etherape.ui:379
+msgid "_Protocols"
+msgstr "_Protokol"
+
+#: glade/etherape.ui:388
+#, fuzzy
+msgid "_Nodes"
+msgstr "Uçlar"
+
+#: glade/etherape.ui:403
+msgid "_Full Screen"
+msgstr ""
+
+#: glade/etherape.ui:414
+msgid "_Toolbar"
+msgstr "_Araç Çubuğu"
+
+#: glade/etherape.ui:425
+msgid "_Legend"
+msgstr "_Ek çubuk"
+
+#: glade/etherape.ui:436
+msgid "_Status Bar"
+msgstr "_Durum Çubuğu"
+
+#: glade/etherape.ui:450
+msgid "_Help"
+msgstr ""
+
+#: glade/etherape.ui:498
+msgid "Start capture"
+msgstr "Yakalamaya başla"
+
+#: glade/etherape.ui:499
+msgid "Start"
+msgstr "Başlat"
+
+#: glade/etherape.ui:513
+msgid "Next"
+msgstr ""
+
+#: glade/etherape.ui:528
+msgid "Pause capture"
+msgstr "Yakalamayı beklet"
+
+#: glade/etherape.ui:529
+msgid "Pause"
+msgstr "Beklet"
+
+#: glade/etherape.ui:544
+msgid "Stop capture"
+msgstr "Yakalamayı durdur"
+
+#: glade/etherape.ui:545
+msgid "Stop"
+msgstr "Dur"
+
+#: glade/etherape.ui:570
+msgid "Preferences (Ctrl-P)"
+msgstr "Tercihler (Ctrl-P)"
+
+#: glade/etherape.ui:571
+msgid "Pref."
+msgstr "Terc."
+
+#: glade/etherape.ui:587
+msgid "Display the protocols window"
+msgstr "Protokol penceresini göster"
+
+#: glade/etherape.ui:588
+msgid "Prot."
+msgstr "Prot."
+
+#: glade/etherape.ui:602 glade/etherape.ui:2800
+msgid "Nodes"
+msgstr "Uçlar"
+
+#: glade/etherape.ui:666
+msgid "Protocols"
+msgstr "Protokoller"
+
+#: glade/etherape.ui:717
+msgid "Select color"
+msgstr "Rengi seç"
+
+#: glade/etherape.ui:802
+msgid "Topmost recognized protocol"
+msgstr "En çok bilinen protokoller"
+
+#: glade/etherape.ui:805
+msgid "Level 2 (Eg: ETH_II)"
+msgstr "2. Seviye (Örnek: ETH_II)"
+
+#: glade/etherape.ui:808
+msgid "Level 3 (Eg: IP)"
+msgstr "3. Seviye (Örnek: IP)"
+
+#: glade/etherape.ui:811
+msgid "Level 4 (Eg: TCP)"
+msgstr "4. Seviye (Örnek: TCP)"
+
+#: glade/etherape.ui:814
+msgid "Level 5 (Eg: HTTP)"
+msgstr "5. Seviye (Örnek: HTTP)"
+
+#: glade/etherape.ui:825
+msgid "Instant. traffic (In+Out)"
+msgstr "Anlık trafik (giriş+çıkış)"
+
+#: glade/etherape.ui:828
+msgid "Instant. traffic (Inbound)"
+msgstr "Anlık trafik (giriş)"
+
+#: glade/etherape.ui:831
+msgid "Instant. traffic (Outbound)"
+msgstr "Anlık trafik (çıkış)"
+
+#: glade/etherape.ui:834
+#, fuzzy
+msgid "Instant. packets (In+Out)"
+msgstr "Anlık trafik (giriş+çıkış)"
+
+#: glade/etherape.ui:837
+msgid "Accum. traffic (In+Out)"
+msgstr "Toplam trafik (giriş+çıkış)"
+
+#: glade/etherape.ui:840
+msgid "Accum. traffic (Inbound)"
+msgstr "Toplam trafik (giriş)"
+
+#: glade/etherape.ui:843
+msgid "Accum. traffic (Outbound)"
+msgstr "Toplam trafik (çıkış)"
+
+#: glade/etherape.ui:846
+#, fuzzy
+msgid "Accum. packets (In+Out)"
+msgstr "Toplam trafik (giriş+çıkış)"
+
+#: glade/etherape.ui:849
+#, fuzzy
+msgid "Average pkt size (In+Out)"
+msgstr "ortalama"
+
+#: glade/etherape.ui:860
+msgid "(Off)"
+msgstr ""
+
+#: glade/etherape.ui:863
+msgid "Upper left"
+msgstr ""
+
+#: glade/etherape.ui:866
+msgid "Upper right"
+msgstr ""
+
+#: glade/etherape.ui:869
+msgid "Lower left"
+msgstr ""
+
+#: glade/etherape.ui:872
+msgid "Lower right"
+msgstr ""
+
+#: glade/etherape.ui:883
+msgid "Linear"
+msgstr "Doğrusal"
+
+#: glade/etherape.ui:886
+msgid "Logarithmic"
+msgstr "Logaritmik"
+
+#: glade/etherape.ui:889
+msgid "Square Root"
+msgstr "Kök"
+
+#: glade/etherape.ui:895
+msgid "EtherApe: Preferences"
+msgstr "EtherApe: Tercihler"
+
+#: glade/etherape.ui:911
+msgid "Save"
+msgstr "Kaydet"
+
+#: glade/etherape.ui:916
+msgid "Saves changes to preferences file"
+msgstr ""
+
+#: glade/etherape.ui:933
+msgid "Confirm changes"
+msgstr ""
+
+#: glade/etherape.ui:950
+msgid "Cancel changes"
+msgstr ""
+
+#: glade/etherape.ui:992
+#, fuzzy
+msgid "Protocol Stack _Level"
+msgstr "Protokol Seviyesi"
+
+#: glade/etherape.ui:1006
+msgid "Set what level of the protocol stack is displayed in the legend"
+msgstr "Yan çubukta gösterilecek protokolleri belirleyin"
+
+#: glade/etherape.ui:1036
+msgid "The statistic used to compute node and link sizes"
+msgstr ""
+
+#: glade/etherape.ui:1038
+#, fuzzy
+msgid "Size _Variable"
+msgstr "Bilgi yok"
+
+#: glade/etherape.ui:1052
+msgid ""
+"Set the kind of instantaneous or accumulated traffic that the node radius "
+"indicates"
+msgstr ""
+
+#: glade/etherape.ui:1083
+msgid "_Inner Ring Scale"
+msgstr ""
+
+#: glade/etherape.ui:1097
+msgid "Inner ring radius as a fraction of outer ring size"
+msgstr ""
+
+#: glade/etherape.ui:1124
+msgid "Display pcap _stats:"
+msgstr ""
+
+#: glade/etherape.ui:1137
+msgid ""
+"Set where to display pcap stats: packets received, dropped by OS buffering, "
+"and dropped by the interface or driver"
+msgstr ""
+
+#: glade/etherape.ui:1169
+msgid "Link _Width - Node Radius Ratio"
+msgstr ""
+
+#: glade/etherape.ui:1183
+msgid "Ratio between link width and node radius"
+msgstr ""
+
+#: glade/etherape.ui:1209
+msgid "Node _Radius Multiplier"
+msgstr ""
+
+#: glade/etherape.ui:1250
+#, fuzzy
+msgid "Size _Mode"
+msgstr "Büyüklük"
+
+#: glade/etherape.ui:1263
+msgid ""
+"Choose how node radius and link width are calculated as a function of "
+"average traffic"
+msgstr ""
+
+#: glade/etherape.ui:1291
+#, fuzzy
+msgid "_Hide node names"
+msgstr "Uç isimleri gizle"
+
+#: glade/etherape.ui:1295
+msgid "Toggle whether the node names are displayed on top of the nodes"
+msgstr ""
+
+#: glade/etherape.ui:1308
+#, fuzzy
+msgid "_Group unknown ports"
+msgstr "Bilinmeyen portları grupla"
+
+#: glade/etherape.ui:1335
+#, fuzzy
+msgid "_Name Resolution"
+msgstr "DNS çözümlemesi"
+
+#: glade/etherape.ui:1339
+msgid ""
+"Enable name resolution. If unchecked, all addresses are in numeric form."
+msgstr ""
+
+#: glade/etherape.ui:1369
+#, fuzzy
+msgid "_Capture filter"
+msgstr "Yakalama filtresi"
+
+#: glade/etherape.ui:1382
+#, fuzzy
+msgid "Sets the capture filter"
+msgstr "yakalama filtresini tanımla"
+
+#: glade/etherape.ui:1413
+#, fuzzy
+msgid "Node Label _Font"
+msgstr "Uç Bağlantı Zaman Aşımı (ms)"
+
+#: glade/etherape.ui:1428
+#, fuzzy
+msgid "Node Label Font"
+msgstr "Uç Bağlantı Zaman Aşımı (ms)"
+
+#: glade/etherape.ui:1454
+msgid "Node Label C_olor"
+msgstr ""
+
+#: glade/etherape.ui:1469
+#, fuzzy
+msgid "Choose the color used to display node labels"
+msgstr "Pencerede gösterilecek yazıtipini belirleyin"
+
+#: glade/etherape.ui:1470
+msgid "Pick a Color "
+msgstr ""
+
+#: glade/etherape.ui:1495
+msgid "C_entral Node"
+msgstr ""
+
+#: glade/etherape.ui:1508
+msgid "Optional central node"
+msgstr ""
+
+#: glade/etherape.ui:1538
+msgid "Background Image"
+msgstr ""
+
+#: glade/etherape.ui:1549
+msgid "Use _background image"
+msgstr ""
+
+#: glade/etherape.ui:1553
+msgid "Enable selection of a background image for the main display"
+msgstr ""
+
+#: glade/etherape.ui:1588 glade/etherape.ui:1865 glade/etherape.ui:2029
+msgid "Diagram"
+msgstr "Pencere"
+
+#: glade/etherape.ui:1637
+msgid "Add color"
+msgstr "Renk ekle"
+
+#: glade/etherape.ui:1641
+msgid ""
+"Add a new color to the list of colors that can be used to represent protocols"
+msgstr ""
+
+#: glade/etherape.ui:1653
+msgid "Remove color"
+msgstr "Rengi sil"
+
+#: glade/etherape.ui:1668
+#, fuzzy
+msgid "Change color"
+msgstr "Renkleri soluklaştır"
+
+#: glade/etherape.ui:1672
+#, fuzzy
+msgid "Changes selected row color"
+msgstr "Seçili protokolü sil"
+
+#: glade/etherape.ui:1683
+msgid "Edit protocol"
+msgstr "Protokolü düzenle"
+
+#: glade/etherape.ui:1721
+msgid "Colors"
+msgstr "Renkler"
+
+#: glade/etherape.ui:1755
+#, fuzzy
+msgid "Diagram Refresh _Period (ms)"
+msgstr "Pencere tazeleme aralığı (ms)"
+
+#: glade/etherape.ui:1768
+msgid "Refresh diagram every this many miliseconds"
+msgstr "Pencere tazeleme aralığı"
+
+#: glade/etherape.ui:1798
+msgid "Averaging Time (ms)"
+msgstr "Ortalama Süre (ms)"
+
+#: glade/etherape.ui:1810
+msgid "Packet information is averaged for this amount of time"
+msgstr ""
+
+#: glade/etherape.ui:1878
+msgid ""
+"Remove this node from the diagram after this much time. 0 means never "
+"timeout."
+msgstr ""
+
+#: glade/etherape.ui:1908 glade/etherape.ui:2072
+msgid "Traffic Statistics"
+msgstr ""
+
+#: glade/etherape.ui:1920
+msgid ""
+"Delete this node from memory after this much time. 0 means never timeout."
+msgstr ""
+
+#: glade/etherape.ui:1950 glade/etherape.ui:2114
+#, fuzzy
+msgid "Protocol Statistics"
+msgstr "Protokol Seviyesi"
+
+#: glade/etherape.ui:1962 glade/etherape.ui:2126
+msgid ""
+"Expire protocol statistics for a node after this much time. 0 means never "
+"timeout."
+msgstr ""
+
+#: glade/etherape.ui:1990
+#, fuzzy
+msgid "<i>Node Timeouts (s)</i>"
+msgstr "Uç Bağlantı Zaman Aşımı (ms)"
+
+#: glade/etherape.ui:2042
+msgid ""
+"Remove this link from the diagram after this much time. 0 means never "
+"timeout."
+msgstr ""
+
+#: glade/etherape.ui:2084
+msgid ""
+"Delete this link from memory after this much time. 0 means never timeout."
+msgstr ""
+
+#: glade/etherape.ui:2154
+#, fuzzy
+msgid "<i>Link Timeouts (s)</i>"
+msgstr "Bağlantı Zaman Aşımı (ms)"
+
+#: glade/etherape.ui:2192
+msgid "Remove this protocol from memory after this much time. "
+msgstr ""
+
+#: glade/etherape.ui:2242
+#, fuzzy
+msgid "<i>Global Protocol Timeouts (s)</i>"
+msgstr "Uç Bağlantı Zaman Aşımı (ms)"
+
+#: glade/etherape.ui:2261
+msgid "Timings"
+msgstr ""
+
+#: glade/etherape.ui:2291
+msgid "WWW"
+msgstr ""
+
+#: glade/etherape.ui:2297
+msgid "EtherApe: assign protocol"
+msgstr "EtherApe: protokol tanımla"
+
+#: glade/etherape.ui:2379
+msgid "Type protocol name..."
+msgstr "Protokol adını girin..."
+
+#: glade/etherape.ui:2393
+#, fuzzy
+msgid "Type the protocol name"
+msgstr "Protokol adını girin..."
+
+#: glade/etherape.ui:2514
+msgid "Numeric Name:"
+msgstr ""
+
+#: glade/etherape.ui:2526
+msgid "Resolved Name:"
+msgstr ""
+
+#: glade/etherape.ui:2537
+#, fuzzy
+msgid "node A"
+msgstr "Kip"
+
+#: glade/etherape.ui:2548
+#, fuzzy
+msgid "node B"
+msgstr "Kip"
+
+#: glade/etherape.ui:2606
+msgid "Total"
+msgstr ""
+
+#: glade/etherape.ui:2618
+#, fuzzy
+msgid "Inbound"
+msgstr "Toplam Giren"
+
+#: glade/etherape.ui:2631
+#, fuzzy
+msgid "Outbound"
+msgstr "Toplam Çıkan"
+
+#: glade/etherape.ui:2644 glade/etherape.ui:2957
+msgid "Instantaneous"
+msgstr "Anlık"
+
+#: glade/etherape.ui:2656 glade/etherape.ui:2998
+#, fuzzy
+msgid "Accumulated"
+msgstr "toplam"
+
+#: glade/etherape.ui:2712
+#, fuzzy
+msgid "Average size"
+msgstr "ortalama"
+
+#: glade/etherape.ui:2815
+msgid "_Show all nodes"
+msgstr ""
+
+#: glade/etherape.ui:2820
+msgid "Controls display of nodes timed out from diagram, but still in memory"
+msgstr ""
+
+#: glade/etherape.ui:2880
+msgid "name"
+msgstr "isim"
+
+#: glade/etherape.ui:2905
+msgid "Last Heard: "
+msgstr "Son Görülme Zamanı: "
+
+#: glade/etherape.ui:2918
+msgid "label73"
+msgstr "label73"
+
+#: glade/etherape.ui:2971 glade/etherape.ui:3012
+msgid "test label"
+msgstr ""
+
+#: glade/etherape.ui:3042
+msgid "EtherApe: Protocols"
+msgstr "EtherApe: Protokoller"
+
 #  append_etype_prot
 #
 #  * Archivo de cadenas traducibles generado por Glade.
 #  * Añada este archivo a su POTFILES.in de su proyecto.
 #  * NO lo compile como parte de su aplicación.
 #
-#: glade/etherape.ui:152
-msgid "EtherApe"
-msgstr "EtherApe"
+#~ msgid "EtherApe"
+#~ msgstr "EtherApe"
 
-#: glade/etherape.ui:170
+#  Watch out! The first is month, the second day of the month
+#~ msgid "%d/%d %d:%d"
+#~ msgstr "%d/%d %d:%d"
+
 #, fuzzy
-msgid "_File"
-msgstr "Dosya:"
-
-#: glade/etherape.ui:189
-#, fuzzy
-msgid "_export"
-msgstr "Prot."
-
-#: glade/etherape.ui:228
-msgid "_Capture"
-msgstr "_Yakala"
-
-#: glade/etherape.ui:237
-msgid "_Mode"
-msgstr "_Kaynak"
-
-#: glade/etherape.ui:248
-msgid "_Link Layer"
-msgstr ""
-
-#: glade/etherape.ui:266
-msgid "_IP"
-msgstr "_IP"
-
-#: glade/etherape.ui:279
-msgid "_TCP"
-msgstr "_TCP"
-
-#: glade/etherape.ui:295
-msgid "_Interfaces"
-msgstr "_Arayüzler"
-
-#: glade/etherape.ui:365
-#, fuzzy
-msgid "_View"
-msgstr "Dosya:"
-
-#: glade/etherape.ui:375
-msgid "_Protocols"
-msgstr "_Protokol"
-
-#: glade/etherape.ui:384
-#, fuzzy
-msgid "_Nodes"
-msgstr "Uçlar"
-
-#: glade/etherape.ui:399
-msgid "_Full Screen"
-msgstr ""
-
-#: glade/etherape.ui:410
-msgid "_Toolbar"
-msgstr "_Araç Çubuğu"
-
-#: glade/etherape.ui:421
-msgid "_Legend"
-msgstr "_Ek çubuk"
-
-#: glade/etherape.ui:432
-msgid "_Status Bar"
-msgstr "_Durum Çubuğu"
-
-#: glade/etherape.ui:446
-msgid "_Help"
-msgstr ""
-
-#: glade/etherape.ui:494
-msgid "Start capture"
-msgstr "Yakalamaya başla"
-
-#: glade/etherape.ui:495
-msgid "Start"
-msgstr "Başlat"
-
-#: glade/etherape.ui:509
-msgid "Next"
-msgstr ""
-
-#: glade/etherape.ui:524
-msgid "Pause capture"
-msgstr "Yakalamayı beklet"
-
-#: glade/etherape.ui:525
-msgid "Pause"
-msgstr "Beklet"
-
-#: glade/etherape.ui:540
-msgid "Stop capture"
-msgstr "Yakalamayı durdur"
-
-#: glade/etherape.ui:541
-msgid "Stop"
-msgstr "Dur"
-
-#: glade/etherape.ui:566
-msgid "Preferences (Ctrl-P)"
-msgstr "Tercihler (Ctrl-P)"
-
-#: glade/etherape.ui:567
-msgid "Pref."
-msgstr "Terc."
-
-#: glade/etherape.ui:583
-msgid "Display the protocols window"
-msgstr "Protokol penceresini göster"
-
-#: glade/etherape.ui:584
-msgid "Prot."
-msgstr "Prot."
-
-#: glade/etherape.ui:598 glade/etherape.ui:2796
-msgid "Nodes"
-msgstr "Uçlar"
-
-#: glade/etherape.ui:662
-msgid "Protocols"
-msgstr "Protokoller"
-
-#: glade/etherape.ui:713
-msgid "Select color"
-msgstr "Rengi seç"
-
-#: glade/etherape.ui:798
-msgid "Topmost recognized protocol"
-msgstr "En çok bilinen protokoller"
-
-#: glade/etherape.ui:801
-msgid "Level 2 (Eg: ETH_II)"
-msgstr "2. Seviye (Örnek: ETH_II)"
-
-#: glade/etherape.ui:804
-msgid "Level 3 (Eg: IP)"
-msgstr "3. Seviye (Örnek: IP)"
-
-#: glade/etherape.ui:807
-msgid "Level 4 (Eg: TCP)"
-msgstr "4. Seviye (Örnek: TCP)"
-
-#: glade/etherape.ui:810
-msgid "Level 5 (Eg: HTTP)"
-msgstr "5. Seviye (Örnek: HTTP)"
-
-#: glade/etherape.ui:821
-msgid "Instant. traffic (In+Out)"
-msgstr "Anlık trafik (giriş+çıkış)"
-
-#: glade/etherape.ui:824
-msgid "Instant. traffic (Inbound)"
-msgstr "Anlık trafik (giriş)"
-
-#: glade/etherape.ui:827
-msgid "Instant. traffic (Outbound)"
-msgstr "Anlık trafik (çıkış)"
-
-#: glade/etherape.ui:830
-#, fuzzy
-msgid "Instant. packets (In+Out)"
-msgstr "Anlık trafik (giriş+çıkış)"
-
-#: glade/etherape.ui:833
-msgid "Accum. traffic (In+Out)"
-msgstr "Toplam trafik (giriş+çıkış)"
-
-#: glade/etherape.ui:836
-msgid "Accum. traffic (Inbound)"
-msgstr "Toplam trafik (giriş)"
-
-#: glade/etherape.ui:839
-msgid "Accum. traffic (Outbound)"
-msgstr "Toplam trafik (çıkış)"
-
-#: glade/etherape.ui:842
-#, fuzzy
-msgid "Accum. packets (In+Out)"
-msgstr "Toplam trafik (giriş+çıkış)"
-
-#: glade/etherape.ui:845
-#, fuzzy
-msgid "Average pkt size (In+Out)"
-msgstr "ortalama"
-
-#: glade/etherape.ui:856
-msgid "(Off)"
-msgstr ""
-
-#: glade/etherape.ui:859
-msgid "Upper left"
-msgstr ""
-
-#: glade/etherape.ui:862
-msgid "Upper right"
-msgstr ""
-
-#: glade/etherape.ui:865
-msgid "Lower left"
-msgstr ""
-
-#: glade/etherape.ui:868
-msgid "Lower right"
-msgstr ""
-
-#: glade/etherape.ui:879
-msgid "Linear"
-msgstr "Doğrusal"
-
-#: glade/etherape.ui:882
-msgid "Logarithmic"
-msgstr "Logaritmik"
-
-#: glade/etherape.ui:885
-msgid "Square Root"
-msgstr "Kök"
-
-#: glade/etherape.ui:891
-msgid "EtherApe: Preferences"
-msgstr "EtherApe: Tercihler"
-
-#: glade/etherape.ui:907
-msgid "Save"
-msgstr "Kaydet"
-
-#: glade/etherape.ui:912
-msgid "Saves changes to preferences file"
-msgstr ""
-
-#: glade/etherape.ui:929
-msgid "Confirm changes"
-msgstr ""
-
-#: glade/etherape.ui:946
-msgid "Cancel changes"
-msgstr ""
-
-#: glade/etherape.ui:988
-#, fuzzy
-msgid "Protocol Stack _Level"
-msgstr "Protokol Seviyesi"
-
-#: glade/etherape.ui:1002
-msgid "Set what level of the protocol stack is displayed in the legend"
-msgstr "Yan çubukta gösterilecek protokolleri belirleyin"
-
-#: glade/etherape.ui:1032
-msgid "The statistic used to compute node and link sizes"
-msgstr ""
-
-#: glade/etherape.ui:1034
-#, fuzzy
-msgid "Size _Variable"
-msgstr "Bilgi yok"
-
-#: glade/etherape.ui:1048
-msgid ""
-"Set the kind of instantaneous or accumulated traffic that the node radius "
-"indicates"
-msgstr ""
-
-#: glade/etherape.ui:1079
-msgid "_Inner Ring Scale"
-msgstr ""
-
-#: glade/etherape.ui:1093
-msgid "Inner ring radius as a fraction of outer ring size"
-msgstr ""
-
-#: glade/etherape.ui:1120
-msgid "Display pcap _stats:"
-msgstr ""
-
-#: glade/etherape.ui:1133
-msgid ""
-"Set where to display pcap stats: packets received, dropped by OS buffering, "
-"and dropped by the interface or driver"
-msgstr ""
-
-#: glade/etherape.ui:1165
-msgid "Link _Width - Node Radius Ratio"
-msgstr ""
-
-#: glade/etherape.ui:1179
-msgid "Ratio between link width and node radius"
-msgstr ""
-
-#: glade/etherape.ui:1205
-msgid "Node _Radius Multiplier"
-msgstr ""
-
-#: glade/etherape.ui:1246
-#, fuzzy
-msgid "Size _Mode"
-msgstr "Büyüklük"
-
-#: glade/etherape.ui:1259
-msgid ""
-"Choose how node radius and link width are calculated as a function of "
-"average traffic"
-msgstr ""
-
-#: glade/etherape.ui:1287
-#, fuzzy
-msgid "_Hide node names"
-msgstr "Uç isimleri gizle"
-
-#: glade/etherape.ui:1291
-msgid "Toggle whether the node names are displayed on top of the nodes"
-msgstr ""
-
-#: glade/etherape.ui:1304
-#, fuzzy
-msgid "_Group unknown ports"
-msgstr "Bilinmeyen portları grupla"
-
-#: glade/etherape.ui:1331
-#, fuzzy
-msgid "_Name Resolution"
-msgstr "DNS çözümlemesi"
-
-#: glade/etherape.ui:1335
-msgid ""
-"Enable name resolution. If unchecked, all addresses are in numeric form."
-msgstr ""
-
-#: glade/etherape.ui:1365
-#, fuzzy
-msgid "_Capture filter"
-msgstr "Yakalama filtresi"
-
-#: glade/etherape.ui:1378
-#, fuzzy
-msgid "Sets the capture filter"
-msgstr "yakalama filtresini tanımla"
-
-#: glade/etherape.ui:1409
-#, fuzzy
-msgid "Node Label _Font"
-msgstr "Uç Bağlantı Zaman Aşımı (ms)"
-
-#: glade/etherape.ui:1424
-#, fuzzy
-msgid "Node Label Font"
-msgstr "Uç Bağlantı Zaman Aşımı (ms)"
-
-#: glade/etherape.ui:1450
-msgid "Node Label C_olor"
-msgstr ""
-
-#: glade/etherape.ui:1465
-#, fuzzy
-msgid "Choose the color used to display node labels"
-msgstr "Pencerede gösterilecek yazıtipini belirleyin"
-
-#: glade/etherape.ui:1466
-msgid "Pick a Color "
-msgstr ""
-
-#: glade/etherape.ui:1491
-msgid "C_entral Node"
-msgstr ""
-
-#: glade/etherape.ui:1504
-msgid "Optional central node"
-msgstr ""
-
-#: glade/etherape.ui:1534
-msgid "Background Image"
-msgstr ""
-
-#: glade/etherape.ui:1545
-msgid "Use _background image"
-msgstr ""
-
-#: glade/etherape.ui:1549
-msgid "Enable selection of a background image for the main display"
-msgstr ""
-
-#: glade/etherape.ui:1584 glade/etherape.ui:1861 glade/etherape.ui:2025
-msgid "Diagram"
-msgstr "Pencere"
-
-#: glade/etherape.ui:1633
-msgid "Add color"
-msgstr "Renk ekle"
-
-#: glade/etherape.ui:1637
-msgid ""
-"Add a new color to the list of colors that can be used to represent protocols"
-msgstr ""
-
-#: glade/etherape.ui:1649
-msgid "Remove color"
-msgstr "Rengi sil"
-
-#: glade/etherape.ui:1664
-#, fuzzy
-msgid "Change color"
-msgstr "Renkleri soluklaştır"
-
-#: glade/etherape.ui:1668
-#, fuzzy
-msgid "Changes selected row color"
-msgstr "Seçili protokolü sil"
-
-#: glade/etherape.ui:1679
-msgid "Edit protocol"
-msgstr "Protokolü düzenle"
-
-#: glade/etherape.ui:1717
-msgid "Colors"
-msgstr "Renkler"
-
-#: glade/etherape.ui:1751
-#, fuzzy
-msgid "Diagram Refresh _Period (ms)"
-msgstr "Pencere tazeleme aralığı (ms)"
-
-#: glade/etherape.ui:1764
-msgid "Refresh diagram every this many miliseconds"
-msgstr "Pencere tazeleme aralığı"
-
-#: glade/etherape.ui:1794
-msgid "Averaging Time (ms)"
-msgstr "Ortalama Süre (ms)"
-
-#: glade/etherape.ui:1806
-msgid "Packet information is averaged for this amount of time"
-msgstr ""
-
-#: glade/etherape.ui:1874
-msgid ""
-"Remove this node from the diagram after this much time. 0 means never "
-"timeout."
-msgstr ""
-
-#: glade/etherape.ui:1904 glade/etherape.ui:2068
-msgid "Traffic Statistics"
-msgstr ""
-
-#: glade/etherape.ui:1916
-msgid ""
-"Delete this node from memory after this much time. 0 means never timeout."
-msgstr ""
-
-#: glade/etherape.ui:1946 glade/etherape.ui:2110
-#, fuzzy
-msgid "Protocol Statistics"
-msgstr "Protokol Seviyesi"
-
-#: glade/etherape.ui:1958 glade/etherape.ui:2122
-msgid ""
-"Expire protocol statistics for a node after this much time. 0 means never "
-"timeout."
-msgstr ""
-
-#: glade/etherape.ui:1986
-#, fuzzy
-msgid "<i>Node Timeouts (s)</i>"
-msgstr "Uç Bağlantı Zaman Aşımı (ms)"
-
-#: glade/etherape.ui:2038
-msgid ""
-"Remove this link from the diagram after this much time. 0 means never "
-"timeout."
-msgstr ""
-
-#: glade/etherape.ui:2080
-msgid ""
-"Delete this link from memory after this much time. 0 means never timeout."
-msgstr ""
-
-#: glade/etherape.ui:2150
-#, fuzzy
-msgid "<i>Link Timeouts (s)</i>"
-msgstr "Bağlantı Zaman Aşımı (ms)"
-
-#: glade/etherape.ui:2188
-msgid "Remove this protocol from memory after this much time. "
-msgstr ""
-
-#: glade/etherape.ui:2238
-#, fuzzy
-msgid "<i>Global Protocol Timeouts (s)</i>"
-msgstr "Uç Bağlantı Zaman Aşımı (ms)"
-
-#: glade/etherape.ui:2257
-msgid "Timings"
-msgstr ""
-
-#: glade/etherape.ui:2287
-msgid "WWW"
-msgstr ""
-
-#: glade/etherape.ui:2293
-msgid "EtherApe: assign protocol"
-msgstr "EtherApe: protokol tanımla"
-
-#: glade/etherape.ui:2375
-msgid "Type protocol name..."
-msgstr "Protokol adını girin..."
-
-#: glade/etherape.ui:2389
-#, fuzzy
-msgid "Type the protocol name"
-msgstr "Protokol adını girin..."
-
-#: glade/etherape.ui:2510
-msgid "Numeric Name:"
-msgstr ""
-
-#: glade/etherape.ui:2522
-msgid "Resolved Name:"
-msgstr ""
-
-#: glade/etherape.ui:2533
-#, fuzzy
-msgid "node A"
-msgstr "Kip"
-
-#: glade/etherape.ui:2544
-#, fuzzy
-msgid "node B"
-msgstr "Kip"
-
-#: glade/etherape.ui:2602
-msgid "Total"
-msgstr ""
-
-#: glade/etherape.ui:2614
-#, fuzzy
-msgid "Inbound"
-msgstr "Toplam Giren"
-
-#: glade/etherape.ui:2627
-#, fuzzy
-msgid "Outbound"
-msgstr "Toplam Çıkan"
-
-#: glade/etherape.ui:2640 glade/etherape.ui:2953
-msgid "Instantaneous"
-msgstr "Anlık"
-
-#: glade/etherape.ui:2652 glade/etherape.ui:2994
-#, fuzzy
-msgid "Accumulated"
-msgstr "toplam"
-
-#: glade/etherape.ui:2708
-#, fuzzy
-msgid "Average size"
-msgstr "ortalama"
-
-#: glade/etherape.ui:2811
-msgid "_Show all nodes"
-msgstr ""
-
-#: glade/etherape.ui:2816
-msgid "Controls display of nodes timed out from diagram, but still in memory"
-msgstr ""
-
-#: glade/etherape.ui:2876
-msgid "name"
-msgstr "isim"
-
-#: glade/etherape.ui:2901
-msgid "Last Heard: "
-msgstr "Son Görülme Zamanı: "
-
-#: glade/etherape.ui:2914
-msgid "label73"
-msgstr "label73"
-
-#: glade/etherape.ui:2967 glade/etherape.ui:3008
-msgid "test label"
-msgstr ""
-
-#: glade/etherape.ui:3038
-msgid "EtherApe: Protocols"
-msgstr "EtherApe: Protokoller"
+#~ msgid "Copyright 2001-2018 Juan Toledo, Riccardo Ghetta"
+#~ msgstr "Copyright 2001 Juan Toledo"
 
 #~ msgid "Set IP mode"
 #~ msgstr "IP konumuna getir"
@@ -1204,22 +1274,6 @@ msgstr "EtherApe: Protokoller"
 #, fuzzy
 #~ msgid "_Protocol"
 #~ msgstr "_Protokol"
-
-#, fuzzy
-#~ msgid "_Inst Traffic"
-#~ msgstr "Anlık Trafik"
-
-#, fuzzy
-#~ msgid "_Accum Traffic"
-#~ msgstr "Toplam Trafik"
-
-#, fuzzy
-#~ msgid "_Last Heard"
-#~ msgstr "Son Görülme"
-
-#, fuzzy
-#~ msgid "Pac_kets"
-#~ msgstr "Paket"
 
 #, fuzzy
 #~ msgid "dst name"
@@ -1314,9 +1368,6 @@ msgstr "EtherApe: Protokoller"
 #~ msgid "Select Font"
 #~ msgstr "Yazıtipini Seç"
 
-#~ msgid "Name:"
-#~ msgstr "İsim:"
-
 #~ msgid "This is a test node name"
 #~ msgstr "Bu bir deneme uç ismidir"
 
@@ -1354,12 +1405,6 @@ msgstr "EtherApe: Protokoller"
 
 #~ msgid "_Start"
 #~ msgstr "_Başla"
-
-#~ msgid "_Pause"
-#~ msgstr "_Beklet"
-
-#~ msgid "St_op"
-#~ msgstr "_Durdur"
 
 #, fuzzy
 #~ msgid "EtherApe: Select capture file"

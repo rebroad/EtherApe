@@ -434,13 +434,13 @@ static GtkListStore *create_protocols_table (GtkWidget *window)
   gtk_tree_view_append_column (gv, gc);
 
 
-  create_add_text_column(gv, "Protocol", PROTO_COLUMN_NAME, FALSE);
-  create_add_text_column(gv, "Port", PROTO_COLUMN_PORT, TRUE);
-  create_add_text_column(gv, "Inst Traffic", PROTO_COLUMN_INSTANTANEOUS, FALSE);
-  create_add_text_column(gv, "Accum Traffic", PROTO_COLUMN_ACCUMULATED, FALSE);
-  create_add_text_column(gv, "Avg Size", PROTO_COLUMN_AVGSIZE, FALSE);
-  create_add_text_column(gv, "Last Heard", PROTO_COLUMN_LASTHEARD, FALSE);
-  create_add_text_column(gv, "Packets", PROTO_COLUMN_PACKETS, FALSE);
+  create_add_text_column(gv, _("Protocol"), PROTO_COLUMN_NAME, FALSE);
+  create_add_text_column(gv, _("Port"), PROTO_COLUMN_PORT, TRUE);
+  create_add_text_column(gv, _("Inst Traffic"), PROTO_COLUMN_INSTANTANEOUS, FALSE);
+  create_add_text_column(gv, _("Accum Traffic"), PROTO_COLUMN_ACCUMULATED, FALSE);
+  create_add_text_column(gv, _("Avg Size"), PROTO_COLUMN_AVGSIZE, FALSE);
+  create_add_text_column(gv, _("Last Heard"), PROTO_COLUMN_LASTHEARD, FALSE);
+  create_add_text_column(gv, _("Packets"), PROTO_COLUMN_PACKETS, FALSE);
 
   /* the sort functions ... */
   for (i = 0 ; i < PROTO_COLUMN_N ; ++i)

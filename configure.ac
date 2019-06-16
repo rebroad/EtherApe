@@ -2,7 +2,7 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ(2.53)
-AC_INIT([etherape],[0.9.18])
+AC_INIT([etherape],[0.9.19])
 AC_CONFIG_SRCDIR([config.h.in])
 AC_CONFIG_MACRO_DIR([m4])
 AC_CONFIG_HEADER([config.h])
@@ -169,7 +169,7 @@ AC_CHECK_FUNCS([g_list_free_full])
 AC_CHECK_FUNCS([g_ptr_array_insert])
 
 dnl Add the languages which your application supports here.
-ALL_LINGUAS="es fr nl tr sv it de"
+ALL_LINGUAS="es fr nl tr sv it de ru"
 AM_GNU_GETTEXT([external])
 AM_GNU_GETTEXT_VERSION([0.11.5])
 GETTEXT_PACKAGE=etherape

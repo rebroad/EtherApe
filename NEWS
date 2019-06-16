@@ -1,5 +1,15 @@
                             Changelog for EtherApe
 
+  Overview of changes in EtherApe 0.9.19 ():
+
+   This is primarily a bugfix release, but thanks to AlexL adds also a Russian
+   translation.
+
+   Changes summary:
+     * better sizing of connections lines, thanks to Ronald Henderson.
+     * fix for ui crash by "MandatoryField"
+     * russian translation and fixes by AlexL
+
   Overview of changes in EtherApe 0.9.18 (Sunday, June 3, 2018):
 
    EtherApe now is a pure GTK 3 application, with canvas supplied by GooCanvas
