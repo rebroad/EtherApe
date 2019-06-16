@@ -444,15 +444,15 @@ void on_save_pref_button_clicked (GtkWidget * button, gpointer user_data)
 static void on_filter_entry_changed(GtkComboBox *cbox, gpointer user_data)
 {
   const gchar *str;
+  gchar *err;
   /* TODO should make sure that for each mode the filter is set up
    * correctly */
   str = gtk_entry_get_text(GTK_ENTRY(gtk_bin_get_child(GTK_BIN(cbox))));
   if (pref.filter)
     g_free(pref.filter);
   pref.filter = g_strdup(str);
-  /* TODO We should look at the error code from set_filter and pop
-   * up a window accordingly */
-  set_filter(pref.filter);
+  err = set_filter(pref.filter);
+  g_free(err);
   cbox_add_select(cbox, pref.filter);
 }				/* on_filter_entry_changed */
 

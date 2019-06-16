@@ -46,6 +46,7 @@
 #include "stats/protocols.h"
 #include "stats/node.h"
 #include "stats/links.h"
+#include "stats/util.h"
 #include "export.h"
 #include "cap-util.h"
 #include "capctl.h"
@@ -75,10 +76,13 @@ static inline void zeroreq(struct capctl_req_t *req)
   memset(req, 0, sizeof(*req));
 }
 
-static void ctrl_recv(void *buf, size_t len)
+static gboolean ctrl_recv(void *buf, size_t len)
 {
-  if (read_all(ctrlsock, buf, len))
+  if (read_all(ctrlsock, buf, len)) {
     g_error(_("Failed to receive message from packet-capture process"));
+    return FALSE;
+  }
+  return TRUE;
 }
 
 static void ctrl_send(const void *buf, size_t len)
@@ -100,15 +104,17 @@ static inline void sendreq(const struct capctl_req_t *req)
 
 static inline void recvresp(struct capctl_resp_t *resp)
 {
-  ctrl_recv(resp, sizeof(*resp));
+  if (!ctrl_recv(resp, sizeof(*resp)))
+    resp->status = CRP_ERR;
 }
 
-/* FIXME: duplicated from capture.c */
 static gchar *recvstr(size_t len)
 {
   gchar *str = g_malloc(len + 1);
-  ctrl_recv(str, len);
-  str[len] = '\0';
+  if (!ctrl_recv(str, len))
+    safe_strncpy(str, _("Failed to receive message from packet-capture process"), len+1);
+  else
+    str[len] = '\0';
   return str;
 }
 
@@ -470,8 +476,11 @@ gchar *start_capture(void)
     return g_strdup_printf(_("This device does not support link-layer mode.  "
                              "Please use IP or TCP modes."));
 
-  if (pref.filter)
-    set_filter(pref.filter);
+  if (pref.filter) {
+    err = set_filter(pref.filter);
+    if (err)
+       return err;
+  }
 
   capture_status = PLAY;
 
@@ -488,7 +497,7 @@ gchar *start_capture(void)
                                         filecap_get_packet, NULL,
                                         filecap_timeout_destroy);
 
-  return err;
+  return NULL;
 }
 
 gchar *pause_capture(void)
@@ -702,8 +711,9 @@ static gchar *set_offline_filter(const gchar *filter)
   return NULL;
 }
 
-gint set_filter(const gchar *filter)
+gchar *set_filter(const gchar *filter)
 {
+  gchar *errmsg;
   gchar *err;
 
   if (appdata.source.type == ST_LIVE)
@@ -713,12 +723,12 @@ gint set_filter(const gchar *filter)
 
   if (err)
     {
-      g_error("failed to set filter: %s", err);
+      errmsg = g_strdup_printf("failed to set filter: %s", err);
       g_free(err);
-      return 1;
+      return errmsg;
     }
   else
-    return 0;
+    return NULL;
 }
 
 gchar *get_default_filter(apemode_t mode)

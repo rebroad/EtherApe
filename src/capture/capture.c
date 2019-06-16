@@ -248,13 +248,13 @@ static void handle_setfilter(const struct capctl_req_t *req)
 
   zeroresp(&resp);
 
+  bpfstr = recvstr(req->setfilter.bpflen);
+
   if (!pcap)
     {
       senderrmsg("no pcap device started");
       return;
     }
-
-  bpfstr = recvstr(req->setfilter.bpflen);
 
   /* TODO: netmask? */
   status = pcap_compile(pcap, &bpfprog, bpfstr, 1, PCAP_NETMASK_UNKNOWN);

@@ -8,6 +8,8 @@
    Changes summary:
      * better sizing of connections lines, thanks to Ronald Henderson.
      * fix for ui crash by "MandatoryField"
+     * fix a crash happening when the capture process wasn't able to set the filter. 
+       Thanks to Benjamin Woods for providing a vital backtrace.
      * russian translation and fixes by AlexL
 
   Overview of changes in EtherApe 0.9.18 (Sunday, June 3, 2018):
