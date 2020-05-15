@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: etherape 0.9.0-9\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-06-16 12:24+0200\n"
+"POT-Creation-Date: 2020-05-15 20:58+0200\n"
 "PO-Revision-Date: 2005-12-12 22:23+0100\n"
 "Last-Translator: Daniel Nylander <po@danielnylander.se>\n"
 "Language-Team: Swedish <tp-sv@listor.tp-sv.se>\n"
@@ -16,17 +16,17 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: src/appdata.c:87
+#: src/appdata.c:84
 #, fuzzy, c-format
 msgid "Could not load interface file '%s'!: %s"
 msgstr "Vi kunde inte läsa in gränssnittet! (%s)"
 
-#: src/datastructs.c:401
+#: src/datastructs.c:385
 #, fuzzy, c-format
 msgid "%s protocol not supported"
 msgstr "DDP-protokoll stöds inte i %s"
 
-#: src/diagram.c:255
+#: src/diagram.c:253
 #, c-format
 msgid ""
 "Nodes: %d (on canvas: %d, shown: %u), Links: %d, Conversations: %ld, names "
@@ -34,115 +34,115 @@ msgid ""
 "IP cache entries %ld. Canvas objs: %ld. Refreshed: %u ms"
 msgstr ""
 
-#: src/diagram.c:617
+#: src/diagram.c:612
 msgid "(Capture statistics unavailable in offline mode.)"
 msgstr ""
 
-#: src/diagram.c:673
+#: src/diagram.c:667
 #, c-format
 msgid "Bogus statspos_t (%d) pref.pcap_stats_pos"
 msgstr ""
 
-#: src/diagram.c:702
+#: src/diagram.c:697
 #, c-format
 msgid "SIGUSR1 received: exporting to %s"
 msgstr ""
 
-#: src/diagram.c:972
+#: src/diagram.c:960
 msgid "Canvas node null"
 msgstr ""
 
-#: src/diagram.c:981
+#: src/diagram.c:969
 #, c-format
 msgid "Creating canvas_node: %s. Number of nodes %d"
 msgstr "Skapar canvas_node: %s. Antal noder %d"
 
-#: src/diagram.c:1045
+#: src/diagram.c:1032
 msgid "Unknown value or node_size_variable"
 msgstr "Okänt värde eller node_size_variable"
 
-#: src/diagram.c:1709
+#: src/diagram.c:1658
 #, fuzzy
 msgid "Unknown value for link_size_variable"
 msgstr "Okänt värde eller node_size_variable"
 
-#: src/diagram.c:1752
+#: src/diagram.c:1701
 #, c-format
 msgid "Link main protocol: %s"
 msgstr "Huvudprotokoll för länk: %s"
 
-#: src/diagram.c:1755
+#: src/diagram.c:1704
 #, fuzzy
 msgid "Link main protocol: unknown"
 msgstr "Huvudprotokoll för länk okänt"
 
-#: src/diagram.c:1823
+#: src/diagram.c:1767
 msgid ""
 "'recv': packets received; 'drop': packets dropped by OS buffering; 'ifdrop': "
 "packets dropped by interface or driver."
 msgstr ""
 
-#: src/info_windows.c:113 src/info_windows.c:819 src/info_windows.c:826
+#: src/info_windows.c:110 src/info_windows.c:777 src/info_windows.c:783
 #, c-format
 msgid "We could not load the interface! (%s)"
 msgstr "Vi kunde inte läsa in gränssnittet! (%s)"
 
-#: src/info_windows.c:119
+#: src/info_windows.c:116
 #, c-format
 msgid "Cannot create widget %s from file %s!"
 msgstr ""
 
-#: src/info_windows.c:208
+#: src/info_windows.c:200
 msgid "No prot_name in on_prot_info_delete_event"
 msgstr "Inget prot_name i on_prot_info_delete_event"
 
-#: src/info_windows.c:215
+#: src/info_windows.c:206
 msgid "No prot_info_window in on_prot_info_delete_event"
 msgstr "Inget prot_info_window i on_prot_info_delete_event"
 
-#: src/info_windows.c:437 src/pref_dialog.c:543
+#: src/info_windows.c:419 src/pref_dialog.c:528
 msgid "Protocol"
 msgstr "Protokoll"
 
-#: src/info_windows.c:438
+#: src/info_windows.c:420
 msgid "Port"
 msgstr ""
 
-#: src/info_windows.c:439 src/node_windows.c:229
+#: src/info_windows.c:421 src/node_windows.c:224
 msgid "Inst Traffic"
 msgstr "Mom. trafik"
 
-#: src/info_windows.c:440 src/node_windows.c:230
+#: src/info_windows.c:422 src/node_windows.c:225
 msgid "Accum Traffic"
 msgstr "Ackum trafik"
 
-#: src/info_windows.c:441 src/node_windows.c:231
+#: src/info_windows.c:423 src/node_windows.c:226
 msgid "Avg Size"
 msgstr ""
 
-#: src/info_windows.c:442 src/node_windows.c:232
+#: src/info_windows.c:424 src/node_windows.c:227
 msgid "Last Heard"
 msgstr "Senast hörd"
 
-#: src/info_windows.c:443 src/node_windows.c:233
+#: src/info_windows.c:425 src/node_windows.c:228
 msgid "Packets"
 msgstr "Paket"
 
-#: src/info_windows.c:962 src/info_windows.c:1052 src/info_windows.c:1053
-#: src/info_windows.c:1064 src/info_windows.c:1065
+#: src/info_windows.c:912 src/info_windows.c:995 src/info_windows.c:996
+#: src/info_windows.c:1005 src/info_windows.c:1006
 #, fuzzy
 msgid "Node timed out"
 msgstr "Nod-timeout (ms)"
 
-#: src/info_windows.c:1026
+#: src/info_windows.c:972
 msgid "B->A"
 msgstr ""
 
-#: src/info_windows.c:1027
+#: src/info_windows.c:973
 msgid "A->B"
 msgstr ""
 
-#: src/info_windows.c:1034
+#: src/info_windows.c:979
 #, fuzzy
 msgid "Link timed out"
 msgstr "Länk-timeout (ms)"
@@ -254,25 +254,25 @@ msgstr ""
 msgid "<username>"
 msgstr "<filnamn>"
 
-#: src/main.c:217
+#: src/main.c:211
 msgid "Unrecognized mode. Do etherape --help for a list of modes"
 msgstr "Okänt läge. Kör etherape --help för en lista av lägen"
 
-#: src/main.c:306
+#: src/main.c:293
 msgid "DNS resolver initialization failed"
 msgstr ""
 
-#: src/main.c:358
+#: src/main.c:342
 #, c-format
 msgid "Invalid position-file line: %s"
 msgstr ""
 
-#: src/main.c:363
+#: src/main.c:346
 #, c-format
 msgid "Column number %ld out of range"
 msgstr ""
 
-#: src/main.c:388
+#: src/main.c:370
 #, c-format
 msgid "Failed to read position file %s: %s"
 msgstr ""
@@ -282,305 +282,305 @@ msgstr ""
 msgid "get_interface result: '%s'"
 msgstr ""
 
-#: src/menus.c:53
+#: src/menus.c:52
 msgid "No suitables interfaces for capture have been found"
 msgstr "Inga lämpliga nätverksgränssnitt för fångst har hittats"
 
-#: src/menus.c:63
+#: src/menus.c:62
 msgid "Available interfaces for capture:"
 msgstr "Tillgängliga nätverksgränssnitt för fångst:"
 
-#: src/menus.c:103
+#: src/menus.c:101
 #, fuzzy
 msgid "Open Capture File"
 msgstr "EtherApe: Öppna fångstfil"
 
-#: src/menus.c:106 src/menus.c:136
+#: src/menus.c:104 src/menus.c:133
 msgid "_Cancel"
 msgstr ""
 
-#: src/menus.c:107
+#: src/menus.c:105
 msgid "_Open"
 msgstr ""
 
-#: src/menus.c:133
+#: src/menus.c:130
 msgid "Export to XML File"
 msgstr ""
 
-#: src/menus.c:137
+#: src/menus.c:134
 #, fuzzy
 msgid "_Save"
 msgstr "Spara"
 
-#: src/menus.c:184
+#: src/menus.c:180
 #, c-format
 msgid "Capture interface set to %s in GUI"
 msgstr "Fångstgränssnitt inställd till %s i grafiska gränsnittet"
 
-#: src/menus.c:211
+#: src/menus.c:206
 #, fuzzy
 msgid "Unsupported mode in on_mode_radio_activate"
 msgstr "Ej stöd för ape-läge i get_link_id"
 
-#: src/menus.c:239
+#: src/menus.c:233
 #, c-format
 msgid "Mode set to %s in GUI"
 msgstr "Läge satt till %s i grafiska gränsnittet"
 
-#: src/menus.c:352
+#: src/menus.c:344
 msgid "-unknown-"
 msgstr ""
 
-#: src/menus.c:416
+#: src/menus.c:407
 #, fuzzy
 msgid "Status already PLAY at gui_start_capture"
 msgstr "Status är inte PLAY vid gui_pause_capture"
 
-#: src/menus.c:450 src/menus.c:480
+#: src/menus.c:439 src/menus.c:469
 #, c-format
 msgid "Invalid mode: %d"
 msgstr ""
 
-#: src/menus.c:459
+#: src/menus.c:448
 msgid "Reading data from "
 msgstr "Läser data från "
 
-#: src/menus.c:466 src/menus.c:584
+#: src/menus.c:455 src/menus.c:569
 msgid "default interface"
 msgstr "förvalt nätverksgränssnitt"
 
-#: src/menus.c:471
+#: src/menus.c:460
 #, fuzzy
 msgid " in Data Link mode"
 msgstr " i UDP-läge"
 
-#: src/menus.c:474
+#: src/menus.c:463
 msgid " in IP mode"
 msgstr " i IP-läge"
 
-#: src/menus.c:477
+#: src/menus.c:466
 msgid " in TCP mode"
 msgstr " i TCP-läge"
 
-#: src/menus.c:489
+#: src/menus.c:478
 msgid "Diagram started"
 msgstr "Diagram startad"
 
-#: src/menus.c:513
+#: src/menus.c:500
 msgid "Paused"
 msgstr "Pausad"
 
-#: src/menus.c:515
+#: src/menus.c:502
 msgid "Diagram paused"
 msgstr "Diagram pausad"
 
-#: src/menus.c:531
+#: src/menus.c:518
 #, c-format
 msgid "Replay from file '%s' completed."
 msgstr ""
 
-#: src/menus.c:563
+#: src/menus.c:548
 #, c-format
 msgid "Failed to stop capture: %s"
 msgstr ""
 
-#: src/menus.c:577
+#: src/menus.c:562
 msgid "Ready to capture from "
 msgstr "Klar att fånga in från "
 
-#: src/menus.c:589
+#: src/menus.c:574
 msgid "Diagram stopped"
 msgstr "Diagram stoppad"
 
-#: src/node_windows.c:227
+#: src/node_windows.c:222
 #, fuzzy
 msgid "Name"
 msgstr "Namn"
 
-#: src/node_windows.c:228
+#: src/node_windows.c:223
 msgid "Address"
 msgstr ""
 
-#: src/pref_dialog.c:283
+#: src/pref_dialog.c:278
 #, c-format
 msgid "Adjustment value: %g. Radius multiplier %g"
 msgstr ""
 
-#: src/pref_dialog.c:293
+#: src/pref_dialog.c:287
 #, c-format
 msgid "Adjustment value: %g. Link-node ratio %g"
 msgstr ""
 
-#: src/pref_dialog.c:303
+#: src/pref_dialog.c:296
 #, c-format
 msgid "Adjustment value: %g. Inner ring scale %g"
 msgstr ""
 
-#: src/pref_dialog.c:539
+#: src/pref_dialog.c:524
 msgid "Color"
 msgstr "Färg"
 
-#: src/preferences.c:348
+#: src/preferences.c:342
 #, fuzzy, c-format
 msgid "Preferences saved to %s"
 msgstr "Egenskaper sparade"
 
-#: src/preferences.c:353
+#: src/preferences.c:346
 #, c-format
 msgid "Error saving preferences to '%s': %s"
 msgstr ""
 
-#: src/capture/capctl.c:81
+#: src/capture/capctl.c:87 src/capture/capctl.c:120
 msgid "Failed to receive message from packet-capture process"
 msgstr ""
 
-#: src/capture/capctl.c:87
+#: src/capture/capctl.c:96
 msgid "Failed to send message to packet-capture process"
 msgstr ""
 
-#: src/capture/capctl.c:93
+#: src/capture/capctl.c:102
 msgid "Failed to receive packet from packet-capture process"
 msgstr ""
 
-#: src/capture/capctl.c:118
+#: src/capture/capctl.c:129
 #, c-format
 msgid "Failed to set %s environment variable to '%s': %s"
 msgstr ""
 
-#: src/capture/capctl.c:130
+#: src/capture/capctl.c:141
 #, c-format
 msgid "Unknown user '%s'"
 msgstr ""
 
-#: src/capture/capctl.c:135
+#: src/capture/capctl.c:146
 #, c-format
 msgid "Failed to switch to user '%s' (uid=%lu, gid=%lu): %s"
 msgstr ""
 
-#: src/capture/capctl.c:459
+#: src/capture/capctl.c:455
 #, c-format
 msgid ""
 "%s uses unsupported link type %d, cannot proceed.  Please choose another "
 "source."
 msgstr ""
 
-#: src/capture/capctl.c:470
+#: src/capture/capctl.c:465
 msgid ""
 "This device does not support link-layer mode.  Please use IP or TCP modes."
 msgstr ""
 
-#: src/names/names.c:109
+#: src/names/names.c:107
 #, c-format
 msgid ""
 "not enough captured data, terminating protocol decode for '%s' (level %d)"
 msgstr ""
 
-#: src/names/names.c:113
+#: src/names/names.c:111
 #, c-format
 msgid "not enough captured data, terminating protocol decode at level %d"
 msgstr ""
 
-#: src/names/names.c:223
+#: src/names/names.c:217
 #, fuzzy
 msgid "Unsupported ape mode in fill_node_id"
 msgstr "Ej stöd för ape-läge i get_link_id"
 
-#: src/stats/decode_proto.c:194
+#: src/stats/decode_proto.c:190
 #, fuzzy, c-format
 msgid "Link type is %s"
 msgstr "Länktyp är RAW"
 
-#: src/stats/decode_proto.c:268
+#: src/stats/decode_proto.c:261
 msgid "Data link entry not initialized"
 msgstr ""
 
-#: src/stats/decode_proto.c:569
+#: src/stats/decode_proto.c:540
 msgid "Radiotap:captured size too small, packet discarded"
 msgstr ""
 
-#: src/stats/decode_proto.c:598
+#: src/stats/decode_proto.c:568
 msgid "PPI:captured size too small, packet discarded"
 msgstr ""
 
-#: src/stats/decode_proto.c:629
+#: src/stats/decode_proto.c:596
 #, c-format
 msgid "PPI:unsupported link type %u, packet discarded"
 msgstr ""
 
-#: src/stats/decode_proto.c:708
+#: src/stats/decode_proto.c:674
 msgid "wlan:captured size too small (less than 10 bytes), packet discarded"
 msgstr ""
 
-#: src/stats/decode_proto.c:732
+#: src/stats/decode_proto.c:697
 #, c-format
 msgid "Invalid tofromds field in WLAN packet: 0x%x"
 msgstr ""
 
-#: src/stats/decode_proto.c:763 src/stats/decode_proto.c:796
+#: src/stats/decode_proto.c:727 src/stats/decode_proto.c:756
 #, c-format
 msgid "wlan:captured size too small (read %u, needed %u), packet discarded"
 msgstr ""
 
-#: src/stats/decode_proto.c:779
+#: src/stats/decode_proto.c:740
 #, c-format
 msgid "wlan:captured size too small (read %u, needed %u), RTS packet discarded"
 msgstr ""
 
-#: src/stats/decode_proto.c:830
+#: src/stats/decode_proto.c:789
 #, c-format
 msgid "wlan:frame type 0x%x is reserved, decode aborted"
 msgstr ""
 
-#: src/stats/decode_proto.c:834
+#: src/stats/decode_proto.c:793
 #, c-format
 msgid "wlan:unknown frame type 0x%x, decode aborted"
 msgstr ""
 
-#: src/stats/links.c:210
+#: src/stats/links.c:196
 msgid "Queuing link for remove"
 msgstr ""
 
-#: src/stats/links.c:261
+#: src/stats/links.c:245
 #, fuzzy, c-format
 msgid "New link: %s. Number of links %d"
 msgstr "Skapar länk: %s-%s. Antal länkar %d"
 
-#: src/stats/links.c:343
+#: src/stats/links.c:325
 #, c-format
 msgid "Updated links. Active links %d"
 msgstr ""
 
-#: src/stats/node.c:113
+#: src/stats/node.c:110
 #, fuzzy, c-format
 msgid "New node: %s. Number of nodes %d"
 msgstr "Skapar nod: %s. Antal noder %d"
 
-#: src/stats/node.c:147
+#: src/stats/node.c:142
 #, fuzzy, c-format
 msgid "delete node: %s. Number of nodes %d"
 msgstr "Skapar nod: %s. Antal noder %d"
 
-#: src/stats/node.c:268
+#: src/stats/node.c:255
 #, c-format
 msgid "Queuing node '%s' for remove"
 msgstr ""
 
-#: src/stats/node.c:587
+#: src/stats/node.c:556
 #, c-format
 msgid "Updated nodes. Active nodes %d"
 msgstr ""
 
-#: src/stats/node_id.c:70
+#: src/stats/node_id.c:69
 #, fuzzy
 msgid "Unsupported ape mode in node_id_compare"
 msgstr "Ej stöd för ape-läge i get_link_id"
 
-#: src/stats/util.c:330
+#: src/stats/util.c:308
 #, fuzzy, c-format
 msgid "%ld\" ago"
 msgstr "%d\" sedan"
 
-#: src/stats/util.c:336
+#: src/stats/util.c:313
 #, fuzzy, c-format
 msgid "%ld'%ld\" ago"
 msgstr "%d'%d\" sedan"

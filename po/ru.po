@@ -1,7 +1,7 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR Free Software Foundation, Inc.
 # This file is distributed under the same license as the PACKAGE package.
-# 
+#
 # Translators:
 # AlexL <loginov.alex.valer@gmail.com>, 2015,2019
 # Kашицин Роман <calorus@gmail.com>, 2015
@@ -11,140 +11,149 @@ msgid ""
 msgstr ""
 "Project-Id-Version: rus-etherape\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-06-16 12:24+0200\n"
+"POT-Creation-Date: 2020-05-15 20:58+0200\n"
 "PO-Revision-Date: 2019-06-16 23:21+0000\n"
 "Last-Translator: AlexL <loginov.alex.valer@gmail.com>\n"
-"Language-Team: Russian (http://www.transifex.com/rus-open-source/rus-etherape/language/ru/)\n"
+"Language-Team: Russian (http://www.transifex.com/rus-open-source/rus-"
+"etherape/language/ru/)\n"
+"Language: ru\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: ru\n"
-"Plural-Forms: nplurals=4; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || (n%100>=11 && n%100<=14)? 2 : 3);\n"
+"Plural-Forms: nplurals=4; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
+"%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || (n"
+"%100>=11 && n%100<=14)? 2 : 3);\n"
 
-#: src/appdata.c:87
+#: src/appdata.c:84
 #, c-format
 msgid "Could not load interface file '%s'!: %s"
 msgstr "Не удалось загрузить файл интерфейса '%s''!: %s"
 
-#: src/datastructs.c:401
+#: src/datastructs.c:385
 #, c-format
 msgid "%s protocol not supported"
 msgstr "Протокол %s не поддерживается"
 
-#: src/diagram.c:255
+#: src/diagram.c:253
 #, c-format
 msgid ""
 "Nodes: %d (on canvas: %d, shown: %u), Links: %d, Conversations: %ld, names "
 "%ld, protocols %ld. Total Packets seen: %lu (in memory: %ld, on list %ld). "
 "IP cache entries %ld. Canvas objs: %ld. Refreshed: %u ms"
-msgstr "Узлы: %d (на холсте: %d, показано: %u), Каналы: %d, Переговоры: %ld, имена %ld, протоколы %ld. Всего увиденных пакетов: %lu (в памяти: %ld, в списке %ld). Записи IP кэша %ld. Объекты холста: %ld. Освежено: %u мсек"
+msgstr ""
+"Узлы: %d (на холсте: %d, показано: %u), Каналы: %d, Переговоры: %ld, имена "
+"%ld, протоколы %ld. Всего увиденных пакетов: %lu (в памяти: %ld, в списке "
+"%ld). Записи IP кэша %ld. Объекты холста: %ld. Освежено: %u мсек"
 
-#: src/diagram.c:617
+#: src/diagram.c:612
 msgid "(Capture statistics unavailable in offline mode.)"
 msgstr "(Cтатистика захвата недоступна в автономном режиме.)"
 
-#: src/diagram.c:673
+#: src/diagram.c:667
 #, c-format
 msgid "Bogus statspos_t (%d) pref.pcap_stats_pos"
 msgstr "Фиктивный statspos_t (%d) pref.pcap_stats_pos"
 
-#: src/diagram.c:702
+#: src/diagram.c:697
 #, c-format
 msgid "SIGUSR1 received: exporting to %s"
 msgstr "SIGUSR1 значение получил: экспорт в %s"
 
-#: src/diagram.c:972
+#: src/diagram.c:960
 msgid "Canvas node null"
 msgstr "Нулевой узел холста"
 
-#: src/diagram.c:981
+#: src/diagram.c:969
 #, c-format
 msgid "Creating canvas_node: %s. Number of nodes %d"
 msgstr "Создание узла холста: %s. Количество узлов %d"
 
-#: src/diagram.c:1045
+#: src/diagram.c:1032
 msgid "Unknown value or node_size_variable"
 msgstr "Неизвестное значение для переменной размера узла"
 
-#: src/diagram.c:1709
+#: src/diagram.c:1658
 msgid "Unknown value for link_size_variable"
 msgstr "Неизвестное значение для переменной размера канала"
 
-#: src/diagram.c:1752
+#: src/diagram.c:1701
 #, c-format
 msgid "Link main protocol: %s"
 msgstr "Главный протокол канала: %s"
 
-#: src/diagram.c:1755
+#: src/diagram.c:1704
 msgid "Link main protocol: unknown"
 msgstr "Главный протокол канала: неизвестен"
 
-#: src/diagram.c:1823
+#: src/diagram.c:1767
 msgid ""
-"'recv': packets received; 'drop': packets dropped by OS buffering; 'ifdrop':"
-" packets dropped by interface or driver."
-msgstr "'recv': полученные пакеты; 'drop': пакеты, отброшенные буферизацией ОС; 'ifdrop': пакеты, отброшенные интерфейсом или драйвером."
+"'recv': packets received; 'drop': packets dropped by OS buffering; 'ifdrop': "
+"packets dropped by interface or driver."
+msgstr ""
+"'recv': полученные пакеты; 'drop': пакеты, отброшенные буферизацией ОС; "
+"'ifdrop': пакеты, отброшенные интерфейсом или драйвером."
 
-#: src/info_windows.c:113 src/info_windows.c:819 src/info_windows.c:826
+#: src/info_windows.c:110 src/info_windows.c:777 src/info_windows.c:783
 #, c-format
 msgid "We could not load the interface! (%s)"
 msgstr "Мы не смогли загрузить интерфейс! (%s)"
 
-#: src/info_windows.c:119
+#: src/info_windows.c:116
 #, c-format
 msgid "Cannot create widget %s from file %s!"
 msgstr "Невозможно создать виджет %s из файла %s!"
 
-#: src/info_windows.c:208
+#: src/info_windows.c:200
 msgid "No prot_name in on_prot_info_delete_event"
 msgstr "Нету имени протокола в событии на удаление информации о протоколе"
 
-#: src/info_windows.c:215
+#: src/info_windows.c:206
 msgid "No prot_info_window in on_prot_info_delete_event"
-msgstr "Нету окна информации протокола в событии на удаление информации о протоколе"
+msgstr ""
+"Нету окна информации протокола в событии на удаление информации о протоколе"
 
-#: src/info_windows.c:437 src/pref_dialog.c:543
+#: src/info_windows.c:419 src/pref_dialog.c:528
 msgid "Protocol"
 msgstr "Протокол"
 
-#: src/info_windows.c:438
+#: src/info_windows.c:420
 msgid "Port"
 msgstr "Порт"
 
-#: src/info_windows.c:439 src/node_windows.c:229
+#: src/info_windows.c:421 src/node_windows.c:224
 msgid "Inst Traffic"
 msgstr "Мгнов. трафик"
 
-#: src/info_windows.c:440 src/node_windows.c:230
+#: src/info_windows.c:422 src/node_windows.c:225
 msgid "Accum Traffic"
 msgstr "Накоп. трафик"
 
-#: src/info_windows.c:441 src/node_windows.c:231
+#: src/info_windows.c:423 src/node_windows.c:226
 msgid "Avg Size"
 msgstr "Средний размер"
 
-#: src/info_windows.c:442 src/node_windows.c:232
+#: src/info_windows.c:424 src/node_windows.c:227
 msgid "Last Heard"
 msgstr "Последнее услышанное"
 
-#: src/info_windows.c:443 src/node_windows.c:233
+#: src/info_windows.c:425 src/node_windows.c:228
 msgid "Packets"
 msgstr "Пакеты"
 
-#: src/info_windows.c:962 src/info_windows.c:1052 src/info_windows.c:1053
-#: src/info_windows.c:1064 src/info_windows.c:1065
+#: src/info_windows.c:912 src/info_windows.c:995 src/info_windows.c:996
+#: src/info_windows.c:1005 src/info_windows.c:1006
 msgid "Node timed out"
 msgstr "Для узла заданное время истекло"
 
-#: src/info_windows.c:1026
+#: src/info_windows.c:972
 msgid "B->A"
 msgstr "B->A"
 
-#: src/info_windows.c:1027
+#: src/info_windows.c:973
 msgid "A->B"
 msgstr "A->B"
 
-#: src/info_windows.c:1034
+#: src/info_windows.c:979
 msgid "Link timed out"
 msgstr "Время действия канала истекло"
 
@@ -226,7 +235,8 @@ msgstr "Отключить информационные сообщения"
 
 #: src/main.c:119
 msgid "minimum packet delay in ms for reading capture files [cli only]"
-msgstr "минимальная задержка пакетов в мсек для чтения файлов захвата [только в CLI]"
+msgstr ""
+"минимальная задержка пакетов в мсек для чтения файлов захвата [только в CLI]"
 
 #: src/main.c:120 src/main.c:123
 msgid "<delay>"
@@ -234,7 +244,8 @@ msgstr "<задержка>"
 
 #: src/main.c:122
 msgid "maximum packet delay in ms for reading capture files [cli only]"
-msgstr "максимальная задержка пакетов в мсек для чтения файлов захвата [только в CLI]"
+msgstr ""
+"максимальная задержка пакетов в мсек для чтения файлов захвата [только в CLI]"
 
 #: src/main.c:125
 msgid "uses the named libglade file for widgets"
@@ -252,25 +263,25 @@ msgstr "запустить от имени данного пользовател
 msgid "<username>"
 msgstr "<имя пользователя>"
 
-#: src/main.c:217
+#: src/main.c:211
 msgid "Unrecognized mode. Do etherape --help for a list of modes"
 msgstr "Нераспознанный режим. Запустите etherape --help для списка режимов"
 
-#: src/main.c:306
+#: src/main.c:293
 msgid "DNS resolver initialization failed"
 msgstr "Сбой инициализации резолвера DNS"
 
-#: src/main.c:358
+#: src/main.c:342
 #, c-format
 msgid "Invalid position-file line: %s"
 msgstr "Неверная позиция - строка файла: %s"
 
-#: src/main.c:363
+#: src/main.c:346
 #, c-format
 msgid "Column number %ld out of range"
 msgstr "Номер столбца %ld вне диапазона"
 
-#: src/main.c:388
+#: src/main.c:370
 #, c-format
 msgid "Failed to read position file %s: %s"
 msgstr "Не удалось прочитать позицию файла %s: %s"
@@ -280,298 +291,308 @@ msgstr "Не удалось прочитать позицию файла %s: %s"
 msgid "get_interface result: '%s'"
 msgstr "результат получения интерфейса: '%s'"
 
-#: src/menus.c:53
+#: src/menus.c:52
 msgid "No suitables interfaces for capture have been found"
 msgstr "Соответствующих интерфейсов для захвата не найдено"
 
-#: src/menus.c:63
+#: src/menus.c:62
 msgid "Available interfaces for capture:"
 msgstr "Доступные интерфейсы для захвата:"
 
-#: src/menus.c:103
+#: src/menus.c:101
 msgid "Open Capture File"
 msgstr "Открыть файл захвата"
 
-#: src/menus.c:106 src/menus.c:136
+#: src/menus.c:104 src/menus.c:133
 msgid "_Cancel"
 msgstr "_Отмена"
 
-#: src/menus.c:107
+#: src/menus.c:105
 msgid "_Open"
 msgstr "_Открыть"
 
-#: src/menus.c:133
+#: src/menus.c:130
 msgid "Export to XML File"
 msgstr "Экспорт в XML файл"
 
-#: src/menus.c:137
+#: src/menus.c:134
 msgid "_Save"
 msgstr "_Сохранить"
 
-#: src/menus.c:184
+#: src/menus.c:180
 #, c-format
 msgid "Capture interface set to %s in GUI"
 msgstr "Интерфейс захвата установлен в %s в GUI"
 
-#: src/menus.c:211
+#: src/menus.c:206
 msgid "Unsupported mode in on_mode_radio_activate"
 msgstr "Неподдерживаемый режим в на активацию режима переключателя"
 
-#: src/menus.c:239
+#: src/menus.c:233
 #, c-format
 msgid "Mode set to %s in GUI"
 msgstr "Режим установлен в %s в GUI"
 
-#: src/menus.c:352
+#: src/menus.c:344
 msgid "-unknown-"
 msgstr "-неизвестный-"
 
-#: src/menus.c:416
+#: src/menus.c:407
 msgid "Status already PLAY at gui_start_capture"
 msgstr "Статус уже ИГРАТЬ в gui начала захвата"
 
-#: src/menus.c:450 src/menus.c:480
+#: src/menus.c:439 src/menus.c:469
 #, c-format
 msgid "Invalid mode: %d"
 msgstr "Неверный режим: %d"
 
-#: src/menus.c:459
+#: src/menus.c:448
 msgid "Reading data from "
 msgstr "Чтение данных из "
 
-#: src/menus.c:466 src/menus.c:584
+#: src/menus.c:455 src/menus.c:569
 msgid "default interface"
 msgstr "интерфейс по умолчанию"
 
-#: src/menus.c:471
+#: src/menus.c:460
 msgid " in Data Link mode"
 msgstr " в режиме канала данных"
 
-#: src/menus.c:474
+#: src/menus.c:463
 msgid " in IP mode"
 msgstr " в режиме IP"
 
-#: src/menus.c:477
+#: src/menus.c:466
 msgid " in TCP mode"
 msgstr " в режиме TCP"
 
-#: src/menus.c:489
+#: src/menus.c:478
 msgid "Diagram started"
 msgstr "Диаграмма начата"
 
-#: src/menus.c:513
+#: src/menus.c:500
 msgid "Paused"
 msgstr "Приостановлено"
 
-#: src/menus.c:515
+#: src/menus.c:502
 msgid "Diagram paused"
 msgstr "Диаграмма приостановлена"
 
-#: src/menus.c:531
+#: src/menus.c:518
 #, c-format
 msgid "Replay from file '%s' completed."
 msgstr "Повтор из файла '%s' завершён."
 
-#: src/menus.c:563
+#: src/menus.c:548
 #, c-format
 msgid "Failed to stop capture: %s"
 msgstr "Не удалось остановить захват: %s"
 
-#: src/menus.c:577
+#: src/menus.c:562
 msgid "Ready to capture from "
 msgstr "Готов к захвату из "
 
-#: src/menus.c:589
+#: src/menus.c:574
 msgid "Diagram stopped"
 msgstr "Диаграмма остановлена"
 
-#: src/node_windows.c:227
+#: src/node_windows.c:222
 msgid "Name"
 msgstr "Имя"
 
-#: src/node_windows.c:228
+#: src/node_windows.c:223
 msgid "Address"
 msgstr "Адрес"
 
-#: src/pref_dialog.c:283
+#: src/pref_dialog.c:278
 #, c-format
 msgid "Adjustment value: %g. Radius multiplier %g"
 msgstr "Значение корректировки: %g. Коэффициент радиуса %g"
 
-#: src/pref_dialog.c:293
+#: src/pref_dialog.c:287
 #, c-format
 msgid "Adjustment value: %g. Link-node ratio %g"
 msgstr "Значение корректировки: %g. Соотношение канал-узел %g"
 
-#: src/pref_dialog.c:303
+#: src/pref_dialog.c:296
 #, c-format
 msgid "Adjustment value: %g. Inner ring scale %g"
 msgstr "Значение корректировки: %g. Шкала внутреннего кольца %g"
 
-#: src/pref_dialog.c:539
+#: src/pref_dialog.c:524
 msgid "Color"
 msgstr "Цвет"
 
-#: src/preferences.c:348
+#: src/preferences.c:342
 #, c-format
 msgid "Preferences saved to %s"
 msgstr "Настройки сохранены в %s"
 
-#: src/preferences.c:353
+#: src/preferences.c:346
 #, c-format
 msgid "Error saving preferences to '%s': %s"
 msgstr "Ошибка при сохранении настроек в '%s': %s"
 
-#: src/capture/capctl.c:81
+#: src/capture/capctl.c:87 src/capture/capctl.c:120
 msgid "Failed to receive message from packet-capture process"
 msgstr "Не удалось получить сообщение от процесса захвата пакета"
 
-#: src/capture/capctl.c:87
+#: src/capture/capctl.c:96
 msgid "Failed to send message to packet-capture process"
 msgstr "Не удалось отправить сообщение процессу захвата пакета"
 
-#: src/capture/capctl.c:93
+#: src/capture/capctl.c:102
 msgid "Failed to receive packet from packet-capture process"
 msgstr "Не удалось получить пакет от процесса захвата пакета"
 
-#: src/capture/capctl.c:118
+#: src/capture/capctl.c:129
 #, c-format
 msgid "Failed to set %s environment variable to '%s': %s"
 msgstr "Не удалось установить %s переменную среды в '%s': %s"
 
-#: src/capture/capctl.c:130
+#: src/capture/capctl.c:141
 #, c-format
 msgid "Unknown user '%s'"
 msgstr "Неизвестный пользователь '%s'"
 
-#: src/capture/capctl.c:135
+#: src/capture/capctl.c:146
 #, c-format
 msgid "Failed to switch to user '%s' (uid=%lu, gid=%lu): %s"
 msgstr "Не удалось переключиться на пользователя '%s' (uid=%lu, gid=%lu): %s"
 
-#: src/capture/capctl.c:459
+#: src/capture/capctl.c:455
 #, c-format
 msgid ""
 "%s uses unsupported link type %d, cannot proceed.  Please choose another "
 "source."
-msgstr "%s использует неподдерживаемый тип канала %d, невозможно продолжить. Пожалуйста, выберите другой источник."
+msgstr ""
+"%s использует неподдерживаемый тип канала %d, невозможно продолжить. "
+"Пожалуйста, выберите другой источник."
 
-#: src/capture/capctl.c:470
+#: src/capture/capctl.c:465
 msgid ""
 "This device does not support link-layer mode.  Please use IP or TCP modes."
-msgstr "Это устройство не поддерживает режим канального уровня. Пожалуйста, используйте режимы IP или TCP."
+msgstr ""
+"Это устройство не поддерживает режим канального уровня. Пожалуйста, "
+"используйте режимы IP или TCP."
 
-#: src/names/names.c:109
+#: src/names/names.c:107
 #, c-format
 msgid ""
 "not enough captured data, terminating protocol decode for '%s' (level %d)"
-msgstr "недостаточно захваченных данных, завершение протокола декодирования для '%s' (уровень %d)"
+msgstr ""
+"недостаточно захваченных данных, завершение протокола декодирования для "
+"'%s' (уровень %d)"
 
-#: src/names/names.c:113
+#: src/names/names.c:111
 #, c-format
 msgid "not enough captured data, terminating protocol decode at level %d"
-msgstr "недостаточно захваченных данных, завершение протокола декодирования на уровне %d"
+msgstr ""
+"недостаточно захваченных данных, завершение протокола декодирования на "
+"уровне %d"
 
-#: src/names/names.c:223
+#: src/names/names.c:217
 msgid "Unsupported ape mode in fill_node_id"
 msgstr "Неподдерживаемый режим ape в идентификаторе узла заполнения"
 
-#: src/stats/decode_proto.c:194
+#: src/stats/decode_proto.c:190
 #, c-format
 msgid "Link type is %s"
 msgstr "Тип канала — %s"
 
-#: src/stats/decode_proto.c:268
+#: src/stats/decode_proto.c:261
 msgid "Data link entry not initialized"
 msgstr "Запись канала данных не инициализирована"
 
-#: src/stats/decode_proto.c:569
+#: src/stats/decode_proto.c:540
 msgid "Radiotap:captured size too small, packet discarded"
 msgstr "Radiotap: захваченный размер слишком мал, пакет отброшен"
 
-#: src/stats/decode_proto.c:598
+#: src/stats/decode_proto.c:568
 msgid "PPI:captured size too small, packet discarded"
 msgstr "PPI: захваченный размер слишком мал, пакет отброшен"
 
-#: src/stats/decode_proto.c:629
+#: src/stats/decode_proto.c:596
 #, c-format
 msgid "PPI:unsupported link type %u, packet discarded"
 msgstr "PPI: тип канала %u не поддерживается, пакет отброшен"
 
-#: src/stats/decode_proto.c:708
+#: src/stats/decode_proto.c:674
 msgid "wlan:captured size too small (less than 10 bytes), packet discarded"
 msgstr "WLAN: захваченный размер слишком мал (менее 10 байт), пакет отброшен"
 
-#: src/stats/decode_proto.c:732
+#: src/stats/decode_proto.c:697
 #, c-format
 msgid "Invalid tofromds field in WLAN packet: 0x%x"
 msgstr "Поле tofromds в WLAN пакетах неверно: 0x%x"
 
-#: src/stats/decode_proto.c:763 src/stats/decode_proto.c:796
+#: src/stats/decode_proto.c:727 src/stats/decode_proto.c:756
 #, c-format
 msgid "wlan:captured size too small (read %u, needed %u), packet discarded"
-msgstr "WLAN: захваченный размер слишком мал (прочитано %u, нужно %u), пакет отброшен"
+msgstr ""
+"WLAN: захваченный размер слишком мал (прочитано %u, нужно %u), пакет отброшен"
 
-#: src/stats/decode_proto.c:779
+#: src/stats/decode_proto.c:740
 #, c-format
-msgid ""
-"wlan:captured size too small (read %u, needed %u), RTS packet discarded"
-msgstr "WLAN: захваченный размер слишком мал (прочитано %u, нужно %u), RTS-пакет отброшен"
+msgid "wlan:captured size too small (read %u, needed %u), RTS packet discarded"
+msgstr ""
+"WLAN: захваченный размер слишком мал (прочитано %u, нужно %u), RTS-пакет "
+"отброшен"
 
-#: src/stats/decode_proto.c:830
+#: src/stats/decode_proto.c:789
 #, c-format
 msgid "wlan:frame type 0x%x is reserved, decode aborted"
 msgstr "WLAN: тип кадра 0x%x получен, декодирование прервано"
 
-#: src/stats/decode_proto.c:834
+#: src/stats/decode_proto.c:793
 #, c-format
 msgid "wlan:unknown frame type 0x%x, decode aborted"
 msgstr "WLAN: неизвестный тип кадра 0x%x, декодирование прервано"
 
-#: src/stats/links.c:210
+#: src/stats/links.c:196
 msgid "Queuing link for remove"
 msgstr "Очередь канала на удаление"
 
-#: src/stats/links.c:261
+#: src/stats/links.c:245
 #, c-format
 msgid "New link: %s. Number of links %d"
 msgstr "Новый канал: %s. Количество каналов: %d"
 
-#: src/stats/links.c:343
+#: src/stats/links.c:325
 #, c-format
 msgid "Updated links. Active links %d"
 msgstr "Каналы обновлены. Активные каналы: %d"
 
-#: src/stats/node.c:113
+#: src/stats/node.c:110
 #, c-format
 msgid "New node: %s. Number of nodes %d"
 msgstr "Новый узел: %s. Количество узлов %d"
 
-#: src/stats/node.c:147
+#: src/stats/node.c:142
 #, c-format
 msgid "delete node: %s. Number of nodes %d"
 msgstr "удалить узел: %s. Количество узлов %d"
 
-#: src/stats/node.c:268
+#: src/stats/node.c:255
 #, c-format
 msgid "Queuing node '%s' for remove"
 msgstr "Очередь узла '%s'  на удаление"
 
-#: src/stats/node.c:587
+#: src/stats/node.c:556
 #, c-format
 msgid "Updated nodes. Active nodes %d"
 msgstr "Обновлённые узлы. Активные узлы %d"
 
-#: src/stats/node_id.c:70
+#: src/stats/node_id.c:69
 msgid "Unsupported ape mode in node_id_compare"
 msgstr "Неподдерживаемый режим ape в сравнении идентификаторов узлов"
 
-#: src/stats/util.c:330
+#: src/stats/util.c:308
 #, c-format
 msgid "%ld\" ago"
 msgstr "%ld\" ранее"
 
-#: src/stats/util.c:336
+#: src/stats/util.c:313
 #, c-format
 msgid "%ld'%ld\" ago"
 msgstr "%ld'%ld\" ранее"
@@ -589,7 +610,14 @@ msgid ""
 "Chris Leick <c.leick@vollbio.de>\n"
 "Frederic Peters <fpeters@debian.org>\n"
 "Daniel Nylander\n"
-msgstr "Vincent van Adrighem <vincent@dirck.mine.nu>\nAlexL <alexl000@users.sourceforge.net>\nGôrkem Cetin <gorkem@gelecek.com.tr>\nJavier Fernandez-Sanguino Peña\nChris Leick <c.leick@vollbio.de>\nFrederic Peters <fpeters@debian.org>\nDaniel Nylander\n"
+msgstr ""
+"Vincent van Adrighem <vincent@dirck.mine.nu>\n"
+"AlexL <alexl000@users.sourceforge.net>\n"
+"Gôrkem Cetin <gorkem@gelecek.com.tr>\n"
+"Javier Fernandez-Sanguino Peña\n"
+"Chris Leick <c.leick@vollbio.de>\n"
+"Frederic Peters <fpeters@debian.org>\n"
+"Daniel Nylander\n"
 
 #: glade/etherape.ui:171
 msgid "_File"
@@ -847,7 +875,9 @@ msgstr "Размер  _переменной"
 msgid ""
 "Set the kind of instantaneous or accumulated traffic that the node radius "
 "indicates"
-msgstr "Установите мгновенный или накопленный объём трафика, что радиус узла указывает"
+msgstr ""
+"Установите мгновенный или накопленный объём трафика, что радиус узла "
+"указывает"
 
 #: glade/etherape.ui:1083
 msgid "_Inner Ring Scale"
@@ -865,7 +895,9 @@ msgstr "Отображать _статистику захваченных пак
 msgid ""
 "Set where to display pcap stats: packets received, dropped by OS buffering, "
 "and dropped by the interface or driver"
-msgstr "Укажите, где отображать статистику захваченных пакетов: пакеты получены, отброшены буферизацией ОС, и отброшены интерфейсом или драйвером"
+msgstr ""
+"Укажите, где отображать статистику захваченных пакетов: пакеты получены, "
+"отброшены буферизацией ОС, и отброшены интерфейсом или драйвером"
 
 #: glade/etherape.ui:1169
 msgid "Link _Width - Node Radius Ratio"
@@ -887,7 +919,9 @@ msgstr "_Режим размера"
 msgid ""
 "Choose how node radius and link width are calculated as a function of "
 "average traffic"
-msgstr "Выберите способ расчёта радиуса узла и ширины канала в зависимости от среднего трафика"
+msgstr ""
+"Выберите способ расчёта радиуса узла и ширины канала в зависимости от "
+"среднего трафика"
 
 #: glade/etherape.ui:1291
 msgid "_Hide node names"
@@ -908,7 +942,9 @@ msgstr "_Разрешить отображение имён"
 #: glade/etherape.ui:1339
 msgid ""
 "Enable name resolution. If unchecked, all addresses are in numeric form."
-msgstr "Включить отображение имён. Если флажок не установлен, все адреса в числовом формате."
+msgstr ""
+"Включить отображение имён. Если флажок не установлен, все адреса в числовом "
+"формате."
 
 #: glade/etherape.ui:1369
 msgid "_Capture filter"
@@ -968,9 +1004,10 @@ msgstr "Добавить цвет"
 
 #: glade/etherape.ui:1641
 msgid ""
-"Add a new color to the list of colors that can be used to represent "
-"protocols"
-msgstr "Добавить новый цвет в список цветов, которые можно использовать для представления протоколов"
+"Add a new color to the list of colors that can be used to represent protocols"
+msgstr ""
+"Добавить новый цвет в список цветов, которые можно использовать для "
+"представления протоколов"
 
 #: glade/etherape.ui:1653
 msgid "Remove color"
@@ -1012,7 +1049,9 @@ msgstr "Информация о пакете усредняется за это 
 msgid ""
 "Remove this node from the diagram after this much time. 0 means never "
 "timeout."
-msgstr "Удалить этот узел из диаграммы через это время. 0 означает никогда не тайм-аут."
+msgstr ""
+"Удалить этот узел из диаграммы через это время. 0 означает никогда не тайм-"
+"аут."
 
 #: glade/etherape.ui:1908 glade/etherape.ui:2072
 msgid "Traffic Statistics"
@@ -1021,7 +1060,8 @@ msgstr "Статистика трафика"
 #: glade/etherape.ui:1920
 msgid ""
 "Delete this node from memory after this much time. 0 means never timeout."
-msgstr "Удалить этот узел из памяти через это время. 0 означает никогда не тайм-аут."
+msgstr ""
+"Удалить этот узел из памяти через это время. 0 означает никогда не тайм-аут."
 
 #: glade/etherape.ui:1950 glade/etherape.ui:2114
 msgid "Protocol Statistics"
@@ -1031,7 +1071,9 @@ msgstr "Статистика протоколов"
 msgid ""
 "Expire protocol statistics for a node after this much time. 0 means never "
 "timeout."
-msgstr "По истечении этого времени истекает статистика протокола для узла. 0 означает никогда не тайм-аут."
+msgstr ""
+"По истечении этого времени истекает статистика протокола для узла. 0 "
+"означает никогда не тайм-аут."
 
 #: glade/etherape.ui:1990
 msgid "<i>Node Timeouts (s)</i>"
@@ -1041,12 +1083,15 @@ msgstr "<i>Тайм-аут(ы) узла</i>"
 msgid ""
 "Remove this link from the diagram after this much time. 0 means never "
 "timeout."
-msgstr "Удалить этот канал из диаграммы через это время. 0 означает никогда не тайм-аут."
+msgstr ""
+"Удалить этот канал из диаграммы через это время. 0 означает никогда не тайм-"
+"аут."
 
 #: glade/etherape.ui:2084
 msgid ""
 "Delete this link from memory after this much time. 0 means never timeout."
-msgstr "Удалить этот канал из памяти через это время. 0 означает никогда не тайм-аут."
+msgstr ""
+"Удалить этот канал из памяти через это время. 0 означает никогда не тайм-аут."
 
 #: glade/etherape.ui:2154
 msgid "<i>Link Timeouts (s)</i>"
@@ -1126,7 +1171,9 @@ msgstr "_Показать все узлы"
 
 #: glade/etherape.ui:2820
 msgid "Controls display of nodes timed out from diagram, but still in memory"
-msgstr "Управляет отображением узлов, вышедших из диаграммы, но всё ещё находящихся в памяти"
+msgstr ""
+"Управляет отображением узлов, вышедших из диаграммы, но всё ещё находящихся "
+"в памяти"
 
 #: glade/etherape.ui:2880
 msgid "name"
