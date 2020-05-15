@@ -6,19 +6,19 @@
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; either version 2
  * of the License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
 #ifdef HAVE_CONFIG_H
-#include "config.h"
+#include "../config.h"
 #endif
 
 #include <glib.h>
@@ -48,7 +48,7 @@ static gchar *header_xml(void)
   timenow = time(NULL);
   tmnow = localtime(&timenow);
   strftime(timebuf, sizeof(timebuf), "%F %T %z", tmnow);
-  xml = xmltag("header", 
+  xml = xmltag("header",
                "\n%s<timestamp>%s</timestamp>\n",
                dvc ? dvc : "",
                timebuf);
@@ -62,17 +62,17 @@ gchar *generate_xml(void)
   gchar *xmln;
   gchar *xml;
   gchar *oldlocale;
-  
+
   // we want to dump in a known locale, so force it as 'C'
   oldlocale = g_strdup(setlocale(LC_ALL, NULL));
   setlocale(LC_ALL, "C");
-  
+
   xmlh = header_xml();
   xmln = nodes_catalog_xml();
   xml = g_strdup_printf("<?xml version=\"1.0\"?>\n"
                         "<!-- traffic data in bytes. last_heard in seconds from dump time -->\n"
-                        "<etherape>\n%s%s</etherape>", 
-                        xmlh, 
+                        "<etherape>\n%s%s</etherape>",
+                        xmlh,
                         xmln);
   // reset user locale
   setlocale(LC_ALL, oldlocale);
@@ -88,7 +88,7 @@ void dump_xml(gchar *ofile)
 {
   FILE *fout;
   gchar *xml;
-  
+
   if (!ofile)
     return;
 
@@ -96,11 +96,10 @@ void dump_xml(gchar *ofile)
   g_assert(xml);
 
   fout = fopen(ofile, "wb");
-  if (fout)
-    {
-      fprintf(fout, "%s", xml);
-      fclose(fout);
-    }
+  if (fout) {
+    fprintf(fout, "%s", xml);
+    fclose(fout);
+  }
 
   g_free(xml);
 }

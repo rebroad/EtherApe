@@ -23,15 +23,14 @@ typedef struct
   guint16 src_port;
   guint16 dst_port;
   gchar *data;
-}
-conversation_t;
+} conversation_t;
 
-void add_conversation (address_t * src_address, address_t * dst_address,
-		       guint16 src_port, guint16 dst_port, const gchar * data);
-const gchar *find_conversation (address_t * src_address, 
-		       address_t * dst_address, guint16 src_port, guint16 dst_port);
-void delete_conversation_link(address_t * src_address, 
-		       address_t * dst_address);
-void delete_conversations (void);
+void add_conversation(address_t *src_address, address_t *dst_address,
+                      guint16 src_port, guint16 dst_port, const gchar *data);
+const gchar *find_conversation(address_t *src_address,
+                               address_t *dst_address, guint16 src_port, guint16 dst_port);
+void delete_conversation_link(address_t *src_address,
+                              address_t *dst_address);
+void delete_conversations(void);
 
 long active_conversations(void);

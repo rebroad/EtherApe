@@ -17,4 +17,4 @@
 
 
 
-void cleanup (int signum);
+void cleanup(int signum);

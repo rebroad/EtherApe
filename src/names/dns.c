@@ -19,7 +19,7 @@
  */
 
 #ifdef HAVE_CONFIG_H
-#include <config.h>
+#include "../../config.h"
 #endif
 
 #include <stdint.h>
@@ -37,9 +37,9 @@ int dns_open(void)
 {
 #ifdef HAVE_LIBCARES
   return ares_open();
-#else   
+#else
   return thread_open();
-#endif    
+#endif
 }
 
 /* close dns interface */
@@ -47,9 +47,9 @@ void dns_close(void)
 {
 #ifdef HAVE_LIBCARES
   ares_close();
-#else   
+#else
   thread_close();
-#endif    
+#endif
 }
 
 /* resolves address and returns its fqdn */
@@ -57,8 +57,8 @@ const char *dns_lookup(address_t *addr)
 {
 #ifdef HAVE_LIBCARES
   return ares_lookup(addr);
-#else   
+#else
   return thread_lookup(addr);
-#endif    
+#endif
 }
 

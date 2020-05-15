@@ -1,6 +1,6 @@
 /* EtherApe
  * Copyright (C) 2001 Juan Toledo, Riccardo Ghetta
- * 
+ *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
@@ -16,7 +16,7 @@
  */
 
 #ifdef HAVE_CONFIG_H
-#include <config.h>
+#include "../config.h"
 #endif
 #include <gtk/gtk.h>
 #include "preferences.h"
@@ -29,7 +29,7 @@ GList *centered_node_speclist = NULL;
 static const gchar *pref_group = "Diagram";
 
 /* Separator character used in encoding string-vectors */
-#define STRVEC_SEP " "
+#define STRVEC_SEP  " "
 
 /***************************************************************
  *
@@ -37,7 +37,7 @@ static const gchar *pref_group = "Diagram";
  *
  ***************************************************************/
 
-static void read_string_config(gchar **item, GKeyFile *gkey, const char *key)
+static void read_string_config(gchar * *item, GKeyFile *gkey, const char *key)
 {
   gchar *tmp;
   tmp = g_key_file_get_string(gkey, pref_group, key, NULL);
@@ -49,16 +49,15 @@ static void read_string_config(gchar **item, GKeyFile *gkey, const char *key)
   *item = tmp;
 }
 
-static void read_strvec_config(gchar ***item, GKeyFile *gkey, const char *key)
+static void read_strvec_config(gchar * * *item, GKeyFile *gkey, const char *key)
 {
   gchar *tmp = NULL;
   read_string_config(&tmp, gkey, key);
-  if (tmp)
-    {
-      g_strfreev(*item);
-      *item = g_strsplit(tmp, STRVEC_SEP, 0);
-      g_free(tmp);
-    }
+  if (tmp) {
+    g_strfreev(*item);
+    *item = g_strsplit(tmp, STRVEC_SEP, 0);
+    g_free(tmp);
+  }
 }
 
 static void read_boolean_config(gboolean *item, GKeyFile *gkey, const char *key)
@@ -128,16 +127,16 @@ struct preference
     gint pv_int;
     gdouble pv_double;
     gchar *pv_string;
-    gchar **pv_strvec;
+    gchar * *pv_strvec;
   } defval;
 };
 
-#define MKPREF(n, t, d) { \
+#define MKPREF(n, t, d)  { \
     .name = #n, \
     .offset = offsetof(struct pref_struct, n), \
-    .type = PT_##t, \
-    .defval.pv_##t = d, \
-  }
+    .type = PT_ ## t, \
+    .defval.pv_ ## t = d, \
+}
 
 static const struct preference preferences[] = {
   MKPREF(name_res, bool, TRUE),
@@ -147,11 +146,11 @@ static const struct preference preferences[] = {
 
   MKPREF(text_color, string, "#ffff00"),
   MKPREF(fontname, string, "Sans 8"),
-  MKPREF(colors, strvec, ((char*[]){ "#ff0000;WWW,HTTP,HTTPS", "#0000ff;DOMAIN",
-                                     "#00ff00", "#ffff00", "#ff00ff", 
-                                     "#00ffff;ICMP,ICMPV6",
-                                     "#ffffff", "#ff7700", "#ff0077", "#ffaa77",
-                                     "#7777ff", "#aaaa33", NULL, })),
+  MKPREF(colors, strvec, ((char *[]) {"#ff0000;WWW,HTTP,HTTPS", "#0000ff;DOMAIN",
+                                      "#00ff00", "#ffff00", "#ff00ff",
+                                      "#00ffff;ICMP,ICMPV6",
+                                      "#ffffff", "#ff7700", "#ff0077", "#ffaa77",
+                                      "#7777ff", "#aaaa33", NULL, })),
 
   MKPREF(bck_image_enabled, bool, TRUE),
   MKPREF(bck_image_path, string, ""),
@@ -183,7 +182,7 @@ static const struct preference preferences[] = {
   MKPREF(stack_level, int, 0),
 };
 
-#define NUM_PREFS (sizeof(preferences) / sizeof(preferences[0]))
+#define NUM_PREFS  (sizeof(preferences) / sizeof(preferences[0]))
 
 /***************************************************************
  *
@@ -196,11 +195,10 @@ static void default_config(struct pref_struct *p)
   void *addr;
   gchar *tmp;
 
-  for (i = 0; i < NUM_PREFS; i++)
+  for (i = 0; i < NUM_PREFS; i++) {
+    addr = (char *)p + preferences[i].offset;
+    switch (preferences[i].type)
     {
-      addr = (char *)p + preferences[i].offset;
-      switch (preferences[i].type)
-        {
         case PT_bool:
           *(gboolean *)addr = preferences[i].defval.pv_bool;
           break;
@@ -214,7 +212,7 @@ static void default_config(struct pref_struct *p)
           break;
 
         case PT_string:
-          *(gchar **)addr = g_strdup(preferences[i].defval.pv_string);
+          *(gchar * *)addr = g_strdup(preferences[i].defval.pv_string);
           break;
 
         case PT_strvec:
@@ -223,11 +221,11 @@ static void default_config(struct pref_struct *p)
            * result is a g_strfreev()-able string vector.
            */
           tmp = g_strjoinv(STRVEC_SEP, preferences[i].defval.pv_strvec);
-          *(gchar ***)addr = g_strsplit(tmp, STRVEC_SEP, 0);
+          *(gchar * * *)addr = g_strsplit(tmp, STRVEC_SEP, 0);
           g_free(tmp);
           break;
-        }
     }
+  }
 }
 
 /* loads configuration from .gnome/Etherape */
@@ -245,24 +243,21 @@ void load_config(struct pref_struct *p)
 
   /* tries to read config from file (~/.config/etherape) */
   pref_file = config_file_name();
-  if (!g_key_file_load_from_file(gkey, pref_file, G_KEY_FILE_NONE, NULL))
-    {
-      /* file not found, try old location (~/.gnome2/Etherape) */
+  if (!g_key_file_load_from_file(gkey, pref_file, G_KEY_FILE_NONE, NULL)) {
+    /* file not found, try old location (~/.gnome2/Etherape) */
+    g_free(pref_file);
+    pref_file = old_config_file_name();
+    if (!g_key_file_load_from_file(gkey, pref_file, G_KEY_FILE_NONE, NULL)) {
       g_free(pref_file);
-      pref_file = old_config_file_name();
-      if (!g_key_file_load_from_file(gkey, pref_file, G_KEY_FILE_NONE, NULL))
-        {
-          g_free(pref_file);
-          return;
-        }
+      return;
     }
+  }
   g_free(pref_file);
 
-  for (i = 0; i < NUM_PREFS; i++)
+  for (i = 0; i < NUM_PREFS; i++) {
+    addr = (char *)p + preferences[i].offset;
+    switch (preferences[i].type)
     {
-      addr = (char *)p + preferences[i].offset;
-      switch (preferences[i].type)
-        {
         case PT_bool:
           read_boolean_config(addr, gkey, preferences[i].name);
           break;
@@ -282,8 +277,8 @@ void load_config(struct pref_struct *p)
         case PT_strvec:
           read_strvec_config(addr, gkey, preferences[i].name);
           break;
-        }
     }
+  }
 
   p->colors = protohash_compact(p->colors);
 
@@ -306,12 +301,11 @@ void save_config(const struct pref_struct *p)
 
   gkey = g_key_file_new();
 
-  for (i = 0; i < NUM_PREFS; i++)
+  for (i = 0; i < NUM_PREFS; i++) {
+    addr = (char *)p + preferences[i].offset;
+    name = preferences[i].name;
+    switch (preferences[i].type)
     {
-      addr = (char *)p + preferences[i].offset;
-      name = preferences[i].name;
-      switch (preferences[i].type)
-        {
         case PT_bool:
           g_key_file_set_boolean(gkey, pref_group, name, *(gboolean *)addr);
           break;
@@ -325,16 +319,16 @@ void save_config(const struct pref_struct *p)
           break;
 
         case PT_string:
-          g_key_file_set_string(gkey, pref_group, name, *(gchar **)addr);
+          g_key_file_set_string(gkey, pref_group, name, *(gchar * *)addr);
           break;
 
         case PT_strvec:
-          tmp = g_strjoinv(STRVEC_SEP, *(gchar ***)addr);
+          tmp = g_strjoinv(STRVEC_SEP, *(gchar * * *)addr);
           g_key_file_set_string(gkey, pref_group, preferences[i].name, tmp);
           g_free(tmp);
           break;
-        }
     }
+  }
 
   g_key_file_set_string(gkey, "General", "version", VERSION);
 
@@ -346,15 +340,14 @@ void save_config(const struct pref_struct *p)
 
   if (res)
     g_my_info(_("Preferences saved to %s"), pref_file);
-  else
-    {
-      GtkWidget *dialog = gtk_message_dialog_new(NULL, GTK_DIALOG_DESTROY_WITH_PARENT,
-                                                 GTK_MESSAGE_ERROR, GTK_BUTTONS_CLOSE,
-                                                 _("Error saving preferences to '%s': %s"),
-                                                 pref_file, error->message);
-      gtk_dialog_run(GTK_DIALOG(dialog));
-      gtk_widget_destroy(dialog);
-    }
+  else {
+    GtkWidget *dialog = gtk_message_dialog_new(NULL, GTK_DIALOG_DESTROY_WITH_PARENT,
+                                               GTK_MESSAGE_ERROR, GTK_BUTTONS_CLOSE,
+                                               _("Error saving preferences to '%s': %s"),
+                                               pref_file, error->message);
+    gtk_dialog_run(GTK_DIALOG(dialog));
+    gtk_widget_destroy(dialog);
+  }
   g_free(pref_file);
   g_key_file_free(gkey);
 }
@@ -365,25 +358,24 @@ void free_config(struct pref_struct *p)
   int i;
   void *addr;
 
-  for (i = 0; i < NUM_PREFS; i++)
+  for (i = 0; i < NUM_PREFS; i++) {
+    addr = (char *)p + preferences[i].offset;
+    switch (preferences[i].type)
     {
-      addr = (char *)p + preferences[i].offset;
-      switch (preferences[i].type)
-        {
         case PT_string:
-          g_free(*(gchar **)addr);
-          *(gchar **)addr = NULL;
+          g_free(*(gchar * *)addr);
+          *(gchar * *)addr = NULL;
           break;
 
         case PT_strvec:
-          g_strfreev(*(gchar ***)addr);
-          *(gchar ***)addr = NULL;
+          g_strfreev(*(gchar * * *)addr);
+          *(gchar * * *)addr = NULL;
           break;
 
         default:
           break;
-        }
     }
+  }
 }
 
 /* copies a configuration from src to tgt */
@@ -393,12 +385,11 @@ void copy_config(struct pref_struct *tgt, const struct pref_struct *src)
   void *src_addr;
   void *tgt_addr;
 
-  for (i = 0; i < NUM_PREFS; i++)
+  for (i = 0; i < NUM_PREFS; i++) {
+    src_addr = (char *)src + preferences[i].offset;
+    tgt_addr = (char *)tgt + preferences[i].offset;
+    switch (preferences[i].type)
     {
-      src_addr = (char *)src + preferences[i].offset;
-      tgt_addr = (char *)tgt + preferences[i].offset;
-      switch (preferences[i].type)
-        {
         case PT_bool:
           *(gboolean *)tgt_addr = *(gboolean *)src_addr;
           break;
@@ -412,14 +403,14 @@ void copy_config(struct pref_struct *tgt, const struct pref_struct *src)
           break;
 
         case PT_string:
-          *(gchar **)tgt_addr = g_strdup(*(gchar **)src_addr);
+          *(gchar * *)tgt_addr = g_strdup(*(gchar * *)src_addr);
           break;
 
         case PT_strvec:
-          *(gchar ***)tgt_addr = g_strdupv(*(gchar ***)src_addr);
+          *(gchar * * *)tgt_addr = g_strdupv(*(gchar * * *)src_addr);
           break;
-        }
     }
+  }
 }
 
 /*

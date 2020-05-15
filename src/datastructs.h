@@ -19,7 +19,7 @@
 #define DATASTRUCT_H
 
 #ifdef HAVE_CONFIG_H
-#include <config.h>
+#include "../config.h"
 #endif
 #include "stats/prot_types.h"
 
@@ -40,14 +40,14 @@ const GdkRGBA *protohash_color(const gchar *protoname);
 gboolean protohash_is_preferred(const gchar *protoname);
 
 /* fills the hash from a pref vector */
-gboolean protohash_read_prefvect(gchar **colors);
+gboolean protohash_read_prefvect(gchar * *colors);
 
 /* resets the cycle color to start of list */
 void protohash_reset_cycle(void);
 
 /* compacts the array of colors/protocols mappings by collapsing identical
  * colors - frees the input array */
-gchar **protohash_compact(gchar **colors);
+gchar **protohash_compact(gchar * *colors);
 
 /* removes all spaces from str (in place). Returns str */
 gchar *remove_spaces(gchar *str);

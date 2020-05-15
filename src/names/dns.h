@@ -15,14 +15,14 @@
    You should have received a copy of the GNU General Public License
    along with this program; if not, write to the Free Software
    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
-   
+
    ----------------------------------------------------------------
-   
+
    dns wrapper routines
 */
 
 /* initialize dns interface. returns 0 on success */
-int dns_open (void);
+int dns_open(void);
 
 /* close dns interface */
 void dns_close(void);

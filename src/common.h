@@ -14,14 +14,14 @@
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, see <http://www.gnu.org/licenses/>.
  */
- 
+
 #ifndef ETHERAPE_COMMON_H
 #define ETHERAPE_COMMON_H
 
 /* disable deprecated gnome functions */
 /* #define G_DISABLE_DEPRECATED 1 */
 
-#include "config.h"
+#include "../config.h"
 
 
 #ifdef HAVE_SYS_TIME_H
@@ -42,16 +42,16 @@
 #ifdef ENABLE_NLS
 #include <libintl.h>
 #ifndef _
-#define _(String) gettext(String)
+#define _(String)  gettext(String)
 #endif
 #else
 #ifndef _
-#define _(String) (String)
+#define _(String)  (String)
 #endif
 #endif
 
 #ifndef MAXDNAME
-#define MAXDNAME        1025	/* maximum domain name length */
+#define MAXDNAME  1025          /* maximum domain name length */
 #endif
 
 typedef enum
@@ -61,8 +61,7 @@ typedef enum
   LINEAR = 0,
   LOG = 1,
   SQRT = 2
-}
-size_mode_t;
+} size_mode_t;
 
 typedef enum
 {
@@ -77,8 +76,7 @@ typedef enum
   ACCU_OUTBOUND,
   ACCU_PACKETS,
   ACCU_AVG_SIZE,
-}
-node_size_variable_t;
+} node_size_variable_t;
 
 typedef enum
 {
@@ -86,8 +84,7 @@ typedef enum
   LINK6 = 0,        /* data link level with 6 bits of address */
   IP,
   TCP
-}
-apemode_t;
+} apemode_t;
 
 typedef enum
 {
@@ -98,8 +95,7 @@ typedef enum
   STATSPOS_UPPER_RIGHT = 2,
   STATSPOS_LOWER_LEFT = 3,
   STATSPOS_LOWER_RIGHT = 4,
-}
-statspos_t;
+} statspos_t;
 
 typedef struct __attribute__ ((packed))
 {
@@ -121,14 +117,14 @@ typedef struct __attribute__ ((packed))
 address_t;
 
 /* Macros */
-#define address_copy(dst, src) memmove((dst), (src), sizeof(address_t))
-#define address_clear(dst) memset((dst), 0, sizeof(address_t))
-#define address_len(type) ((type)==AF_INET?32/8:(type)==AF_INET6?128/8:0)
-#define is_addr_eq(dst, src) (memcmp((dst), (src), sizeof(address_t))==0)
-#define is_addr_gt(dst, src) (memcmp((dst), (src), sizeof(address_t))>0)
-#define is_addr_lt(dst, src) (memcmp((dst), (src), sizeof(address_t))<0)
-#define is_addr_ge(dst, src) (memcmp((dst), (src), sizeof(address_t))>=0)
-#define is_addr_le(dst, src) (memcmp((dst), (src), sizeof(address_t))<=0)
+#define address_copy(dst, src)  memmove((dst), (src), sizeof(address_t))
+#define address_clear(dst)      memset((dst), 0, sizeof(address_t))
+#define address_len(type)       ((type) == AF_INET ? 32/8 : (type) == AF_INET6 ? 128/8 : 0)
+#define is_addr_eq(dst, src)    (memcmp((dst), (src), sizeof(address_t)) == 0)
+#define is_addr_gt(dst, src)    (memcmp((dst), (src), sizeof(address_t)) > 0)
+#define is_addr_lt(dst, src)    (memcmp((dst), (src), sizeof(address_t)) < 0)
+#define is_addr_ge(dst, src)    (memcmp((dst), (src), sizeof(address_t)) >= 0)
+#define is_addr_le(dst, src)    (memcmp((dst), (src), sizeof(address_t)) <= 0)
 
 static inline int address_cmp(const address_t *a, const address_t *b)
 {
@@ -138,26 +134,26 @@ static inline int address_cmp(const address_t *a, const address_t *b)
     return memcmp(a->addr8, b->addr8, address_len(a->type));
 }
 
-#define g_my_debug(format, args...)      g_log (G_LOG_DOMAIN, \
-						  G_LOG_LEVEL_DEBUG, \
-						  format, ##args)
-#define g_my_info(format, args...)      g_log (G_LOG_DOMAIN, \
-						  G_LOG_LEVEL_INFO, \
-						  format, ##args)
-#define g_my_critical(format, args...)      g_log (G_LOG_DOMAIN, \
-						      G_LOG_LEVEL_CRITICAL, \
-						      format, ##args)
+#define g_my_debug(format, args ...)     g_log(G_LOG_DOMAIN, \
+                                               G_LOG_LEVEL_DEBUG, \
+                                               format, ## args)
+#define g_my_info(format, args ...)      g_log(G_LOG_DOMAIN, \
+                                               G_LOG_LEVEL_INFO, \
+                                               format, ## args)
+#define g_my_critical(format, args ...)  g_log(G_LOG_DOMAIN, \
+                                               G_LOG_LEVEL_CRITICAL, \
+                                               format, ## args)
 
 /*
  * Pointer versions of ntohs and ntohl.  Given a pointer to a member of a
  * byte array, returns the value of the two or four bytes at the pointer.
  */
 #define MAKE_PNxH(direction, suffix, type) \
-  static inline type p##direction##suffix(const void *p) \
+  static inline type p ## direction ## suffix(const void *p) \
   { \
     type tmp; \
     memcpy(&tmp, p, sizeof(tmp)); \
-    return direction##suffix(tmp); \
+    return direction ## suffix(tmp); \
   }
 
 MAKE_PNxH(hton, s, guint16);
@@ -166,6 +162,6 @@ MAKE_PNxH(hton, l, guint32);
 MAKE_PNxH(ntoh, l, guint32);
 
 /* Takes the hi_nibble value from a byte */
-#define hi_nibble(b) ((b & 0xf0) >> 4)
+#define hi_nibble(b)  ((b & 0xf0) >> 4)
 
 #endif /* ETHERAPE_COMMON_H */

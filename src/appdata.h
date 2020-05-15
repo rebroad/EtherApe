@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, see <http://www.gnu.org/licenses/>.
  */
- 
+
 #ifndef ETHERAPE_GLOBALS_H
 #define ETHERAPE_GLOBALS_H
 
@@ -27,7 +27,7 @@
 struct appdata_struct
 {
   GtkBuilder *xml;
-  GtkWidget *app1;		/* Pointer to the main app window */
+  GtkWidget *app1;              /* Pointer to the main app window */
   GtkStatusbar *statusbar;        /* Main window statusbar */
 
   /* These two are different for offline (file-based) capture/replay */
@@ -35,18 +35,21 @@ struct appdata_struct
   struct timeval gui_now; /* Real (as in wall-clock gettimeofday()) time */
 
   gchar *itf_file;            /* fullspec of xml glade file */
-  gchar *export_file;		/* file to export to */
+  gchar *export_file;           /* file to export to */
   gchar *export_file_final;     /* file to export to at end of replay */
   gchar *export_file_signal;    /* file to export to at receipt of usr1 */
-  apemode_t mode;		/* Mode of operation. Can be
-				 * T.RING/FDDI/ETHERNET, IP or TCP */
+  apemode_t mode;               /* Mode of operation. Can be
+                                 * T.RING/FDDI/ETHERNET, IP or TCP */
 
-  gint node_limit;		/* Max number of nodes to show. If <0 it's not
-				 * limited */
+  gint node_limit;              /* Max number of nodes to show. If <0 it's not
+                                 * limited */
 
   struct
   {
-    enum { ST_FILE, ST_LIVE, } type;
+    enum
+    {
+      ST_FILE, ST_LIVE,
+    } type;
     union
     {
       gchar *interface; /* Network interface to listen to */
@@ -60,7 +63,7 @@ struct appdata_struct
   gulong max_delay;    /* max packet distance when replaying a file */
   gboolean stationary_layout;   /* if true, use stationary layout */
 
-  unsigned long n_packets;	/* Number of total packets received */
+  unsigned long n_packets;      /* Number of total packets received */
   glong total_mem_packets;      /* Number of packets currently in memory */
   gboolean request_dump;        /* if true, do an xml dump */
 
@@ -70,16 +73,12 @@ struct appdata_struct
 extern struct appdata_struct appdata;
 
 #define DEBUG_ENABLED  (appdata.debug_mask & G_LOG_LEVEL_DEBUG)
-#define INFO_ENABLED  (appdata.debug_mask & G_LOG_LEVEL_INFO)
+#define INFO_ENABLED   (appdata.debug_mask & G_LOG_LEVEL_INFO)
 
 void appdata_init(struct appdata_struct *p);
 void appdata_clear_source(struct appdata_struct *p);
 gboolean appdata_init_builder(const gchar *builder_fname);
 void appdata_free(struct appdata_struct *p);
 
-static inline gchar *appdata_source_name(const struct appdata_struct *p)
-{
-  return p->source.type == ST_LIVE ? p->source.interface : p->source.file;
-}
 
 #endif

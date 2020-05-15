@@ -35,9 +35,9 @@ typedef struct
 } node_id_t;
 
 void node_id_clear(node_id_t *a);
-gint node_id_compare (const node_id_t *a, const node_id_t *b);
+gint node_id_compare(const node_id_t *a, const node_id_t *b);
 /* returns a newly allocated string with a human-readable id */
-gchar *node_id_str(const node_id_t *id); 
+gchar *node_id_str(const node_id_t *id);
 /* returns a newly allocated string with a dump of id */
 gchar *node_id_dump(const node_id_t *id);
 /* returns a newly allocated string with an xml dump of id */
@@ -50,15 +50,14 @@ typedef struct
   GString *numeric_name; /* readable version of node_id */
   GString *res_name; /* resolved name - NULL if not resolved */
   gdouble accumulated; /* total accumulated traffic */
-}
-name_t;
+} name_t;
 
-name_t * node_name_create(const node_id_t *node_id);
-void node_name_delete(name_t * name);
-void node_name_assign(name_t * name, const gchar *nm, const gchar *num_nm, 
-                 gdouble sz);
+name_t *node_name_create(const node_id_t *node_id);
+void node_name_delete(name_t *name);
+void node_name_assign(name_t *name, const gchar *nm, const gchar *num_nm,
+                      gdouble sz);
 gint node_name_id_compare(const name_t *a, const name_t *b);
-gint node_name_freq_compare (gconstpointer a, gconstpointer b);
+gint node_name_freq_compare(gconstpointer a, gconstpointer b);
 gchar *node_name_dump(const name_t *name);
 gchar *node_name_xml(const name_t *name);
 long active_names(void);

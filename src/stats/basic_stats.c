@@ -16,7 +16,7 @@
  */
 
 #ifdef HAVE_CONFIG_H
-#include <config.h>
+#include "../../config.h"
 #endif
 
 #include <math.h>
@@ -34,33 +34,30 @@ static long packet_list_item_n = 0;
 
 /* Returns a timeval structure with the time difference between to
  * other timevals. result = a - b */
-struct timeval
-subtract_times (struct timeval a, struct timeval b)
+struct timeval subtract_times(struct timeval a, struct timeval b)
 {
   struct timeval result;
 
   /* Perform the carry for the later subtraction by updating b. */
-  if (a.tv_usec < b.tv_usec)
-    {
-      int nsec = (b.tv_usec - a.tv_usec) / 1000000 + 1;
-      b.tv_usec -= 1000000 * nsec;
-      b.tv_sec += nsec;
-    }
-  if (a.tv_usec - b.tv_usec > 1000000)
-    {
-      int nsec = (a.tv_usec - b.tv_usec) / 1000000;
-      b.tv_usec += 1000000 * nsec;
-      b.tv_sec -= nsec;
-    }
+  if (a.tv_usec < b.tv_usec) {
+    int nsec = (b.tv_usec - a.tv_usec) / 1000000 + 1;
+    b.tv_usec -= 1000000 * nsec;
+    b.tv_sec += nsec;
+  }
+  if (a.tv_usec - b.tv_usec > 1000000) {
+    int nsec = (a.tv_usec - b.tv_usec) / 1000000;
+    b.tv_usec += 1000000 * nsec;
+    b.tv_sec -= nsec;
+  }
 
-  /* result.tv_usec is positive. */ 
+  /* result.tv_usec is positive. */
   result.tv_sec = a.tv_sec - b.tv_sec;
   result.tv_usec = a.tv_usec - b.tv_usec;
   return result;
-}				/* subtract_times */
+}                               /* subtract_times */
 
 /* returns the time difference a-b expressed in ms */
-double subtract_times_ms (const struct timeval *a, const struct timeval *b)
+double subtract_times_ms(const struct timeval *a, const struct timeval *b)
 {
   double result;
 
@@ -71,7 +68,7 @@ double subtract_times_ms (const struct timeval *a, const struct timeval *b)
     struct timeval t = subtract_times(*a, *b);
     double ck = (double)(t.tv_sec*1000.0 + t.tv_usec/1000.0);
     if (fabs(ck - result) > 0.000001)
-      g_warning("Errore subtract_times_ms: ms: %.f, timeval: %.f, delta: %.10f", 
+      g_warning("Errore subtract_times_ms: ms: %.f, timeval: %.f, delta: %.10f",
                 result, ck, fabs(ck-result));
   }
 #endif
@@ -90,7 +87,7 @@ double subtract_times_ms (const struct timeval *a, const struct timeval *b)
 static void packet_protos_delete(packet_protos_t *pt)
 {
   guint i;
-  for (i = 0; i<=STACK_SIZE ; ++i)
+  for (i = 0; i <= STACK_SIZE; ++i)
     g_free(pt->protonames[i]);
 }
 
@@ -100,18 +97,17 @@ gchar *packet_protos_dump(const packet_protos_t *pt)
   gint i;
   GString *msg;
 
-  msg=g_string_new("");
+  msg = g_string_new("");
   if (pt->protonames[0])
     msg = g_string_new(pt->protonames[0]);
   else
     msg = g_string_new("UNKNOWN");
-  for (i = 1; i<=STACK_SIZE ; ++i)
-    {
-      if (pt->protonames[i])
-        g_string_append_printf(msg, "/%s", pt->protonames[i]);
-      else
-        g_string_append(msg, "/UNKNOWN");
-    }
+  for (i = 1; i <= STACK_SIZE; ++i) {
+    if (pt->protonames[i])
+      g_string_append_printf(msg, "/%s", pt->protonames[i]);
+    else
+      g_string_append(msg, "/UNKNOWN");
+  }
 
   /* returns only the string buffer, freeing the rest */
   return g_string_free(msg, FALSE);
@@ -127,14 +123,13 @@ long packet_list_item_count(void)
   return packet_list_item_n;
 }
 
-packet_list_item_t *
-packet_list_item_create(packet_info_t *i, packet_direction d)
+packet_list_item_t *packet_list_item_create(packet_info_t *i, packet_direction d)
 {
   packet_list_item_t *newit;
 
   g_assert(i);
 
-  newit = g_malloc( sizeof(packet_list_item_t) );
+  newit = g_malloc(sizeof(packet_list_item_t));
   g_assert(newit);
 
   /* increments refcount of packet */
@@ -149,28 +144,25 @@ packet_list_item_create(packet_info_t *i, packet_direction d)
 
 void packet_list_item_delete(packet_list_item_t *pli)
 {
-  if (pli)
-    {
-      if (pli->info)
-        {
-          /* packet exists, decrement ref count */
-          pli->info->ref_count--;
-    
-          if (pli->info->ref_count < 1)
-            {
-              /* packet now unused, delete it */
-              packet_protos_delete(&pli->info->prot_desc);
-              g_free (pli->info);
-              pli->info = NULL;
+  if (pli) {
+    if (pli->info) {
+      /* packet exists, decrement ref count */
+      pli->info->ref_count--;
 
-              /* global packet stats */
-              appdata.total_mem_packets--;
-            }
-        }
-    
-      g_free(pli);
-      --packet_list_item_n;
+      if (pli->info->ref_count < 1) {
+        /* packet now unused, delete it */
+        packet_protos_delete(&pli->info->prot_desc);
+        g_free(pli->info);
+        pli->info = NULL;
+
+        /* global packet stats */
+        appdata.total_mem_packets--;
+      }
     }
+
+    g_free(pli);
+    --packet_list_item_n;
+  }
 }
 
 /***************************************************************************
@@ -210,8 +202,7 @@ void basic_stats_sub(basic_stats_t *tf_stat, gdouble val)
   /* averages are calculated by basic_stats_avg */
 }
 
-void
-basic_stats_avg(basic_stats_t *tf_stat, gdouble avg_msecs)
+void basic_stats_avg(basic_stats_t *tf_stat, gdouble avg_msecs)
 {
   g_assert(tf_stat);
 
@@ -237,7 +228,7 @@ gchar *basic_stats_dump(const basic_stats_t *tf_stat)
                         tf_stat->avg_size,
                         tf_stat->accu_packets,
                         msg_time);
-                        
+
   g_free(msg_time);
   return msg;
 }
@@ -258,11 +249,11 @@ gchar *basic_stats_xml(const basic_stats_t *tf_stat)
                "<avg_size>%.0f</avg_size>\n"
                "<packets>%lu</packets>\n"
                "<last_heard>%f</last_heard>\n",
-                        tf_stat->average,
-                        tf_stat->accumulated,
-                        tf_stat->avg_size,
-                        tf_stat->accu_packets,
-                        diffms / 1000.0 );
+               tf_stat->average,
+               tf_stat->accumulated,
+               tf_stat->avg_size,
+               tf_stat->accu_packets,
+               diffms / 1000.0);
   return msg;
 }
 

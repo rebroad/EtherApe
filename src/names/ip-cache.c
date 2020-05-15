@@ -26,7 +26,7 @@
 
 
 #ifdef HAVE_CONFIG_H
-#include <config.h>
+#include "../../config.h"
 #endif
 
 #include <glib.h>
@@ -49,31 +49,30 @@ struct prune_ctx
   GSList *to_free;
 };
 
-static gboolean
-find_expired(gpointer key, gpointer value, gpointer data)
+static gboolean find_expired(gpointer key, gpointer value, gpointer data)
 {
   struct ipcache_item *item = value;
   struct prune_ctx *ctx = data;
 
   /* Don't prune items that are still being resolved */
   if (item && item->expiry != 0 && item->state != ICS_RESOLVING && item->expiry < ctx->now)
-      ctx->to_free = g_slist_prepend(ctx->to_free, item);
+    ctx->to_free = g_slist_prepend(ctx->to_free, item);
 
   return FALSE; /* don't terminate traversal */
 }
 
-static void
-del_expired(gpointer data, gpointer unused)
+static void del_expired(gpointer data, gpointer unused)
 {
   struct ipcache_item *item = data;
   gboolean found = g_tree_remove(ipcache_tree, &item->ip);
   g_assert(found);
 }
 
-static gboolean
-ipcache_prune(gpointer data)
+static gboolean ipcache_prune(gpointer data)
 {
-  struct prune_ctx ctx = { .now = time(NULL), .to_free = NULL, };
+  struct prune_ctx ctx = {
+    .now = time(NULL), .to_free = NULL,
+  };
 
   g_tree_foreach(ipcache_tree, find_expired, &ctx);
 
@@ -83,35 +82,30 @@ ipcache_prune(gpointer data)
   return TRUE;
 }
 
-static void
-free_ipcache_item(gpointer data)
+static void free_ipcache_item(gpointer data)
 {
   struct ipcache_item *item = data;
   g_free(item->hostname);
   g_free(item);
 }
 
-void
-ipcache_init(void)
+void ipcache_init(void)
 {
   g_timeout_add_seconds(10, ipcache_prune, NULL);
   ipcache_tree = g_tree_new_full(addr_tree_cmp, NULL, NULL, free_ipcache_item);
 }
 
-void
-ipcache_clear(void)
+void ipcache_clear(void)
 {
   g_tree_destroy(ipcache_tree);
 }
 
-long
-ipcache_active_entries(void)
+long ipcache_active_entries(void)
 {
   return g_tree_nnodes(ipcache_tree);
 }
 
-const char *
-ipcache_lookup(const address_t *addr)
+const char *ipcache_lookup(const address_t *addr)
 {
   struct ipcache_item *item;
 
@@ -119,19 +113,17 @@ ipcache_lookup(const address_t *addr)
     return address_to_str(addr); /* name resolution globally disabled */
 
   item = g_tree_lookup(ipcache_tree, addr);
-  if (item)
-    {
-      if (item->state == ICS_RESOLVED)
-        return item->hostname;
-      else
-        return address_to_str(&item->ip);
-    }
+  if (item) {
+    if (item->state == ICS_RESOLVED)
+      return item->hostname;
+    else
+      return address_to_str(&item->ip);
+  }
   else
     return NULL;
 }
 
-static struct ipcache_item *
-ipcache_alloc_item(const address_t *ip)
+static struct ipcache_item *ipcache_alloc_item(const address_t *ip)
 {
   struct ipcache_item *item;
 
@@ -143,8 +135,7 @@ ipcache_alloc_item(const address_t *ip)
   return item;
 }
 
-struct ipcache_item *
-ipcache_prepare_request(const address_t *ip)
+struct ipcache_item *ipcache_prepare_request(const address_t *ip)
 {
   struct ipcache_item *item;
 
@@ -159,16 +150,14 @@ ipcache_prepare_request(const address_t *ip)
   return item;
 }
 
-void
-ipcache_request_succeeded(struct ipcache_item *rp, long ttl, const char *ipname)
+void ipcache_request_succeeded(struct ipcache_item *rp, long ttl, const char *ipname)
 {
   rp->hostname = g_strdup(ipname);
   rp->expiry = time(NULL) + ttl;
   rp->state = ICS_RESOLVED;
 }
 
-void
-ipcache_request_failed(struct ipcache_item *rp)
+void ipcache_request_failed(struct ipcache_item *rp)
 {
   /* Arbitrary default negative cache timeout of 5 minutes */
   rp->expiry = time(NULL) + 300;

@@ -19,7 +19,7 @@
  */
 
 #ifdef HAVE_CONFIG_H
-#include "config.h"
+#include "../../config.h"
 #endif
 
 #include <stdlib.h>
@@ -39,16 +39,14 @@ int write_all(int fd, const void *buf, size_t count)
 {
   ssize_t written, total = 0;
 
-  while (total < count)
-    {
-      written = write(fd, (const char*)buf + total, count - total);
-      if (written < 0)
-        {
-          fprintf(stderr, "write(2) failed in write_all(): %s\n", strerror(errno));
-          return -1;
-        }
-      total += written;
+  while (total < count) {
+    written = write(fd, (const char *)buf + total, count - total);
+    if (written < 0) {
+      fprintf(stderr, "write(2) failed in write_all(): %s\n", strerror(errno));
+      return -1;
     }
+    total += written;
+  }
 
   return 0;
 }
@@ -57,21 +55,18 @@ int read_all(int fd, void *buf, size_t count)
 {
   ssize_t nread, total = 0;
 
-  while (total < count)
-    {
-      nread = read(fd, (char*)buf + total, count - total);
-      if (nread < 0)
-        {
-          fprintf(stderr, "read(2) failed in read_all(): %s\n", strerror(errno));
-          return -1;
-        }
-      else if (!nread)
-        {
-          fprintf(stderr, "unexpected EOF in read_all()\n");
-          return -1;
-        }
-      total += nread;
+  while (total < count) {
+    nread = read(fd, (char *)buf + total, count - total);
+    if (nread < 0) {
+      fprintf(stderr, "read(2) failed in read_all(): %s\n", strerror(errno));
+      return -1;
     }
+    else if (!nread) {
+      fprintf(stderr, "unexpected EOF in read_all()\n");
+      return -1;
+    }
+    total += nread;
+  }
 
   return 0;
 }
@@ -84,9 +79,8 @@ void set_fd_nonblock(int fd, int on)
   if (flags != -1)
     status = fcntl(fd, F_SETFL, on ? (flags | O_NONBLOCK) : (flags & ~O_NONBLOCK));
 
-  if (flags == -1 || status == -1)
-    {
-      fprintf(stderr, "fcntl(2) failed in set_fd_nonblock(): %s\n", strerror(errno));
-      abort();
-    }
+  if (flags == -1 || status == -1) {
+    fprintf(stderr, "fcntl(2) failed in set_fd_nonblock(): %s\n", strerror(errno));
+    abort();
+  }
 }

@@ -27,7 +27,7 @@ void nodes_wnd_hide(void);
 void nodes_wnd_update(void);
 
 /* gtk callbacks */
-gboolean on_nodes_wnd_delete_event(GtkWidget * wdg, GdkEvent * evt, gpointer ud);
+gboolean on_nodes_wnd_delete_event(GtkWidget *wdg, GdkEvent *evt, gpointer ud);
 void on_nodes_table_row_activated(GtkTreeView *gv,
                                   GtkTreePath *sorted_path,
                                   GtkTreeViewColumn *column,

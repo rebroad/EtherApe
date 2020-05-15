@@ -15,9 +15,9 @@
    You should have received a copy of the GNU General Public License
    along with this program; if not, write to the Free Software
    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
-   
+
    ----------------------------------------------------------------
-   
+
    ip-caching routines
 */
 
@@ -35,18 +35,18 @@ typedef enum
 
 struct ipcache_item
 {
-  address_t ip;			     /* the IP address this entry caches */
+  address_t ip;                      /* the IP address this entry caches */
   char *hostname;        /* hostname 'ip' resolved to */
   ipcache_state_t state; /* state of this entry */
   time_t expiry;         /* when this entry expires */
 };
 
-void ipcache_init (void);
+void ipcache_init(void);
 void ipcache_clear(void);
 
 long ipcache_active_entries(void);
 
-const char* ipcache_lookup(const address_t *addr);
+const char *ipcache_lookup(const address_t *addr);
 struct ipcache_item *ipcache_prepare_request(const address_t *ip);
 void ipcache_request_succeeded(struct ipcache_item *rp, long ttl, const char *ipname);
 void ipcache_request_failed(struct ipcache_item *rp);

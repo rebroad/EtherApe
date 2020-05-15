@@ -16,7 +16,7 @@
  */
 
 #ifdef HAVE_CONFIG_H
-#include <config.h>
+#include "../config.h"
 #endif
 
 #include <gtk/gtk.h>
@@ -27,24 +27,24 @@
 #include "preferences.h"
 
 void on_canvas1_size_allocate(GtkWidget *widget,
-			      GtkAllocation *allocation, gpointer user_data)
+                              GtkAllocation *allocation, gpointer user_data)
 {
-	resize_diagram(allocation);
+  resize_diagram(allocation);
 }
 
 /* TODO this is not necessary, can be set directly in .ui */
 gboolean on_node_popup_motion_notify_event(GtkWidget *widget,
-				   																 GdkEventMotion *event,
-																					 gpointer user_data)
+                                           GdkEventMotion *event,
+                                           gpointer user_data)
 {
-  gtk_widget_destroy (widget);
+  gtk_widget_destroy(widget);
   return FALSE;
 }
 
 gboolean on_name_motion_notify_event(GtkWidget *widget,
-			     													 GdkEventMotion *event,
-																		 gpointer user_data)
+                                     GdkEventMotion *event,
+                                     gpointer user_data)
 {
-  g_message ("Motion in name label");
+  g_message("Motion in name label");
   return FALSE;
 }

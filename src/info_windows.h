@@ -20,20 +20,20 @@
 #include "stats/links.h"
 
 gboolean update_info_windows(gpointer dummy);
-void node_protocols_window_create(const node_id_t * node_id);
-void link_info_window_create(const link_id_t * link_id);
+void node_protocols_window_create(const node_id_t *node_id);
+void link_info_window_create(const link_id_t *link_id);
 
 
 /* callbacks */
-gboolean on_prot_table_button_press_event (GtkWidget * widget,
-					   GdkEventButton * event,
-					   gpointer user_data);
+gboolean on_prot_table_button_press_event(GtkWidget *widget,
+                                          GdkEventButton *event,
+                                          gpointer user_data);
 
-gboolean on_node_info_delete_event (GtkWidget *, GdkEvent *, gpointer);
-gboolean on_prot_info_delete_event (GtkWidget *, GdkEvent *, gpointer);
-void toggle_protocols_window (void);
-gboolean on_prot_list_select_row (GtkTreeView * gv, gboolean arg1,
-				  gpointer ud);
-gboolean on_delete_protocol_window (GtkWidget * wdg, GdkEvent * e,
-				    gpointer ud);
-void on_protocols_check_activate (GtkCheckMenuItem * menuitem, gpointer user_data);
+gboolean on_node_info_delete_event(GtkWidget *, GdkEvent *, gpointer);
+gboolean on_prot_info_delete_event(GtkWidget *, GdkEvent *, gpointer);
+void toggle_protocols_window(void);
+gboolean on_prot_list_select_row(GtkTreeView *gv, gboolean arg1,
+                                 gpointer ud);
+gboolean on_delete_protocol_window(GtkWidget *wdg, GdkEvent *e,
+                                   gpointer ud);
+void on_protocols_check_activate(GtkCheckMenuItem *menuitem, gpointer user_data);

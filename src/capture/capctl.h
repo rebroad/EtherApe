@@ -49,7 +49,7 @@ gchar *unpause_capture(void);
 gchar *stop_capture(void);
 void cleanup_capture(void);
 void force_next_packet(void);
-gchar *set_filter(const gchar * filter);
+gchar *set_filter(const gchar *filter);
 gchar *get_default_filter(apemode_t mode);
 gchar *get_capture_stats(struct pcap_stat *ps);
 

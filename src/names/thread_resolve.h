@@ -18,10 +18,10 @@
 */
 
 /* initialize dns interface - returns 0 on success */
-int thread_open (void);
+int thread_open(void);
 
 /* closes dns interface */
 void thread_close(void);
 
 /* resolves address and returns its fqdn */
-const char *thread_lookup (address_t *address);
+const char *thread_lookup(address_t *address);

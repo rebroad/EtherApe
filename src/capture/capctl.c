@@ -15,8 +15,8 @@
  * along with this program; if not, see <http://www.gnu.org/licenses/>.
  */
 
-#if HAVE_CONFIG_H
-#include "config.h"
+#ifdef HAVE_CONFIG_H
+#include "../../config.h"
 #endif
 
 #include <stdio.h>
@@ -70,6 +70,11 @@ static struct
 
 static capstatus_t capture_status = STOP;
 static gint capture_source = -1;
+
+static inline gchar *appdata_source_name(const struct appdata_struct *p)
+{
+  return p->source.type == ST_LIVE ? p->source.interface : p->source.file;
+}
 
 static inline void zeroreq(struct capctl_req_t *req)
 {
@@ -135,9 +140,9 @@ static void privdrop(const gchar *user)
   if (!pw)
     g_error(_("Unknown user '%s'"), user);
 
-  if (initgroups(pw->pw_name, pw->pw_gid)
-      || setgid(pw->pw_gid)
-      || setuid(pw->pw_uid))
+  if (initgroups(pw->pw_name, pw->pw_gid) ||
+      setgid(pw->pw_gid) ||
+      setuid(pw->pw_uid))
     g_error(_("Failed to switch to user '%s' (uid=%lu, gid=%lu): %s"), user,
             (unsigned long)pw->pw_uid, (unsigned long)pw->pw_gid, strerror(errno));
 
@@ -167,26 +172,24 @@ gchar *init_capture(const gchar *user)
     return g_strdup(strerror(errno));
 
   status = pipe(pipefds);
-  if (status < 0)
-    {
-      close(sockfds[0]);
-      close(sockfds[1]);
-      return g_strdup(strerror(errno));
-    }
+  if (status < 0) {
+    close(sockfds[0]);
+    close(sockfds[1]);
+    return g_strdup(strerror(errno));
+  }
 
   pid = fork();
   if (pid < 0)
     return g_strdup(strerror(errno));
 
-  if (!pid)
-    {
-      /* child */
-      if (close(sockfds[0]))
-        g_warning("control socket close() failed: %s", strerror(errno));
-      if (close(pipefds[0]))
-        g_warning("packet pipe close() failed: %s", strerror(errno));
-      pktcap_run(sockfds[1], pipefds[1]);
-    }
+  if (!pid) {
+    /* child */
+    if (close(sockfds[0]))
+      g_warning("control socket close() failed: %s", strerror(errno));
+    if (close(pipefds[0]))
+      g_warning("packet pipe close() failed: %s", strerror(errno));
+    pktcap_run(sockfds[1], pipefds[1]);
+  }
 
   if (user)
     privdrop(user);
@@ -204,19 +207,17 @@ gchar *init_capture(const gchar *user)
   ctrl_send(&req, sizeof(req));
   ctrl_recv(&resp, sizeof(resp));
 
-  if (resp.status == CRP_OK)
-    {
-      set_fd_nonblock(pktpipe, 1);
-      pktcap_pid = pid;
-      return NULL;
-    }
-  else
-    {
-      errmsg = g_malloc(resp.err.msglen + 1);
-      ctrl_recv(errmsg, resp.err.msglen);
-      errmsg[resp.err.msglen] = '\0';
-      return errmsg;
-    }
+  if (resp.status == CRP_OK) {
+    set_fd_nonblock(pktpipe, 1);
+    pktcap_pid = pid;
+    return NULL;
+  }
+  else {
+    errmsg = g_malloc(resp.err.msglen + 1);
+    ctrl_recv(errmsg, resp.err.msglen);
+    errmsg[resp.err.msglen] = '\0';
+    return errmsg;
+  }
 }
 
 GList *get_capture_interfaces(GString *err)
@@ -234,13 +235,12 @@ GList *get_capture_interfaces(GString *err)
   sendreq(&req);
   recvresp(&resp);
 
-  if (resp.status == CRP_ERR)
-    {
-      raw_msg = recvstr(resp.err.msglen);
-      g_string_assign(err, raw_msg);
-      g_free(raw_msg);
-      return NULL;
-    }
+  if (resp.status == CRP_ERR) {
+    raw_msg = recvstr(resp.err.msglen);
+    g_string_assign(err, raw_msg);
+    g_free(raw_msg);
+    return NULL;
+  }
 
   g_assert(resp.status == CRP_OK);
 
@@ -248,15 +248,14 @@ GList *get_capture_interfaces(GString *err)
   ctrl_recv(raw_msg, resp.listdevs.len);
 
   for (devname = raw_msg; *devname; devname += strlen(devname) + 1)
-      ifs = g_list_prepend(ifs, g_strdup(devname));
+    ifs = g_list_prepend(ifs, g_strdup(devname));
 
   g_free(raw_msg);
   g_string_assign(err, "");
   return ifs;
 }
 
-static void
-interface_list_free_cb(gpointer data, gpointer user_data)
+static void interface_list_free_cb(gpointer data, gpointer user_data)
 {
   g_free(data);
 }
@@ -281,7 +280,7 @@ static gboolean pktpipe_read_cb(GIOChannel *source, GIOCondition condition,
 
   appdata.now = pkthdr.ts;
 
-  packet_acquired((guint8*)pktdata, pkthdr.caplen, pkthdr.len);
+  packet_acquired((guint8 *)pktdata, pkthdr.caplen, pkthdr.len);
   return TRUE;
 }
 
@@ -307,11 +306,10 @@ static gchar *start_live_capture(unsigned int *linktype, int *select_fd)
     return recvstr(resp.err.msglen);
 
   new_devname = recvstr(resp.startcap.devlen);
-  if (appdata.source.interface)
-    {
-      g_assert(!strcmp(appdata.source.interface, new_devname));
-      g_free(new_devname);
-    }
+  if (appdata.source.interface) {
+    g_assert(!strcmp(appdata.source.interface, new_devname));
+    g_free(new_devname);
+  }
   else
     appdata.source.interface = new_devname;
 
@@ -345,39 +343,35 @@ static gboolean filecap_get_packet(gpointer unused)
   if (capture_status != PLAY)
     return FALSE;
 
-  if (!filecap_state.new)
-    {
-      appdata.now = filecap_state.lastpkt_hdr.ts;
-      packet_acquired((guint8*)filecap_state.lastpkt_data,
-                      filecap_state.lastpkt_hdr.caplen,
-                      filecap_state.lastpkt_hdr.len);
-    }
+  if (!filecap_state.new) {
+    appdata.now = filecap_state.lastpkt_hdr.ts;
+    packet_acquired((guint8 *)filecap_state.lastpkt_data,
+                    filecap_state.lastpkt_hdr.caplen,
+                    filecap_state.lastpkt_hdr.len);
+  }
 
   status = pcap_next_ex(filecap_state.pcap, &nextpkt_hdr, &nextpkt_data);
-  if (status == -2)
-    {
-      capture_status = CAP_EOF;
-      /* xml dump if needed */
-      if (appdata.export_file_final)
-        dump_xml(appdata.export_file_final);
-      return FALSE;
-    }
-  else if (status == -1)
-    {
-      g_error("Failed to read packet from pcap file: %s",
-              pcap_geterr(filecap_state.pcap));
-      return FALSE;
-    }
+  if (status == -2) {
+    capture_status = CAP_EOF;
+    /* xml dump if needed */
+    if (appdata.export_file_final)
+      dump_xml(appdata.export_file_final);
+    return FALSE;
+  }
+  else if (status == -1) {
+    g_error("Failed to read packet from pcap file: %s",
+            pcap_geterr(filecap_state.pcap));
+    return FALSE;
+  }
   else
     g_assert(status == 1);
 
   if (filecap_state.new)
     filecap_state.wait_ms = 0;
-  else
-    {
-      timersub(&nextpkt_hdr->ts, &filecap_state.lastpkt_hdr.ts, &pktdelta);
-      filecap_state.wait_ms = tv_to_ms(&pktdelta);
-    }
+  else {
+    timersub(&nextpkt_hdr->ts, &filecap_state.lastpkt_hdr.ts, &pktdelta);
+    filecap_state.wait_ms = tv_to_ms(&pktdelta);
+  }
 
   if (filecap_state.wait_ms < 0)
     filecap_state.wait_ms = 0;
@@ -389,11 +383,10 @@ static gboolean filecap_get_packet(gpointer unused)
     filecap_state.wait_ms = appdata.max_delay;
 
   filecap_state.lastpkt_hdr = *nextpkt_hdr;
-  if (nextpkt_hdr->caplen > MAXCAPSIZE)
-    {
-      filecap_state.lastpkt_hdr.caplen = MAXCAPSIZE;
-      copylen = MAXCAPSIZE;
-    }
+  if (nextpkt_hdr->caplen > MAXCAPSIZE) {
+    filecap_state.lastpkt_hdr.caplen = MAXCAPSIZE;
+    copylen = MAXCAPSIZE;
+  }
   else
     copylen = nextpkt_hdr->caplen;
   memcpy(filecap_state.lastpkt_data, nextpkt_data, copylen);
@@ -405,11 +398,10 @@ static gboolean filecap_get_packet(gpointer unused)
 
 static void filecap_timeout_destroy(gpointer unused)
 {
-  if (capture_status == STOP)
-    {
-      pcap_close(filecap_state.pcap);
-      filecap_state.pcap = NULL;
-    }
+  if (capture_status == STOP) {
+    pcap_close(filecap_state.pcap);
+    filecap_state.pcap = NULL;
+  }
   else if (capture_status == PLAY)
     capture_source = g_timeout_add_full(G_PRIORITY_DEFAULT, filecap_state.wait_ms,
                                         filecap_get_packet, NULL, filecap_timeout_destroy);
@@ -439,25 +431,23 @@ gchar *start_capture(void)
   unsigned int linktype;
   int select_fd = -1;
 
-  if (capture_status == STOP)
-    {
-      protocol_summary_open();
-      nodes_catalog_open();
-      links_catalog_open();
-    }
+  if (capture_status == STOP) {
+    protocol_summary_open();
+    nodes_catalog_open();
+    links_catalog_open();
+  }
 
   if (appdata.source.type == ST_LIVE)
     err = start_live_capture(&linktype, &select_fd);
   else
     err = start_file_capture(&linktype);
 
-  if (err)
-    {
-      links_catalog_close();
-      nodes_catalog_close();
-      protocol_summary_close();
-      return err;
-    }
+  if (err) {
+    links_catalog_close();
+    nodes_catalog_close();
+    protocol_summary_close();
+    return err;
+  }
 
   /* FIXME: stop capture on errors past here */
 
@@ -466,12 +456,11 @@ gchar *start_capture(void)
                              "  Please choose another source."),
                            appdata_source_name(&appdata), linktype);
 
-  if (appdata.mode == APEMODE_DEFAULT)
-    {
-      appdata.mode = IP;
-      g_free(pref.filter);
-      pref.filter = get_default_filter(appdata.mode);
-    }
+  if (appdata.mode == APEMODE_DEFAULT) {
+    appdata.mode = IP;
+    g_free(pref.filter);
+    pref.filter = get_default_filter(appdata.mode);
+  }
   else if (appdata.mode == LINK6 && !has_linklevel())
     return g_strdup_printf(_("This device does not support link-layer mode.  "
                              "Please use IP or TCP modes."));
@@ -479,7 +468,7 @@ gchar *start_capture(void)
   if (pref.filter) {
     err = set_filter(pref.filter);
     if (err)
-       return err;
+      return err;
   }
 
   capture_status = PLAY;
@@ -487,10 +476,10 @@ gchar *start_capture(void)
   if (appdata.source.type == ST_LIVE) {
     GIOChannel *channel = g_io_channel_unix_new(select_fd);
     capture_source = g_io_add_watch(channel,
-                            G_IO_IN | G_IO_HUP | G_IO_ERR,
-                            pktpipe_read_cb,
-                            NULL);
-    g_io_channel_unref(channel);      
+                                    G_IO_IN | G_IO_HUP | G_IO_ERR,
+                                    pktpipe_read_cb,
+                                    NULL);
+    g_io_channel_unref(channel);
   }
   else
     capture_source = g_timeout_add_full(G_PRIORITY_DEFAULT, 1,
@@ -549,8 +538,8 @@ gchar *stop_capture(void)
   gchar *err = NULL;
   capstatus_t orig_state = capture_status;
 
-  g_assert(capture_status == PLAY || capture_status == PAUSE
-           || capture_status == CAP_EOF);
+  g_assert(capture_status == PLAY || capture_status == PAUSE ||
+           capture_status == CAP_EOF);
 
   /*
    * HACK: setting capture_status = STOP here (before the actual stop
@@ -562,34 +551,30 @@ gchar *stop_capture(void)
 
   if (appdata.source.type == ST_LIVE)
     err = stop_live_capture();
-  else
-    {
-      if (orig_state == PLAY)
-        {
-          /*
-           * If we're playing, the timeout destroy function will take care of
-           * cleaning up closing and NULLing filecap_state.pcap.
-           */
-          g_source_remove(capture_source);
-        }
-      else if (orig_state == PAUSE || orig_state == CAP_EOF)
-        {
-          /*
-           * But if we're stopping from a pause the timeout's not armed and
-           * we'll need to do it here.
-           */
-          pcap_close(filecap_state.pcap);
-          filecap_state.pcap = NULL;
-        }
+  else {
+    if (orig_state == PLAY) {
+      /*
+       * If we're playing, the timeout destroy function will take care of
+       * cleaning up closing and NULLing filecap_state.pcap.
+       */
+      g_source_remove(capture_source);
     }
+    else if (orig_state == PAUSE || orig_state == CAP_EOF) {
+      /*
+       * But if we're stopping from a pause the timeout's not armed and
+       * we'll need to do it here.
+       */
+      pcap_close(filecap_state.pcap);
+      filecap_state.pcap = NULL;
+    }
+  }
 
-  if (!err)
-    {
-      links_catalog_close();
-      nodes_catalog_close();
-      protocol_summary_close();
-      new_nodes_clear();
-    }
+  if (!err) {
+    links_catalog_close();
+    nodes_catalog_close();
+    protocol_summary_close();
+    new_nodes_clear();
+  }
   else
     capture_status = orig_state;
 
@@ -606,7 +591,7 @@ static gchar *cleanup_live_capture(void)
 
   if (pktcap_pid == -1)
     return NULL;
-    
+
   zeroreq(&req);
 
   req.type = CRQ_EXIT;
@@ -637,15 +622,13 @@ void cleanup_capture(void)
 {
   gchar *err = NULL;
 
-  if (capture_status != STOP)
-    {
-      err = stop_capture();
-      if (err)
-        {
-          g_error("failed to stop capture: %s", err);
-          g_free(err);
-        }
+  if (capture_status != STOP) {
+    err = stop_capture();
+    if (err) {
+      g_error("failed to stop capture: %s", err);
+      g_free(err);
     }
+  }
 
   if (appdata.source.type == ST_FILE)
     g_assert(!filecap_state.pcap);
@@ -657,11 +640,10 @@ void cleanup_capture(void)
    */
   err = cleanup_live_capture();
 
-  if (err)
-    {
-      g_error("Capture cleanup error: %s", err);
-      g_free(err);
-    }
+  if (err) {
+    g_error("Capture cleanup error: %s", err);
+    g_free(err);
+  }
 }
 
 void force_next_packet(void)
@@ -704,8 +686,8 @@ static gchar *set_offline_filter(const gchar *filter)
     return g_strdup_printf("no capture file selected");
 
   /* TODO: netmask? */
-  if (pcap_compile(filecap_state.pcap, &bpfprog, filter, 1, PCAP_NETMASK_UNKNOWN)
-      || pcap_setfilter(filecap_state.pcap, &bpfprog))
+  if (pcap_compile(filecap_state.pcap, &bpfprog, filter, 1, PCAP_NETMASK_UNKNOWN) ||
+      pcap_setfilter(filecap_state.pcap, &bpfprog))
     return g_strdup(pcap_geterr(filecap_state.pcap));
 
   return NULL;
@@ -721,12 +703,11 @@ gchar *set_filter(const gchar *filter)
   else
     err = set_offline_filter(filter);
 
-  if (err)
-    {
-      errmsg = g_strdup_printf("failed to set filter: %s", err);
-      g_free(err);
-      return errmsg;
-    }
+  if (err) {
+    errmsg = g_strdup_printf("failed to set filter: %s", err);
+    g_free(err);
+    return errmsg;
+  }
   else
     return NULL;
 }
@@ -734,19 +715,19 @@ gchar *set_filter(const gchar *filter)
 gchar *get_default_filter(apemode_t mode)
 {
   switch (mode)
-    {
-    case IP:
-      return g_strdup ("ip or ip6");
+  {
+      case IP:
+        return g_strdup("ip or ip6");
 
-    case TCP:
-      return g_strdup ("tcp");
+      case TCP:
+        return g_strdup("tcp");
 
-    default:
-      g_error("Invalid apemode %d", mode);
+      default:
+        g_error("Invalid apemode %d", mode);
       /* Fallthrough */
-    case LINK6:
-      return g_strdup ("");
-    }
+      case LINK6:
+        return g_strdup("");
+  }
 }
 
 static gchar *get_live_stats(struct pcap_stat *ps)

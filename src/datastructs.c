@@ -16,7 +16,7 @@
  */
 
 #ifdef HAVE_CONFIG_H
-#include <config.h>
+#include "../config.h"
 #endif
 
 #include <glib.h>
@@ -26,7 +26,7 @@
 #include "appdata.h"
 #include "stats/util.h"
 
-#define LINESIZE 1024
+#define LINESIZE  1024
 
 
 /************************************************************************
@@ -58,69 +58,62 @@ static void freehash(gpointer data)
   g_free(data);
 }
 
-static gboolean
-protohash_init(void)
+static gboolean protohash_init(void)
 {
-   if (protohash)
-      return TRUE; /* already ok */
+  if (protohash)
+    return TRUE; /* already ok */
 
-   protohash = g_hash_table_new_full(g_str_hash,
-                                     g_str_equal,
-                                     freehash,
-                                     freehash);
-   return protohash != NULL;
+  protohash = g_hash_table_new_full(g_str_hash,
+                                    g_str_equal,
+                                    freehash,
+                                    freehash);
+  return protohash != NULL;
 }
 
 /* clears the proto hash */
-void
-protohash_clear(void)
+void protohash_clear(void)
 {
-   if (protohash)
-   {
-      g_hash_table_destroy(protohash);
-      protohash=NULL;
-   }
+  if (protohash) {
+    g_hash_table_destroy(protohash);
+    protohash = NULL;
+  }
 
-   while (cycle_color_list)
-     {
-       g_free(cycle_color_list->data);
-       cycle_color_list = g_list_delete_link(cycle_color_list,cycle_color_list);
-     }
+  while (cycle_color_list) {
+    g_free(cycle_color_list->data);
+    cycle_color_list = g_list_delete_link(cycle_color_list, cycle_color_list);
+  }
   current_cycle = NULL;
 }
 
 /* adds or replaces the protoname item */
-static gboolean
-protohash_set(gchar *protoname, const GdkRGBA *protocolor)
+static gboolean protohash_set(gchar *protoname, const GdkRGBA *protocolor)
 {
   ColorHashItem item;
 
   g_assert(protocolor);
-  if (!protohash && ! protohash_init())
+  if (!protohash && !protohash_init())
     return FALSE;
 
   item.color = *protocolor;
 
   /* if a protocol is specified, we put the pair (proto,color) in the hash,
    * marking it as preferred (a color obtained from user mappings) */
-  if (protoname && *protoname)
-    {
-      item.preferred = TRUE;
-      g_hash_table_insert(protohash, g_strdup(protoname),
-                       g_memdup(&item, sizeof(ColorHashItem)));
-    }
+  if (protoname && *protoname) {
+    item.preferred = TRUE;
+    g_hash_table_insert(protohash, g_strdup(protoname),
+                        g_memdup(&item, sizeof(ColorHashItem)));
+  }
 
   /* Without protocols defined we add the color to the cycle list. Cycle colors
      aren't preferred */
-   if (!protoname || !*protoname)
-     {
-       item.preferred = FALSE;
-       cycle_color_list = g_list_prepend(cycle_color_list,
-                            g_memdup(&item, sizeof(ColorHashItem)));
-       current_cycle = cycle_color_list;
-     }
+  if (!protoname || !*protoname) {
+    item.preferred = FALSE;
+    cycle_color_list = g_list_prepend(cycle_color_list,
+                                      g_memdup(&item, sizeof(ColorHashItem)));
+    current_cycle = cycle_color_list;
+  }
 
-   return TRUE;
+  return TRUE;
 }
 
 /* resets the cycle color to start of list */
@@ -138,20 +131,19 @@ static const ColorHashItem *protohash_itemproto(const gchar *protoname)
   g_assert(protohash);
 
   item = (ColorHashItem *)g_hash_table_lookup(protohash, protoname);
-  if (!item)
-    {
-      /* color not found, take from cycle list */
-      item = (ColorHashItem *)current_cycle->data;
+  if (!item) {
+    /* color not found, take from cycle list */
+    item = (ColorHashItem *)current_cycle->data;
 
-      /* add to hash */
-      g_hash_table_insert(protohash, g_strdup(protoname),
-                         g_memdup(item, sizeof(ColorHashItem)));
+    /* add to hash */
+    g_hash_table_insert(protohash, g_strdup(protoname),
+                        g_memdup(item, sizeof(ColorHashItem)));
 
-      /* advance cycle */
-      current_cycle = current_cycle->next;
-      if (!current_cycle)
-        current_cycle = cycle_color_list;
-    }
+    /* advance cycle */
+    current_cycle = current_cycle->next;
+    if (!current_cycle)
+      current_cycle = cycle_color_list;
+  }
 /*  g_my_debug ("Protocol %s in color 0x%2.2x%2.2x%2.2x",
               protoname, color->red, color->green, color->blue); */
   return item;
@@ -179,8 +171,7 @@ gboolean protohash_is_preferred(const gchar *protoname)
 }
 
 /* fills the hash from a pref vector */
-gboolean
-protohash_read_prefvect(gchar **colors)
+gboolean protohash_read_prefvect(gchar * *colors)
 {
   int i;
   GdkRGBA color;
@@ -188,39 +179,38 @@ protohash_read_prefvect(gchar **colors)
   protohash_clear();
 
   /* fills with colors */
-  for (i = 0; colors[i]; ++i)
-    {
-      gchar **colors_protocols, **protos;
-      int j;
+  for (i = 0; colors[i]; ++i) {
+    gchar * *colors_protocols, * *protos;
+    int j;
 
-      colors_protocols = g_strsplit_set(colors[i], "; \t\n", 0);
-      if (!colors_protocols[0])
-	continue;
+    colors_protocols = g_strsplit_set(colors[i], "; \t\n", 0);
+    if (!colors_protocols[0])
+      continue;
 
-      /* converting color */
-      gdk_rgba_parse(&color, colors_protocols[0]);
+    /* converting color */
+    gdk_rgba_parse(&color, colors_protocols[0]);
 
-      if (!colors_protocols[1] || !strlen(colors_protocols[1]))
-        protohash_set(colors_protocols[1], &color);
-      else
-        {
-          /* multiple protos, split them */
-          protos = g_strsplit_set(colors_protocols[1], ", \t\n", 0);
-          for (j = 0 ; protos[j] ; ++j)
-            if (protos[j] && *protos[j])
-              protohash_set(protos[j], &color);
-          g_strfreev(protos);
-        }
-      g_strfreev(colors_protocols);
+    if (!colors_protocols[1] || !strlen(colors_protocols[1]))
+      protohash_set(colors_protocols[1], &color);
+    else {
+      /* multiple protos, split them */
+      protos = g_strsplit_set(colors_protocols[1], ", \t\n", 0);
+      for (j = 0; protos[j]; ++j)
+        if (protos[j] && *protos[j])
+          protohash_set(protos[j], &color);
+
+
+      g_strfreev(protos);
     }
+    g_strfreev(colors_protocols);
+  }
 
-  if (!cycle_color_list)
-    {
-      /* the list of color available for unmapped protocols is empty,
-       * so we add a grey */
-      gdk_rgba_parse(&color, "#7f7f7f");
-      protohash_set(NULL, &color);
-    }
+  if (!cycle_color_list) {
+    /* the list of color available for unmapped protocols is empty,
+     * so we add a grey */
+    gdk_rgba_parse(&color, "#7f7f7f");
+    protohash_set(NULL, &color);
+  }
   else
     cycle_color_list = g_list_reverse(cycle_color_list); /* list was reversed */
 
@@ -233,69 +223,63 @@ protohash_read_prefvect(gchar **colors)
 
 /* compacts the array of colors/protocols mappings by collapsing identical
  * colors - frees the input array */
-gchar **protohash_compact(gchar **colors)
+gchar **protohash_compact(gchar * *colors)
 {
-   int i;
-   gchar **compacted;
-   GList *work;
-   GList *el;
+  int i;
+  gchar * *compacted;
+  GList *work;
+  GList *el;
 
-   /* constructs a list with unique colors. We use a list to maintain the
-      fill order of the dialog. This is less surprising for the user. */
-   work = NULL;
-   for (i = 0; colors[i] ; ++i)
-    {
-      gchar **colors_protocols;
+  /* constructs a list with unique colors. We use a list to maintain the
+     fill order of the dialog. This is less surprising for the user. */
+  work = NULL;
+  for (i = 0; colors[i]; ++i) {
+    gchar * *colors_protocols;
 
-      colors_protocols = g_strsplit_set(colors[i], "; \t\n", 0);
-      if (!colors_protocols[0])
-	continue;
+    colors_protocols = g_strsplit_set(colors[i], "; \t\n", 0);
+    if (!colors_protocols[0])
+      continue;
 
-      colors_protocols[1] = remove_spaces(colors_protocols[1]);
+    colors_protocols[1] = remove_spaces(colors_protocols[1]);
 
-      for (el = g_list_first(work) ; el ; el = g_list_next(el) )
-        {
-          gchar **col=(gchar **)(el->data);
-	  if (!col || !col[0])
-	    continue;
-          if (!g_ascii_strcasecmp(col[0], colors_protocols[0]))
-            {
-              /* found same color, append protocol */
-              gchar *old = col[1];
-              if (colors_protocols[1] && *colors_protocols[1])
-                {
-                  if (old)
-                    col[1] = g_strjoin(",", old, colors_protocols[1], NULL);
-                  else
-                    col[1] = g_strdup(colors_protocols[1]);
-                  g_free(old);
-                }
-              break;
-            }
+    for (el = g_list_first(work); el; el = g_list_next(el)) {
+      gchar * *col = (gchar * *)(el->data);
+      if (!col || !col[0])
+        continue;
+      if (!g_ascii_strcasecmp(col[0], colors_protocols[0])) {
+        /* found same color, append protocol */
+        gchar *old = col[1];
+        if (colors_protocols[1] && *colors_protocols[1]) {
+          if (old)
+            col[1] = g_strjoin(",", old, colors_protocols[1], NULL);
+          else
+            col[1] = g_strdup(colors_protocols[1]);
+          g_free(old);
         }
-
-      if (el)
-        g_strfreev(colors_protocols); /* found, free temporary */
-      else
-        {
-          /* color not found, adds to list - no need to free here */
-          work = g_list_prepend(work, colors_protocols);
-        }
+        break;
+      }
     }
+
+    if (el)
+      g_strfreev(colors_protocols); /* found, free temporary */
+    else {
+      /* color not found, adds to list - no need to free here */
+      work = g_list_prepend(work, colors_protocols);
+    }
+  }
 
   /* reverse list to match original order (with GList, prepend+reverse is more
      efficient than append */
   work = g_list_reverse(work);
 
   /* now scans the list filling the protostring */
-  compacted = malloc( sizeof(gchar *) * (g_list_length(work) + 1) );
+  compacted = malloc(sizeof(gchar *) * (g_list_length(work) + 1));
   i = 0;
-  for (el = g_list_first(work) ; el ; el = g_list_next(el) )
-    {
-      gchar **col=(gchar **)(el->data);
-      compacted[i++] = g_strjoin(";", col[0], col[1], NULL);
-      g_strfreev(col);
-    }
+  for (el = g_list_first(work); el; el = g_list_next(el)) {
+    gchar * *col = (gchar * *)(el->data);
+    compacted[i++] = g_strjoin(";", col[0], col[1], NULL);
+    g_strfreev(col);
+  }
   compacted[i] = NULL;
   g_list_free(work);
   g_strfreev(colors);
@@ -313,13 +297,14 @@ gchar *remove_spaces(gchar *str)
 {
   char *out = str;
   char *cur = str;
-  if (str)
-    {
-      for (cur = str ; *cur ; ++cur)
-        if ( !g_ascii_isspace((guchar)(*cur)))
-          *out++ = *cur;
-      *out = '\0';
-    }
+  if (str) {
+    for (cur = str; *cur; ++cur)
+      if (!g_ascii_isspace((guchar)(*cur)))
+        *out++ = *cur;
+
+
+    *out = '\0';
+  }
   return str;
 }
 
@@ -335,15 +320,15 @@ static gint services_port_cmp(gconstpointer a, gconstpointer b, gpointer unused)
 {
   port_type_t port_a, port_b;
 
-  port_a = *(port_type_t *) a;
-  port_b = *(port_type_t *) b;
+  port_a = *(port_type_t *)a;
+  port_b = *(port_type_t *)b;
 
   if (port_a > port_b)
     return 1;
   if (port_a < port_b)
     return -1;
   return 0;
-}				/* services_port_cmp */
+}                               /* services_port_cmp */
 
 /* Comparison function to sort service names */
 static gint services_name_cmp(gconstpointer a, gconstpointer b, gpointer unused)
@@ -353,7 +338,7 @@ static gint services_name_cmp(gconstpointer a, gconstpointer b, gpointer unused)
 
 static void services_tree_free(gpointer p)
 {
-  port_service_free( (port_service_t *)p);
+  port_service_free((port_service_t *)p);
 }
 
 /* traverse function to map names to ports */
@@ -394,18 +379,16 @@ void services_init(void)
   tcp_services = g_tree_new_full(services_port_cmp, NULL, NULL, services_tree_free);
   udp_services = g_tree_new_full(services_port_cmp, NULL, NULL, services_tree_free);
 
-  while ((ent = getservent()))
-    {
-      if (g_ascii_strcasecmp(ent->s_proto, "tcp")
-          && g_ascii_strcasecmp(ent->s_proto, "udp"))
-        g_my_info(_("%s protocol not supported"), ent->s_proto);
-      else
-        {
-          port_service = port_service_new(ntohs(ent->s_port), ent->s_name);
-          g_tree_replace(ent->s_proto[0] == 't' ? tcp_services : udp_services,
-                         &port_service->port, port_service);
-        }
+  while ((ent = getservent())) {
+    if (g_ascii_strcasecmp(ent->s_proto, "tcp") &&
+        g_ascii_strcasecmp(ent->s_proto, "udp"))
+      g_my_info(_("%s protocol not supported"), ent->s_proto);
+    else {
+      port_service = port_service_new(ntohs(ent->s_port), ent->s_name);
+      g_tree_replace(ent->s_proto[0] == 't' ? tcp_services : udp_services,
+                     &port_service->port, port_service);
     }
+  }
 
   endservent();
 
@@ -427,7 +410,7 @@ void services_clear(void)
 const port_service_t *services_tcp_find(port_type_t port)
 {
   if (tcp_services)
-      return (port_service_t *)g_tree_lookup (tcp_services, &port);
+    return (port_service_t *)g_tree_lookup(tcp_services, &port);
   else
     return NULL;
 }
@@ -435,7 +418,7 @@ const port_service_t *services_tcp_find(port_type_t port)
 const port_service_t *services_udp_find(port_type_t port)
 {
   if (udp_services)
-      return (port_service_t *)g_tree_lookup (udp_services, &port);
+    return (port_service_t *)g_tree_lookup(udp_services, &port);
   else
     return NULL;
 }
@@ -448,7 +431,7 @@ const port_service_t *services_udp_find(port_type_t port)
 port_service_t *port_service_new(port_type_t port, const gchar *name)
 {
   port_service_t *p;
-  p = g_malloc (sizeof (port_service_t));
+  p = g_malloc(sizeof(port_service_t));
   g_assert(p);
 
   p->port = port;
@@ -469,5 +452,5 @@ const port_service_t *services_port_find(const gchar *name)
   if (!name || !service_names)
     return NULL;
 
-  return (const port_service_t *)g_tree_lookup (service_names, name);
+  return (const port_service_t *)g_tree_lookup(service_names, name);
 }

@@ -19,7 +19,7 @@
 #define CAPTURE_H
 
 /* Max pcap packet capture size */
-#define MAXCAPSIZE 200
+#define MAXCAPSIZE  200
 
 void pktcap_run(int csockfd, int ppipefd);
 

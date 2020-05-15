@@ -17,13 +17,13 @@
  */
 
 #ifdef HAVE_CONFIG_H
-#include <config.h>
+#include "../config.h"
 #endif
 
 #include "appdata.h"
 #include "stats/node.h"
 
-#define ETHERAPE_GTKBUILDER_FILE "etherape.ui"	/* GtkBuilder file */
+#define ETHERAPE_GTKBUILDER_FILE  "etherape.ui" /* GtkBuilder file */
 
 struct appdata_struct appdata;
 
@@ -60,21 +60,19 @@ void appdata_init(struct appdata_struct *p)
 
 void appdata_clear_source(struct appdata_struct *p)
 {
-  if (p->source.type == ST_LIVE)
-    {
-      g_free(p->source.interface);
-      p->source.interface = NULL;
-    }
-  else
-    {
-      g_free(p->source.file);
-      p->source.file = NULL;
-    }
+  if (p->source.type == ST_LIVE) {
+    g_free(p->source.interface);
+    p->source.interface = NULL;
+  }
+  else {
+    g_free(p->source.file);
+    p->source.file = NULL;
+  }
 }
 
 gboolean appdata_init_builder(const gchar *builder_fname)
 {
-  GError* error = NULL;
+  GError *error = NULL;
 
   if (builder_fname)
     appdata.itf_file = g_strdup(builder_fname);
@@ -82,19 +80,18 @@ gboolean appdata_init_builder(const gchar *builder_fname)
     appdata.itf_file = g_strdup(GLADEDIR "/" ETHERAPE_GTKBUILDER_FILE);
 
   appdata.xml = gtk_builder_new();
-  if (!gtk_builder_add_from_file(appdata.xml, appdata.itf_file, &error))
-    {
-      g_error (_("Could not load interface file '%s'!: %s"),
-	       appdata.itf_file,
-           error->message);
-      g_error_free (error);
-      return FALSE;
+  if (!gtk_builder_add_from_file(appdata.xml, appdata.itf_file, &error)) {
+    g_error(_("Could not load interface file '%s'!: %s"),
+            appdata.itf_file,
+            error->message);
+    g_error_free(error);
+    return FALSE;
   }
-    
+
   gtk_builder_connect_signals(appdata.xml, NULL);
 
   appdata.app1 = GTK_WIDGET(gtk_builder_get_object(appdata.xml, "app1"));
-  appdata.statusbar = GTK_STATUSBAR(gtk_builder_get_object (appdata.xml, "statusbar1"));
+  appdata.statusbar = GTK_STATUSBAR(gtk_builder_get_object(appdata.xml, "statusbar1"));
   return TRUE;
 }
 
@@ -118,7 +115,7 @@ void appdata_free(struct appdata_struct *p)
   if (p->column_patterns) {
     int pos;
     for (pos = 0; pos < p->column_patterns->len; ++pos) {
-       free_nodeset_spec_list(g_ptr_array_index(p->column_patterns, pos));
+      free_nodeset_spec_list(g_ptr_array_index(p->column_patterns, pos));
     }
     g_ptr_array_free(p->column_patterns, TRUE);
     p->column_patterns = NULL;

@@ -7,7 +7,7 @@ gladedir = $(datadir)/etherape/glade
 
 etherape_CPPFLAGS  = \
 	-I$(top_srcdir)/intl \
-	-DGSEAL_ENABLE \
+        -DGSEAL_ENABLE \
 	-DGLADEDIR=\""$(gladedir)"\" \
 	-DCONFDIR=\""$(confdir)"\" \
 	$(WARN_CFLAGS) \
@@ -49,6 +49,7 @@ etherape_SOURCES = \
 	$(etherape_stats_SOURCES) \
 	$(etherape_names_SOURCES) \
 	$(etherape_capture_SOURCES) \
+	$(top_srcdir)/config.h \
 	main.c main.h \
 	common.h \
 	appdata.c appdata.h\

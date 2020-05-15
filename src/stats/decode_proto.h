@@ -22,8 +22,8 @@
 #include "pkt_info.h"
 #include "node_id.h"
 
-gboolean has_linklevel(void); /* true if current device captures l2 data */ 
+gboolean has_linklevel(void); /* true if current device captures l2 data */
 gboolean setup_link_type(unsigned int linktype);
-void packet_acquired(guint8 * packet, guint raw_size, guint pkt_size);
+void packet_acquired(guint8 *packet, guint raw_size, guint pkt_size);
 
 #endif

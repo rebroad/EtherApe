@@ -16,7 +16,7 @@
  */
 
 #ifdef HAVE_CONFIG_H
-#include <config.h>
+#include "../config.h"
 #endif
 
 #include <math.h>
@@ -26,7 +26,7 @@
 #include "stats/util.h"
 #include "stats/node.h"
 
-typedef enum 
+typedef enum
 {
   NODES_COLUMN_NAME = 0,
   NODES_COLUMN_NUMERIC,
@@ -39,7 +39,7 @@ typedef enum
 } NODES_COLUMN;
 
 
-static GtkWidget *nodes_wnd = NULL;	       /* Ptr to nodes window */
+static GtkWidget *nodes_wnd = NULL;            /* Ptr to nodes window */
 static GtkCheckMenuItem *nodes_check = NULL;   /* Ptr to nodes menu */
 
 /* private functions */
@@ -51,13 +51,12 @@ void nodes_wnd_show(void)
   nodes_wnd = GTK_WIDGET(gtk_builder_get_object(appdata.xml, "nodes_wnd"));
   nodes_check = GTK_CHECK_MENU_ITEM(gtk_builder_get_object(appdata.xml, "nodes_check"));
 
-  if (DEBUG_ENABLED)
-    {
-      gchar *nodemsg = nodes_catalog_dump();
-      g_log(G_LOG_DOMAIN,G_LOG_LEVEL_MESSAGE, "%s", nodemsg);
-      g_free(nodemsg);
-    }
-  
+  if (DEBUG_ENABLED) {
+    gchar *nodemsg = nodes_catalog_dump();
+    g_log(G_LOG_DOMAIN, G_LOG_LEVEL_MESSAGE, "%s", nodemsg);
+    g_free(nodemsg);
+  }
+
   if (!nodes_wnd || gtk_widget_get_visible(nodes_wnd))
     return;
 
@@ -73,7 +72,7 @@ void nodes_wnd_hide(void)
   if (!nodes_wnd || !gtk_widget_get_visible(nodes_wnd))
     return;
 
-  gtk_widget_hide (nodes_wnd);
+  gtk_widget_hide(nodes_wnd);
   nodes_table_clear(nodes_wnd);
   if (nodes_check && gtk_check_menu_item_get_active(nodes_check))
     gtk_check_menu_item_set_active(nodes_check, FALSE);
@@ -86,20 +85,19 @@ void nodes_wnd_update(void)
 
   nodes_table_update(nodes_wnd);
 
-  /* with viewport, no need to resize 
+  /* with viewport, no need to resize
    gtk_widget_queue_resize (GTK_WIDGET (nodes_wnd)); */
-}				/* update_nodes_wnd */
+}                               /* update_nodes_wnd */
 
 /***************************************************************
  *
- * node table handling functions 
+ * node table handling functions
  *
  ***************************************************************/
 
 /* Comparison functions used to sort the clist */
-static gint
-nodes_table_compare (GtkTreeModel * gls, GtkTreeIter * a, GtkTreeIter * b, 
-                     gpointer data)
+static gint nodes_table_compare(GtkTreeModel *gls, GtkTreeIter *a, GtkTreeIter *b,
+                                gpointer data)
 {
   gint ret = 0;
   gdouble t1, t2;
@@ -107,80 +105,80 @@ nodes_table_compare (GtkTreeModel * gls, GtkTreeIter * a, GtkTreeIter * b,
   const node_id_t *nodeid1, *nodeid2;
   const node_t *node1, *node2;
 
-  gtk_tree_model_get (gls, a, NODES_COLUMN_N, &nodeid1, -1);
-  gtk_tree_model_get (gls, b, NODES_COLUMN_N, &nodeid2, -1);
+  gtk_tree_model_get(gls, a, NODES_COLUMN_N, &nodeid1, -1);
+  gtk_tree_model_get(gls, b, NODES_COLUMN_N, &nodeid2, -1);
   if (!nodeid1 || !nodeid2)
-    return 0;			/* error */ 
-  
+    return 0; /* error */
+
   /* retrieve nodes. One or more might be expired */
   node1 = nodes_catalog_find(nodeid1);
   node2 = nodes_catalog_find(nodeid2);
   if (!node1 && !node2)
-    return 0;	        
-  else if (!node1)      
-    return -1;          
+    return 0;
+  else if (!node1)
+    return -1;
   else if (!node2)
     return 1;
-  
+
   /* gets sort info */
   switch (GPOINTER_TO_INT(data))
-    {
-    case NODES_COLUMN_NAME: /* name */
-    default:
-      ret = strcmp (node1->name->str, node2->name->str);
-      break;
-    case NODES_COLUMN_NUMERIC: /* id */
-      ret = node_id_compare(&(node1->node_id), &(node2->node_id));
-      break;
-    case NODES_COLUMN_INSTANTANEOUS:
-      t1 = node1->node_stats.stats.average;
-      t2 = node2->node_stats.stats.average;
-      if (t1 == t2)
-	ret = 0;
-      else if (t1 < t2)
-	ret = -1;
-      else
-	ret = 1;
-      break;
-    case NODES_COLUMN_ACCUMULATED:
-      t1 = node1->node_stats.stats.accumulated;
-      t2 = node2->node_stats.stats.accumulated;
-      if (t1 == t2)
-	ret = 0;
-      else if (t1 < t2)
-	ret = -1;
-      else
-	ret = 1;
-      break;
-    case NODES_COLUMN_AVGSIZE:
-      t1 = node1->node_stats.stats.avg_size;
-      t2 = node2->node_stats.stats.avg_size;
-      if (t1 == t2)
-	ret = 0;
-      else if (t1 < t2)
-	ret = -1;
-      else
-	ret = 1;
-      break;
-    case NODES_COLUMN_LASTHEARD:
-      diffms = subtract_times_ms(&node1->node_stats.stats.last_time,
-                                  &node2->node_stats.stats.last_time);
-      if (diffms == 0)
-	ret = 0;
-      else if (diffms < 0)
-	ret = -1;
-      else
-	ret = 1;
-      break;
-    case NODES_COLUMN_PACKETS:
-      if (node1->node_stats.stats.accu_packets == node2->node_stats.stats.accu_packets)
-	ret = 0;
-      else if (node1->node_stats.stats.accu_packets < node2->node_stats.stats.accu_packets)
-	ret = -1;
-      else
-	ret = 1;
-      break;
-    }
+  {
+      case NODES_COLUMN_NAME: /* name */
+      default:
+        ret = strcmp(node1->name->str, node2->name->str);
+        break;
+      case NODES_COLUMN_NUMERIC: /* id */
+        ret = node_id_compare(&(node1->node_id), &(node2->node_id));
+        break;
+      case NODES_COLUMN_INSTANTANEOUS:
+        t1 = node1->node_stats.stats.average;
+        t2 = node2->node_stats.stats.average;
+        if (t1 == t2)
+          ret = 0;
+        else if (t1 < t2)
+          ret = -1;
+        else
+          ret = 1;
+        break;
+      case NODES_COLUMN_ACCUMULATED:
+        t1 = node1->node_stats.stats.accumulated;
+        t2 = node2->node_stats.stats.accumulated;
+        if (t1 == t2)
+          ret = 0;
+        else if (t1 < t2)
+          ret = -1;
+        else
+          ret = 1;
+        break;
+      case NODES_COLUMN_AVGSIZE:
+        t1 = node1->node_stats.stats.avg_size;
+        t2 = node2->node_stats.stats.avg_size;
+        if (t1 == t2)
+          ret = 0;
+        else if (t1 < t2)
+          ret = -1;
+        else
+          ret = 1;
+        break;
+      case NODES_COLUMN_LASTHEARD:
+        diffms = subtract_times_ms(&node1->node_stats.stats.last_time,
+                                   &node2->node_stats.stats.last_time);
+        if (diffms == 0)
+          ret = 0;
+        else if (diffms < 0)
+          ret = -1;
+        else
+          ret = 1;
+        break;
+      case NODES_COLUMN_PACKETS:
+        if (node1->node_stats.stats.accu_packets == node2->node_stats.stats.accu_packets)
+          ret = 0;
+        else if (node1->node_stats.stats.accu_packets < node2->node_stats.stats.accu_packets)
+          ret = -1;
+        else
+          ret = 1;
+        break;
+  }
 
   return ret;
 }
@@ -195,34 +193,31 @@ static GtkListStore *nodes_table_create(GtkWidget *window)
 
   /* get the treeview */
   gv = retrieve_treeview(window);
-  if (!gv)
-    {
-      gv = GTK_TREE_VIEW (gtk_builder_get_object (appdata.xml, "nodes_table"));
-      if (!gv)
-        {
-          g_critical("can't find nodes_table");
-          return NULL;
-        }
-      register_treeview(window, gv);
+  if (!gv) {
+    gv = GTK_TREE_VIEW(gtk_builder_get_object(appdata.xml, "nodes_table"));
+    if (!gv) {
+      g_critical("can't find nodes_table");
+      return NULL;
     }
+    register_treeview(window, gv);
+  }
 
   sort_model = gtk_tree_view_get_model(gv);
-  if (sort_model)
-    {
-      gls = GTK_LIST_STORE(gtk_tree_model_sort_get_model
-                            (GTK_TREE_MODEL_SORT(sort_model)));
-      if (gls)
-        return gls; 
-    }
-  
+  if (sort_model) {
+    gls = GTK_LIST_STORE(gtk_tree_model_sort_get_model
+                           (GTK_TREE_MODEL_SORT(sort_model)));
+    if (gls)
+      return gls;
+  }
+
   /* create the store. it uses 8 values, 7 displayable and the data pointer */
-  gls = gtk_list_store_new (8, G_TYPE_STRING, G_TYPE_STRING,
-			   G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING, 
-			   G_TYPE_STRING, G_TYPE_STRING, G_TYPE_POINTER);
+  gls = gtk_list_store_new(8, G_TYPE_STRING, G_TYPE_STRING,
+                           G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING,
+                           G_TYPE_STRING, G_TYPE_STRING, G_TYPE_POINTER);
 
   /* to update successfully, the list store must be unsorted. So we wrap it */
-  sort_model = gtk_tree_model_sort_new_with_model (GTK_TREE_MODEL(gls));
-  gtk_tree_view_set_model (gv, GTK_TREE_MODEL (sort_model));
+  sort_model = gtk_tree_model_sort_new_with_model(GTK_TREE_MODEL(gls));
+  gtk_tree_view_set_model(gv, GTK_TREE_MODEL(sort_model));
 
   create_add_text_column(gv, _("Name"), NODES_COLUMN_NAME, FALSE);
   create_add_text_column(gv, _("Address"), NODES_COLUMN_NUMERIC, TRUE);
@@ -233,15 +228,15 @@ static GtkListStore *nodes_table_create(GtkWidget *window)
   create_add_text_column(gv, _("Packets"), NODES_COLUMN_PACKETS, FALSE);
 
   /* the sort functions ... */
-  for (i = 0 ; i < NODES_COLUMN_N ; ++i)
-    gtk_tree_sortable_set_sort_func (GTK_TREE_SORTABLE (sort_model), i,
-                                     nodes_table_compare, 
-                                     GINT_TO_POINTER(i), NULL);
+  for (i = 0; i < NODES_COLUMN_N; ++i)
+    gtk_tree_sortable_set_sort_func(GTK_TREE_SORTABLE(sort_model), i,
+                                    nodes_table_compare,
+                                    GINT_TO_POINTER(i), NULL);
 
   /* initial sort order is by name */
-  gtk_tree_sortable_set_sort_column_id (GTK_TREE_SORTABLE (sort_model), 
-                                        NODES_COLUMN_NAME,
-                                        GTK_SORT_ASCENDING);
+  gtk_tree_sortable_set_sort_column_id(GTK_TREE_SORTABLE(sort_model),
+                                       NODES_COLUMN_NAME,
+                                       GTK_SORT_ASCENDING);
 
   return gls;
 }
@@ -258,7 +253,7 @@ static void nodes_table_clear(GtkWidget *window)
   gv = retrieve_treeview(window);
   if (!gv)
     return; /* gv not registered, store doesn't exists */
-  
+
   /* parameters came from sorted model; we need to convert to liststore*/
   sort_model = gtk_tree_view_get_model(gv);
   if (!sort_model)
@@ -267,45 +262,44 @@ static void nodes_table_clear(GtkWidget *window)
   /* liststore from sorted model */
   gls = gtk_tree_model_sort_get_model(GTK_TREE_MODEL_SORT(sort_model));
   if (!gls)
-    return; 
+    return;
 
-  res = gtk_tree_model_get_iter_first (gls, &it);
-  while (res)
-    {
-      node_id_t *rowitem = NULL;
-      gtk_tree_model_get (gls, &it, 
-                          NODES_COLUMN_N, &rowitem, -1);
-      g_free(rowitem);
-      res = gtk_list_store_remove (GTK_LIST_STORE(gls), &it);
-    }
+  res = gtk_tree_model_get_iter_first(gls, &it);
+  while (res) {
+    node_id_t *rowitem = NULL;
+    gtk_tree_model_get(gls, &it,
+                       NODES_COLUMN_N, &rowitem, -1);
+    g_free(rowitem);
+    res = gtk_list_store_remove(GTK_LIST_STORE(gls), &it);
+  }
 }
 
-static void nodes_table_update_row(GtkListStore *gs, GtkTreeIter *it, 
-                                   const node_t * node)
+static void nodes_table_update_row(GtkListStore *gs, GtkTreeIter *it,
+                                   const node_t *node)
 {
   gchar *sa, *sb, *sc, *sd, *se;
-  const basic_stats_t *stats = (const basic_stats_t *) &(node->node_stats.stats);
-  
-  sa = traffic_to_str (stats->average, TRUE);
-  sb = traffic_to_str (stats->accumulated, FALSE);
-  sc = g_strdup_printf ("%lu", stats->accu_packets);
-  sd = timeval_to_str(stats->last_time);
-  se = traffic_to_str (stats->avg_size, FALSE);
+  const basic_stats_t *stats = (const basic_stats_t *)&(node->node_stats.stats);
 
-  gtk_list_store_set (gs, it, 
-                      NODES_COLUMN_NAME, node->name->str, 
-                      NODES_COLUMN_NUMERIC, node->numeric_name->str, 
-                      NODES_COLUMN_INSTANTANEOUS, sa,
-                      NODES_COLUMN_ACCUMULATED, sb,
-                      NODES_COLUMN_AVGSIZE, se,
-                      NODES_COLUMN_PACKETS, sc,
-                      NODES_COLUMN_LASTHEARD, sd,
-                      -1);
-  g_free (sa);
-  g_free (sb);
-  g_free (sc);
-  g_free (sd);
-  g_free (se);
+  sa = traffic_to_str(stats->average, TRUE);
+  sb = traffic_to_str(stats->accumulated, FALSE);
+  sc = g_strdup_printf("%lu", stats->accu_packets);
+  sd = timeval_to_str(stats->last_time);
+  se = traffic_to_str(stats->avg_size, FALSE);
+
+  gtk_list_store_set(gs, it,
+                     NODES_COLUMN_NAME, node->name->str,
+                     NODES_COLUMN_NUMERIC, node->numeric_name->str,
+                     NODES_COLUMN_INSTANTANEOUS, sa,
+                     NODES_COLUMN_ACCUMULATED, sb,
+                     NODES_COLUMN_AVGSIZE, se,
+                     NODES_COLUMN_PACKETS, sc,
+                     NODES_COLUMN_LASTHEARD, sd,
+                     -1);
+  g_free(sa);
+  g_free(sb);
+  g_free(sc);
+  g_free(sd);
+  g_free(se);
 }
 
 struct NTTraverse
@@ -320,49 +314,48 @@ static gboolean nodes_table_iterate(gpointer key, gpointer value, gpointer data)
   const node_t *node = (const node_t *)value;
   struct NTTraverse *tt = (struct NTTraverse *)data;
   node_id_t *rowitem;
- 
-  while (tt->res)
-    {
-      gtk_tree_model_get (GTK_TREE_MODEL (tt->gs), &(tt->it), 
-                          NODES_COLUMN_N, &rowitem, -1);
 
-      switch (node_id_compare(&(node->node_id), rowitem))
-        {
+  while (tt->res) {
+    gtk_tree_model_get(GTK_TREE_MODEL(tt->gs), &(tt->it),
+                       NODES_COLUMN_N, &rowitem, -1);
+
+    switch (node_id_compare(&(node->node_id), rowitem))
+    {
         case 0:
-            /* curnode==cur row, update results and go next */
-            nodes_table_update_row(tt->gs, &(tt->it), node);
-            tt->res = gtk_tree_model_iter_next (GTK_TREE_MODEL (tt->gs), 
-                                                &(tt->it));
-            return FALSE; /* continue with next node */
+          /* curnode==cur row, update results and go next */
+          nodes_table_update_row(tt->gs, &(tt->it), node);
+          tt->res = gtk_tree_model_iter_next(GTK_TREE_MODEL(tt->gs),
+                                             &(tt->it));
+          return FALSE;   /* continue with next node */
         case -1:
-            /* current node name less than current row means node is new.
-               Insert a new node in store before current (it moves to new node),
-               fill it and move next */
-            gtk_list_store_insert_before(tt->gs, &(tt->it), &(tt->it));
-            rowitem = g_malloc(sizeof(node_id_t));
-            g_assert(rowitem);
-            
-            *rowitem = node->node_id;
-            gtk_list_store_set (tt->gs, &(tt->it), NODES_COLUMN_N, rowitem, -1);
-            nodes_table_update_row(tt->gs, &(tt->it), node);
-            tt->res = gtk_tree_model_iter_next (GTK_TREE_MODEL (tt->gs), 
-                                                &(tt->it));
-            return FALSE; /* continue with next node */
+          /* current node name less than current row means node is new.
+             Insert a new node in store before current (it moves to new node),
+             fill it and move next */
+          gtk_list_store_insert_before(tt->gs, &(tt->it), &(tt->it));
+          rowitem = g_malloc(sizeof(node_id_t));
+          g_assert(rowitem);
+
+          *rowitem = node->node_id;
+          gtk_list_store_set(tt->gs, &(tt->it), NODES_COLUMN_N, rowitem, -1);
+          nodes_table_update_row(tt->gs, &(tt->it), node);
+          tt->res = gtk_tree_model_iter_next(GTK_TREE_MODEL(tt->gs),
+                                             &(tt->it));
+          return FALSE;   /* continue with next node */
         case 1:
-            /* current node name greater than current row means deleted row.
-             * remove row and loop */
-            g_free(rowitem);
-            tt->res = gtk_list_store_remove (tt->gs, &(tt->it));
-            break;
-        }
-    }  /* end while */
+          /* current node name greater than current row means deleted row.
+           * remove row and loop */
+          g_free(rowitem);
+          tt->res = gtk_list_store_remove(tt->gs, &(tt->it));
+          break;
+    }
+  }    /* end while */
 
   /* coming here means node is new - append and move next */
   gtk_list_store_prepend(tt->gs, &(tt->it));
   rowitem = g_malloc(sizeof(node_id_t));
   g_assert(rowitem);
   *rowitem = node->node_id;
-  gtk_list_store_set (tt->gs, &(tt->it), NODES_COLUMN_N, rowitem, -1);
+  gtk_list_store_set(tt->gs, &(tt->it), NODES_COLUMN_N, rowitem, -1);
   nodes_table_update_row(tt->gs, &(tt->it), node);
   return FALSE;
 }
@@ -378,28 +371,27 @@ static void nodes_table_update(GtkWidget *window)
 
   /* traverse both the full list and the treestore, comparing entries */
   tt.gs = gs;
-  tt.res = gtk_tree_model_get_iter_first (GTK_TREE_MODEL (tt.gs), &(tt.it));
+  tt.res = gtk_tree_model_get_iter_first(GTK_TREE_MODEL(tt.gs), &(tt.it));
   nodes_catalog_foreach(nodes_table_iterate, &tt);
 
   /* if the iterator is still active, remaining rows must be removed */
-  while (tt.res)
-    {
-      node_id_t *rowitem;
-      gtk_tree_model_get (GTK_TREE_MODEL (tt.gs), &(tt.it), 
-                          NODES_COLUMN_N, &rowitem, -1);
-      g_free(rowitem);
-      tt.res = gtk_list_store_remove (tt.gs, &(tt.it));
-    }
+  while (tt.res) {
+    node_id_t *rowitem;
+    gtk_tree_model_get(GTK_TREE_MODEL(tt.gs), &(tt.it),
+                       NODES_COLUMN_N, &rowitem, -1);
+    g_free(rowitem);
+    tt.res = gtk_list_store_remove(tt.gs, &(tt.it));
+  }
 }
 
 /* ----------------------------------------------------------
    Events
    ---------------------------------------------------------- */
 
-gboolean on_nodes_wnd_delete_event(GtkWidget * wdg, GdkEvent * evt, gpointer ud)
+gboolean on_nodes_wnd_delete_event(GtkWidget *wdg, GdkEvent *evt, gpointer ud)
 {
   nodes_wnd_hide();
-  return TRUE;			/* ignore signal */
+  return TRUE;                  /* ignore signal */
 }
 
 void on_nodes_check_toggled(GtkCheckMenuItem *checkmenuitem,  gpointer data)
@@ -415,7 +407,7 @@ void on_nodes_toolbar_button_clicked(void)
   GtkWidget *nodes_check = GTK_WIDGET(gtk_builder_get_object(appdata.xml, "nodes_check"));
   if (!nodes_check)
     return;
-  gtk_menu_item_activate(GTK_MENU_ITEM (nodes_check));
+  gtk_menu_item_activate(GTK_MENU_ITEM(nodes_check));
 }
 
 /* double click on row */
@@ -437,23 +429,22 @@ void on_nodes_table_row_activated(GtkTreeView *gv,
   /* liststore from sorted model */
   gls = gtk_tree_model_sort_get_model(GTK_TREE_MODEL_SORT(sort_model));
   if (!gls)
-    return; 
+    return;
 
   /* liststore path from sorted path */
   path = gtk_tree_model_sort_convert_path_to_child_path
-            (GTK_TREE_MODEL_SORT(sort_model), sorted_path);
+           (GTK_TREE_MODEL_SORT(sort_model), sorted_path);
   if (!path)
     return;
 
   /* iterator from path */
-  if (gtk_tree_model_get_iter (gls, &it, path))
-    {
-      /* and last, value */
-      node_id_t *rowitem;
-      gtk_tree_model_get (gls, &it, NODES_COLUMN_N, &rowitem, -1);
-      node_protocols_window_create(rowitem);
-    }
-  
+  if (gtk_tree_model_get_iter(gls, &it, path)) {
+    /* and last, value */
+    node_id_t *rowitem;
+    gtk_tree_model_get(gls, &it, NODES_COLUMN_N, &rowitem, -1);
+    node_protocols_window_create(rowitem);
+  }
+
   gtk_tree_path_free(path);
 }
 

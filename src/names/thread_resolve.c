@@ -23,7 +23,7 @@
 
 
 #ifdef HAVE_CONFIG_H
-#include <config.h>
+#include "../../config.h"
 #endif
 
 #include <sys/types.h>
@@ -55,7 +55,7 @@
 #include "thread_resolve.h"
 #include "stats/util.h"
 
-#define ETHERAPE_THREAD_POOL_SIZE 6
+#define ETHERAPE_THREAD_POOL_SIZE  6
 static pthread_t resolver_threads[ETHERAPE_THREAD_POOL_SIZE];
 static int resolver_threads_num = 0;
 
@@ -63,10 +63,10 @@ static int resolver_threads_num = 0;
 struct ipresolve_link
 {
   struct ipcache_item *itemToResolve;
-  struct ipresolve_link *next;   
+  struct ipresolve_link *next;
 };
-static struct ipresolve_link *resolveListHead=NULL;  
-static struct ipresolve_link *resolveListTail=NULL;  
+static struct ipresolve_link *resolveListHead = NULL;
+static struct ipresolve_link *resolveListTail = NULL;
 
 static int request_stop_thread = 0; /* stop thread flag */
 
@@ -77,157 +77,152 @@ static pthread_cond_t resolvecond; /* resolve condition var */
 
 static int open_mutex(void)
 {
-    if (!pthread_mutex_init (&resolvemtx, NULL) &&
-        !pthread_cond_init (&resolvecond, NULL))
-      return 0; /* ok*/
-    else
-      return 1; 
+  if (!pthread_mutex_init(&resolvemtx, NULL) &&
+      !pthread_cond_init(&resolvecond, NULL))
+    return 0; /* ok*/
+  else
+    return 1;
 }
 
-static void
-close_mutex(void)
+static void close_mutex(void)
 {
-    pthread_mutex_destroy(&resolvemtx);
-    pthread_cond_destroy(&resolvecond);
+  pthread_mutex_destroy(&resolvemtx);
+  pthread_cond_destroy(&resolvecond);
 }
 
 /* thread routine */
 static void *thread_pool_routine(void *dt)
 {
-   struct ipcache_item *curitem;
-   struct ipresolve_link *el;   
-   struct hostent *resultptr;
-   struct sockaddr_in sa;
-   struct sockaddr_in6 sa6;
-   struct sockaddr *saptr;
-   socklen_t salen;
-   
-   char extrabuf[4096];
-   int result;
+  struct ipcache_item *curitem;
+  struct ipresolve_link *el;
+#ifdef FORCE_SINGLE_THREAD
+  struct hostent *resultptr;
+#endif
+  struct sockaddr_in sa;
+  struct sockaddr_in6 sa6;
+  struct sockaddr *saptr;
+  socklen_t salen;
 
-   while (!request_stop_thread)
-   {
-      pthread_mutex_lock(&resolvemtx);
+  char extrabuf[4096];
+  int result;
 
-      if (!request_stop_thread && !resolveListHead)
-      {
-         /* list empty, wait on condition releasing mutex */
-         pthread_cond_wait (&resolvecond, &resolvemtx);
-      }
+  while (!request_stop_thread) {
+    pthread_mutex_lock(&resolvemtx);
 
-      /* from now on, mutex is locked */
+    if (!request_stop_thread && !resolveListHead) {
+      /* list empty, wait on condition releasing mutex */
+      pthread_cond_wait(&resolvecond, &resolvemtx);
+    }
 
-      if (request_stop_thread)
-      {
-         /* must exit */
-         pthread_mutex_unlock(&resolvemtx);
-         break;
-      }
+    /* from now on, mutex is locked */
 
-      /* if we come here head should be filled, but a check doesn't hurt ... */
-      if (resolveListHead)
-      {
-         /* there is something to resolve, take out from head */
-         el = resolveListHead;
-         resolveListHead = el->next;
-         curitem = el->itemToResolve;
-         
-         /* ok, release mutex and resolve */
-         pthread_mutex_unlock(&resolvemtx);
+    if (request_stop_thread) {
+      /* must exit */
+      pthread_mutex_unlock(&resolvemtx);
+      break;
+    }
 
-         free(el); /* item saved, link elem now useless, freeing */
+    /* if we come here head should be filled, but a check doesn't hurt ... */
+    if (resolveListHead) {
+      /* there is something to resolve, take out from head */
+      el = resolveListHead;
+      resolveListHead = el->next;
+      curitem = el->itemToResolve;
+
+      /* ok, release mutex and resolve */
+      pthread_mutex_unlock(&resolvemtx);
+
+      free(el);    /* item saved, link elem now useless, freeing */
 
 #ifdef FORCE_SINGLE_THREAD
-         /* if forced single thread, uses gethostbyaddr */
-         result=0;
-         resultptr = gethostbyaddr (&curitem->ip.addr8, 
-                          address_len(curitem->ip.type), curitem->ip.type);
-         if (request_stop_thread)
-            break;
+      /* if forced single thread, uses gethostbyaddr */
+      result = 0;
+      resultptr = gethostbyaddr(&curitem->ip.addr8,
+                                address_len(curitem->ip.type), curitem->ip.type);
+      if (request_stop_thread)
+        break;
 
-         /* resolving completed or failed, lock again and notify ip-cache */
-         pthread_mutex_lock(&resolvemtx);
-         if (result || !resultptr)
-            ipcache_request_failed(curitem); 
-         else
-            ipcache_request_succeeded(curitem, 3600L*24L, resultptr->h_name);
+      /* resolving completed or failed, lock again and notify ip-cache */
+      pthread_mutex_lock(&resolvemtx);
+      if (result || !resultptr)
+        ipcache_request_failed(curitem);
+      else
+        ipcache_request_succeeded(curitem, 3600L*24L, resultptr->h_name);
 #else
-         /* full multithreading, use thread safe getnameinfo */
-         if (curitem->ip.type == AF_INET) {
-           memset(&sa, 0, sizeof sa);
-           sa.sin_family = curitem->ip.type;
-           g_assert(sizeof(sa.sin_addr) == sizeof(curitem->ip.addr_v4));
-           memmove(&sa.sin_addr, curitem->ip.addr_v4, sizeof sa.sin_addr);
-           saptr = (struct sockaddr *)&sa;
-           salen = sizeof sa;
-         } else {
-           memset(&sa6, 0, sizeof sa6);
-           sa6.sin6_family = curitem->ip.type;
-           g_assert(sizeof(sa6.sin6_addr) == sizeof(curitem->ip.addr_v6));
-           memmove(&sa6.sin6_addr, curitem->ip.addr_v6, sizeof sa6.sin6_addr);
-           saptr = (struct sockaddr *)&sa6;
-           salen = sizeof sa6;
-         }
-         
-         result = getnameinfo(saptr, salen, 
-                              extrabuf,  sizeof(extrabuf), 
-                              NULL, 0,
-                              0);
-         if (result != 0 && result != EAI_AGAIN) {
-           g_my_critical("getnameinfo error %d (%s)\n", 
-                         result, gai_strerror(result));
-         }
-         if (request_stop_thread)
-            break;
-
-         /* resolving completed or failed, lock again and notify ip-cache */
-         pthread_mutex_lock(&resolvemtx);
-         if (result)
-            ipcache_request_failed(curitem); 
-         else
-            ipcache_request_succeeded(curitem, 3600L*24L, extrabuf);
-#endif
+      /* full multithreading, use thread safe getnameinfo */
+      if (curitem->ip.type == AF_INET) {
+        memset(&sa, 0, sizeof sa);
+        sa.sin_family = curitem->ip.type;
+        g_assert(sizeof(sa.sin_addr) == sizeof(curitem->ip.addr_v4));
+        memmove(&sa.sin_addr, curitem->ip.addr_v4, sizeof sa.sin_addr);
+        saptr = (struct sockaddr *)&sa;
+        salen = sizeof sa;
+      }
+      else {
+        memset(&sa6, 0, sizeof sa6);
+        sa6.sin6_family = curitem->ip.type;
+        g_assert(sizeof(sa6.sin6_addr) == sizeof(curitem->ip.addr_v6));
+        memmove(&sa6.sin6_addr, curitem->ip.addr_v6, sizeof sa6.sin6_addr);
+        saptr = (struct sockaddr *)&sa6;
+        salen = sizeof sa6;
       }
 
-      pthread_mutex_unlock(&resolvemtx);
-   }
-   return NULL;
+      result = getnameinfo(saptr, salen,
+                           extrabuf,  sizeof(extrabuf),
+                           NULL, 0,
+                           0);
+      if (result != 0 && result != EAI_AGAIN) {
+        g_my_critical("getnameinfo error %d (%s)\n",
+                      result, gai_strerror(result));
+      }
+      if (request_stop_thread)
+        break;
+
+      /* resolving completed or failed, lock again and notify ip-cache */
+      pthread_mutex_lock(&resolvemtx);
+      if (result)
+        ipcache_request_failed(curitem);
+      else
+        ipcache_request_succeeded(curitem, 3600L*24L, extrabuf);
+#endif
+    }
+
+    pthread_mutex_unlock(&resolvemtx);
+  }
+  return NULL;
 }
 
 static void start_threads()
 {
-   pthread_t curth;
-   int i;
-   int maxth = ETHERAPE_THREAD_POOL_SIZE;
-   pthread_attr_t attr;
+  pthread_t curth;
+  int i;
+  int maxth = ETHERAPE_THREAD_POOL_SIZE;
+  pthread_attr_t attr;
 
-   /* reset stop flag */
-   request_stop_thread = 0;
+  /* reset stop flag */
+  request_stop_thread = 0;
 
-   if (pthread_attr_init(&attr) ||
-       pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_DETACHED))
-     {
-       g_critical("pthread_attr_init failed, resolver will not be available\n");
-       return; 
-     }
-  
+  if (pthread_attr_init(&attr) ||
+      pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_DETACHED)) {
+    g_critical("pthread_attr_init failed, resolver will not be available\n");
+    return;
+  }
+
   /* if single thread resolving is forced, then start only a single thread,
      else start ETHERAPE_THREAD_POOL_SIZE threads */
 #ifdef FORCE_SINGLE_THREAD
-   maxth = 1;
+  maxth = 1;
 #endif
-   for (i=0; i<maxth ; ++i)
-   {
-     if (pthread_create ( &curth, NULL, thread_pool_routine, NULL))
-     {
-       // error, stop creating threads
-       g_critical("pthread_create failed, resolver has only %d threads\n", i);
-       break;
-     }
-     resolver_threads[i] = curth;
-   }
+  for (i = 0; i < maxth; ++i) {
+    if (pthread_create(&curth, NULL, thread_pool_routine, NULL)) {
+      // error, stop creating threads
+      g_critical("pthread_create failed, resolver has only %d threads\n", i);
+      break;
+    }
+    resolver_threads[i] = curth;
+  }
 
-   resolver_threads_num = i;
+  resolver_threads_num = i;
 }
 
 static void stop_threads()
@@ -249,37 +244,34 @@ static void stop_threads()
   resolver_threads_num = 0;
 }
 
-/* creates a request, placing in the queue 
+/* creates a request, placing in the queue
    NOTE: mutex locked!
 */
-static void
-sendrequest_inverse (address_t *ip)
+static void sendrequest_inverse(address_t *ip)
 {
   struct ipcache_item *rp = NULL;
 
   if (!ip)
-      return;
+    return;
 
   /* allocate a new request */
   rp = ipcache_prepare_request(ip);
 
   /* prepare resolve item */
-  struct ipresolve_link *newitm= (struct ipresolve_link *)malloc( sizeof(struct ipresolve_link));
+  struct ipresolve_link *newitm = (struct ipresolve_link *)malloc(sizeof(struct ipresolve_link));
   newitm->itemToResolve = rp;
-  newitm->next= NULL;
+  newitm->next = NULL;
 
   /* items placed on list tail and consumed from head (this gives a FIFO strategy) */
-  if (NULL == resolveListHead)
-  {
-     /* first item, we put head=tail */
-     resolveListTail = resolveListHead = newitm;
+  if (NULL == resolveListHead) {
+    /* first item, we put head=tail */
+    resolveListTail = resolveListHead = newitm;
   }
-  else
-  {
-     resolveListTail->next = newitm;
-     resolveListTail = newitm;
+  else {
+    resolveListTail->next = newitm;
+    resolveListTail = newitm;
   }
-  
+
   /* signal the condition and release the mux */
   pthread_cond_signal(&resolvecond);
 
@@ -287,40 +279,37 @@ sendrequest_inverse (address_t *ip)
 }
 
 /* called to activate the resolver */
-int 
-thread_open (void)
+int thread_open(void)
 {
-  /* mutex creation */ 
+  /* mutex creation */
   if (open_mutex())
     return 1;
 
-  /* cache activation */  
+  /* cache activation */
   ipcache_init();
 
-  /* thread pool activation */ 
+  /* thread pool activation */
   start_threads();
 
   return 0;
 }
 
 /* called to close the resolver */
-void
-thread_close(void)
+void thread_close(void)
 {
-  /* thread pool shutdown */ 
+  /* thread pool shutdown */
   stop_threads();
-   
-  /* close mutex */ 
+
+  /* close mutex */
   close_mutex();
 }
 
-const char *
-thread_lookup (address_t *ip)
+const char *thread_lookup(address_t *ip)
 {
   const char *ipname;
 
   if (!ip)
-      return "";
+    return "";
 
   /* locks mutex */
   pthread_mutex_lock(&resolvemtx);
@@ -329,7 +318,7 @@ thread_lookup (address_t *ip)
   ipname = ipcache_lookup(ip);
 
   if (!ipname)
-      sendrequest_inverse (ip); /* request needed */
+    sendrequest_inverse(ip); /* request needed */
 
   /* release mutex and exit */
   pthread_mutex_unlock(&resolvemtx);

@@ -16,17 +16,17 @@
  */
 
 #ifdef HAVE_CONFIG_H
-#include <config.h>
+#include "../../config.h"
 #endif
 
 #include "common.h"
-//#include <netinet/in.h>
-//#include "appdata.h"
+// #include <netinet/in.h>
+// #include "appdata.h"
 #include "conversations.h"
 #include "names/dns.h"
 #include "util.h"
 
-/* Some protocols add an item here to help identify further packets of the 
+/* Some protocols add an item here to help identify further packets of the
  * same protocol */
 static GList *conversations = NULL;
 static long n_conversations = 0;
@@ -40,157 +40,144 @@ long active_conversations(void)
  * two directions */
 /* A zero in any of the ports matches any port number */
 static GList
-  * find_conversation_ptr(address_t * src_address, address_t * dst_address,
-		       guint16 src_port, guint16 dst_port)
+*find_conversation_ptr(address_t *src_address, address_t *dst_address,
+                       guint16 src_port, guint16 dst_port)
 {
   GList *item = conversations;
   conversation_t *conv = NULL;
 
   g_assert(src_address);
   g_assert(dst_address);
-  while (item)
-    {
-      conv = item->data;
-      if ((is_addr_eq(src_address, &conv->src_address)
-	   && is_addr_eq(dst_address, &conv->dst_address)
-	   && (!src_port || !conv->src_port || (src_port == conv->src_port))
-	   && (!dst_port || !conv->dst_port || (dst_port == conv->dst_port))
-          )
-	  || (is_addr_eq(src_address, &conv->dst_address)
-	      && is_addr_eq(dst_address, &conv->src_address)
-	      && (!src_port || !conv->dst_port || (src_port == conv->dst_port)) 
-              && (!dst_port || !conv->src_port || (dst_port == conv->src_port))
-              )
-          )
-	{
-          /* found */
-	  break;
-	}
-      item = item->next;
+  while (item) {
+    conv = item->data;
+    if ((is_addr_eq(src_address, &conv->src_address) &&
+         is_addr_eq(dst_address, &conv->dst_address) &&
+         (!src_port || !conv->src_port || (src_port == conv->src_port)) &&
+         (!dst_port || !conv->dst_port || (dst_port == conv->dst_port))
+         ) ||
+        (is_addr_eq(src_address, &conv->dst_address) &&
+         is_addr_eq(dst_address, &conv->src_address) &&
+         (!src_port || !conv->dst_port || (src_port == conv->dst_port)) &&
+         (!dst_port || !conv->src_port || (dst_port == conv->src_port))
+        )
+        ) {
+      /* found */
+      break;
     }
+    item = item->next;
+  }
 
   return item;
-}				/* find_conversation_ptr */
+}                               /* find_conversation_ptr */
 
 
-void
-add_conversation (address_t * src_address, address_t * dst_address,
-		  guint16 src_port, guint16 dst_port, const gchar * data)
+void add_conversation(address_t *src_address, address_t *dst_address,
+                      guint16 src_port, guint16 dst_port, const gchar *data)
 {
   conversation_t *conv = NULL;
   const gchar *old_data = NULL;
 
-  if (!src_address || !dst_address)
-    {
-      g_my_critical("NULL ptr in add_conversation");
-      return;
-    }
+  if (!src_address || !dst_address) {
+    g_my_critical("NULL ptr in add_conversation");
+    return;
+  }
 
   /* Make sure there is not one such conversation */
-  if ((old_data = find_conversation (src_address, dst_address,
-				     src_port, dst_port)))
-    {
-      if (!strcmp (old_data, data))
-	g_my_critical
-	  ("Conflicting conversations %s:%d-%s:%d in add_conversation",
-	   address_to_str (src_address), src_port,
-	   address_to_str (dst_address), dst_port);
-      else
-	g_my_debug
-	  ("Conversation %s:%d-%s:%d %s already exists in add_conversation",
-	   address_to_str (src_address), src_port,
-	   address_to_str (dst_address), dst_port, data);
-      return;
-    }
+  if ((old_data = find_conversation(src_address, dst_address,
+                                    src_port, dst_port))) {
+    if (!strcmp(old_data, data))
+      g_my_critical
+        ("Conflicting conversations %s:%d-%s:%d in add_conversation",
+        address_to_str(src_address), src_port,
+        address_to_str(dst_address), dst_port);
+    else
+      g_my_debug
+        ("Conversation %s:%d-%s:%d %s already exists in add_conversation",
+        address_to_str(src_address), src_port,
+        address_to_str(dst_address), dst_port, data);
+    return;
+  }
 
-  g_my_debug ("Adding new conversation %s:%d-%s:%d %s",
-	      address_to_str (src_address), src_port,
-	      address_to_str (dst_address), dst_port, data);
+  g_my_debug("Adding new conversation %s:%d-%s:%d %s",
+             address_to_str(src_address), src_port,
+             address_to_str(dst_address), dst_port, data);
 
-  conv = g_malloc (sizeof (conversation_t));
+  conv = g_malloc(sizeof(conversation_t));
   g_assert(conv);
-  
+
   address_copy(&conv->src_address, src_address);
   address_copy(&conv->dst_address, dst_address);
   conv->src_port = src_port;
   conv->dst_port = dst_port;
-  conv->data = g_strdup (data);
+  conv->data = g_strdup(data);
 
-  conversations = g_list_prepend (conversations, conv);
+  conversations = g_list_prepend(conversations, conv);
   n_conversations++;
-}				/* add_conversation */
+}                               /* add_conversation */
 
 
 /* Returns the data if there is any matching conversation in any of the
  * two directions */
 /* A zero in any of the ports matches any port number */
-const gchar* 
-find_conversation (address_t * src_address, address_t * dst_address,
-		      guint16 src_port, guint16 dst_port)
+const gchar *find_conversation(address_t *src_address, address_t *dst_address,
+                               guint16 src_port, guint16 dst_port)
 {
   GList *item;
 
-  if (!src_address || !dst_address)
-    {
-      g_my_critical("NULL ptr in find_conversation");
-      return NULL;
-    }
+  if (!src_address || !dst_address) {
+    g_my_critical("NULL ptr in find_conversation");
+    return NULL;
+  }
 
   item = find_conversation_ptr(src_address, dst_address, src_port, dst_port);
-  if (item)
-    {
-      /* found */
-      conversation_t *conv = item->data;
-      return conv->data;
-    }
+  if (item) {
+    /* found */
+    conversation_t *conv = item->data;
+    return conv->data;
+  }
   else
     return NULL;
 }
 
 /* removes all conversations with the specified addresses */
-void
-delete_conversation_link(address_t * src_address, address_t * dst_address)
+void delete_conversation_link(address_t *src_address, address_t *dst_address)
 {
   GList *item;
 
-  if (!src_address || !dst_address)
-    {
-      g_my_critical("NULL ptr in delete_conversation_link");
-      return;
-    }
+  if (!src_address || !dst_address) {
+    g_my_critical("NULL ptr in delete_conversation_link");
+    return;
+  }
 
-  while ( (item = find_conversation_ptr(src_address, dst_address, 0, 0)) )
-    {
-      conversation_t *conv = NULL;
-      conv = item->data;
-      g_my_debug ("Removing conversation %s:%d-%s:%d %s",
-		  address_to_str (&conv->src_address), conv->src_port,
-		  address_to_str (&conv->dst_address), conv->dst_port, conv->data);
-      g_free (conv->data);
-      g_free (conv);
-      conversations = g_list_delete_link(conversations, item);
-      n_conversations--;
-    }
+  while ((item = find_conversation_ptr(src_address, dst_address, 0, 0))) {
+    conversation_t *conv = NULL;
+    conv = item->data;
+    g_my_debug("Removing conversation %s:%d-%s:%d %s",
+               address_to_str(&conv->src_address), conv->src_port,
+               address_to_str(&conv->dst_address), conv->dst_port, conv->data);
+    g_free(conv->data);
+    g_free(conv);
+    conversations = g_list_delete_link(conversations, item);
+    n_conversations--;
+  }
 }
 
-void
-delete_conversations (void)
+void delete_conversations(void)
 {
   GList *item = conversations;
   conversation_t *conv = NULL;
 
-  while (item)
-    {
-      conv = item->data;
-      g_my_debug ("Removing conversation %s:%d-%s:%d %s",
-		  address_to_str (&conv->src_address), conv->src_port,
-		  address_to_str (&conv->dst_address), conv->dst_port, conv->data);
-      g_free (conv->data);
-      g_free (conv);
-      item = item->next;
-      n_conversations--;
-    }
+  while (item) {
+    conv = item->data;
+    g_my_debug("Removing conversation %s:%d-%s:%d %s",
+               address_to_str(&conv->src_address), conv->src_port,
+               address_to_str(&conv->dst_address), conv->dst_port, conv->data);
+    g_free(conv->data);
+    g_free(conv);
+    item = item->next;
+    n_conversations--;
+  }
 
-  g_list_free (conversations);
+  g_list_free(conversations);
   conversations = NULL;
-}				/* delete_conversations */
+}                               /* delete_conversations */

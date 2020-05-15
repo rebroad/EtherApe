@@ -31,9 +31,9 @@
 
 #include <glib.h>
 
-#define EPATH_ETHERS "/etc/ethers"
+#define EPATH_ETHERS  "/etc/ethers"
 
-#define ETHBUFSIZE 4096
+#define ETHBUFSIZE  4096
 
 static GTree *ethers;
 
@@ -79,28 +79,25 @@ void init_eth_resolv(void)
   if (!ethf)
     return;
 
-  for (;;)
-    {
-      if (!fgets(ethline, sizeof(ethline), ethf))
-        break;
+  for (;;) {
+    if (!fgets(ethline, sizeof(ethline), ethf))
+      break;
 
-      linelen = strlen(ethline);
-      if (linelen == sizeof(ethline) - 1 && ethline[linelen-1] != '\n')
-        {
-          ethline[17] = '\0';
-          g_warning("Ignoring stupidly long %s line starting \"%s...\"",
-                    EPATH_ETHERS, ethline);
-          /* Discard the remainder of the line */
-          while ((c = fgetc(ethf)) != '\n')
-            {
-              if (c == EOF)
-                break;
-            }
-        }
-
-      if (!ether_line(ethline, &addr, hostname))
-        add_ether_ent(&addr, hostname);
+    linelen = strlen(ethline);
+    if (linelen == sizeof(ethline) - 1 && ethline[linelen-1] != '\n') {
+      ethline[17] = '\0';
+      g_warning("Ignoring stupidly long %s line starting \"%s...\"",
+                EPATH_ETHERS, ethline);
+      /* Discard the remainder of the line */
+      while ((c = fgetc(ethf)) != '\n') {
+        if (c == EOF)
+          break;
+      }
     }
+
+    if (!ether_line(ethline, &addr, hostname))
+      add_ether_ent(&addr, hostname);
+  }
 
   fclose(ethf);
   return;

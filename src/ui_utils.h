@@ -24,12 +24,12 @@
 #include <gtk/gtk.h>
 
 
-#define MAX_C(a,b) ((a) > (b) ? (a) : (b))
-#define MIN_C(a,b) ((a) > (b) ? (a) : (b))
-#define LUMINANCE(r,g,b) ((MAX_C( (double)(r)/0xFFFF, MAX_C( (double)(g)/0xFFFF, \
-                                  (double)(b)/0xFFFF)) + \
-                          MIN_C( (double)(r)/0xFFFF, MIN_C( (double)(g)/0xFFFF, \
-                                  (double)(b)/0xFFFF))) / 2.0)
+#define MAX_C(a, b)         ((a) > (b) ? (a) : (b))
+#define MIN_C(a, b)         ((a) > (b) ? (a) : (b))
+#define LUMINANCE(r, g, b)  ((MAX_C((double)(r)/0xFFFF, MAX_C((double)(g)/0xFFFF, \
+                                                              (double)(b)/0xFFFF)) + \
+                              MIN_C((double)(r)/0xFFFF, MIN_C((double)(g)/0xFFFF, \
+                                                              (double)(b)/0xFFFF))) / 2.0)
 
 
 /* returns a newly allocated string with a formatted traffic  */
@@ -47,7 +47,7 @@ void hide_widget(GtkWidget *wnd, const gchar *lblname);
 
 /* creates a new text column with a specific title, column number colno and
  * adds it to treeview gv.  If r_just true the column is right justified */
-void create_add_text_column(GtkTreeView *gv, const gchar *title, int colno, 
+void create_add_text_column(GtkTreeView *gv, const gchar *title, int colno,
                             gboolean r_just);
 
 /* register/get a treeview to/from a window */
@@ -56,6 +56,6 @@ GtkTreeView *retrieve_treeview(GtkWidget *window);
 
 /* Returns the user's home directory, via the HOME environment
  * variable, or a default directory if HOME is not set */
-const char *get_home_dir (void);
+const char *get_home_dir(void);
 
 #endif

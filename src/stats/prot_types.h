@@ -26,8 +26,7 @@ typedef enum
   ETHERNET_802_2 = 1,
   ETHERNET_802_3 = 2,
   ETHERNET_SNAP = 3
-}
-ethhdrtype_t;
+} ethhdrtype_t;
 
 typedef enum
 {
@@ -46,24 +45,23 @@ typedef enum
   ETHERTYPE_DEC_DIAG = 0x6005,
   ETHERTYPE_DEC_CUST = 0x6006,
   ETHERTYPE_DEC_SCA = 0x6007,
-  ETHERTYPE_ETHBRIDGE = 0x6558,	/* transparent Ethernet bridging */
+  ETHERTYPE_ETHBRIDGE = 0x6558, /* transparent Ethernet bridging */
   ETHERTYPE_DEC_LB = 0x8038,
   ETHERTYPE_REVARP = 0x8035,
   ETHERTYPE_ATALK = 0x809b,
   ETHERTYPE_AARP = 0x80f3,
   ETHERTYPE_IPX = 0x8137,
-  ETHERTYPE_VLAN = 0x8100,	/* 802.1Q Virtual LAN */
-  ETHERTYPE_SNMP = 0x814c,	/* SNMP over Ethernet, RFC 1089 */
-  ETHERTYPE_WCP = 0x80ff,	/* Wellfleet Compression Protocol */
+  ETHERTYPE_VLAN = 0x8100,      /* 802.1Q Virtual LAN */
+  ETHERTYPE_SNMP = 0x814c,      /* SNMP over Ethernet, RFC 1089 */
+  ETHERTYPE_WCP = 0x80ff,       /* Wellfleet Compression Protocol */
   ETHERTYPE_IPv6 = 0x86dd,
-  ETHERTYPE_PPP = 0x880b,	/* no, this is not PPPoE */
-  ETHERTYPE_MPLS = 0x8847,	/* MPLS unicast packet */
-  ETHERTYPE_MPLS_MULTI = 0x8848,	/* MPLS multicast packet */
-  ETHERTYPE_PPPOED = 0x8863,	/* PPPoE Discovery Protocol */
-  ETHERTYPE_PPPOES = 0x8864,	/* PPPoE Session Protocol */
-  ETHERTYPE_LOOP = 0x9000,	/* used for layer 2 testing (do i see my own frames on the wire) */
-}
-etype_t;
+  ETHERTYPE_PPP = 0x880b,       /* no, this is not PPPoE */
+  ETHERTYPE_MPLS = 0x8847,      /* MPLS unicast packet */
+  ETHERTYPE_MPLS_MULTI = 0x8848,        /* MPLS multicast packet */
+  ETHERTYPE_PPPOED = 0x8863,    /* PPPoE Discovery Protocol */
+  ETHERTYPE_PPPOES = 0x8864,    /* PPPoE Session Protocol */
+  ETHERTYPE_LOOP = 0x9000,      /* used for layer 2 testing (do i see my own frames on the wire) */
+} etype_t;
 
 typedef enum
 {
@@ -93,8 +91,7 @@ typedef enum
   SAP_RPL2 = 0xFC,
   SAP_OSINL = 0xFE,
   SAP_GLOBAL = 0xFF
-}
-sap_type_t;
+} sap_type_t;
 
 typedef enum
 {
@@ -105,13 +102,12 @@ typedef enum
   IPX_PACKET_TYPE_PEP = 4,
   IPX_PACKET_TYPE_SPX = 5,
   IPX_PACKET_TYPE_NCP = 17,
-  IPX_PACKET_TYPE_WANBCAST = 20	/* propagated NetBIOS packet? */
-}
-ipx_type_t;
+  IPX_PACKET_TYPE_WANBCAST = 20 /* propagated NetBIOS packet? */
+} ipx_type_t;
 
 typedef enum
 {
-  IPX_SOCKET_PING_CISCO = 0x0002,	/* In cisco this is set with: ipx ping-default cisco */
+  IPX_SOCKET_PING_CISCO = 0x0002,       /* In cisco this is set with: ipx ping-default cisco */
   IPX_SOCKET_NCP = 0x0451,
   IPX_SOCKET_SAP = 0x0452,
   IPX_SOCKET_IPXRIP = 0x0453,
@@ -123,55 +119,54 @@ typedef enum
   IPX_SOCKET_NWLINK_SMB_REDIR = 0x0552,
   IPX_SOCKET_NWLINK_SMB_MAILSLOT = 0x0553,
   IPX_SOCKET_NWLINK_SMB_MESSENGER = 0x0554,
-  IPX_SOCKET_NWLINK_SMB_BROWSE = 0x0555,	/* ? not sure on this */
+  IPX_SOCKET_NWLINK_SMB_BROWSE = 0x0555,        /* ? not sure on this */
   IPX_SOCKET_ATTACHMATE_GW = 0x055d,
   IPX_SOCKET_IPX_MESSAGE = 0x4001,
-  IPX_SOCKET_ADSM = 0x8522,	/* www.tivoli.com */
-  IPX_SOCKET_EIGRP = 0x85be,	/* cisco ipx eigrp */
+  IPX_SOCKET_ADSM = 0x8522,     /* www.tivoli.com */
+  IPX_SOCKET_EIGRP = 0x85be,    /* cisco ipx eigrp */
   IPX_SOCKET_WIDE_AREA_ROUTER = 0x9001,
-  IPX_SOCKET_SNMP_AGENT = 0x900F,	/* RFC 1906 */
-  IPX_SOCKET_SNMP_SINK = 0x9010,	/* RFC 1906 */
-  IPX_SOCKET_PING_NOVELL = 0x9086,	/* In cisco this is set with: ipx ping-default novell */
-  IPX_SOCKET_TCP_TUNNEL = 0x9091,	/* RFC 1791 */
-  IPX_SOCKET_UDP_TUNNEL = 0x9092	/* RFC 1791 */
-}
-ipx_socket_t;
+  IPX_SOCKET_SNMP_AGENT = 0x900F,       /* RFC 1906 */
+  IPX_SOCKET_SNMP_SINK = 0x9010,        /* RFC 1906 */
+  IPX_SOCKET_PING_NOVELL = 0x9086,      /* In cisco this is set with: ipx ping-default novell */
+  IPX_SOCKET_TCP_TUNNEL = 0x9091,       /* RFC 1791 */
+  IPX_SOCKET_UDP_TUNNEL = 0x9092        /* RFC 1791 */
+} ipx_socket_t;
 
 /* IP */
 
 typedef enum
 {
-  IP_PROTO_IP = 0,		/* dummy for IP */
-  IP_PROTO_HOPOPTS = 0,		/* IP6 hop-by-hop options */
-  IP_PROTO_ICMP = 1,		/* control message protocol */
-  IP_PROTO_IGMP = 2,		/* group mgmt protocol */
-  IP_PROTO_GGP = 3,		/* gateway^2 (deprecated) */
-  IP_PROTO_IPIP = 4,		/* IP inside IP */
-  IP_PROTO_IPV4 = 4,		/* IP header */
-  IP_PROTO_TCP = 6,		/* tcp */
-  IP_PROTO_EGP = 8,		/* exterior gateway protocol */
-  IP_PROTO_PUP = 12,		/* pup */
-  IP_PROTO_UDP = 17,		/* user datagram protocol */
-  IP_PROTO_IDP = 22,		/* xns idp */
-  IP_PROTO_TP = 29,		/* tp-4 w/ class negotiation */
-  IP_PROTO_IPV6 = 41,		/* IP6 header */
-  IP_PROTO_ROUTING = 43,	/* IP6 routing header */
-  IP_PROTO_FRAGMENT = 44,	/* IP6 fragmentation header */
-  IP_PROTO_RSVP = 46,		/* Resource ReSerVation protocol */
-  IP_PROTO_GRE = 47,		/* GRE */
-  IP_PROTO_ESP = 50,		/* ESP */
-  IP_PROTO_AH = 51,		/* AH */
-  IP_PROTO_ICMPV6 = 58,		/* ICMP6 */
-  IP_PROTO_NONE = 59,		/* IP6 no next header */
-  IP_PROTO_DSTOPTS = 60,	/* IP6 no next header */
-  IP_PROTO_EON = 80,		/* ISO cnlp */
-  IP_PROTO_VINES = 83,		/* Vines over raw IP */
+  IP_PROTO_IP = 0,              /* dummy for IP */
+  IP_PROTO_HOPOPTS = 0,         /* IP6 hop-by-hop options */
+  IP_PROTO_ICMP = 1,            /* control message protocol */
+  IP_PROTO_IGMP = 2,            /* group mgmt protocol */
+  IP_PROTO_GGP = 3,             /* gateway^2 (deprecated) */
+  IP_PROTO_IPIP = 4,            /* IP inside IP */
+  IP_PROTO_IPV4 = 4,            /* IP header */
+  IP_PROTO_TCP = 6,             /* tcp */
+  IP_PROTO_EGP = 8,             /* exterior gateway protocol */
+  IP_PROTO_PUP = 12,            /* pup */
+  IP_PROTO_UDP = 17,            /* user datagram protocol */
+  IP_PROTO_IDP = 22,            /* xns idp */
+  IP_PROTO_TP = 29,             /* tp-4 w/ class negotiation */
+  IP_PROTO_IPV6 = 41,           /* IP6 header */
+  IP_PROTO_ROUTING = 43,        /* IP6 routing header */
+  IP_PROTO_FRAGMENT = 44,       /* IP6 fragmentation header */
+  IP_PROTO_RSVP = 46,           /* Resource ReSerVation protocol */
+  IP_PROTO_GRE = 47,            /* GRE */
+  IP_PROTO_ESP = 50,            /* ESP */
+  IP_PROTO_AH = 51,             /* AH */
+  IP_PROTO_ICMPV6 = 58,         /* ICMP6 */
+  IP_PROTO_NONE = 59,           /* IP6 no next header */
+  IP_PROTO_DSTOPTS = 60,        /* IP6 no next header */
+  IP_PROTO_EON = 80,            /* ISO cnlp */
+  IP_PROTO_VINES = 83,          /* Vines over raw IP */
   IP_PROTO_EIGRP = 88,
   IP_PROTO_OSPF = 89,
-  IP_PROTO_ENCAP = 98,		/* encapsulation header */
-  IP_PROTO_PIM = 103,		/* Protocol Independent Mcast */
-  IP_PROTO_IPCOMP = 108,	/* IP payload compression */
-  IP_PROTO_VRRP = 112		/* Virtual Router Redundancy Protocol */
+  IP_PROTO_ENCAP = 98,          /* encapsulation header */
+  IP_PROTO_PIM = 103,           /* Protocol Independent Mcast */
+  IP_PROTO_IPCOMP = 108,        /* IP payload compression */
+  IP_PROTO_VRRP = 112           /* Virtual Router Redundancy Protocol */
 } iptype_t;
 
 typedef guint16 port_type_t;

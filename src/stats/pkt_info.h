@@ -18,19 +18,18 @@
 #ifndef PKT_INFO_H
 #define PKT_INFO_H
 
-#include "common.h"
+#include "../common.h"
 
-#define STACK_SIZE 5		/* How many protocol levels to keep
-				 * track of (+1 for the topmost one) */
+#define STACK_SIZE  5           /* How many protocol levels to keep
+                                 * track of (+1 for the topmost one) */
 
 /* Flag used in node packets to indicate whether this packet was
  * inbound or outbound for the node. Links and protocols use
  * "eitherbound" */
 typedef enum
 {
-  EITHERBOUND=-1, INBOUND = 0, OUTBOUND = 1
-}
-packet_direction;
+  EITHERBOUND = -1, INBOUND = 0, OUTBOUND = 1
+} packet_direction;
 
 /* stack of protocol names, one protocol per level */
 typedef struct
@@ -44,23 +43,21 @@ gchar *packet_protos_dump(const packet_protos_t *pt);
 /* Information about each packet heard on the network */
 typedef struct
 {
-  guint size;			/* Size in bytes of the packet */
-  struct timeval timestamp;	/* Time at which the packet was heard */
-  packet_protos_t prot_desc;	/* Packet protocol tree */
-  guint ref_count;		/* How many structures are referencing this 
-				 * packet. When the count reaches zero the packet
-				 * is deleted */
-}
-packet_info_t;
+  guint size;                   /* Size in bytes of the packet */
+  struct timeval timestamp;     /* Time at which the packet was heard */
+  packet_protos_t prot_desc;    /* Packet protocol tree */
+  guint ref_count;              /* How many structures are referencing this
+                                 * packet. When the count reaches zero the packet
+                                 * is deleted */
+} packet_info_t;
 
-/* items of a packet list. The "direction" item is used to update in/out 
+/* items of a packet list. The "direction" item is used to update in/out
  * stats */
 typedef struct
 {
   packet_info_t *info;
   packet_direction direction;         /* packet direction - used for nodes */
-}
-packet_list_item_t;
+} packet_list_item_t;
 
 packet_list_item_t *packet_list_item_create(packet_info_t *i, packet_direction d);
 void packet_list_item_delete(packet_list_item_t *pli);

@@ -22,26 +22,25 @@
 
 typedef struct
 {
-  node_id_t node_id;		/* node identification */
-  GString *name;		/* String with a readable default name of the node */
-  GString *numeric_name;	/* String with a numeric representation of the id */
+  node_id_t node_id;            /* node identification */
+  GString *name;                /* String with a readable default name of the node */
+  GString *numeric_name;        /* String with a numeric representation of the id */
 
-  gchar *main_prot[STACK_SIZE + 1];	/* Most common protocol for the node */
+  gchar *main_prot[STACK_SIZE + 1];     /* Most common protocol for the node */
   traffic_stats_t node_stats;
-}
-node_t;
+} node_t;
 
-node_t *node_create(const node_id_t * node_id); /* creates a new node */
+node_t *node_create(const node_id_t *node_id); /* creates a new node */
 void node_delete(node_t *node); /* destroys a node, releasing memory */
-gchar *node_dump(const node_t * node);
-gchar *node_xml(const node_t * node);
+gchar *node_dump(const node_t *node);
+gchar *node_xml(const node_t *node);
 gint node_count(void); /* total number of nodes in memory */
 
 /* methods to handle every new node not yet handled in the main app */
 void new_nodes_clear(void);
 void new_nodes_add(node_t *node);
 void new_nodes_remove(node_t *node);
-node_t *new_nodes_pop(void);	/* Returns a new node that hasn't been heard of */
+node_t *new_nodes_pop(void);    /* Returns a new node that hasn't been heard of */
 
 /* nodes catalog methods */
 void nodes_catalog_open(void); /* initializes the catalog */
@@ -65,11 +64,11 @@ gchar *nodes_catalog_xml(void);
 struct nodeset_spec
 {
   enum
-    {
-      NS_HOSTNAME,
-      NS_CIDRRANGE,
-      NS_NONE,
-    } kind;
+  {
+    NS_HOSTNAME,
+    NS_CIDRRANGE,
+    NS_NONE,
+  } kind;
 
   union
   {

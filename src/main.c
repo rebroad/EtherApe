@@ -16,7 +16,7 @@
  */
 
 #ifdef HAVE_CONFIG_H
-#include <config.h>
+#include "../config.h"
 #endif
 
 #ifdef HAVE_UNISTD_H
@@ -58,9 +58,9 @@ static void (*old_sighup_handler) (int);
  *
  **************************************************************************/
 static void free_static_data(void);
-static void set_debug_level (void);
-static void log_handler (gchar * log_domain, GLogLevelFlags mask,
-                         const gchar * message, gpointer user_data);
+static void set_debug_level(void);
+static void log_handler(gchar *log_domain, GLogLevelFlags mask,
+                        const gchar *message, gpointer user_data);
 static GPtrArray *parse_position_file(const gchar *path);
 
 /* signal handling */
@@ -72,7 +72,7 @@ static void signal_export(int signum);
  * implementation
  *
  **************************************************************************/
-int main (int argc, char *argv[])
+int main(int argc, char *argv[])
 {
   GtkWidget *widget;
   gchar *mode_string = NULL;
@@ -138,7 +138,7 @@ int main (int argc, char *argv[])
   appdata_init(&appdata);
 
   /* Command line */
-  poptcon = poptGetContext("Etherape", argc, (const char **)argv, optionsTable, 0);
+  poptcon = poptGetContext("Etherape", argc, (const char * *)argv, optionsTable, 0);
   while (poptGetNextOpt(poptcon) > 0)
     ;
   poptFreeContext(poptcon);
@@ -156,11 +156,10 @@ int main (int argc, char *argv[])
    * even after setuid()).
    */
   errmsg = init_capture(cl_privdrop_user);
-  if (errmsg)
-    {
-      fatal_error_dialog(errmsg);
-      return 1;
-    }
+  if (errmsg) {
+    fatal_error_dialog(errmsg);
+    return 1;
+  }
 
   /* Load saved preferences */
   load_config(&pref);
@@ -170,85 +169,76 @@ int main (int argc, char *argv[])
   pref.name_res = !cl_numeric;
 
   /* We set the window icon to use */
-  if (!getenv ("GNOME_DESKTOP_ICON"))
-    putenv ("GNOME_DESKTOP_ICON=" PIXMAPS_DIR "/etherape.png");
+  if (!getenv("GNOME_DESKTOP_ICON"))
+    putenv("GNOME_DESKTOP_ICON=" PIXMAPS_DIR "/etherape.png");
 
-  gtk_init (&argc, &argv);
+  gtk_init(&argc, &argv);
 
   set_debug_level();
 
-  if (cl_interface)
-    {
-      appdata.source.type = ST_LIVE;
-      appdata.source.interface = g_strdup(cl_interface);
-    }
+  if (cl_interface) {
+    appdata.source.type = ST_LIVE;
+    appdata.source.interface = g_strdup(cl_interface);
+  }
 
-  if (export_file_final)
-    {
-      if (appdata.export_file_final)
-	g_free (appdata.export_file_final);
-      appdata.export_file_final = g_strdup (export_file_final);
-    }
-  if (export_file_signal)
-    {
-      if (appdata.export_file_signal)
-	g_free (appdata.export_file_signal);
-      appdata.export_file_signal = g_strdup (export_file_signal);
-    }
+  if (export_file_final) {
+    if (appdata.export_file_final)
+      g_free(appdata.export_file_final);
+    appdata.export_file_final = g_strdup(export_file_final);
+  }
+  if (export_file_signal) {
+    if (appdata.export_file_signal)
+      g_free(appdata.export_file_signal);
+    appdata.export_file_signal = g_strdup(export_file_signal);
+  }
 
-  if (cl_input_file)
-    {
-      appdata_clear_source(&appdata);
-      appdata.source.type = ST_FILE;
-      appdata.source.file = g_strdup(cl_input_file);
-    }
+  if (cl_input_file) {
+    appdata_clear_source(&appdata);
+    appdata.source.type = ST_FILE;
+    appdata.source.file = g_strdup(cl_input_file);
+  }
 
   /* Find mode of operation */
-  if (mode_string)
-    {
-      if (strstr (mode_string, "link"))
-	appdata.mode = LINK6;
-      else if (strstr (mode_string, "ip"))
-	appdata.mode = IP;
-      else if (strstr (mode_string, "tcp"))
-	appdata.mode = TCP;
-      else
-	g_warning (_
-		   ("Unrecognized mode. Do etherape --help for a list of modes"));
+  if (mode_string) {
+    if (strstr(mode_string, "link"))
+      appdata.mode = LINK6;
+    else if (strstr(mode_string, "ip"))
+      appdata.mode = IP;
+    else if (strstr(mode_string, "tcp"))
+      appdata.mode = TCP;
+    else
+      g_warning(_
+                  ("Unrecognized mode. Do etherape --help for a list of modes"));
+    g_free(pref.filter);
+    pref.filter = get_default_filter(appdata.mode);
+  }
+
+  if (cl_filter) {
+    if (pref.filter)
       g_free(pref.filter);
-      pref.filter = get_default_filter(appdata.mode);
-    }
+    pref.filter = g_strdup(cl_filter);
+  }
 
-  if (cl_filter)
-    {
-      if (pref.filter)
-	g_free (pref.filter);
-      pref.filter = g_strdup (cl_filter);
-    }
-
-  if (midelay >= 0 && midelay <= G_MAXLONG)
-    {
-       appdata.min_delay = midelay;
-       if (appdata.min_delay != 0)
-         g_message("Minimum delay set to %lu ms", appdata.min_delay);
-    }
+  if (midelay >= 0 && midelay <= G_MAXLONG) {
+    appdata.min_delay = midelay;
+    if (appdata.min_delay != 0)
+      g_message("Minimum delay set to %lu ms", appdata.min_delay);
+  }
   else
-      g_message("Invalid minimum delay %ld, ignored", midelay);
+    g_message("Invalid minimum delay %ld, ignored", midelay);
 
-  if (madelay >= 0 && madelay <= G_MAXLONG)
-    {
-      if (madelay < appdata.min_delay)
-        {
-          g_message("Maximum delay must be less of minimum delay");
-          appdata.max_delay = appdata.min_delay;
-        }
-      else
-        appdata.max_delay = madelay;
-      if (appdata.max_delay != G_MAXLONG)
-        g_message("Maximum delay set to %lu ms", appdata.max_delay);
+  if (madelay >= 0 && madelay <= G_MAXLONG) {
+    if (madelay < appdata.min_delay) {
+      g_message("Maximum delay must be less of minimum delay");
+      appdata.max_delay = appdata.min_delay;
     }
+    else
+      appdata.max_delay = madelay;
+    if (appdata.max_delay != G_MAXLONG)
+      g_message("Maximum delay set to %lu ms", appdata.max_delay);
+  }
   else
-      g_message("Invalid maximum delay %ld, ignored", madelay);
+    g_message("Invalid maximum delay %ld, ignored", madelay);
 
   if (position_file_path)
     appdata.column_patterns = parse_position_file(position_file_path);
@@ -263,34 +253,31 @@ int main (int argc, char *argv[])
   /* Sets controls to the values of variables and connects signals */
   init_diagram(appdata.xml);
 
-  if (!pref.show_statusbar)
-    {
-      widget = GTK_WIDGET(appdata.statusbar);
-      gtk_widget_hide(widget);
+  if (!pref.show_statusbar) {
+    widget = GTK_WIDGET(appdata.statusbar);
+    gtk_widget_hide(widget);
 
-      widget = GTK_WIDGET(gtk_builder_get_object(appdata.xml, "status_bar_check"));
-      gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(widget), FALSE);
-    }
+    widget = GTK_WIDGET(gtk_builder_get_object(appdata.xml, "status_bar_check"));
+    gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(widget), FALSE);
+  }
 
-  if (!pref.show_toolbar)
-    {
-      widget = GTK_WIDGET(gtk_builder_get_object(appdata.xml, "handlebox_toolbar"));
-      gtk_widget_hide(widget);
+  if (!pref.show_toolbar) {
+    widget = GTK_WIDGET(gtk_builder_get_object(appdata.xml, "handlebox_toolbar"));
+    gtk_widget_hide(widget);
 
-      widget = GTK_WIDGET(gtk_builder_get_object(appdata.xml, "toolbar_check"));
-      gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(widget), FALSE);
-    }
+    widget = GTK_WIDGET(gtk_builder_get_object(appdata.xml, "toolbar_check"));
+    gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(widget), FALSE);
+  }
 
-  if (!pref.show_legend)
-    {
-      widget = GTK_WIDGET(gtk_builder_get_object(appdata.xml, "handlebox_legend"));
-      gtk_widget_hide(widget);
+  if (!pref.show_legend) {
+    widget = GTK_WIDGET(gtk_builder_get_object(appdata.xml, "handlebox_legend"));
+    gtk_widget_hide(widget);
 
-      widget = GTK_WIDGET(gtk_builder_get_object(appdata.xml, "legend_check"));
-      gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(widget), FALSE);
-    }
+    widget = GTK_WIDGET(gtk_builder_get_object(appdata.xml, "legend_check"));
+    gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(widget), FALSE);
+  }
 
-  gtk_widget_show (appdata.app1);
+  gtk_widget_show(appdata.app1);
 
   install_handlers();
 
@@ -308,12 +295,12 @@ int main (int argc, char *argv[])
   init_names();
   init_eth_resolv();
 
-  init_menus ();
+  init_menus();
 
-  gui_start_capture ();
+  gui_start_capture();
 
   /* MAIN LOOP */
-  gtk_main ();
+  gtk_main();
 
   free_static_data();
   return 0;
@@ -326,7 +313,7 @@ int main (int argc, char *argv[])
  * Note: this modifies the string in place -- a bit ugly, but it's only used
  * in one place, and it'ss easier than allocating a local copy.
  */
-static gboolean parse_position_line(gchar *line, GList **speclist, long *colnum)
+static gboolean parse_position_line(gchar *line, GList * *speclist, long *colnum)
 {
   gchar *p;
 
@@ -342,27 +329,23 @@ static gboolean parse_position_line(gchar *line, GList **speclist, long *colnum)
    * The "- 1" starting point is safe because at this point we know that
    * strlen(line) > 0.
    */
-  for (p = line + strlen(line) - 1; p > line; p--)
-    {
-      /* If we hit the character preceding the column number... */
-      if (*p == ',' || isspace(*p))
-        {
-          /* ...advance back to the start of it and break. */
-          p += 1;
-          break;
-        }
+  for (p = line + strlen(line) - 1; p > line; p--) {
+    /* If we hit the character preceding the column number... */
+    if (*p == ',' || isspace(*p)) {
+      /* ...advance back to the start of it and break. */
+      p += 1;
+      break;
     }
+  }
 
-  if (p == line || strict_strtol(p, 0, colnum))
-    {
-      fprintf(stderr, _("Invalid position-file line: %s"), line);
-      return FALSE;
-    }
-  else if (*colnum <= 0 || *colnum > 1000)
-    {
-      fprintf(stderr, _("Column number %ld out of range"), *colnum);
-      return FALSE;
-    }
+  if (p == line || strict_strtol(p, 0, colnum)) {
+    fprintf(stderr, _("Invalid position-file line: %s"), line);
+    return FALSE;
+  }
+  else if (*colnum <= 0 || *colnum > 1000) {
+    fprintf(stderr, _("Column number %ld out of range"), *colnum);
+    return FALSE;
+  }
 
   /* 'p' > 'line' here; split the string just before the column number */
   p[-1] = '\0';
@@ -375,7 +358,7 @@ static gboolean parse_position_line(gchar *line, GList **speclist, long *colnum)
 static GPtrArray *parse_position_file(const gchar *path)
 {
   gchar *contents;
-  gchar **lines;
+  gchar * *lines;
   gsize len;
   GError *err;
   int i;
@@ -383,30 +366,27 @@ static GPtrArray *parse_position_file(const gchar *path)
   GList *speclist;
   GPtrArray *colpos = NULL;
 
-  if (!g_file_get_contents(path, &contents, &len, &err))
-    {
-      fprintf(stderr, _("Failed to read position file %s: %s"), path, err->message);
-      g_error_free(err);
-      return NULL;
-    }
+  if (!g_file_get_contents(path, &contents, &len, &err)) {
+    fprintf(stderr, _("Failed to read position file %s: %s"), path, err->message);
+    g_error_free(err);
+    return NULL;
+  }
 
   colpos = g_ptr_array_sized_new(10);
 
   lines = g_strsplit(contents, "\n", 0);
   g_free(contents);
 
-  for (i = 0; lines[i]; i++)
-    {
-      if (parse_position_line(lines[i], &speclist, &colnum))
-        {
-          /* "user" column numbers are one-based; convert to zero-based here. */
-          colnum -= 1;
+  for (i = 0; lines[i]; i++) {
+    if (parse_position_line(lines[i], &speclist, &colnum)) {
+      /* "user" column numbers are one-based; convert to zero-based here. */
+      colnum -= 1;
 
-          if (colnum > colpos->len)
-            g_ptr_array_set_size(colpos, colnum);
-          g_ptr_array_insert(colpos, colnum, speclist);
-        }
+      if (colnum > colpos->len)
+        g_ptr_array_set_size(colpos, colnum);
+      g_ptr_array_insert(colpos, colnum, speclist);
     }
+  }
 
   g_strfreev(lines);
   return colpos;
@@ -425,21 +405,19 @@ static void free_static_data(void)
   appdata_free(&appdata);
 }
 
-static void
-set_debug_level (void)
+static void set_debug_level(void)
 {
   const gchar *env_debug;
   env_debug = g_getenv("APE_DEBUG");
 
   appdata.debug_mask = (G_LOG_LEVEL_MASK & ~(G_LOG_LEVEL_DEBUG | G_LOG_LEVEL_INFO));
 
-  if (env_debug)
-    {
-      if (!g_ascii_strcasecmp(env_debug, "INFO"))
-        appdata.debug_mask = (G_LOG_LEVEL_MASK & ~G_LOG_LEVEL_DEBUG);
-      else if (!g_ascii_strcasecmp(env_debug, "DEBUG"))
-        appdata.debug_mask = G_LOG_LEVEL_MASK;
-    }
+  if (env_debug) {
+    if (!g_ascii_strcasecmp(env_debug, "INFO"))
+      appdata.debug_mask = (G_LOG_LEVEL_MASK & ~G_LOG_LEVEL_DEBUG);
+    else if (!g_ascii_strcasecmp(env_debug, "DEBUG"))
+      appdata.debug_mask = G_LOG_LEVEL_MASK;
+  }
   else
     appdata.debug_mask = (G_LOG_LEVEL_MASK & ~G_LOG_LEVEL_DEBUG);
 
@@ -451,13 +429,12 @@ set_debug_level (void)
   if (quiet)
     appdata.debug_mask = 0;
 
-  g_log_set_handler(NULL, G_LOG_LEVEL_MASK, (GLogFunc) log_handler, NULL);
+  g_log_set_handler(NULL, G_LOG_LEVEL_MASK, (GLogFunc)log_handler, NULL);
   g_my_debug("debug_mask %d", appdata.debug_mask);
 }
 
-static void
-log_handler (gchar * log_domain,
-	     GLogLevelFlags mask, const gchar * message, gpointer user_data)
+static void log_handler(gchar *log_domain,
+                        GLogLevelFlags mask, const gchar *message, gpointer user_data)
 {
   if (mask & appdata.debug_mask)
     g_log_default_handler("EtherApe", mask, message, user_data);
@@ -480,15 +457,15 @@ static void install_handlers(void)
    * use "sigaction()" and be done with it?
    */
   if (signal(SIGTERM, cleanup) == SIG_IGN)
-     signal(SIGTERM, SIG_IGN);
+    signal(SIGTERM, SIG_IGN);
   if (signal(SIGINT, cleanup) == SIG_IGN)
-     signal(SIGINT, SIG_IGN);
+    signal(SIGINT, SIG_IGN);
 #if !defined(WIN32)
-  if ((old_sighup_handler = signal (SIGHUP, cleanup)) != SIG_DFL)	/* Play nice with nohup */
-    signal (SIGHUP, old_sighup_handler);
+  if ((old_sighup_handler = signal(SIGHUP, cleanup)) != SIG_DFL) /* Play nice with nohup */
+    signal(SIGHUP, old_sighup_handler);
 #endif
   if (signal(SIGUSR1, signal_export) == SIG_IGN)
-     signal(SIGUSR1, SIG_IGN);
+    signal(SIGUSR1, SIG_IGN);
 }
 
 /*

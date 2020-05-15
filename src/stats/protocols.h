@@ -25,10 +25,10 @@
 /* Information about each protocol heard on a link */
 typedef struct
 {
-  gchar *name;			/* Name of the protocol */
+  gchar *name;                  /* Name of the protocol */
   basic_stats_t stats;
-  GList *node_names;		/* A list of all node names (name_t) used with
-				 * this protocol (used in node protocols) */
+  GList *node_names;            /* A list of all node names (name_t) used with
+                                 * this protocol (used in node protocols) */
 } protocol_t;
 
 protocol_t *protocol_t_create(const gchar *protocol_name);
@@ -40,7 +40,7 @@ gchar *protocol_t_xml(const protocol_t *prot, guint level);
 
 typedef struct
 {
-  GList *protostack[STACK_SIZE + 1];	/* It's a stack. Each level is a list of 
+  GList *protostack[STACK_SIZE + 1];    /* It's a stack. Each level is a list of
                                          * all protocol_t heard at that level */
 } protostack_t;
 
@@ -48,9 +48,9 @@ typedef struct
 void protocol_stack_open(protostack_t *pstk);
 void protocol_stack_reset(protostack_t *pstk);
 /* adds packet data to the stack */
-void protocol_stack_add_pkt(protostack_t *pstk, const packet_info_t * packet);
+void protocol_stack_add_pkt(protostack_t *pstk, const packet_info_t *packet);
 /* subtracts packet data from stack */
-void protocol_stack_sub_pkt(protostack_t *pstk, const packet_info_t * packet);
+void protocol_stack_sub_pkt(protostack_t *pstk, const packet_info_t *packet);
 /* calculates averages */
 void protocol_stack_avg(protostack_t *pstk, gdouble avg_usecs);
 /* checks for protocol expiration ... */
