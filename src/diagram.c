@@ -356,7 +356,7 @@ void init_diagram(GtkBuilder *xml)
 
   item = goo_canvas_text_new(rootitem,
                              "",
-                             0, 0, -1,
+                             0.0, 0.0, -1.0,
                              GOO_CANVAS_ANCHOR_NORTH_WEST,
                              NULL);
   pcap_stats_text_item = GOO_CANVAS_TEXT(item);
@@ -390,7 +390,7 @@ static void init_canvas_background(GooCanvasItem *rootitem)
   canvas_background.image.item =
     goo_canvas_image_new(rootitem,
                          NULL,
-                         0, 0,
+                         0.0, 0.0,
                          NULL);
   addref_canvas_obj(G_OBJECT(canvas_background.image.item));
 
@@ -927,7 +927,7 @@ static gint check_new_node(node_t *node, GooCanvas *canvas)
                                                         0.0,
                                                         "fill-color", "white",
                                                         "stroke-color", "black",
-                                                        "line-width", 0,
+                                                        "line-width", 0.0,
                                                         "visibility", GOO_CANVAS_ITEM_INVISIBLE,
                                                         NULL);
     addref_canvas_obj(G_OBJECT(new_canvas_node->node_item));
@@ -936,7 +936,7 @@ static gint check_new_node(node_t *node, GooCanvas *canvas)
                                                      node->name->str,
                                                      0.0,
                                                      0.0,
-                                                     -1,
+                                                     -1.0,
                                                      GOO_CANVAS_ANCHOR_CENTER,
                                                      "font", pref.fontname,
                                                      "fill-color", pref.text_color,
@@ -1436,8 +1436,8 @@ static gint check_new_link(link_id_t *link_id, link_t *link, GooCanvas *canvas)
     /* set the lines position using groups positions */
     new_canvas_link->src_item =
       goo_canvas_polyline_new(rootgroup, TRUE, 2,
-                              0, 0,
-                              1, 1,
+                              0.0, 0.0,
+                              1.0, 1.0,
                               "fill-color", "tan",
                               "line-width", 0.5,
                               NULL);
@@ -1445,8 +1445,8 @@ static gint check_new_link(link_id_t *link_id, link_t *link, GooCanvas *canvas)
 
     new_canvas_link->dst_item =
       goo_canvas_polyline_new(rootgroup, TRUE, 2,
-                              0, 0,
-                              1, 1,
+                              0.0, 0.0,
+                              1.0, 1.0,
                               "fill-color", "tan",
                               "line-width", 0.5,
                               NULL);
