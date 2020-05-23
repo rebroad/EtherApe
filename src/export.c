@@ -41,9 +41,9 @@ static gchar *header_xml(void)
   char timebuf[256];
 
   if (appdata.source.type == ST_FILE)
-    dvc = xmltag("capture_file", appdata.source.file);
+    dvc = xmltag_escaped("capture_file", appdata.source.file);
   else if (appdata.source.interface)
-    dvc = xmltag("capture_device", appdata.source.interface);
+    dvc = xmltag_escaped("capture_device", appdata.source.interface);
 
   timenow = time(NULL);
   tmnow = localtime(&timenow);

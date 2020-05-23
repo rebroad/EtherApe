@@ -393,6 +393,7 @@ gchar *protocol_t_xml(const protocol_t *prot, guint level)
 {
   gchar *msg;
   gchar *msg_stats;
+  gchar *msg_key;
   gchar *msg_names;
 
   if (!prot)
@@ -424,12 +425,14 @@ gchar *protocol_t_xml(const protocol_t *prot, guint level)
     }
   }
 
+  msg_key = xmltag_escaped("key", "%s", prot->name);
   msg = xmltag("protocol",
-               "\n<level>%u</level>\n<key>%s</key>\n%s%s",
+               "\n<level>%u</level>\n%s%s%s",
                level,
-               prot->name,
+               msg_key,
                msg_stats, msg_names);
 
+  g_free(msg_key);
   g_free(msg_stats);
   g_free(msg_names);
   return msg;

@@ -49,6 +49,8 @@ int bitwise_memcmp(const void *a, const void *b, size_t nbits);
 gchar *timeval_to_str(struct timeval last_heard);
 
 /* xml helpers */
+gchar *xmlescape(const gchar *str);
 gchar *xmltag(const gchar *name, const gchar *fmt, ...);
+gchar *xmltag_escaped(const gchar *name, const gchar *fmt, ...);
 
 #endif /* __UTIL_H__ */

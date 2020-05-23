@@ -338,11 +338,47 @@ gchar *timeval_to_str(struct timeval last_heard)
  * xml helpers
  *
  *************************************************/
+gchar *xmlescape(const gchar *str)
+{
+  gchar *escaped;
+  gchar *cur;
+
+  size_t maxlen = strlen(str) * 4 + 8;
+  g_assert(maxlen < 16392);     //  just to avoid abnormal strings
+
+  escaped = g_malloc(maxlen);  // allow worst case space
+  cur = escaped;
+  while (*str != '\0') {
+    switch (*str) {
+      case '&':
+        *cur++ = '&';
+        *cur++ = 'a';
+        *cur++ = 'm';
+        *cur++ = 'p';
+        *cur++ = ';';
+        break;
+      case '<':
+        *cur++ = '&';
+        *cur++ = 'l';
+        *cur++ = 't';
+        *cur++ = ';';
+        break;
+      default:
+        *cur++ = *str;
+        break;
+    }
+    ++str;
+  }
+  *cur = '\0';
+  return escaped; 
+}
+
 
 /* returns a new string containing the named tag */
 gchar *xmltag(const gchar *name, const gchar *fmt, ...)
 {
   gchar *msg;
+  gchar *escaped;
   gchar *xml;
   va_list ap;
   va_start(ap, fmt);
@@ -353,4 +389,20 @@ gchar *xmltag(const gchar *name, const gchar *fmt, ...)
   return xml;
 }
 
+/* returns a new string containing the named tag with the string data escaped */
+gchar *xmltag_escaped(const gchar *name, const gchar *fmt, ...)
+{
+  gchar *msg;
+  gchar *escaped;
+  gchar *xml;
+  va_list ap;
+  va_start(ap, fmt);
+  msg = g_strdup_vprintf(fmt, ap);
+  va_end(ap);
+  escaped = xmlescape(msg);
+  xml = g_strdup_printf("<%s>%s</%s>\n", name, escaped, name);
+  g_free(escaped);
+  g_free(msg);
+  return xml;
+}
 

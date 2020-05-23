@@ -206,8 +206,8 @@ gchar *node_xml(const node_t *node)
 
   msg_id = node_id_xml(&node->node_id);
   msg_stats = traffic_stats_xml(&node->node_stats);
-  msg_resolved = xmltag("resolved_name", "%s", node->name->str);
-  msg_numeric = xmltag("numeric_name", "%s", node->numeric_name->str);
+  msg_resolved = xmltag_escaped("resolved_name", "%s", node->name->str);
+  msg_numeric = xmltag_escaped("numeric_name", "%s", node->numeric_name->str);
 
   msg = xmltag("node", "\n<name>\n%s%s%s</name>\n%s",
                msg_id, msg_resolved, msg_numeric,
