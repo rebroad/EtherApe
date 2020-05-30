@@ -166,7 +166,7 @@ static GooCanvasText *pcap_stats_text_item = NULL;
  * local Function definitions
  *
  **************************************************************************/
-static gboolean update_diagram(GooCanvas *canvas); /* full diagram update */
+static void update_diagram(GooCanvas *canvas); /* full diagram update */
 static void diagram_update_nodes(GooCanvas *canvas); /* updates ALL nodes */
 static void diagram_update_links(GooCanvas *canvas); /* updates ALL links */
 static void diagram_update_background_image(GooCanvas *canvas); /* updates background image */
@@ -685,11 +685,8 @@ static void update_pcap_stats_text(GooCanvas *canvas)
  * 2. Updates nodes looks
  * 3. Updates links looks
  */
-static gboolean update_diagram(GooCanvas *canvas)
+static void update_diagram(GooCanvas *canvas)
 {
-  static struct timeval last_refresh_time = {
-    0, 0
-  };
   capstatus_t status;
 
   /* if requested and enabled, dump to xml */
@@ -701,11 +698,11 @@ static gboolean update_diagram(GooCanvas *canvas)
 
   status = get_capture_status();
   if (status == PAUSE)
-    return FALSE;
+    return;
 
   if (status == CAP_EOF) {
     gui_eof_capture();
-    return FALSE;
+    return;
   }
 
   /*
@@ -718,11 +715,10 @@ static gboolean update_diagram(GooCanvas *canvas)
 
   if (already_updating) {
     g_my_debug("update_diagram called while already updating");
-    return FALSE;
+    return;
   }
 
   already_updating = TRUE;
-  gettimeofday(&appdata.gui_now, NULL);
 
   /* update nodes */
   diagram_update_nodes(canvas);
@@ -747,23 +743,15 @@ static gboolean update_diagram(GooCanvas *canvas)
   /* With this we make sure that we don't overload the
    * CPU with redraws */
 
-  if ((last_refresh_time.tv_sec == 0) && (last_refresh_time.tv_usec == 0))
-    last_refresh_time = appdata.gui_now;
-
   /* Force redraw */
   while (gtk_events_pending())
     gtk_main_iteration();
-
-  gettimeofday(&appdata.gui_now, NULL);
-  last_refresh_time = appdata.gui_now;
 
   already_updating = FALSE;
 
   if (stop_requested)
     gui_stop_capture();
-
-  return TRUE;                  /* Keep on calling this function */
-}                               /* update_diagram */
+}
 
 static void purge_expired_legend_protocol(GtkWidget *widget, gpointer data)
 {

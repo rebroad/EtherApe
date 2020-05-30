@@ -378,7 +378,6 @@ gchar *xmlescape(const gchar *str)
 gchar *xmltag(const gchar *name, const gchar *fmt, ...)
 {
   gchar *msg;
-  gchar *escaped;
   gchar *xml;
   va_list ap;
   va_start(ap, fmt);

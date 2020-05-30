@@ -29,7 +29,6 @@ struct appdata_struct appdata;
 
 void appdata_init(struct appdata_struct *p)
 {
-  gettimeofday(&p->gui_now, NULL);
   memset(&p->now, 0, sizeof(p->now));
 
   p->xml = NULL;

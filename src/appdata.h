@@ -30,10 +30,8 @@ struct appdata_struct
   GtkWidget *app1;              /* Pointer to the main app window */
   GtkStatusbar *statusbar;        /* Main window statusbar */
 
-  /* These two are different for offline (file-based) capture/replay */
   struct timeval now; /* Where in packet-capture time we are */
-  struct timeval gui_now; /* Real (as in wall-clock gettimeofday()) time */
-
+  
   gchar *itf_file;            /* fullspec of xml glade file */
   gchar *export_file;           /* file to export to */
   gchar *export_file_final;     /* file to export to at end of replay */

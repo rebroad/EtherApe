@@ -682,18 +682,30 @@ static gint node_info_window_compare(gconstpointer a, gconstpointer b)
 
 gboolean update_info_windows(gpointer dummy)
 {
+  static struct timeval last_update_time = {
+    0, 0
+  };
   capstatus_t status;
+  double diffms;
+  struct timeval nowtime;
 
   status = get_capture_status();
   if (status != PLAY && status != STOP)
-    return TRUE;
+    return G_SOURCE_CONTINUE;
+
+  /* Update info windows at most twice a second */
+  gettimeofday(&nowtime, NULL);
+  diffms = subtract_times_ms(&nowtime, &last_update_time);
+  if (diffms >= 0 && (diffms < 500 || diffms < pref.refresh_period))
+    return G_SOURCE_CONTINUE;
 
   update_protocols_window();
   update_stats_info_windows();
   update_prot_info_windows();
   nodes_wnd_update();
 
-  return G_SOURCE_CONTINUE;     /* Keep on calling this function */
+  gettimeofday(&last_update_time, NULL);
+  return G_SOURCE_CONTINUE;
 }
 
 /* It's called when a node info window is closed by the user
@@ -718,20 +730,8 @@ void update_stats_info_windows(void)
   GList *list_item;
   GtkWidget *window;
   capstatus_t status;
-  double diffms;
-  static struct timeval last_update_time = {
-    0, 0
-  };
 
   status = get_capture_status();
-
-  /* Update info windows at most twice a second */
-  diffms = subtract_times_ms(&appdata.now, &last_update_time);
-  if (pref.refresh_period < 500)
-    if (diffms >= 0 && diffms < 500)
-      return;
-
-
 
   list_item = stats_info_windows;
   while (list_item) {
@@ -755,8 +755,6 @@ void update_stats_info_windows(void)
       list_item = list_item->next;
     }
   }
-
-  last_update_time = appdata.now;
 }                               /* update_stats_info_windows */
 
 
