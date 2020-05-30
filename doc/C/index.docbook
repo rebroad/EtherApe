@@ -575,14 +575,38 @@ Conversely, --min-delay can help analyze many short lived connections.</para>
                 </listitem>
 
                 <listitem>
+                  <para><guimenuitem>
+                      Full screen
+                      <shortcut>
+                        <keycap>F11</keycap>
+                      </shortcut>
+                    </guimenuitem>
+                    Make the diagram full screen.</para>
+                </listitem>
+
+                <listitem>
                   <para><guimenuitem>Toolbar</guimenuitem> toggles the
                   toolbar.</para>
+                </listitem>
 
+                <listitem>
                   <para><guimenuitem>Legend</guimenuitem> toggles the protocol
                   legend.</para>
+                </listitem>
 
+                <listitem>
                   <para><guimenuitem>Statusbar</guimenuitem> toggles the
                   Status bar.</para>
+                </listitem>
+
+                <listitem>
+                  <para><guimenuitem>
+                      Refresh
+                      <shortcut>
+                        <keycap>Ctrl-L</keycap>
+                      </shortcut>
+                    </guimenuitem>
+                    Forces a diagram repaint.</para>
                 </listitem>
               </itemizedlist></para>
           </listitem>
