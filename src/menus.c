@@ -259,6 +259,11 @@ void on_stop_menuitem_activate(GtkMenuItem *menuitem, gpointer user_data)
 }                               /* on_stop_menuitem_activate */
 
 
+void on_refresh_menuitem_activate(GtkMenuItem *menuitem, gpointer user_data)
+{
+  refresh_diagram();
+}                               /* on_refresh_menuitem_activate */
+
 
 /* View menu */
 

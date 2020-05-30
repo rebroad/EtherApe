@@ -5,7 +5,7 @@
 
    Changes summary:
      * fix for ticket #100, thanks to Salam for reporting it.
-
+     * diagram refresh command, thanks to Ronald Henderson
 
   Overview of changes in EtherApe 0.9.19 (Friday, May 15, 2020):
 

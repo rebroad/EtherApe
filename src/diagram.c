@@ -158,6 +158,7 @@ static gint diagram_timeout = 0;        /* Descriptor of the diagram timeout fun
 
 static long canvas_obj_count = 0; /* counter of canvas objects */
 static GooCanvas *gcanvas_ = NULL; /* drawing canvas */
+static GtkContainer *garea_ = NULL; /* drawing container */
 static GooCanvasText *pcap_stats_text_item = NULL;
 
 /***************************************************************************
@@ -290,7 +291,6 @@ static void addref_canvas_obj(GObject *obj)
  * signals to callback functions */
 void init_diagram(GtkBuilder *xml)
 {
-  GtkContainer *area;
   GooCanvasItem *rootitem;
   GooCanvasItem *item;
   GtkAllocation windowsize;
@@ -302,9 +302,9 @@ void init_diagram(GtkBuilder *xml)
   g_assert(gcanvas_ == NULL);
 
   /* get containing window and size */
-  area = GTK_CONTAINER(gtk_builder_get_object(xml, "diagramwindow"));
-  g_assert(area != NULL);
-  gtk_widget_get_allocation(GTK_WIDGET(area), &windowsize);
+  garea_ = GTK_CONTAINER(gtk_builder_get_object(xml, "diagramwindow"));
+  g_assert(garea_ != NULL);
+  gtk_widget_get_allocation(GTK_WIDGET(garea_), &windowsize);
 
   /* Creates trees */
   canvas_nodes = g_tree_new_full((GCompareDataFunc)canvas_node_compare,
@@ -328,7 +328,7 @@ void init_diagram(GtkBuilder *xml)
 
   gtk_widget_show(GTK_WIDGET(gcanvas_));
 
-  gtk_container_add(area, GTK_WIDGET(gcanvas_));
+  gtk_container_add(garea_, GTK_WIDGET(gcanvas_));
 
   rootitem = goo_canvas_get_root_item(gcanvas_);
 
@@ -362,7 +362,7 @@ void init_diagram(GtkBuilder *xml)
   pcap_stats_text_item = GOO_CANVAS_TEXT(item);
   addref_canvas_obj(G_OBJECT(pcap_stats_text_item));
 
-  sig_id = g_signal_connect(G_OBJECT(area), "size-allocate",
+  sig_id = g_signal_connect(G_OBJECT(garea_), "size-allocate",
                             G_CALLBACK(diagram_resize_event), gcanvas_);
   g_assert(sig_id > 0);
   sig_id = g_signal_connect(G_OBJECT(pcap_stats_text_item), "enter-notify-event",
@@ -1852,5 +1852,19 @@ void resize_diagram(const GtkAllocation *allocation)
 gboolean update_diagram_callback(gpointer data)
 {
   update_diagram(gcanvas_);
+  return TRUE;
+}
+
+gboolean refresh_diagram(void)
+{
+  GtkAllocation windowsize;
+  /* Simulate a window resize */
+  g_my_debug("repaint diagram requested");
+  gtk_widget_get_allocation(GTK_WIDGET(garea_), &windowsize);
+  goo_canvas_set_bounds(gcanvas_,
+                        -windowsize.width/2, -windowsize.height/2,
+                        windowsize.width/2, windowsize.height/2);
+  redraw_canvas_background(gcanvas_);
+  diagram_reposition(gcanvas_);
   return TRUE;
 }

@@ -25,6 +25,7 @@ extern gboolean already_updating; /* True while an instance of update_diagram is
 extern gboolean stop_requested; /* True if there is a pending stop request */
 
 gboolean update_diagram_callback(gpointer data);
+gboolean refresh_diagram(void);
 void init_diagram(GtkBuilder *xml);
 void set_statusbar_msg(gchar *str);
 void delete_gui_protocols(void);
