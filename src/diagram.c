@@ -478,6 +478,7 @@ static gboolean diagram_resize_event(GtkWidget *widget,
 
   redraw_canvas_background(canvas);
   diagram_reposition(canvas);
+  diagram_update_links(canvas);
   return FALSE;
 }
 
@@ -1854,5 +1855,6 @@ gboolean refresh_diagram(void)
                         windowsize.width/2, windowsize.height/2);
   redraw_canvas_background(gcanvas_);
   diagram_reposition(gcanvas_);
+  diagram_update_links(gcanvas_);
   return TRUE;
 }
