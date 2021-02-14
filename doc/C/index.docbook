@@ -1743,10 +1743,10 @@ Conversely, --min-delay can help analyze many short lived connections.</para>
     Ghetta (<email>bchiara@users.sourceforge.net</email>).</para>
 
     <para>To find more information about &app;,
-    please visit <ulink type="http" url="http://etherape.sourceforge.net/">
+    please visit <ulink type="http" url="http://etherape.sourceforge.io/">
     the &app; web page</ulink>. Instructions for submitting bug reports can be
     found <ulink type="http"
-    url="http://etherape.sourceforge.net/bug-reporting.html">
+    url="http://etherape.sourceforge.io/bug-reporting.html">
     on-line</ulink>.</para>
   </sect1>
 

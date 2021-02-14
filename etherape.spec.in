@@ -35,7 +35,7 @@ Summary:        Graphical network viewer modeled after etherman
 Version:        @VERSION@
 Release:        %{rel}.obs%{sys}
 License:        GPLv2+
-URL:            http://etherape.sourceforge.net/
+URL:            http://etherape.sourceforge.io/
 Source:         http://prdownloads.sourceforge.net/%{name}/%{name}-%{version}.tar.gz
 Autoreqprov:    on
 

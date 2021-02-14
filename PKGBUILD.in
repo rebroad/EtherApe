@@ -10,7 +10,7 @@ pkgver=@VERSION@
 pkgrel=1
 pkgdesc='A graphical network monitor for various OSI layers and protocols'
 arch=('i686' 'x86_64')
-url="http://etherape.sourceforge.net/"
+url="http://etherape.sourceforge.io/"
 license=('GPL2')
 # as of 03/2017 'libglvnd' 'mesa' are needed only for OBS
 depends=('goocanvas' 'libpcap' 'popt' 'libglvnd' 'mesa')

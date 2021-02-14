@@ -10,7 +10,7 @@
     <property name="program_name">EtherApe</property>
     <property name="copyright" translatable="no">Copyright 2000-2019 Juan Toledo, Riccardo Ghetta</property>
     <property name="comments" translatable="yes">A Graphical Network Browser.</property>
-    <property name="website">http://etherape.sourceforge.net/</property>
+    <property name="website">http://etherape.sourceforge.io/</property>
     <property name="authors">Juan Toledo &lt;toledo@users.sourceforge.net&gt;
 	    Vincent van Adrighem &lt;vincent@dirck.mine.nu&gt;
 Ben Allen
