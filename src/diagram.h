@@ -27,6 +27,7 @@ extern gboolean stop_requested; /* True if there is a pending stop request */
 gboolean update_diagram_callback(gpointer data);
 gboolean refresh_diagram(void);
 void init_diagram(GtkBuilder *xml);
+void cleanup_diagram();         /* free static data */
 void set_statusbar_msg(gchar *str);
 void delete_gui_protocols(void);
 void dump_stats(guint32 diff_msecs);

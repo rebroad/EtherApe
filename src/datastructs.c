@@ -402,9 +402,12 @@ void services_init(void)
 
 void services_clear(void)
 {
-  g_tree_destroy(service_names);
-  g_tree_destroy(tcp_services);
-  g_tree_destroy(udp_services);
+  if (service_names)
+    g_tree_destroy(service_names);
+  if (tcp_services)
+    g_tree_destroy(tcp_services);
+  if (udp_services)
+    g_tree_destroy(udp_services);
 }
 
 const port_service_t *services_tcp_find(port_type_t port)

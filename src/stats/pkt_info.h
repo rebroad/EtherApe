@@ -37,9 +37,6 @@ typedef struct
   gchar *protonames[STACK_SIZE + 1];
 } packet_protos_t;
 
-/* returns a newly allocated string with a dump of pt */
-gchar *packet_protos_dump(const packet_protos_t *pt);
-
 /* Information about each packet heard on the network */
 typedef struct
 {

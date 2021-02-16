@@ -724,7 +724,7 @@ static int nodeset_match(const struct nodeset_spec *spec, const node_t *node)
   if (node->node_id.node_type == IP)
     nodeaddr = &node->node_id.addr.ip;
   else if (node->node_id.node_type == TCP)
-    nodeaddr = &node->node_id.addr.tcp4.host;
+    nodeaddr = &node->node_id.addr.tcp.host;
   else
     return 0;
 

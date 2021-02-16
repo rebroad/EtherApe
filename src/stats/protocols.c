@@ -218,7 +218,7 @@ gchar *protocol_stack_sort_most_used(protostack_t *pstk, size_t level)
   pstk->protostack[level] = g_list_sort(pstk->protostack[level], prot_freq_compare);
   protocol = (protocol_t *)pstk->protostack[level]->data;
   return g_strdup(protocol->name);
-}                               /* get_main_prot */
+}
 
 /* returns a newly allocated string with a dump of pstk */
 gchar *protocol_stack_dump(const protostack_t *pstk)

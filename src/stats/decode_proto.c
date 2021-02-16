@@ -69,7 +69,7 @@ enum rpc_program
   KERBPROG_PROGRAM = 100078
 };
 
-/* internal types */
+/* internal struct - decode helper */
 typedef struct
 {
   const guint8 *original_packet; /* original start of packet */
@@ -78,8 +78,10 @@ typedef struct
   const guint8 *cur_packet; /* pointer to current level start of packet */
   guint cur_len;        /* current level remaining length */
 
-  packet_protos_t *pr; /* detected protocol stack */
-  guint cur_level;      /* current protocol depth on stack */
+  /* decode outputs */ 
+
+  packet_protos_t *pr_stack; /* detected protocol stack */
+  guint pr_cur_level;      /* current protocol depth on stack */
 
   /* node ids */
   node_id_t dst_node_id;
@@ -93,7 +95,8 @@ typedef struct
 } decode_proto_t;
 
 /* extracts the protocol stack from packet */
-static void get_packet_prot(decode_proto_t *dp);
+static void decode_protocol_stack(decode_proto_t *dp, packet_protos_t *protostack_tofill,
+                                  const guint8 *pkt, guint cap_len);
 
 /* sets protoname at current level, and passes at next level */
 static void decode_proto_add(decode_proto_t *dp, const gchar *proto);
@@ -208,40 +211,23 @@ gboolean has_linklevel(void)
 /* ------------------------------------------------------------
  * Implementation
  * ------------------------------------------------------------*/
-/* starts a new decode, allocating a new packet_protos_t */
-void decode_proto_start(decode_proto_t *dp, packet_protos_t *protos,
-                        const guint8 *pkt, guint caplen)
+static void decode_proto_add(decode_proto_t *dp, const gchar *proto)
 {
-  dp->original_packet = pkt;
-  dp->original_len = caplen;
-  dp->cur_packet = pkt;
-  dp->cur_len = caplen;
-  dp->pr = protos;
-  dp->cur_level = 1; /* level zero is topmost protocol, will be filled later */
-  node_id_clear(&dp->dst_node_id);
-  node_id_clear(&dp->src_node_id);
-  address_clear(&dp->global_src_address);
-  address_clear(&dp->global_dst_address);
-  dp->global_src_port = 0;
-  dp->global_dst_port = 0;
-}
-void decode_proto_add(decode_proto_t *dp, const gchar *proto)
-{
-  if (dp->cur_level <= STACK_SIZE) {
-    dp->pr->protonames[dp->cur_level] = g_strdup(proto);
-    dp->cur_level++;
+  if (dp->pr_cur_level <= STACK_SIZE) {
+    dp->pr_stack->protonames[dp->pr_cur_level] = g_strdup(proto);
+    dp->pr_cur_level++;
   }
   else
     g_warning("protocol \"%.10s\" too deeply nested, ignored", proto ? proto : "");
 }
-void decode_proto_add_fmt(decode_proto_t *dp, const gchar *fmt, ...)
+static void decode_proto_add_fmt(decode_proto_t *dp, const gchar *fmt, ...)
 {
   va_list ap;
-  if (dp->cur_level <= STACK_SIZE) {
+  if (dp->pr_cur_level <= STACK_SIZE) {
     va_start(ap, fmt);
-    dp->pr->protonames[dp->cur_level] = g_strdup_vprintf(fmt, ap);
+    dp->pr_stack->protonames[dp->pr_cur_level] = g_strdup_vprintf(fmt, ap);
     va_end(ap);
-    dp->cur_level++;
+    dp->pr_cur_level++;
   }
   else
     g_warning("protocol \"%.10s\" too deeply nested, ignored", fmt ? fmt : "");
@@ -280,10 +266,8 @@ void packet_acquired(guint8 *cap_bytes, guint cap_size, guint orig_size)
   packet->ref_count = 0;
   memset(&packet->prot_desc, 0, sizeof(packet->prot_desc));
 
-  decode_proto_start(&decp, &packet->prot_desc, cap_bytes, cap_size);
-
-  /* Get the protocol tree */
-  get_packet_prot(&decp);
+  /* decode the protocol tree */
+  decode_protocol_stack(&decp, &packet->prot_desc, cap_bytes, cap_size);
 
   appdata.n_packets++;
   appdata.total_mem_packets++;
@@ -346,21 +330,38 @@ static void add_node_packet(const guint8 *raw_packet,
                    &packet->prot_desc, direction, lkentry->dlt_linktype);
 }                               /* add_node_packet */
 
-static void get_packet_prot(decode_proto_t *dp)
+static void decode_protocol_stack(decode_proto_t *dp, packet_protos_t *protostack_tofill,
+                                  const guint8 *pkt, guint cap_len)
 {
   guint i;
 
+  /* initialize data helper */
+  dp->original_packet = pkt;
+  dp->original_len = cap_len;
+  dp->cur_packet = pkt;
+  dp->cur_len = cap_len;
+  dp->pr_stack = protostack_tofill;
+  dp->pr_cur_level = 1; /* level zero is topmost protocol, will be filled later */
+  node_id_clear(&dp->dst_node_id);
+  node_id_clear(&dp->src_node_id);
+  address_clear(&dp->global_src_address);
+  address_clear(&dp->global_dst_address);
+  dp->global_src_port = 0;
+  dp->global_dst_port = 0;
+
+
+  /* call current link decode function */
   g_assert(lkentry && lkentry->fun);
   lkentry->fun(dp);
 
   /* first position is top proto */
   for (i = STACK_SIZE; i > 0; --i) {
-    if (dp->pr->protonames[i]) {
-      dp->pr->protonames[0] = g_strdup(dp->pr->protonames[i]);
+    if (dp->pr_stack->protonames[i]) {
+      dp->pr_stack->protonames[0] = g_strdup(dp->pr_stack->protonames[i]);
       break;
     }
   }
-}                               /* get_packet_prot */
+}
 
 /* ------------------------------------------------------------
  * Private functions
@@ -1248,13 +1249,13 @@ static void get_tcp(decode_proto_t *dp)
      * to already have an IP node id */
     g_assert(dp->dst_node_id.node_type == IP);
     dp->dst_node_id.node_type = TCP;
-    address_copy(&dp->dst_node_id.addr.tcp4.host, &dp->global_dst_address);
-    dp->dst_node_id.addr.tcp4.port = dp->global_dst_port;
+    address_copy(&dp->dst_node_id.addr.tcp.host, &dp->global_dst_address);
+    dp->dst_node_id.addr.tcp.port = dp->global_dst_port;
 
     g_assert(dp->src_node_id.node_type == IP);
     dp->src_node_id.node_type = TCP;
-    address_copy(&dp->src_node_id.addr.tcp4.host, &dp->global_src_address);
-    dp->src_node_id.addr.tcp4.port = dp->global_src_port;
+    address_copy(&dp->src_node_id.addr.tcp.host, &dp->global_src_address);
+    dp->src_node_id.addr.tcp.port = dp->global_src_port;
   }
 
   th_off_x2 = *(guint8 *)(dp->cur_packet + 12);
@@ -1335,13 +1336,13 @@ static void get_udp(decode_proto_t *dp)
      * to already have an IP node id */
     g_assert(dp->dst_node_id.node_type == IP);
     dp->dst_node_id.node_type = TCP;
-    address_copy(&dp->dst_node_id.addr.tcp4.host, &dp->global_dst_address);
-    dp->dst_node_id.addr.tcp4.port = dp->global_dst_port;
+    address_copy(&dp->dst_node_id.addr.tcp.host, &dp->global_dst_address);
+    dp->dst_node_id.addr.tcp.port = dp->global_dst_port;
 
     g_assert(dp->src_node_id.node_type == IP);
     dp->src_node_id.node_type = TCP;
-    address_copy(&dp->src_node_id.addr.tcp4.host, &dp->global_src_address);
-    dp->src_node_id.addr.tcp4.port = dp->global_src_port;
+    address_copy(&dp->src_node_id.addr.tcp.host, &dp->global_src_address);
+    dp->src_node_id.addr.tcp.port = dp->global_src_port;
   }
 
   add_offset(dp, 8);

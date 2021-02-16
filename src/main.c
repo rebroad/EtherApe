@@ -406,6 +406,7 @@ static void free_static_data(void)
   services_clear();
   cleanup_eth_resolv();
   cleanup_names();
+  cleanup_diagram();
   appdata_free(&appdata);
 }
 

@@ -30,7 +30,7 @@ typedef struct
     {
       address_t host;
       guint16 port;
-    } tcp4;
+    } tcp;
   } addr;
 } node_id_t;
 

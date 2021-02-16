@@ -36,7 +36,7 @@
 #include "stats/util.h"
 #include "ip-cache.h"
 
-static GTree *ipcache_tree;
+static GTree *ipcache_tree = NULL;
 
 static int addr_tree_cmp(gconstpointer a, gconstpointer b, gpointer unused)
 {
@@ -97,7 +97,9 @@ void ipcache_init(void)
 
 void ipcache_clear(void)
 {
-  g_tree_destroy(ipcache_tree);
+  if (ipcache_tree)
+    g_tree_destroy(ipcache_tree);
+  ipcache_tree = NULL;
 }
 
 long ipcache_active_entries(void)

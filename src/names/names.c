@@ -63,7 +63,7 @@ typedef struct
 
 static gboolean get_null_name(name_add_t *nt);
 static gboolean get_linux_sll_name(name_add_t *nt);
-static gboolean get_link6_name(name_add_t *nt);
+static gboolean eth_name_common(name_add_t *nt);
 static gboolean get_llc_name(name_add_t *nt);
 static gboolean get_arp_name(name_add_t *nt);
 static gboolean get_ip_name(name_add_t *nt);
@@ -77,14 +77,14 @@ static gboolean get_nbdgm_name(name_add_t *nt);
 
 /* not all protocol types can be useful to get a name */
 static prot_function_t prot_functions_table[] = {
-  {"ETH_II", get_link6_name},
-  {"802.2", get_link6_name},
-  {"802.3", get_link6_name},
-  {"ISL", get_link6_name},
+  {"ETH_II", eth_name_common},
+  {"802.2", eth_name_common},
+  {"802.3", eth_name_common},
+  {"ISL", eth_name_common},
   {"NULL", get_null_name},
   {"LINUX-SLL", get_linux_sll_name},
-  {"FDDI", get_link6_name},
-  {"Token Ring", get_link6_name},
+  {"FDDI", eth_name_common},
+  {"Token Ring", eth_name_common},
   {"LLC", get_llc_name},
   {"ARP", get_arp_name},
   {"IP", get_ip_name},
@@ -160,7 +160,8 @@ void init_names(void)
 
 void cleanup_names(void)
 {
-  g_tree_destroy(prot_functions);
+  if (prot_functions)
+    g_tree_destroy(prot_functions);
 }
 
 /* increments the level and calls the next name decoding function, if any */
@@ -210,7 +211,7 @@ static void fill_node_id(node_id_t *node_id, apemode_t apemode, const name_add_t
         sz = address_len(type);
         break;
       case TCP:
-        dt = node_id->addr.tcp4.host.addr8;
+        dt = node_id->addr.tcp.host.addr8;
         sz = address_len(type);
         break;
       default:
@@ -224,9 +225,9 @@ static void fill_node_id(node_id_t *node_id, apemode_t apemode, const name_add_t
   }
 
   if (TCP == apemode) {
-    node_id->addr.tcp4.host.type = type;
+    node_id->addr.tcp.host.type = type;
     g_memmove(dt, nt->p + nt->offset + disp, sz);
-    node_id->addr.tcp4.port = ntohs(*(guint16 *)(nt->p + nt->offset + portdisp));
+    node_id->addr.tcp.port = ntohs(*(guint16 *)(nt->p + nt->offset + portdisp));
   }
   else {
     if (IP == apemode)
@@ -282,11 +283,6 @@ static gboolean eth_name_common(name_add_t *nt)
 
   nt->offset += 14;
   return TRUE;
-}
-
-static gboolean get_link6_name(name_add_t *nt)
-{
-  return eth_name_common(nt);
 }
 
 /* LLC is the only supported FDDI link layer type */
@@ -400,7 +396,7 @@ static gboolean get_tcp_name(name_add_t *nt)
   /* tcp names are useful only if someone uses them ... */
   if (appdata.mode == TCP) {
     gchar *numeric_name, *resolved_name;
-    int type = nt->node_id.addr.tcp4.host.type;
+    int type = nt->node_id.addr.tcp.host.type;
 
     if (nt->dir == OUTBOUND)
       fill_node_id(&nt->node_id, TCP, nt, (type == AF_INET6) ? -32 : -8, 0, type);
@@ -408,19 +404,19 @@ static gboolean get_tcp_name(name_add_t *nt)
       fill_node_id(&nt->node_id, TCP, nt, (type == AF_INET6) ? -16 : -4, 2, type);
 
     numeric_name = g_strdup_printf("%s:%d",
-                                   address_to_str(&nt->node_id.addr.tcp4.host),
-                                   nt->node_id.addr.tcp4.port);
+                                   address_to_str(&nt->node_id.addr.tcp.host),
+                                   nt->node_id.addr.tcp.port);
 
     if (pref.name_res) {
       const gchar *dnsname;
       const port_service_t *port;
-      dnsname = dns_lookup(&nt->node_id.addr.tcp4.host);
-      port = services_tcp_find(nt->node_id.addr.tcp4.port);
+      dnsname = dns_lookup(&nt->node_id.addr.tcp.host);
+      port = services_tcp_find(nt->node_id.addr.tcp.port);
       if (port)
         resolved_name = g_strdup_printf("%s:%s", dnsname, port->name);
       else
         resolved_name = g_strdup_printf("%s:%d", dnsname,
-                                        nt->node_id.addr.tcp4.port);
+                                        nt->node_id.addr.tcp.port);
     }
     else
       resolved_name = NULL;

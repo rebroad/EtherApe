@@ -35,7 +35,7 @@
 
 #define ETHBUFSIZE  4096
 
-static GTree *ethers;
+static GTree *ethers = NULL;
 
 struct ether_ent
 {
@@ -105,7 +105,8 @@ void init_eth_resolv(void)
 
 void cleanup_eth_resolv(void)
 {
-  g_tree_destroy(ethers);
+  if (ethers)
+    g_tree_destroy(ethers);
   ethers = NULL;
 }
 

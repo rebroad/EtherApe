@@ -91,28 +91,6 @@ static void packet_protos_delete(packet_protos_t *pt)
     g_free(pt->protonames[i]);
 }
 
-/* returns a newly allocated string with a dump of pt */
-gchar *packet_protos_dump(const packet_protos_t *pt)
-{
-  gint i;
-  GString *msg;
-
-  msg = g_string_new("");
-  if (pt->protonames[0])
-    msg = g_string_new(pt->protonames[0]);
-  else
-    msg = g_string_new("UNKNOWN");
-  for (i = 1; i <= STACK_SIZE; ++i) {
-    if (pt->protonames[i])
-      g_string_append_printf(msg, "/%s", pt->protonames[i]);
-    else
-      g_string_append(msg, "/UNKNOWN");
-  }
-
-  /* returns only the string buffer, freeing the rest */
-  return g_string_free(msg, FALSE);
-}
-
 /***************************************************************************
  *
  * packet_list_item_t implementation

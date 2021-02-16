@@ -147,7 +147,7 @@ static GTree *canvas_nodes = NULL;      /* We don't use the nodes tree directly 
                                  * separate data from presentation: that is, we need to
                                  * keep a list of CanvasItems, but we do not want to keep
                                  * that info on the nodes tree itself */
-static GTree *canvas_links;     /* See canvas_nodes */
+static GTree *canvas_links = NULL;     /* See canvas_nodes */
 static guint known_protocols = 0;
 static canvas_background_t canvas_background;
 static guint displayed_nodes;
@@ -378,7 +378,15 @@ void init_diagram(GtkBuilder *xml)
   /* Set the already_updating global flag */
   already_updating = FALSE;
   stop_requested = FALSE;
-}                               /* init_diagram */
+}
+
+void cleanup_diagram()
+{
+  if (canvas_nodes)
+    g_tree_destroy(canvas_nodes);
+  if (canvas_links)
+    g_tree_destroy(canvas_links);
+}
 
 /*
  * Initialize the canvas_background structure.
@@ -1113,8 +1121,9 @@ static gboolean display_node(node_t *node)
  * which will be displayed in the diagram */
 static void limit_nodes(void)
 {
-  static GTree *ordered_nodes = NULL;
-  static guint limit;
+  GTree *ordered_nodes = NULL;
+  guint limit;
+
   displayed_nodes = 0;          /* We'll increment for each node we don't
                                  * limit */
 
@@ -1131,7 +1140,6 @@ static void limit_nodes(void)
   g_tree_foreach(ordered_nodes, (GTraverseFunc)check_ordered_node,
                  &limit);
   g_tree_destroy(ordered_nodes);
-  ordered_nodes = NULL;
 }                               /* limit_nodes */
 
 static gint add_ordered_node(node_id_t *node_id, canvas_node_t *node,

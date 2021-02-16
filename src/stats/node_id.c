@@ -61,9 +61,9 @@ gint node_id_compare(const node_id_t *na, const node_id_t *nb)
         i = sizeof(na->addr.ip.all8);
         break;
       case TCP:
-        ga = na->addr.tcp4.host.all8;
-        gb = nb->addr.tcp4.host.all8;
-        i = sizeof(na->addr.tcp4.host.all8)+sizeof(na->addr.tcp4.port);
+        ga = na->addr.tcp.host.all8;
+        gb = nb->addr.tcp.host.all8;
+        i = sizeof(na->addr.tcp.host.all8)+sizeof(na->addr.tcp.port);
         break;
       default:
         g_error(_("Unsupported ape mode in node_id_compare"));
@@ -101,8 +101,8 @@ gchar *node_id_str(const node_id_t *id)
         msg = g_strdup(address_to_str(&id->addr.ip));
         break;
       case TCP:
-        msg = g_strdup_printf("%s:%u", address_to_str(&id->addr.tcp4.host),
-                              id->addr.tcp4.port);
+        msg = g_strdup_printf("%s:%u", address_to_str(&id->addr.tcp.host),
+                              id->addr.tcp.port);
         break;
       default:
         g_error("node_id_type %d unknown", (int)(id->node_type));
@@ -131,8 +131,8 @@ gchar *node_id_dump(const node_id_t *id)
         break;
       case TCP:
         msg = g_strdup_printf("TCP/UDP: %s:%u",
-                              address_to_str(&id->addr.tcp4.host),
-                              id->addr.tcp4.port);
+                              address_to_str(&id->addr.tcp.host),
+                              id->addr.tcp.port);
         break;
       default:
         msg = g_strdup_printf("node_id_type %d unknown", (int)(id->node_type));
@@ -160,10 +160,10 @@ gchar *node_id_xml(const node_id_t *id)
         msg = xmltag_escaped(type_to_str(&id->addr.ip), "%s", address_to_str(&id->addr.ip));
         break;
       case TCP:
-        xml = xmltag_escaped(type_to_str(&id->addr.tcp4.host),
+        xml = xmltag_escaped(type_to_str(&id->addr.tcp.host),
                      "%s",
-                     address_to_str(&id->addr.tcp4.host));
-        msgb = xmltag_escaped("port", "%u", id->addr.tcp4.port);
+                     address_to_str(&id->addr.tcp.host));
+        msgb = xmltag_escaped("port", "%u", id->addr.tcp.port);
         msg = g_strdup_printf("%s %s", xml, msgb);
         g_free(xml);
         g_free(msgb);
