@@ -88,7 +88,7 @@ void protocol_stack_add_pkt(protostack_t *pstk, const packet_info_t *packet)
     g_assert(!strcmp(protocol_info->name, packet->prot_desc.protonames[i]));
     basic_stats_add(&protocol_info->stats, packet->size);
   }
-}                               /* add_protocol */
+}
 
 
 void protocol_stack_sub_pkt(protostack_t *pstk, const packet_info_t *packet)
@@ -203,7 +203,7 @@ static gint prot_freq_compare(gconstpointer a, gconstpointer b)
   if (prot_a->stats.accumulated < prot_b->stats.accumulated)
     return 1;
   return 0;
-}                               /* prot_freq_compare */
+}
 
 
 /* sorts on the most used protocol in the requested level and returns it */

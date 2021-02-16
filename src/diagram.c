@@ -736,6 +736,9 @@ static void update_diagram(GooCanvas *canvas)
   /* Delete old capture links and update capture link variables */
   links_catalog_update_all();
 
+  /* Update global protocol information */
+  protocol_summary_update_all();
+
   if (!pref.headless) {
 
     /* update nodes */
@@ -746,9 +749,6 @@ static void update_diagram(GooCanvas *canvas)
 
     /* update background image */
     diagram_update_background_image(canvas);
-
-    /* Update protocol information */
-    protocol_summary_update_all();
 
     /* update proto legend */
     update_legend();

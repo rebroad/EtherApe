@@ -144,7 +144,7 @@ void get_packet_names(protostack_t *pstk,
 
   /* starts decoding */
   decode_next(&nt);
-}                               /* get_packet_names */
+}
 
 static GTree *prot_functions = NULL;
 
@@ -339,7 +339,7 @@ static gboolean get_arp_name(name_add_t *nt)
   /* ARP doesn't carry any other protocol on top, so we return
    * directly */
   return FALSE;
-}                               /* get_arp_name */
+}
 
 static gboolean get_ip_name(name_add_t *nt)
 {
@@ -360,7 +360,7 @@ static gboolean get_ip_name(name_add_t *nt)
   nt->offset += nt->offset < nt->packet_size ?
                 (nt->p[nt->offset] & 15) << 2 : 0;
   return TRUE;
-}                               /* get_ip_name */
+}
 
 static gboolean get_ipv6_name(name_add_t *nt)
 {
@@ -632,4 +632,4 @@ static void add_name(const gchar *numeric_name, const gchar *resolved_name,
     node_name_assign(name, NULL, numeric_name, nt->packet_size);
   else
     node_name_assign(name, resolved_name, numeric_name, nt->packet_size);
-}                               /* add_name */
+}

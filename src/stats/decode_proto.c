@@ -328,7 +328,7 @@ static void add_node_packet(const guint8 *raw_packet,
   /* Update names list for this node */
   get_packet_names(&node->node_stats.stats_protos, raw_packet, raw_size,
                    &packet->prot_desc, direction, lkentry->dlt_linktype);
-}                               /* add_node_packet */
+} 
 
 static void decode_protocol_stack(decode_proto_t *dp, packet_protos_t *protostack_tofill,
                                   const guint8 *pkt, guint cap_len)

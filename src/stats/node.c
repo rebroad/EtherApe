@@ -376,7 +376,7 @@ static void set_node_name(node_t *node, const name_decode_t *sequence)
     }
   }
   g_my_debug("set_node_name END --");
-}                               /* set_node_name */
+}
 
 
 /***************************************************************************
