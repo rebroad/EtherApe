@@ -96,7 +96,8 @@ typedef struct
 static void get_packet_prot(decode_proto_t *dp);
 
 /* sets protoname at current level, and passes at next level */
-static void decode_proto_add(decode_proto_t *dp, const gchar *fmt, ...);
+static void decode_proto_add(decode_proto_t *dp, const gchar *proto);
+static void decode_proto_add_fmt(decode_proto_t *dp, const gchar *fmt, ...);
 
 /* advances current packet start to prepare for next protocol */
 static void add_offset(decode_proto_t *dp, guint offset);
@@ -224,7 +225,16 @@ void decode_proto_start(decode_proto_t *dp, packet_protos_t *protos,
   dp->global_src_port = 0;
   dp->global_dst_port = 0;
 }
-void decode_proto_add(decode_proto_t *dp, const gchar *fmt, ...)
+void decode_proto_add(decode_proto_t *dp, const gchar *proto)
+{
+  if (dp->cur_level <= STACK_SIZE) {
+    dp->pr->protonames[dp->cur_level] = g_strdup(proto);
+    dp->cur_level++;
+  }
+  else
+    g_warning("protocol \"%.10s\" too deeply nested, ignored", proto ? proto : "");
+}
+void decode_proto_add_fmt(decode_proto_t *dp, const gchar *fmt, ...)
 {
   va_list ap;
   if (dp->cur_level <= STACK_SIZE) {
@@ -942,7 +952,7 @@ static void get_llc(decode_proto_t *dp)
 
 static void get_ip(decode_proto_t *dp)
 {
-  guint16 fragment_offset;
+  guint16 fragment_offset = 0;
   iptype_t ip_type;
   int ip_version, ip_hl;
 
@@ -953,6 +963,7 @@ static void get_ip(decode_proto_t *dp)
   switch (ip_version)
   {
       case 4:
+        // ipv4
         ip_hl = (dp->cur_packet[0] & 15) << 2;
         if (ip_hl < 20)
           return;
@@ -979,12 +990,12 @@ static void get_ip(decode_proto_t *dp)
         add_offset(dp, ip_hl);
         break;
       case 6:
+        // ipv6
         if (dp->cur_len < 40)
           return;
         decode_proto_add(dp, "IPV6");
 
         ip_type = dp->cur_packet[6];
-        fragment_offset = 0;
 
         if (appdata.mode !=  LINK6) {
           /* we want higher level node ids */
@@ -1034,13 +1045,17 @@ static void get_ip(decode_proto_t *dp)
       case IP_PROTO_IPIP:
         decode_proto_add(dp, "IPIP");
         break;
-#if 0                           /* TODO How come IPIP and IPV4 share the same number? */
-      case IP_PROTO_IPV4:
-        decode_proto_add(dp, "IPV4");
+      case IP_PROTO_ST:
+        decode_proto_add(dp, "ST");
         break;
-#endif
+      case IP_PROTO_CBT:
+        decode_proto_add(dp, "CBT");
+        break;
       case IP_PROTO_EGP:
         decode_proto_add(dp, "EGP");
+        break;
+      case IP_PROTO_IGP:
+        decode_proto_add(dp, "IGP");
         break;
       case IP_PROTO_PUP:
         decode_proto_add(dp, "PUP");
@@ -1073,7 +1088,7 @@ static void get_ip(decode_proto_t *dp)
         decode_proto_add(dp, "AH");
         break;
       case IP_PROTO_ICMPV6:
-        decode_proto_add(dp, "ICPMPV6");
+        decode_proto_add(dp, "ICMPV6");
         break;
       case IP_PROTO_NONE:
         decode_proto_add(dp, "NONE");
@@ -1275,9 +1290,9 @@ static void get_tcp(decode_proto_t *dp)
       decode_proto_add(dp, "TCP-UNKNOWN");
     else {
       if (chosen_port == src_port)
-        decode_proto_add(dp, "TCP:%d-%d", chosen_port, dst_port);
+        decode_proto_add_fmt(dp, "TCP:%d-%d", chosen_port, dst_port);
       else
-        decode_proto_add(dp, "TCP:%d-%d", chosen_port, src_port);
+        decode_proto_add_fmt(dp, "TCP:%d-%d", chosen_port, src_port);
     }
     return;
   }
@@ -1298,7 +1313,7 @@ static void get_tcp(decode_proto_t *dp)
   else
     chosen_service = dst_service;
 
-  decode_proto_add(dp, "%s", chosen_service->name);
+  decode_proto_add(dp, chosen_service->name);
 }                               /* get_tcp */
 
 static void get_udp(decode_proto_t *dp)
@@ -1348,9 +1363,9 @@ static void get_udp(decode_proto_t *dp)
       decode_proto_add(dp, "UDP-UNKNOWN");
     else {
       if (chosen_port == src_port)
-        decode_proto_add(dp, "UDP:%d-%d", chosen_port, dst_port);
+        decode_proto_add_fmt(dp, "UDP:%d-%d", chosen_port, dst_port);
       else
-        decode_proto_add(dp, "UDP:%d-%d", chosen_port, src_port);
+        decode_proto_add_fmt(dp, "UDP:%d-%d", chosen_port, src_port);
     }
     return;
   }
@@ -1370,7 +1385,7 @@ static void get_udp(decode_proto_t *dp)
     chosen_service = src_service;
   else
     chosen_service = dst_service;
-  decode_proto_add(dp, "%s", chosen_service->name);
+  decode_proto_add(dp, chosen_service->name);
 }
 
 static gboolean get_rpc(decode_proto_t *dp, gboolean is_udp)

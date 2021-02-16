@@ -261,14 +261,14 @@ static gboolean get_linux_sll_name(name_add_t *nt)
 }                               /* get_linux_sll_name */
 
 /* common handling for ethernet-like data */
-static gboolean eth_name_common(apemode_t ethmode, name_add_t *nt)
+static gboolean eth_name_common(name_add_t *nt)
 {
   const gchar *numeric, *solved;
 
   if (nt->dir == INBOUND)
-    fill_node_id(&nt->node_id, ethmode, nt, ethmode, 0, 0);
+    fill_node_id(&nt->node_id, LINK6, nt, 0, 0, 0);
   else
-    fill_node_id(&nt->node_id, ethmode, nt, ethmode+6, 0, 0);
+    fill_node_id(&nt->node_id, LINK6, nt, 6, 0, 0);
 
   numeric = ether_to_str(nt->node_id.addr.eth);
 
@@ -286,7 +286,7 @@ static gboolean eth_name_common(apemode_t ethmode, name_add_t *nt)
 
 static gboolean get_link6_name(name_add_t *nt)
 {
-  return eth_name_common(LINK6, nt);
+  return eth_name_common(nt);
 }
 
 /* LLC is the only supported FDDI link layer type */
@@ -401,12 +401,11 @@ static gboolean get_tcp_name(name_add_t *nt)
   if (appdata.mode == TCP) {
     gchar *numeric_name, *resolved_name;
     int type = nt->node_id.addr.tcp4.host.type;
-    int shift = type == AF_INET6 ? 2 : 0;
 
     if (nt->dir == OUTBOUND)
-      fill_node_id(&nt->node_id, TCP, nt, -8<<shift, 0, type);
+      fill_node_id(&nt->node_id, TCP, nt, (type == AF_INET6) ? -32 : -8, 0, type);
     else
-      fill_node_id(&nt->node_id, TCP, nt, -4<<shift, 2, type);
+      fill_node_id(&nt->node_id, TCP, nt, (type == AF_INET6) ? -16 : -4, 2, type);
 
     numeric_name = g_strdup_printf("%s:%d",
                                    address_to_str(&nt->node_id.addr.tcp4.host),
@@ -583,21 +582,23 @@ static gboolean get_nbdgm_name(name_add_t *nt)
     }
   }
 
-  /* We just want the name, not the space padding behind it */
+  if (name_found) {
+    /* We just want the name, not the space padding behind it */
 
-  for (; i <= (NETBIOS_NAME_LEN - 2) && name[i] != ' '; i++)
-    ;
-  name[i] = '\0';
+    for (; i <= (NETBIOS_NAME_LEN - 2) && name[i] != ' '; i++)
+      ;
+    name[i] = '\0';
 
-  /* The reasing here might not make sense as in the TCP case, but it
-   * doesn't hurt to check that we don't have an illegal name anyhow */
-  if (strcmp(name, "Illegal") && name_found) {
-    numeric_name =
-      g_strdup_printf("%s %s (%s)", name, name + NETBIOS_NAME_LEN - 1,
-                      get_netbios_host_type(name_type));
+    /* The reasing here might not make sense as in the TCP case, but it
+    * doesn't hurt to check that we don't have an illegal name anyhow */
+    if (strncmp(name, "Illegal", 7)) {
+      numeric_name =
+        g_strdup_printf("%s %s (%s)", name, name + NETBIOS_NAME_LEN - 1,
+                        get_netbios_host_type(name_type));
 
-    add_name(numeric_name, name, &nt->node_id, nt);
-    g_free(numeric_name);
+      add_name(numeric_name, name, &nt->node_id, nt);
+      g_free(numeric_name);
+    }
   }
   return FALSE; /* no other names */
 }                               /* get_nbdgm_name */

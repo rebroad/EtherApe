@@ -136,15 +136,16 @@ typedef enum
 
 typedef enum
 {
-  IP_PROTO_IP = 0,              /* dummy for IP */
   IP_PROTO_HOPOPTS = 0,         /* IP6 hop-by-hop options */
   IP_PROTO_ICMP = 1,            /* control message protocol */
   IP_PROTO_IGMP = 2,            /* group mgmt protocol */
   IP_PROTO_GGP = 3,             /* gateway^2 (deprecated) */
   IP_PROTO_IPIP = 4,            /* IP inside IP */
-  IP_PROTO_IPV4 = 4,            /* IP header */
+  IP_PROTO_ST = 5,              /* Internet Stream Protocol */
   IP_PROTO_TCP = 6,             /* tcp */
+  IP_PROTO_CBT = 7,             /* core based trees - RFC2189 */
   IP_PROTO_EGP = 8,             /* exterior gateway protocol */
+  IP_PROTO_IGP = 9,             /* interior gateway protocol */
   IP_PROTO_PUP = 12,            /* pup */
   IP_PROTO_UDP = 17,            /* user datagram protocol */
   IP_PROTO_IDP = 22,            /* xns idp */
