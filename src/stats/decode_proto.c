@@ -293,7 +293,10 @@ void packet_acquired(guint8 *cap_bytes, guint cap_size, guint orig_size)
   add_node_packet(cap_bytes, cap_size, packet, &decp.src_node_id, OUTBOUND);
   add_node_packet(cap_bytes, cap_size, packet, &decp.dst_node_id, INBOUND);
 
-  /* And now we update link traffic information for this packet */
+  /* And now we update link traffic information for this packet 
+     packets originating from lesser addresses are arbitrarily marked outbound
+     link ids are pairs of node addresses, with the lesser one first
+  */
   if (node_id_compare(&decp.src_node_id, &decp.dst_node_id) < 1) {
     /* src id <= dst id, direct packet */
     link_id.src = decp.src_node_id;
@@ -301,7 +304,7 @@ void packet_acquired(guint8 *cap_bytes, guint cap_size, guint orig_size)
     links_catalog_add_packet(&link_id, packet, OUTBOUND);
   }
   else {
-    /* src id <= dst id, inverse packet */
+    /* src id > dst id, inverse packet */
     link_id.src = decp.dst_node_id;
     link_id.dst = decp.src_node_id;
     links_catalog_add_packet(&link_id, packet, INBOUND);

@@ -142,6 +142,7 @@ static const struct preference preferences[] = {
   MKPREF(name_res, bool, TRUE),
   MKPREF(diagram_only, bool, FALSE),
   MKPREF(group_unk, bool, TRUE),
+  MKPREF(headless, bool, FALSE),
   MKPREF(centered_nodes, string, ""),
 
   MKPREF(text_color, string, "#ffff00"),

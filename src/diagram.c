@@ -525,13 +525,6 @@ static void diagram_update_nodes(GooCanvas *canvas)
   GList *delete_list = NULL;
   node_t *new_node = NULL;
 
-  /* Deletes all nodes and updates traffic values */
-  /* TODO To reduce CPU usage, I could just as well update each specific
-   * node in update_canvas_nodes and create a new timeout function that would
-   * make sure that old nodes get deleted by calling update_nodes, but
-   * not as often as with diagram_refresh_period */
-  nodes_catalog_update_all();
-
   /* Check if there are any new nodes */
   while ((new_node = new_nodes_pop()))
     check_new_node(new_node, canvas);
@@ -561,6 +554,10 @@ static void diagram_update_nodes(GooCanvas *canvas)
 static void diagram_reposition(GooCanvas *canvas)
 {
   reposition_node_t rdata;
+
+  if (pref.headless)
+    return;
+
   init_reposition(&rdata, canvas, displayed_nodes);
 
   g_tree_foreach(canvas_nodes,
@@ -584,8 +581,8 @@ static void diagram_update_links(GooCanvas *canvas)
 {
   GList *delete_list = NULL;
 
-  /* Delete old capture links and update capture link variables */
-  links_catalog_update_all();
+  if (pref.headless)
+    return;
 
   /* Check if there are any new links */
   links_catalog_foreach((GTraverseFunc)check_new_link, canvas);
@@ -703,6 +700,10 @@ static void update_diagram(GooCanvas *canvas)
 
   if (status == CAP_EOF) {
     gui_eof_capture();
+
+    if (pref.headless)
+      gtk_main_quit();
+
     return;
   }
 
@@ -721,28 +722,34 @@ static void update_diagram(GooCanvas *canvas)
 
   already_updating = TRUE;
 
-  /* update nodes */
-  diagram_update_nodes(canvas);
+  /* Deletes all nodes and updates traffic values */
+  nodes_catalog_update_all();
 
-  /* update links */
-  diagram_update_links(canvas);
+  /* Delete old capture links and update capture link variables */
+  links_catalog_update_all();
 
-  /* update background image */
-  diagram_update_background_image(canvas);
+  if (!pref.headless) {
 
-  /* Update protocol information */
-  protocol_summary_update_all();
+    /* update nodes */
+    diagram_update_nodes(canvas);
 
-  /* update proto legend */
-  update_legend();
+    /* update links */
+    diagram_update_links(canvas);
 
-  /* Now update info windows */
-  update_info_windows(NULL);
+    /* update background image */
+    diagram_update_background_image(canvas);
 
-  update_pcap_stats_text(canvas);
+    /* Update protocol information */
+    protocol_summary_update_all();
 
-  /* With this we make sure that we don't overload the
-   * CPU with redraws */
+    /* update proto legend */
+    update_legend();
+
+    /* Now update info windows */
+    update_info_windows(NULL);
+
+    update_pcap_stats_text(canvas);
+  }
 
   /* Force redraw */
   while (gtk_events_pending())

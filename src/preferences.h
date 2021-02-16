@@ -35,6 +35,7 @@ struct pref_struct
   gboolean name_res;            /* Whether dns lookups are performed */
   gboolean diagram_only;        /* Do not use text on the diagram */
   gboolean group_unk;           /* Whether to display as one every unkown port protocol */
+  gboolean headless;            /* don't update display (TODO: implement a proper text mode) */
   gdouble node_radius_multiplier;       /* used to calculate the radius of the
                                          * displayed nodes. So that the user can
                                          * select with certain precision this

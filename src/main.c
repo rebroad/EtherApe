@@ -123,6 +123,8 @@ int main(int argc, char *argv[])
      N_("<delay>")},
     {"glade-file", 0, POPT_ARG_STRING, &(cl_glade_file), 0,
      N_("uses the named libglade file for widgets"), N_("<glade file>")},
+    {"no-display", 0, POPT_ARG_NONE, &(pref.headless), 0,
+     N_("calculate statistics, but don't display nodes. If replaying, exit at end [cli only]"), NULL},
     {"relinquish-privileges", 'Z', POPT_ARG_STRING, &cl_privdrop_user, 0,
      N_("run as the given user"), N_("<username>")},
 
@@ -136,6 +138,11 @@ int main(int argc, char *argv[])
 #endif
 
   appdata_init(&appdata);
+
+  /* Load saved preferences */
+  load_config(&pref);
+  protohash_read_prefvect(pref.colors);
+  centered_node_speclist = parse_nodeset_spec_list(pref.centered_nodes);
 
   /* Command line */
   poptcon = poptGetContext("Etherape", argc, (const char * *)argv, optionsTable, 0);
@@ -161,10 +168,6 @@ int main(int argc, char *argv[])
     return 1;
   }
 
-  /* Load saved preferences */
-  load_config(&pref);
-  protohash_read_prefvect(pref.colors);
-  centered_node_speclist = parse_nodeset_spec_list(pref.centered_nodes);
 
   pref.name_res = !cl_numeric;
 
@@ -397,6 +400,7 @@ static GPtrArray *parse_position_file(const gchar *path)
  * but makes finding memory leaks much easier. */
 static void free_static_data(void)
 {
+  cleanup_capture();
   protohash_clear();
   ipcache_clear();
   services_clear();
@@ -475,7 +479,6 @@ static void install_handlers(void)
  */
 void cleanup(int signum)
 {
-  cleanup_capture();
   free_static_data();
   exit(0);
 }
