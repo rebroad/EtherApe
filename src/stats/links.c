@@ -24,8 +24,21 @@
 #include "links.h"
 #include "preferences.h"
 #include "conversations.h"
+#include "util.h"
+
+struct xml_tvs_helper
+{
+  double total_size;
+  unsigned long total_packets;
+  gchar *msg;
+};
+
 
 static GTree *all_links = NULL;                 /* Has all links heard on the net */
+
+/* sort protocols by accumulated size */
+static void link_protocol_sort(link_t *link);
+static gchar *link_xml(link_t *link);
 
 /***************************************************************************
  *
@@ -65,6 +78,23 @@ gchar *link_id_node_names(const link_id_t *link_id)
                          dst_node->name->str);
 }
 
+gchar *link_id_xml(const link_id_t *id)
+{
+  gchar *nodea;
+  gchar *nodeb;
+  gchar *xml;
+  g_assert(id);
+
+  nodea = node_id_xml(&id->src);
+  nodeb = node_id_xml(&id->dst);
+  xml = g_strdup_printf("<src>\n%s</src>\n<dst>\n%s</dst>\n",
+                         nodea,
+                         nodeb);
+  g_free(nodea);
+  g_free(nodeb);
+
+  return xml;
+}
 
 
 /***************************************************************************
@@ -155,6 +185,27 @@ gchar *link_dump(const link_t *link)
   return msg;
 }
 
+/* returns a newly allocated string with an xml dump of link */
+gchar *link_xml(link_t *link)
+{
+  gchar *msg;
+  gchar *msg_id;
+  gchar *msg_stats;
+
+  if (!link)
+    return xmltag("link", "");
+
+  msg_id = link_id_xml(&link->link_id);
+  msg_stats = traffic_stats_xml(&link->link_stats);
+
+  msg = xmltag("link", "\n<link-nodes>\n%s</link-nodes>\n%s",
+               msg_id, 
+               msg_stats);
+  g_free(msg_id);
+  g_free(msg_stats);
+
+  return msg;
+}
 
 /* gfunc called by g_list_foreach to remove a link */
 static void gfunc_remove_link(gpointer data, gpointer user_data)
@@ -172,13 +223,7 @@ static gint update_link(link_id_t *link_id, link_t *link, gpointer delete_list_p
   if (traffic_stats_update(&link->link_stats, pref.averaging_time,
                            pref.proto_link_timeout_time)) {
     /* packet(s) active, update the most used protocols for this link */
-    unsigned int i;
-    for (i=0 ; i <= STACK_SIZE; ++i) {
-      if (link->main_prot[i])
-        g_free(link->main_prot[i]);
-      link->main_prot[i] =
-        protocol_stack_sort_most_used(&link->link_stats.stats_protos, i);
-    }
+    link_protocol_sort(link);
   }
   else {
     /* no packets remaining on link - if link expiration active, see if the
@@ -199,6 +244,20 @@ static gint update_link(link_id_t *link_id, link_t *link, gpointer delete_list_p
 
   return FALSE;
 }
+
+/* sort protocols by accumulated size */
+static void link_protocol_sort(link_t *link)
+{
+  guint i;
+
+  /* for each level identify the main protocol at that level */
+  for (i = 0; i <= STACK_SIZE; ++i) {
+    if (link->main_prot[i])
+      g_free(link->main_prot[i]);
+    link->main_prot[i] = protocol_stack_sort_most_used(&link->link_stats.stats_protos, i);
+  }
+}
+
 
 /***************************************************************************
  *
@@ -358,4 +417,37 @@ gchar *links_catalog_dump(void)
   msg = g_strdup("");
   links_catalog_foreach(link_dump_tvs, &msg);
   return msg;
+}
+
+static gboolean link_xml_tvs(gpointer key, gpointer value, gpointer data)
+{
+  gchar *msg_link;
+  gchar *tmp;
+  struct xml_tvs_helper *xth = (struct xml_tvs_helper *)data;
+  link_t *link = (link_t *)value;
+
+  msg_link = link_xml(link);
+  tmp = xth->msg;
+  xth->msg = g_strdup_printf("%s%s", tmp, msg_link);
+  g_free(tmp);
+  g_free(msg_link);
+  xth->total_size += link->link_stats.stats.accumulated;
+  xth->total_packets += link->link_stats.stats.accu_packets;
+  return FALSE;
+}
+
+/* returns a newly allocated string with an xml dump of all links */
+gchar *links_catalog_xml(void)
+{
+  gchar *xml;
+  struct xml_tvs_helper xth;
+
+  xth.total_size = 0;
+  xth.total_packets = 0;
+  xth.msg = g_strdup("");
+
+  links_catalog_foreach(link_xml_tvs, &xth);
+  xml = xmltag("links", "\n<accumulated>%.0f</accumulated>\n<packets>%lu<packets>\n%s", xth.total_size, xth.total_packets, xth.msg);
+  g_free(xth.msg);
+  return xml;
 }

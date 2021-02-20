@@ -29,6 +29,8 @@ typedef struct
 gint link_id_compare(const link_id_t *a, const link_id_t *b);
 /* returns a NEW gchar * with the node names of the link_id */
 gchar *link_id_node_names(const link_id_t *link_id);
+/* returns a NEW gchar * with xml dump the link_id */
+gchar *link_id_xml(const link_id_t *id);
 
 /* Link information */
 typedef struct
@@ -41,6 +43,7 @@ typedef struct
 link_t *link_create(const link_id_t *link_id); /* creates a new link object */
 void link_delete(link_t *link); /* destroys a link, releasing memory */
 gchar *link_dump(const link_t *link); /* dumps link to newly allocated string */
+
 
 /* link catalog methods */
 void links_catalog_open(void);
@@ -56,5 +59,6 @@ void links_catalog_update_all(void);
 void links_catalog_add_packet(const link_id_t *link_id, packet_info_t *packet,
                               packet_direction direction);
 gchar *links_catalog_dump(void); /* dumps all links to a newly allocated string */
+gchar *links_catalog_xml(void); /* returns a newly allocated string with an xml dump of all links */
 
 #endif

@@ -78,6 +78,8 @@ static gint nodes_num = 0;      /* nodes counter */
  **************************************************************************/
 static void node_protocol_sort(node_t *node);
 static void set_node_name(node_t *node, const name_decode_t *sequence);
+static gchar *node_xml(node_t *node);
+
 
 /* Allocates a new node structure */
 node_t *node_create(const node_id_t *node_id)
@@ -193,7 +195,7 @@ gchar *node_dump(const node_t *node)
  * N.B.
  * ignores main_prot array (protocol names), because is already dumped
  * with protostack stats */
-gchar *node_xml(const node_t *node)
+gchar *node_xml(node_t *node)
 {
   gchar *msg;
   gchar *msg_id;
@@ -588,7 +590,7 @@ static gboolean node_xml_tvs(gpointer key, gpointer value, gpointer data)
   gchar *msg_node;
   gchar *tmp;
   gchar * *msg = (gchar * *)data;
-  const node_t *node = (const node_t *)value;
+  node_t *node = (node_t *)value;
 
   msg_node = node_xml(node);
   tmp = *msg;

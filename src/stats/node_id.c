@@ -154,7 +154,7 @@ gchar *node_id_xml(const node_id_t *id)
         msg = g_strdup_printf(" ");
         break;
       case LINK6:
-        msg = xmltag_escaped("link", "%s", ether_to_str(id->addr.eth));
+        msg = xmltag_escaped("link-id", "%s", ether_to_str(id->addr.eth));
         break;
       case IP:
         msg = xmltag_escaped(type_to_str(&id->addr.ip), "%s", address_to_str(&id->addr.ip));
