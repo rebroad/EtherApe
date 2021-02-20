@@ -31,7 +31,7 @@ double subtract_times_ms(const struct timeval *a, const struct timeval *b);
 typedef struct
 {
   gdouble average;              /* Average bytes in or out in the last x ms */
-  gdouble aver_accu;            /* Accumulated bytes in the last x ms */
+  gdouble aver_accu;            /* total bytes of active packets */
   gdouble accumulated;          /* Accumulated bytes */
   gdouble avg_size;              /* average packet size */
   unsigned long accu_packets;   /* Accumulated number of packets */
@@ -39,9 +39,10 @@ typedef struct
 } basic_stats_t;
 
 void basic_stats_reset(basic_stats_t *tf_stat); /* resets counters */
+void basic_stats_sum(basic_stats_t *tf_stat, const basic_stats_t *tosum); /* accumulate another basic_stats */
 void basic_stats_add(basic_stats_t *tf_stat, gdouble val);
 void basic_stats_sub(basic_stats_t *tf_stat, gdouble val);
-void basic_stats_avg(basic_stats_t *tf_stat, gdouble avg_msecs);
+void basic_stats_avg(basic_stats_t *tf_stat, gdouble avg_msecs);  /* average size and byte rate */
 gchar *basic_stats_dump(const basic_stats_t *tf_stat);
 gchar *basic_stats_xml(const basic_stats_t *tf_stat);
 

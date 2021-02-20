@@ -160,14 +160,29 @@ void basic_stats_reset(basic_stats_t *tf_stat)
   tf_stat->last_time = appdata.now;
 }
 
+/* accumulate another basic_stats */
+void basic_stats_sum(basic_stats_t *tf_stat, const basic_stats_t *tosum)
+{
+  g_assert(tf_stat);
+  g_assert(tosum);
+  tf_stat->accumulated += tosum->accumulated;
+  tf_stat->aver_accu += tosum->aver_accu;
+  tf_stat->accu_packets += tosum->accu_packets;
+  if (subtract_times_ms(&tf_stat->last_time, &tosum->last_time) < 0)
+    tf_stat->last_time = tosum->last_time;
+  tf_stat->avg_size = tf_stat->accumulated / tf_stat->accu_packets;
+
+  /* averages are calculated by basic_stats_avg */
+}
+
 void basic_stats_add(basic_stats_t *tf_stat, gdouble val)
 {
   g_assert(tf_stat);
   tf_stat->accumulated += val;
   tf_stat->aver_accu += val;
   ++tf_stat->accu_packets;
-  tf_stat->avg_size = tf_stat->accumulated / tf_stat->accu_packets;
   tf_stat->last_time = appdata.now;
+  tf_stat->avg_size = tf_stat->accumulated / tf_stat->accu_packets;
   /* averages are calculated by basic_stats_avg */
 }
 
@@ -177,6 +192,7 @@ void basic_stats_sub(basic_stats_t *tf_stat, gdouble val)
   tf_stat->aver_accu -= val;
   if (!tf_stat->aver_accu)
     tf_stat->average = 0;
+  tf_stat->avg_size = tf_stat->accumulated / tf_stat->accu_packets;
   /* averages are calculated by basic_stats_avg */
 }
 

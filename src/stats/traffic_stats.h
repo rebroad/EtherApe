@@ -32,10 +32,13 @@ typedef struct
 
 void traffic_stats_init(traffic_stats_t *pkt_stat); /* initializes counters */
 void traffic_stats_reset(traffic_stats_t *pkt_stat); /* releases memory */
+/* adds another item stats to current element stats - doesn't copies packets! */
+void traffic_stats_sum(traffic_stats_t *pkt_stat, const traffic_stats_t *tosum);
 void traffic_stats_add_packet(traffic_stats_t *pkt_stat,
                               packet_info_t *new_pkt,
                               packet_direction dir); /* adds a packet */
-void traffic_stats_purge_expired_packets(traffic_stats_t *pkt_stat, double pkt_expire_time, double proto_expire_time);
+void traffic_stats_calc_averages(traffic_stats_t *pkt_stat, double avg_time); 
+/* purges expired packets and recalc averages */
 gboolean traffic_stats_update(traffic_stats_t *pkt_stat, double pkt_expire_time, double proto_expire_time);
 gchar *traffic_stats_dump(const traffic_stats_t *pkt_stat);
 gchar *traffic_stats_xml(const traffic_stats_t *pkt_stat);

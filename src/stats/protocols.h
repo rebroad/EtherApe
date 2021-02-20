@@ -47,6 +47,8 @@ typedef struct
 /* protocol stack methods */
 void protocol_stack_open(protostack_t *pstk);
 void protocol_stack_reset(protostack_t *pstk);
+/* sums another stack */
+void protocol_stack_sum(protostack_t *pstk, const protostack_t *tosum);
 /* adds packet data to the stack */
 void protocol_stack_add_pkt(protostack_t *pstk, const packet_info_t *packet);
 /* subtracts packet data from stack */
@@ -62,9 +64,9 @@ gchar *protocol_stack_sort_most_used(protostack_t *pstk, size_t level);
 /* returns a newly allocated string with a dump of pstk */
 gchar *protocol_stack_dump(const protostack_t *pstk);
 /* returns a newly allocated string with am xml dump of pstk */
-gchar *protocol_stack_xml(const protostack_t *pstk);
+gchar *protocol_stack_xml(const protostack_t *pstk, const gchar *tag);
 
-/* protocol summary method */
+/* protocol summary methods */
 void protocol_summary_open(void); /* initializes the summary */
 void protocol_summary_close(void); /* frees summary, releasing resources */
 void protocol_summary_add_packet(packet_info_t *packet); /* adds a new packet to summary */
@@ -74,5 +76,6 @@ void protocol_summary_foreach(size_t level, GFunc func, gpointer data); /* calls
 gchar *protocol_summary_xml(void);    /* returns a newly allocated string with an xml dump of protocol summary */
 const protocol_t *protocol_summary_find(size_t level, const gchar *protoname); /* finds named protocol */
 const protostack_t *protocol_summary_stack(void); /* access directly the stack (only for proto windows) */
+void protocol_summary_recalc_fromlinks(void);  /* recalcs procotol summary stats from link statistics */
 
 #endif

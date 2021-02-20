@@ -172,13 +172,12 @@ static gint update_link(link_id_t *link_id, link_t *link, gpointer delete_list_p
   if (traffic_stats_update(&link->link_stats, pref.averaging_time,
                            pref.proto_link_timeout_time)) {
     /* packet(s) active, update the most used protocols for this link */
-    guint i = STACK_SIZE;
-    while (i + 1) {
+    unsigned int i;
+    for (i=0 ; i <= STACK_SIZE; ++i) {
       if (link->main_prot[i])
         g_free(link->main_prot[i]);
       link->main_prot[i] =
         protocol_stack_sort_most_used(&link->link_stats.stats_protos, i);
-      i--;
     }
   }
   else {

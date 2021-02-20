@@ -64,6 +64,22 @@ void traffic_stats_reset(traffic_stats_t *pkt_stat)
   basic_stats_reset(&pkt_stat->stats_out);
 }
 
+/* adds another item stats to current element stats - doesn't copies packets! */
+void traffic_stats_sum(traffic_stats_t *pkt_stat, const traffic_stats_t *tosum)
+{
+  g_assert(pkt_stat);
+  g_assert(tosum);
+
+  basic_stats_sum(&pkt_stat->stats, &tosum->stats);
+  basic_stats_sum(&pkt_stat->stats_in, &tosum->stats_in);
+  basic_stats_sum(&pkt_stat->stats_out, &tosum->stats_out);
+
+  /* adds also to protocol stack */
+  protocol_stack_sum(&pkt_stat->stats_protos, &tosum->stats_protos);
+
+  /* note: averages are calculated later, by update_packet_list */
+}
+
 /* adds a packet */
 void traffic_stats_add_packet(traffic_stats_t *pkt_stat,
                               packet_info_t *new_pkt,
@@ -92,7 +108,7 @@ void traffic_stats_add_packet(traffic_stats_t *pkt_stat,
   /* note: averages are calculated later, by update_packet_list */
 }
 
-void traffic_stats_purge_expired_packets(traffic_stats_t *pkt_stat, double pkt_expire_time, double proto_expire_time)
+static gboolean traffic_stats_purge_expired_packets(traffic_stats_t *pkt_stat, double pkt_expire_time, double proto_expire_time)
 {
   double diffms;
   packet_list_item_t *packet;
@@ -119,47 +135,57 @@ void traffic_stats_purge_expired_packets(traffic_stats_t *pkt_stat, double pkt_e
     packet_list_item_delete(packet);
   }
 
+  /* purge expired protocols */
+  protocol_stack_purge_expired(&pkt_stat->stats_protos, proto_expire_time);
+
   if (pkt_stat->pkt_list.head == NULL) {
     /* removed all packets */
     pkt_stat->stats.average = 0;
     pkt_stat->stats_in.average = 0;
     pkt_stat->stats_out.average = 0;
+    return FALSE;
   }
 
-  /* purge expired protocols */
-  protocol_stack_purge_expired(&pkt_stat->stats_protos, proto_expire_time);
+  return TRUE;  /* packet list not empty */
+}
+
+
+/* recalculate averages */
+void traffic_stats_calc_averages(traffic_stats_t *pkt_stat, double avg_time)
+{
+  if (g_queue_is_empty(&pkt_stat->pkt_list))
+    return;
+
+  basic_stats_avg(&pkt_stat->stats, avg_time);
+  basic_stats_avg(&pkt_stat->stats_in, avg_time);
+  basic_stats_avg(&pkt_stat->stats_out, avg_time);
+  protocol_stack_avg(&pkt_stat->stats_protos, avg_time);
 }
 
 /* Update stats, purging expired packets - returns FALSE if there are no
  * active packets */
 gboolean traffic_stats_update(traffic_stats_t *pkt_stat, double avg_time, double proto_expire_time)
 {
-  traffic_stats_purge_expired_packets(pkt_stat, avg_time, proto_expire_time);
+  gdouble ms_from_oldest = avg_time;
+  g_assert(pkt_stat);
 
-  if (!g_queue_is_empty(&pkt_stat->pkt_list)) {
-    gdouble ms_from_oldest = avg_time;
+  if (!traffic_stats_purge_expired_packets(pkt_stat, avg_time, proto_expire_time))
+    return FALSE;   /* no packets remaining */
+
 
 #if CHECK_EXPIRATION
-    /* the last packet of the list is the oldest */
-    const packet_list_item_t *packet;
-    packet = (const packet_list_item_t *)g_queue_peek_tail(&pkt_stat->pkt_list);
-    ms_from_oldest = subtract_times_ms(&now, &packet->info->timestamp);
-    if (ms_from_oldest < avg_time)
-      ms_from_oldest = avg_time;
-    else
-      g_warning("ms_to_oldest > avg_time: %f", ms_from_oldest);
+  /* the last packet of the list is the oldest */
+  const packet_list_item_t *packet;
+  packet = (const packet_list_item_t *)g_queue_peek_tail(&pkt_stat->pkt_list);
+  ms_from_oldest = subtract_times_ms(&now, &packet->info->timestamp);
+  if (ms_from_oldest < avg_time)
+    ms_from_oldest = avg_time;
+  else
+    g_warning("ms_to_oldest > avg_time: %f", ms_from_oldest);
 #endif
 
-    basic_stats_avg(&pkt_stat->stats, ms_from_oldest);
-    basic_stats_avg(&pkt_stat->stats_in, ms_from_oldest);
-    basic_stats_avg(&pkt_stat->stats_out, ms_from_oldest);
-    protocol_stack_avg(&pkt_stat->stats_protos, ms_from_oldest);
-
-    return TRUE;   /* there are packets active */
-  }
-
-  /* no packet active remaining */
-  return FALSE;
+  traffic_stats_calc_averages(pkt_stat, ms_from_oldest);
+  return TRUE;   /* there are packets */
 }
 
 /* returns a newly allocated string with a dump of pkt_stat */
@@ -204,7 +230,7 @@ gchar *traffic_stats_xml(const traffic_stats_t *pkt_stat)
   msg_tot = basic_stats_xml(&pkt_stat->stats);
   msg_in = basic_stats_xml(&pkt_stat->stats_in);
   msg_out = basic_stats_xml(&pkt_stat->stats_out);
-  msg_proto = protocol_stack_xml(&pkt_stat->stats_protos);
+  msg_proto = protocol_stack_xml(&pkt_stat->stats_protos, "protocols");
   msg = xmltag("traffic_stats",
                "\n<active_packets>%u</active_packets>\n"
                "<in>\n%s</in>\n"

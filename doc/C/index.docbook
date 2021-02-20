@@ -435,7 +435,7 @@ Conversely, --min-delay can help analyze many short lived connections.</para>
                 <listitem>
                   <para><menuchoice>
                       <guimenuitem>Export</guimenuitem>
-                    </menuchoice> creates an xml with a snapshot of current nodes and their statistics.  A sample output file can be found in <xref linkend="appendix-a"/>.</para>
+                    </menuchoice> creates an xml with a snapshot of current nodes and their statistics, followed by a per protocol global statistics.  A sample output file can be found in <xref linkend="appendix-a"/>.</para>
 		  <note>
 		    <para>&app; can automatically export to user-chosen files
 		      with two command line options, <option>--final-export</option> and <option>--signal-export</option>. The first writes to file at end of a replay, the second dumps when receiving signal USR1.</para>
@@ -1584,7 +1584,7 @@ Conversely, --min-delay can help analyze many short lived connections.</para>
     <title>XML export file format</title>
 
     <para>This section presents &app; XML export file format followed by a detailed analysis.</para>
-    <warning><para>At this time &app; exports only node information. Future releases might export also link data.</para></warning>
+    <warning><para>At this time &app; exports only node information and global protocol statistics. Future releases might export also link data.</para></warning>
 <para>This example shows a file containing only a single, simple, node. A real file will contain many nodes, possibly with more involved &lt;protocol&gt; subtags.  The general structure remains the same, however.</para>
 
     <programlisting linenumbering="numbered">
@@ -1697,6 +1697,9 @@ Conversely, --min-delay can help analyze many short lived connections.</para>
       &lt;/traffic_stats&gt;
     &lt;/node&gt;
   &lt;/nodes&gt;
+  &lt;global_protocols&gt;
+       ...  (global protocol statistics - using exactly the same format of node statistics)
+  &lt;/global_protocols&gt;
 &lt;/etherape&gt;
 </programlisting>
 
@@ -1738,7 +1741,7 @@ Conversely, --min-delay can help analyze many short lived connections.</para>
   <sect1 id="authors">
     <title>Authors</title>
 
-    <para>&app; was written by Juan Toledo (
+    <para>&app; was originally written by Juan Toledo (
     <email>toledo@users.sourceforge.net</email>). Later releases by Riccardo
     Ghetta (<email>bchiara@users.sourceforge.net</email>).</para>
 

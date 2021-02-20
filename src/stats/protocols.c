@@ -24,6 +24,7 @@
 #include <string.h>
 #include "protocols.h"
 #include "node.h"
+#include "links.h"
 #include "preferences.h"
 #include "util.h"
 
@@ -59,6 +60,42 @@ void protocol_stack_reset(protostack_t *pstk)
     }
   }
 }
+
+/* sums another stack */
+void protocol_stack_sum(protostack_t *pstk, const protostack_t *tosum)
+{
+  GList *protocol_item;
+  protocol_t *protocol_info;
+  guint i;
+
+  g_assert(pstk);
+  g_assert(tosum);
+
+  for (i = 0; i <= STACK_SIZE; i++) {
+
+    const GList *tosum_item = tosum->protostack[i];
+    if (!tosum_item)
+      continue;   /* no protocols to sum at this level */
+
+    for (; tosum_item; tosum_item = tosum_item->next) {
+
+      const protocol_t *tosum_info = tosum_item->data;
+
+      protocol_item = g_list_find_custom(pstk->protostack[i], tosum_info->name, protocol_compare);
+      if (protocol_item)
+        protocol_info = protocol_item->data;
+      else {
+        /* If there is yet not such protocol, create it */
+        protocol_info = protocol_t_create(tosum_info->name);
+        pstk->protostack[i] = g_list_prepend(pstk->protostack[i], protocol_info);
+      }
+
+      g_assert(!strcmp(protocol_info->name, tosum_info->name));
+      basic_stats_sum(&protocol_info->stats, &tosum_info->stats);
+    }
+  }
+}
+
 
 /* adds the given packet to the stack */
 void protocol_stack_add_pkt(protostack_t *pstk, const packet_info_t *packet)
@@ -264,14 +301,14 @@ gchar *protocol_stack_dump(const protostack_t *pstk)
 }
 
 /* returns a newly allocated string with an xml dump of pstk */
-gchar *protocol_stack_xml(const protostack_t *pstk)
+gchar *protocol_stack_xml(const protostack_t *pstk, const gchar *tag)
 {
   guint i;
   gchar *msg;
   gchar *xml;
 
   if (!pstk)
-    return xmltag("protocols", "");
+    return xmltag(tag, "");
 
   msg = g_strdup("");
   for (i = 1; i <= STACK_SIZE; ++i) {
@@ -303,7 +340,7 @@ gchar *protocol_stack_xml(const protostack_t *pstk)
     g_free(tmp);
     g_free(msg_level);
   }
-  xml = xmltag("protocols", "%s", msg);
+  xml = xmltag(tag, "%s", msg);
   g_free(msg);
   return xml;
 }
@@ -489,8 +526,7 @@ void protocol_summary_add_packet(packet_info_t *packet)
 void protocol_summary_update_all(void)
 {
   if (protosummary_stats)
-    traffic_stats_update(protosummary_stats, pref.averaging_time,
-                         pref.proto_timeout_time);
+    traffic_stats_update(protosummary_stats, pref.averaging_time, pref.proto_timeout_time);
 }
 
 /* number of protos at specified level */
@@ -522,15 +558,12 @@ void protocol_summary_foreach(size_t level, GFunc func, gpointer data)
 /* generates a summary xml */
 gchar *protocol_summary_xml(void)
 {
-  gchar *msg;
   gchar *xml;
 
   if (!protosummary_stats)
-    msg = g_strdup("");
+    xml = g_strdup("");
   else
-    msg = traffic_stats_xml(protosummary_stats);
-  xml = xmltag("global_protocols", "\n%s", msg);
-  g_free(msg);
+    xml = protocol_stack_xml(&protosummary_stats->stats_protos, "global_protocols");
   return xml;
 }
 
@@ -548,4 +581,30 @@ const protostack_t *protocol_summary_stack(void)
   if (!protosummary_stats)
     return NULL;
   return &protosummary_stats->stats_protos;
+}
+
+/* sums the link statistics to the summary */
+static gboolean protosum_accumulate_link(gpointer key, gpointer value, gpointer data)
+{
+  const link_t *link = (const link_t *)value;
+  traffic_stats_sum(protosummary_stats, &link->link_stats);
+  return FALSE;
+}
+
+/* recalcs procotol summary stats from link statistics */
+void protocol_summary_recalc_fromlinks(void)
+{
+  guint i;
+  if (!protosummary_stats)
+    return;
+
+  traffic_stats_reset(protosummary_stats);  
+  
+  links_catalog_foreach(protosum_accumulate_link, NULL);
+
+  traffic_stats_calc_averages(protosummary_stats, pref.averaging_time);
+
+  /* for each level identify sort the protocol (name not needed, discard it) */
+  for (i = 0; i <= STACK_SIZE; ++i)
+    g_free(protocol_stack_sort_most_used(&protosummary_stats->stats_protos, i));
 }
