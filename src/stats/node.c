@@ -76,7 +76,7 @@ static gint nodes_num = 0;      /* nodes counter */
  * node_t implementation
  *
  **************************************************************************/
-static void node_name_update(node_t *node);
+static void node_protocol_sort(node_t *node);
 static void set_node_name(node_t *node, const name_decode_t *sequence);
 
 /* Allocates a new node structure */
@@ -204,6 +204,9 @@ gchar *node_xml(const node_t *node)
   if (!node)
     return xmltag("node", "");
 
+  /* first update protocol sorting to guarantee up-to-date ordering */
+  node_protocol_sort(node);
+
   msg_id = node_id_xml(&node->node_id);
   msg_stats = traffic_stats_xml(&node->node_stats);
   msg_resolved = xmltag_escaped("resolved_name", "%s", node->name->str);
@@ -231,15 +234,8 @@ static gboolean node_update(node_id_t *node_id, node_t *node, gpointer delete_li
 
   if (traffic_stats_update(&node->node_stats, pref.averaging_time,
                            pref.proto_node_timeout_time)) {
-    /* packet(s) active, update the most used protocols for this link */
-    guint i = STACK_SIZE;
-    while (i + 1) {
-      if (node->main_prot[i])
-        g_free(node->main_prot[i]);
-      node->main_prot[i] = protocol_stack_sort_most_used(&node->node_stats.stats_protos, i);
-      i--;
-    }
-    node_name_update(node);
+    /* packet(s) active, update name and protocols for this link */
+    node_protocol_sort(node);
   }
   else {
     /* no packets remaining on node - if node expiration active, see if the
@@ -271,11 +267,18 @@ static gboolean node_update(node_id_t *node_id, node_t *node, gpointer delete_li
 
 /* Sets the node->name and node->numeric_name to the most used of
  * the default name for the current mode */
-static void node_name_update(node_t *node)
+static void node_protocol_sort(node_t *node)
 {
   GList *protocol_item;
   protocol_t *protocol;
-  guint i = STACK_SIZE;
+  guint i;
+
+  /* for each level identify the main protocol at that level */
+  for (i = 0; i <= STACK_SIZE; ++i) {
+    if (node->main_prot[i])
+      g_free(node->main_prot[i]);
+    node->main_prot[i] = protocol_stack_sort_most_used(&node->node_stats.stats_protos, i);
+  }
 
   /* for each level and each protocol at that level, sort names by traffic,
    * placing the busiest at front */

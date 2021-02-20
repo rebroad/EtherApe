@@ -61,11 +61,12 @@ static pid_t pktcap_pid = -1;
 /* For offline (file-sourced) capture */
 static struct
 {
-  pcap_t *pcap;
-  gboolean new;
-  gint64 wait_ms;
-  struct pcap_pkthdr lastpkt_hdr;
-  unsigned char lastpkt_data[MAXCAPSIZE];
+  pcap_t *pcap;                           /* pcap support struct */
+  gboolean new;                           /* becomes false after reading a packet */
+  gint64 wait_ms;                         /* ms to wait before outputting the packet */
+  unsigned long total_packets;            /* total number of packets read from file */
+  struct pcap_pkthdr lastpkt_hdr;         /* header of last packet read */
+  unsigned char lastpkt_data[MAXCAPSIZE]; /* data of last packet */
 } filecap_state;
 
 static capstatus_t capture_status = STOP;
@@ -354,8 +355,8 @@ static gboolean filecap_get_packet(gpointer unused)
   if (status == -2) {
     capture_status = CAP_EOF;
     /* xml dump if needed */
-    if (appdata.export_file_final)
-      dump_xml(appdata.export_file_final);
+    if (appdata.export_file_final) 
+      dump_xml(appdata.export_file_final, appdata.n_packets);
     return FALSE;
   }
   else if (status == -1) {
@@ -365,6 +366,9 @@ static gboolean filecap_get_packet(gpointer unused)
   }
   else
     g_assert(status == 1);
+
+  // another packet read successfully
+  ++filecap_state.total_packets;
 
   if (filecap_state.new)
     filecap_state.wait_ms = 0;
@@ -416,7 +420,8 @@ static gchar *start_file_capture(unsigned int *linktype)
   g_assert(!filecap_state.pcap);
 
   filecap_state.pcap = pcap_open_offline(appdata.source.file, errbuf);
-  filecap_state.new = 1;
+  filecap_state.new = TRUE;
+  filecap_state.total_packets = 0;
   if (!filecap_state.pcap)
     return g_strdup(errbuf);
 

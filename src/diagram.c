@@ -698,7 +698,7 @@ static void update_diagram(GooCanvas *canvas)
   /* if requested and enabled, dump to xml */
   if (appdata.request_dump && appdata.export_file_signal) {
     g_warning(_("SIGUSR1 received: exporting to %s"), appdata.export_file_signal);
-    dump_xml(appdata.export_file_signal);
+    dump_xml(appdata.export_file_signal, appdata.n_packets);
     appdata.request_dump = FALSE;
   }
 
@@ -730,14 +730,18 @@ static void update_diagram(GooCanvas *canvas)
 
   already_updating = TRUE;
 
-  /* Deletes all nodes and updates traffic values */
-  nodes_catalog_update_all();
+  if (!pref.headless || appdata.max_delay) {
+    /* headless with max delay zero disables also node expiration */ 
 
-  /* Delete old capture links and update capture link variables */
-  links_catalog_update_all();
+    /* Deletes all nodes and updates traffic values */
+    nodes_catalog_update_all();
 
-  /* Update global protocol information */
-  protocol_summary_update_all();
+    /* Delete old capture links and update capture link variables */
+    links_catalog_update_all();
+
+    /* Update global protocol information */
+    protocol_summary_update_all();
+  }
 
   if (!pref.headless) {
 

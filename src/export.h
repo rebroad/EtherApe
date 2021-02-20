@@ -22,7 +22,7 @@
 
 #include "appdata.h"
 
-gchar *generate_xml(void);
-void dump_xml(gchar *ofile);
+gchar *generate_xml(unsigned long totpkts);
+void dump_xml(gchar *ofile, unsigned long totpkts);
 
 #endif                          /* __EXPORT_H__ */

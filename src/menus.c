@@ -147,7 +147,7 @@ void on_export_activate(GtkMenuItem *menuitem, gpointer user_data)
     appdata.export_file = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(dialog));
     gtk_widget_destroy(dialog);
 
-    dump_xml(appdata.export_file);
+    dump_xml(appdata.export_file, appdata.n_packets);
   }
   else
     gtk_widget_destroy(dialog);

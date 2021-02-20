@@ -32,7 +32,7 @@
 #include "stats/util.h"
 #include "export.h"
 
-static gchar *header_xml(void)
+static gchar *header_xml(unsigned long totpkts)
 {
   gchar *dvc = NULL;
   gchar *xml;
@@ -49,14 +49,16 @@ static gchar *header_xml(void)
   tmnow = localtime(&timenow);
   strftime(timebuf, sizeof(timebuf), "%F %T %z", tmnow);
   xml = xmltag("header",
-               "\n%s<timestamp>%s</timestamp>\n",
+               "\n%s<timestamp>%s</timestamp>"
+               "\n<packets>%lu</packets>\n",
                dvc ? dvc : "",
-               timebuf);
+               timebuf,
+               totpkts);
   g_free(dvc);
   return xml;
 }
 
-gchar *generate_xml(void)
+gchar *generate_xml(unsigned long totpkts)
 {
   gchar *xmlh;
   gchar *xmln;
@@ -67,7 +69,7 @@ gchar *generate_xml(void)
   oldlocale = g_strdup(setlocale(LC_ALL, NULL));
   setlocale(LC_ALL, "C");
 
-  xmlh = header_xml();
+  xmlh = header_xml(totpkts);
   xmln = nodes_catalog_xml();
   xml = g_strdup_printf("<?xml version=\"1.0\"?>\n"
                         "<!-- traffic data in bytes. last_heard in seconds from dump time -->\n"
@@ -84,7 +86,7 @@ gchar *generate_xml(void)
 }
 
 
-void dump_xml(gchar *ofile)
+void dump_xml(gchar *ofile,unsigned long totpkts)
 {
   FILE *fout;
   gchar *xml;
@@ -92,7 +94,7 @@ void dump_xml(gchar *ofile)
   if (!ofile)
     return;
 
-  xml = generate_xml();
+  xml = generate_xml(totpkts);
   g_assert(xml);
 
   fout = fopen(ofile, "wb");

@@ -221,6 +221,7 @@ gchar *basic_stats_xml(const basic_stats_t *tf_stat)
     return xmltag("stats", "");
 
   diffms = subtract_times_ms(&appdata.now, &tf_stat->last_time);
+  // recalculates average size for better accuracy
   msg = xmltag("stats",
                "\n<avg>%.0f</avg>\n"
                "<total>%.0f</total>\n"
@@ -229,7 +230,7 @@ gchar *basic_stats_xml(const basic_stats_t *tf_stat)
                "<last_heard>%f</last_heard>\n",
                tf_stat->average,
                tf_stat->accumulated,
-               tf_stat->avg_size,
+               tf_stat->accu_packets != 0 ? (double)tf_stat->accumulated / (double)tf_stat->accu_packets : (double)0.0,
                tf_stat->accu_packets,
                diffms / 1000.0);
   return msg;

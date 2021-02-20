@@ -187,7 +187,7 @@ const protocol_t *protocol_stack_find(const protostack_t *pstk, size_t level, co
   return NULL;
 }
 
-/* Comparison function to sort protocols by their accumulated traffic */
+/* Comparison function to sort protocols by their accumulated traffic (descending) */
 static gint prot_freq_compare(gconstpointer a, gconstpointer b)
 {
   const protocol_t *prot_a, *prot_b;
