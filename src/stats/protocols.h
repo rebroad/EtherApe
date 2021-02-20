@@ -71,6 +71,7 @@ void protocol_summary_add_packet(packet_info_t *packet); /* adds a new packet to
 void protocol_summary_update_all(void); /* update stats on protocol summary */
 long protocol_summary_size(void); /* total number of protos */
 void protocol_summary_foreach(size_t level, GFunc func, gpointer data); /* calls func for every proto at level */
+gchar *protocol_summary_xml(void);    /* returns a newly allocated string with an xml dump of protocol summary */
 const protocol_t *protocol_summary_find(size_t level, const gchar *protoname); /* finds named protocol */
 const protostack_t *protocol_summary_stack(void); /* access directly the stack (only for proto windows) */
 

@@ -62,6 +62,7 @@ gchar *generate_xml(unsigned long totpkts)
 {
   gchar *xmlh;
   gchar *xmln;
+  gchar *xmlp;
   gchar *xml;
   gchar *oldlocale;
 
@@ -71,14 +72,17 @@ gchar *generate_xml(unsigned long totpkts)
 
   xmlh = header_xml(totpkts);
   xmln = nodes_catalog_xml();
+  xmlp = protocol_summary_xml();
   xml = g_strdup_printf("<?xml version=\"1.0\"?>\n"
                         "<!-- traffic data in bytes. last_heard in seconds from dump time -->\n"
-                        "<etherape>\n%s%s</etherape>",
+                        "<etherape>\n%s%s%s</etherape>",
                         xmlh,
-                        xmln);
+                        xmln,
+                        xmlp);
   // reset user locale
   setlocale(LC_ALL, oldlocale);
 
+  g_free(xmlp);
   g_free(xmln);
   g_free(xmlh);
   g_free(oldlocale);

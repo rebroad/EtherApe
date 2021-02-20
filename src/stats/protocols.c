@@ -519,6 +519,21 @@ void protocol_summary_foreach(size_t level, GFunc func, gpointer data)
 }
 
 
+/* generates a summary xml */
+gchar *protocol_summary_xml(void)
+{
+  gchar *msg;
+  gchar *xml;
+
+  if (!protosummary_stats)
+    msg = g_strdup("");
+  else
+    msg = traffic_stats_xml(protosummary_stats);
+  xml = xmltag("global_protocols", "\n%s", msg);
+  g_free(msg);
+  return xml;
+}
+
 /* finds named protocol in the level protocols of protostack*/
 const protocol_t *protocol_summary_find(size_t level, const gchar *protoname)
 {
