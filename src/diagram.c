@@ -994,6 +994,7 @@ static gint canvas_node_update(node_id_t *node_id, canvas_node_t *canvas_node,
   clock_t end;
   gdouble cpu_time_used;
   char *nametmp = NULL;
+  const gchar *main_prot;
 
   node = nodes_catalog_find(node_id);
 
@@ -1044,8 +1045,9 @@ static gint canvas_node_update(node_id_t *node_id, canvas_node_t *canvas_node,
   if (node_size > MAX_NODE_SIZE)
     node_size = MAX_NODE_SIZE;
 
-  if (node->main_prot[pref.stack_level]) {
-    canvas_node->color = *protohash_color(node->main_prot[pref.stack_level]);
+  main_prot = traffic_stats_most_used_proto(&node->node_stats, pref.stack_level);
+  if (main_prot) {
+    canvas_node->color = *protohash_color(main_prot);
 
     g_object_set(G_OBJECT(canvas_node->node_item),
                  "radius-x", node_size / 2,
@@ -1503,6 +1505,7 @@ static gint canvas_link_update(link_id_t *link_id, canvas_link_t *canvas_link,
   const canvas_node_t *canvas_src;
   GdkRGBA scaledColor;
   double xs, ys, xd, yd, scale;
+  const gchar *main_prot;
 
   /* We used to run update_link here, but that was a major performance penalty,
    * and now it is done in update_diagram */
@@ -1534,9 +1537,10 @@ static gint canvas_link_update(link_id_t *link_id, canvas_link_t *canvas_link,
 
   /* What if there never is a protocol?
    * I have to initialize canvas_link->color to a known value */
-  if (link->main_prot[pref.stack_level]) {
+  main_prot = traffic_stats_most_used_proto(&link->link_stats, pref.stack_level);
+  if (main_prot) {
     double diffms;
-    canvas_link->color = *protohash_color(link->main_prot[pref.stack_level]);
+    canvas_link->color = *protohash_color(main_prot);
 
     /* scale color down to 10% at link timeout */
     diffms = subtract_times_ms(&appdata.now, &link->link_stats.stats.last_time);
@@ -1690,6 +1694,7 @@ static gboolean link_item_event(GooCanvasItem *item,
                                 canvas_link_t *canvas_link)
 {
   gchar *str;
+  const gchar *main_prot = NULL;
   const link_t *link = NULL;
 
   switch (event->type)
@@ -1705,9 +1710,10 @@ static gboolean link_item_event(GooCanvasItem *item,
       case GDK_ENTER_NOTIFY:
         if (canvas_link)
           link = links_catalog_find(&canvas_link->canvas_link_id);
-        if (link && link->main_prot[pref.stack_level])
-          str = g_strdup_printf(_("Link main protocol: %s"),
-                                link->main_prot[pref.stack_level]);
+        if (link)
+          main_prot = traffic_stats_most_used_proto(&link->link_stats, pref.stack_level);
+        if (main_prot)
+          str = g_strdup_printf(_("Link main protocol: %s"), main_prot);
         else
           str = g_strdup_printf(_("Link main protocol: unknown"));
         gtk_statusbar_push(appdata.statusbar, 1, str);

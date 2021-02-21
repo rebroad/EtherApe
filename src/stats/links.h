@@ -18,7 +18,8 @@
 #ifndef ETHERAPE_LINKS_H
 #define ETHERAPE_LINKS_H
 
-#include "node.h"
+#include "node_id.h"
+#include "traffic_stats.h"
 
 /* a link identification */
 typedef struct
@@ -36,10 +37,9 @@ gchar *link_id_xml(const link_id_t *id);
 typedef struct
 {
   link_id_t link_id;            /* src and dest addresses of link */
-
-  gchar *main_prot[STACK_SIZE + 1];     /* Most common protocol for the link */
-  traffic_stats_t link_stats;
+  traffic_stats_t link_stats;   /* link statistics */
 } link_t;
+
 link_t *link_create(const link_id_t *link_id); /* creates a new link object */
 void link_delete(link_t *link); /* destroys a link, releasing memory */
 gchar *link_dump(const link_t *link); /* dumps link to newly allocated string */

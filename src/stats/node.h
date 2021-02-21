@@ -25,9 +25,7 @@ typedef struct
   node_id_t node_id;            /* node identification */
   GString *name;                /* String with a readable default name of the node */
   GString *numeric_name;        /* String with a numeric representation of the id */
-
-  gchar *main_prot[STACK_SIZE + 1];     /* Most common protocol for the node */
-  traffic_stats_t node_stats;
+  traffic_stats_t node_stats;   /* node statistics */
 } node_t;
 
 node_t *node_create(const node_id_t *node_id); /* creates a new node */

@@ -188,6 +188,14 @@ gboolean traffic_stats_update(traffic_stats_t *pkt_stat, double avg_time, double
   return TRUE;   /* there are packets */
 }
 
+/* returns the name of most used protocol at the specified level, if present (NULL otherwise) */
+const gchar *traffic_stats_most_used_proto(const traffic_stats_t *pkt_stat, size_t level)
+{
+  if (!pkt_stat)
+      return NULL;
+  return protocol_stack_most_used(&pkt_stat->stats_protos, level);
+}
+
 /* returns a newly allocated string with a dump of pkt_stat */
 gchar *traffic_stats_dump(const traffic_stats_t *pkt_stat)
 {

@@ -59,8 +59,10 @@ void protocol_stack_avg(protostack_t *pstk, gdouble avg_usecs);
 void protocol_stack_purge_expired(protostack_t *pstk, double expire_time);
 /* finds named protocol in the requested level of protostack*/
 const protocol_t *protocol_stack_find(const protostack_t *pstk, size_t level, const gchar *protoname);
-/* sorts on the most used protocol in the requested level and returns it */
-gchar *protocol_stack_sort_most_used(protostack_t *pstk, size_t level);
+/* sorts the stack on the most used protocol */
+void protocol_stack_sort_most_used(protostack_t *pstk);
+/* returns from the stack the name of most used protocol at the specified level, if present (NULL otherwise) */
+const gchar *protocol_stack_most_used(const protostack_t *pstk, size_t level);
 /* returns a newly allocated string with a dump of pstk */
 gchar *protocol_stack_dump(const protostack_t *pstk);
 /* returns a newly allocated string with am xml dump of pstk */

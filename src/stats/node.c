@@ -86,7 +86,6 @@ node_t *node_create(const node_id_t *node_id)
 {
   node_t *node;
   gchar *name;
-  guint i;
 
   g_assert(node_id);
 
@@ -99,9 +98,6 @@ node_t *node_create(const node_id_t *node_id)
   node->name = g_string_new(name);
   node->numeric_name = g_string_new(name);
   g_free(name);
-
-  for (i = 0; i <= STACK_SIZE; ++i)
-    node->main_prot[i] = NULL;
 
   traffic_stats_init(&node->node_stats);
 
@@ -119,8 +115,6 @@ node_t *node_create(const node_id_t *node_id)
 /* destroys a node */
 void node_delete(node_t *node)
 {
-  guint i;
-
   if (!node)
     return; /* nothing to do */
 
@@ -130,12 +124,6 @@ void node_delete(node_t *node)
   if (node->numeric_name)
     g_string_free(node->numeric_name, TRUE);
   node->numeric_name = NULL;
-
-  for (i = 0; i <= STACK_SIZE; ++i)
-    if (node->main_prot[i]) {
-      g_free(node->main_prot[i]);
-      node->main_prot[i] = NULL;
-    }
 
   traffic_stats_reset(&node->node_stats);
 
@@ -160,6 +148,7 @@ gchar *node_dump(const node_t *node)
   gchar *msg_id;
   gchar *msg_stats;
   gchar *msg_mprot;
+  const gchar *main_prot;
   guint i;
 
   if (!node)
@@ -168,15 +157,15 @@ gchar *node_dump(const node_t *node)
   msg_id = node_id_dump(&node->node_id);
   msg_stats = traffic_stats_dump(&node->node_stats);
 
+  main_prot = traffic_stats_most_used_proto(&node->node_stats, 0);
   msg_mprot = g_strdup_printf("top: [%s], stack:",
-                              (node->main_prot[0]) ?
-                              node->main_prot[0] : "-none-");
+                              (main_prot) ? main_prot : "-none-");
 
   for (i = 1; i <= STACK_SIZE; i++) {
     gchar *tmp = msg_mprot;
+    main_prot = traffic_stats_most_used_proto(&node->node_stats, i);
     msg_mprot = g_strdup_printf("%s %d:>%s<", msg_mprot, i,
-                                (node->main_prot[i]) ?
-                                node->main_prot[i] : "-none-");
+                                (main_prot) ? main_prot : "-none-");
     g_free(tmp);
   }
 
@@ -191,10 +180,7 @@ gchar *node_dump(const node_t *node)
   return msg;
 }
 
-/* returns a newly allocated string with an xml dump of node
- * N.B.
- * ignores main_prot array (protocol names), because is already dumped
- * with protostack stats */
+/* returns a newly allocated string with an xml dump of node */
 gchar *node_xml(node_t *node)
 {
   gchar *msg;
@@ -275,12 +261,8 @@ static void node_protocol_sort(node_t *node)
   protocol_t *protocol;
   guint i;
 
-  /* for each level identify the main protocol at that level */
-  for (i = 0; i <= STACK_SIZE; ++i) {
-    if (node->main_prot[i])
-      g_free(node->main_prot[i]);
-    node->main_prot[i] = protocol_stack_sort_most_used(&node->node_stats.stats_protos, i);
-  }
+  /* sort the protocol stack by most used */
+  protocol_stack_sort_most_used(&node->node_stats.stats_protos);
 
   /* for each level and each protocol at that level, sort names by traffic,
    * placing the busiest at front */

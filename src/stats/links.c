@@ -22,6 +22,7 @@
 #include "appdata.h"
 #include "protocols.h"
 #include "links.h"
+#include "node.h"
 #include "preferences.h"
 #include "conversations.h"
 #include "util.h"
@@ -108,17 +109,11 @@ static gint update_link(link_id_t *link_id, link_t *link, gpointer delete_list_p
 link_t *link_create(const link_id_t *link_id)
 {
   link_t *link;
-  guint i = STACK_SIZE;
 
   link = g_malloc(sizeof(link_t));
   g_assert(link);
 
   link->link_id = *link_id;
-
-  while (i + 1) {
-    link->main_prot[i] = NULL;
-    i--;
-  }
 
   traffic_stats_init(&link->link_stats);
 
@@ -128,19 +123,11 @@ link_t *link_create(const link_id_t *link_id)
 /* destroys a link, releasing memory */
 void link_delete(link_t *link)
 {
-  guint i;
-
   g_assert(link);
 
   /* first, free any conversation belonging to the link */
   delete_conversation_link(&link->link_id.src.addr.ip,
                            &link->link_id.dst.addr.ip);
-
-  for (i = STACK_SIZE; i + 1; i--)
-    if (link->main_prot[i]) {
-      g_free(link->main_prot[i]);
-      link->main_prot[i] = NULL;
-    }
 
   traffic_stats_reset(&link->link_stats);
 
@@ -154,6 +141,7 @@ gchar *link_dump(const link_t *link)
   gchar *msg_iddst;
   gchar *msg_stats;
   gchar *msg_mprot;
+  const gchar *main_prot;
   guint i;
 
   if (!link)
@@ -163,15 +151,15 @@ gchar *link_dump(const link_t *link)
   msg_iddst = node_id_dump(&link->link_id.dst);
   msg_stats = traffic_stats_dump(&link->link_stats);
 
+  main_prot = traffic_stats_most_used_proto(&link->link_stats, 0);
   msg_mprot = g_strdup_printf("top: [%s], stack:",
-                              (link->main_prot[0]) ?
-                              link->main_prot[0] : "-none-");
+                              (main_prot) ? main_prot : "-none-");
 
   for (i = 1; i <= STACK_SIZE; i++) {
     gchar *tmp = msg_mprot;
+    main_prot = traffic_stats_most_used_proto(&link->link_stats, i);
     msg_mprot = g_strdup_printf("%s %d:>%s<", msg_mprot, i,
-                                (link->main_prot[i]) ?
-                                link->main_prot[i] : "-none-");
+                                (main_prot) ? main_prot : "-none-");
     g_free(tmp);
   }
 
@@ -248,14 +236,7 @@ static gint update_link(link_id_t *link_id, link_t *link, gpointer delete_list_p
 /* sort protocols by accumulated size */
 static void link_protocol_sort(link_t *link)
 {
-  guint i;
-
-  /* for each level identify the main protocol at that level */
-  for (i = 0; i <= STACK_SIZE; ++i) {
-    if (link->main_prot[i])
-      g_free(link->main_prot[i]);
-    link->main_prot[i] = protocol_stack_sort_most_used(&link->link_stats.stats_protos, i);
-  }
+  protocol_stack_sort_most_used(&link->link_stats.stats_protos);
 }
 
 

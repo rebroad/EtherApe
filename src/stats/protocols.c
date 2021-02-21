@@ -243,8 +243,16 @@ static gint prot_freq_compare(gconstpointer a, gconstpointer b)
 }
 
 
-/* sorts on the most used protocol in the requested level and returns it */
-gchar *protocol_stack_sort_most_used(protostack_t *pstk, size_t level)
+/* sorts stack levels on the most used protocol */
+void protocol_stack_sort_most_used(protostack_t *pstk)
+{
+  guint i;
+
+  for (i = 0; i <= STACK_SIZE; ++i) 
+    pstk->protostack[i] = g_list_sort(pstk->protostack[i], prot_freq_compare);
+}
+
+const gchar *protocol_stack_most_used(const protostack_t *pstk, size_t level)
 {
   protocol_t *protocol;
 
@@ -252,9 +260,8 @@ gchar *protocol_stack_sort_most_used(protostack_t *pstk, size_t level)
    * we say it's unknown */
   if (level > STACK_SIZE || !pstk || !pstk->protostack[level])
     return NULL;
-  pstk->protostack[level] = g_list_sort(pstk->protostack[level], prot_freq_compare);
   protocol = (protocol_t *)pstk->protostack[level]->data;
-  return g_strdup(protocol->name);
+  return protocol->name;
 }
 
 /* returns a newly allocated string with a dump of pstk */
@@ -594,7 +601,6 @@ static gboolean protosum_accumulate_link(gpointer key, gpointer value, gpointer 
 /* recalcs procotol summary stats from link statistics */
 void protocol_summary_recalc_fromlinks(void)
 {
-  guint i;
   if (!protosummary_stats)
     return;
 
@@ -604,7 +610,5 @@ void protocol_summary_recalc_fromlinks(void)
 
   traffic_stats_calc_averages(protosummary_stats, pref.averaging_time);
 
-  /* for each level identify sort the protocol (name not needed, discard it) */
-  for (i = 0; i <= STACK_SIZE; ++i)
-    g_free(protocol_stack_sort_most_used(&protosummary_stats->stats_protos, i));
+  protocol_stack_sort_most_used(&protosummary_stats->stats_protos);
 }

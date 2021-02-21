@@ -40,6 +40,9 @@ void traffic_stats_add_packet(traffic_stats_t *pkt_stat,
 void traffic_stats_calc_averages(traffic_stats_t *pkt_stat, double avg_time); 
 /* purges expired packets and recalc averages */
 gboolean traffic_stats_update(traffic_stats_t *pkt_stat, double pkt_expire_time, double proto_expire_time);
+/* returns the name of most used protocol at the specified level, if present (NULL otherwise) */
+const gchar *traffic_stats_most_used_proto(const traffic_stats_t *pkt_stat, size_t level);
+
 gchar *traffic_stats_dump(const traffic_stats_t *pkt_stat);
 gchar *traffic_stats_xml(const traffic_stats_t *pkt_stat);
 
