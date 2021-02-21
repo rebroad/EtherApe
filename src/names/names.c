@@ -41,16 +41,18 @@ typedef struct
   const guint8 *p;
   guint16 offset;
   guint16 packet_size;
-  packet_direction dir;
   int link_type;
-  node_id_t node_id;    /* topmost node_id: if a decoder can't fill it, it will
-                         * use the lower level info */
+  node_id_t src_node_id;  /* topmost node_id for src node */
+  node_id_t dst_node_id;  /* topmost node_id for dst node */
+  protostack_t *src_node_protos;  /* src node protocol list */
+  protostack_t *dst_node_protos;  /* dst node protocol list */
+
   struct
   {
-    guint8 level;       /* current decoder level */
-    const packet_protos_t *tokens;     /* array of decoder names */
-    protostack_t *protos;  /* protocol list */
+    guint8 level;                               /* current decoder level */
+    const packet_protos_t *packet_protos;       /* array of protocols found on packet */
   } decoder;
+
 } name_add_t;
 
 typedef gboolean (p_func_t) (name_add_t *);
@@ -113,34 +115,35 @@ static void missing_data_msg(const name_add_t *nt, const char *pr)
 }
 
 static void add_name(const gchar *numeric, const gchar *resolved,
-                     const node_id_t *node_id,
+                     const node_id_t *node_id, protostack_t *node_protos,
                      const name_add_t *nt);
 static void decode_next(name_add_t *nt);
 
-void get_packet_names(protostack_t *pstk,
+void get_packet_names(protostack_t *src_node_pstk,
+                      protostack_t *dst_node_pstk,
                       const guint8 *packet,
                       guint16 size,
-                      const packet_protos_t *prot_stack,
-                      packet_direction direction,
+                      const packet_protos_t *packet_prot_stack,
                       int link_type)
 {
   name_add_t nt;
 
-  g_assert(pstk != NULL);
+  g_assert(src_node_pstk != NULL);
+  g_assert(dst_node_pstk != NULL);
   g_assert(packet != NULL);
 
   nt.p = packet;
   nt.packet_size = size;
-  nt.dir = direction;
   nt.offset = 0;
   nt.link_type = link_type;
+  nt.src_node_protos = src_node_pstk;
+  nt.dst_node_protos = dst_node_pstk;
 
   /* initializes decoders info
    * Note: Level 0 means topmost - first usable is 1
    */
   nt.decoder.level = 1;
-  nt.decoder.tokens = prot_stack;
-  nt.decoder.protos = pstk;
+  nt.decoder.packet_protos = packet_prot_stack;
 
   /* starts decoding */
   decode_next(&nt);
@@ -169,10 +172,10 @@ static void decode_next(name_add_t *nt)
 {
   prot_function_t *next_func = NULL;
 
-  /* whe decode al most STACK_SIZE levels */
+  /* whe decode al most STACK_SIZE levels, one protocol per level */
   while (nt->decoder.level <= STACK_SIZE &&
-         nt->decoder.tokens->protonames[nt->decoder.level]) {
-    next_func = g_tree_lookup(prot_functions, nt->decoder.tokens->protonames[nt->decoder.level]);
+         nt->decoder.packet_protos->protonames[nt->decoder.level]) {
+    next_func = g_tree_lookup(prot_functions, nt->decoder.packet_protos->protonames[nt->decoder.level]);
     if (next_func) {
       /* before calling the next decoder, we check for size overflow */
       if (nt->packet_size <= nt->offset)
@@ -259,27 +262,31 @@ static gboolean get_linux_sll_name(name_add_t *nt)
    * seem to be just padding */
   nt->offset += 16;
   return TRUE;
-}                               /* get_linux_sll_name */
+}
+
+/* decode and set name */
+static void eth_set_name(name_add_t *nt, node_id_t *node_id, protostack_t *node_protos)
+{
+  const gchar *solved;
+  const gchar *numeric = ether_to_str(node_id->addr.eth);
+
+  /* solved is not NULL only if the address is in ethers file */
+  if (pref.name_res)
+    solved = get_ether_name(node_id->addr.eth);
+  else
+    solved = NULL;
+
+  add_name(numeric, solved, node_id, node_protos, nt);
+}
 
 /* common handling for ethernet-like data */
 static gboolean eth_name_common(name_add_t *nt)
 {
-  const gchar *numeric, *solved;
+  fill_node_id(&nt->dst_node_id, LINK6, nt, 0, 0, 0);
+  eth_set_name(nt, &nt->dst_node_id, nt->dst_node_protos);
 
-  if (nt->dir == INBOUND)
-    fill_node_id(&nt->node_id, LINK6, nt, 0, 0, 0);
-  else
-    fill_node_id(&nt->node_id, LINK6, nt, 6, 0, 0);
-
-  numeric = ether_to_str(nt->node_id.addr.eth);
-
-  /* solved is not NULL only if the address is in ethers file */
-  if (pref.name_res)
-    solved = get_ether_name(nt->node_id.addr.eth);
-  else
-    solved = NULL;
-
-  add_name(numeric, solved, &nt->node_id, nt);
+  fill_node_id(&nt->src_node_id, LINK6, nt, 6, 0, 0);
+  eth_set_name(nt, &nt->src_node_id, nt->src_node_protos);
 
   nt->offset += 14;
   return TRUE;
@@ -310,9 +317,6 @@ static gboolean get_arp_name(name_add_t *nt)
   /* We can only tell the IP address of the asking node.
    * Most of the times the callee will be the broadcast
    * address */
-  if (nt->dir == INBOUND)
-    return FALSE;
-
   if (nt->packet_size <= nt->offset + 4) {
     missing_data_msg(nt, "ARP");
     return FALSE;
@@ -330,11 +334,11 @@ static gboolean get_arp_name(name_add_t *nt)
 
   hardware_len = *(guint8 *)(nt->p + nt->offset + 4);
 
-  fill_node_id(&nt->node_id, IP, nt, 8 + hardware_len, 0, AF_INET);
+  fill_node_id(&nt->src_node_id, IP, nt, 8 + hardware_len, 0, AF_INET);
 
-  add_name(ipv4_to_str(nt->node_id.addr.ip.addr_v4),
-           dns_lookup(&nt->node_id.addr.ip),
-           &nt->node_id, nt);
+  add_name(ipv4_to_str(nt->src_node_id.addr.ip.addr_v4),
+           dns_lookup(&nt->src_node_id.addr.ip),
+           &nt->src_node_id, nt->src_node_protos, nt);
 
   /* ARP doesn't carry any other protocol on top, so we return
    * directly */
@@ -343,39 +347,38 @@ static gboolean get_arp_name(name_add_t *nt)
 
 static gboolean get_ip_name(name_add_t *nt)
 {
-  if (nt->dir == INBOUND)
-    fill_node_id(&nt->node_id, IP, nt, 16, 0, AF_INET);
-  else
-    fill_node_id(&nt->node_id, IP, nt, 12, 0, AF_INET);
+  fill_node_id(&nt->dst_node_id, IP, nt, 16, 0, AF_INET);
+  fill_node_id(&nt->src_node_id, IP, nt, 12, 0, AF_INET);
 
-  if (!pref.name_res)
-    add_name(ipv4_to_str(nt->node_id.addr.ip.addr_v4),
-             NULL, &nt->node_id, nt);
-  else
-    add_name(ipv4_to_str(nt->node_id.addr.ip.addr_v4),
-             dns_lookup(&nt->node_id.addr.ip),
-             &nt->node_id, nt);
+  if (!pref.name_res) {
+    add_name(ipv4_to_str(nt->src_node_id.addr.ip.addr_v4), NULL, &nt->src_node_id, nt->src_node_protos, nt);
+    add_name(ipv4_to_str(nt->dst_node_id.addr.ip.addr_v4), NULL, &nt->dst_node_id, nt->dst_node_protos, nt);
+  } else {
+    add_name(ipv4_to_str(nt->src_node_id.addr.ip.addr_v4), dns_lookup(&nt->src_node_id.addr.ip),
+             &nt->src_node_id, nt->src_node_protos, nt);
+    add_name(ipv4_to_str(nt->dst_node_id.addr.ip.addr_v4), dns_lookup(&nt->dst_node_id.addr.ip),
+             &nt->dst_node_id, nt->dst_node_protos, nt);
+  }
 
   /* IPv4 header length can be variable */
-  nt->offset += nt->offset < nt->packet_size ?
-                (nt->p[nt->offset] & 15) << 2 : 0;
+  nt->offset += nt->offset < nt->packet_size ? (nt->p[nt->offset] & 15) << 2 : 0;
   return TRUE;
 }
 
 static gboolean get_ipv6_name(name_add_t *nt)
 {
-  if (nt->dir == INBOUND)
-    fill_node_id(&nt->node_id, IP, nt, 24, 0, AF_INET6);
-  else
-    fill_node_id(&nt->node_id, IP, nt, 8, 0, AF_INET6);
+  fill_node_id(&nt->dst_node_id, IP, nt, 24, 0, AF_INET6);
+  fill_node_id(&nt->src_node_id, IP, nt, 8, 0, AF_INET6);
 
-  if (!pref.name_res)
-    add_name(ipv6_to_str(nt->node_id.addr.ip.addr_v6),
-             NULL, &nt->node_id, nt);
-  else
-    add_name(ipv6_to_str(nt->node_id.addr.ip.addr_v6),
-             dns_lookup(&nt->node_id.addr.ip),
-             &nt->node_id, nt);
+  if (!pref.name_res) {
+    add_name(ipv6_to_str(nt->src_node_id.addr.ip.addr_v6), NULL, &nt->src_node_id, nt->src_node_protos, nt);
+    add_name(ipv6_to_str(nt->dst_node_id.addr.ip.addr_v6), NULL, &nt->dst_node_id, nt->dst_node_protos, nt);
+  } else {
+    add_name(ipv6_to_str(nt->src_node_id.addr.ip.addr_v6), dns_lookup(&nt->src_node_id.addr.ip),
+             &nt->src_node_id, nt->src_node_protos, nt);
+    add_name(ipv6_to_str(nt->dst_node_id.addr.ip.addr_v6), dns_lookup(&nt->dst_node_id.addr.ip),
+             &nt->dst_node_id, nt->dst_node_protos, nt);
+  }
 
   /* IPv6 header length is always constant */
   nt->offset += 40;
@@ -388,6 +391,35 @@ static gboolean get_ipx_name(name_add_t *nt)
   return TRUE;
 }
 
+static void tcp_set_name(name_add_t *nt, node_id_t *node_id, protostack_t *node_protos)
+{
+    gchar *numeric_name;
+    gchar *resolved_name;
+
+    numeric_name = g_strdup_printf("%s:%d",
+                                   address_to_str(&node_id->addr.tcp.host),
+                                   node_id->addr.tcp.port);
+
+    if (pref.name_res) {
+      const gchar *dnsname;
+      const port_service_t *port;
+      dnsname = dns_lookup(&node_id->addr.tcp.host);
+      port = services_tcp_find(node_id->addr.tcp.port);
+      if (port)
+        resolved_name = g_strdup_printf("%s:%s", dnsname, port->name);
+      else
+        resolved_name = g_strdup_printf("%s:%d", dnsname,
+                                        node_id->addr.tcp.port);
+    }
+    else
+      resolved_name = NULL;
+
+    add_name(numeric_name, resolved_name, node_id, node_protos, nt);
+
+    g_free(numeric_name);
+    g_free(resolved_name);
+}
+
 static gboolean get_tcp_name(name_add_t *nt)
 {
   guint8 th_off_x2;
@@ -395,36 +427,14 @@ static gboolean get_tcp_name(name_add_t *nt)
 
   /* tcp names are useful only if someone uses them ... */
   if (appdata.mode == TCP) {
-    gchar *numeric_name, *resolved_name;
-    int type = nt->node_id.addr.tcp.host.type;
+    int src_type = nt->src_node_id.addr.tcp.host.type;
+    int dst_type = nt->dst_node_id.addr.tcp.host.type;
 
-    if (nt->dir == OUTBOUND)
-      fill_node_id(&nt->node_id, TCP, nt, (type == AF_INET6) ? -32 : -8, 0, type);
-    else
-      fill_node_id(&nt->node_id, TCP, nt, (type == AF_INET6) ? -16 : -4, 2, type);
+    fill_node_id(&nt->src_node_id, TCP, nt, (src_type == AF_INET6) ? -32 : -8, 0, src_type);
+    tcp_set_name(nt, &nt->src_node_id, nt->src_node_protos);
 
-    numeric_name = g_strdup_printf("%s:%d",
-                                   address_to_str(&nt->node_id.addr.tcp.host),
-                                   nt->node_id.addr.tcp.port);
-
-    if (pref.name_res) {
-      const gchar *dnsname;
-      const port_service_t *port;
-      dnsname = dns_lookup(&nt->node_id.addr.tcp.host);
-      port = services_tcp_find(nt->node_id.addr.tcp.port);
-      if (port)
-        resolved_name = g_strdup_printf("%s:%s", dnsname, port->name);
-      else
-        resolved_name = g_strdup_printf("%s:%d", dnsname,
-                                        nt->node_id.addr.tcp.port);
-    }
-    else
-      resolved_name = NULL;
-
-    add_name(numeric_name, resolved_name, &nt->node_id, nt);
-
-    g_free(numeric_name);
-    g_free(resolved_name);
+    fill_node_id(&nt->dst_node_id, TCP, nt, (dst_type == AF_INET6) ? -16 : -4, 2, dst_type);
+    tcp_set_name(nt, &nt->dst_node_id, nt->dst_node_protos);
   }
 
   if (nt->packet_size <= nt->offset + 14) {
@@ -436,7 +446,7 @@ static gboolean get_tcp_name(name_add_t *nt)
   tcp_len = hi_nibble(th_off_x2) * 4;  /* TCP header length, in bytes */
   nt->offset += tcp_len;
   return TRUE;
-}                               /* get_tcp_name */
+}
 
 
 /* TODO I still have to properly implement this. Right now it's just
@@ -445,7 +455,7 @@ static gboolean get_udp_name(name_add_t *nt)
 {
   nt->offset += 8;
   return TRUE;
-}                               /* get_udp_name */
+}
 
 
 /* TODO SET UP THE id's FOR THIS NETBIOS NAME FUNCTIONS */
@@ -477,10 +487,11 @@ static gboolean get_ipxsap_name(name_add_t *nt)
 
   g_my_debug("Sap name %s found", name);
 
-  add_name(name, name, &nt->node_id, nt);
+  add_name(name, name, &nt->src_node_id, nt->src_node_protos, nt);
+  add_name(name, name, &nt->dst_node_id, nt->dst_node_protos, nt);
 
   return FALSE; /* no other names */
-}                               /* get_ipxsap_name */
+}
 
 static gboolean get_nbss_name(name_add_t *nt)
 {
@@ -495,7 +506,7 @@ static gboolean get_nbss_name(name_add_t *nt)
   nt->offset += 2;
 
   if (mesg_type == SESSION_REQUEST) {
-    guint i = 0;
+    guint i;
     guint16 length;
     gchar *numeric_name = NULL;
     gchar name[(NETBIOS_NAME_LEN - 1) * 4 + MAXDNAME];
@@ -515,14 +526,13 @@ static gboolean get_nbss_name(name_add_t *nt)
       return FALSE;
     }
 
-    name_len = ethereal_nbns_name((const gchar *)nt->p, nt->offset, nt->packet_size, name, sizeof(name), &name_type);
-    if (nt->dir == OUTBOUND)
-      ethereal_nbns_name((const gchar *)nt->p, nt->offset + name_len,
-                         nt->packet_size, name, sizeof(name), &name_type);
+    name_len = ethereal_nbns_name((const gchar *)nt->p, nt->offset, nt->packet_size, name, 
+                                  sizeof(name), &name_type);
+    ethereal_nbns_name((const gchar *)nt->p, nt->offset + name_len, nt->packet_size, name, 
+                       sizeof(name), &name_type);
 
     /* We just want the name, not the space padding behind it */
-
-    for (; i <= (NETBIOS_NAME_LEN - 2) && name[i] != ' '; i++)
+    for (i=0; name[i] && i <= (NETBIOS_NAME_LEN - 2) && name[i] != ' '; i++)
       ;
     name[i] = '\0';
 
@@ -530,11 +540,10 @@ static gboolean get_nbss_name(name_add_t *nt)
      * port which first byte happens to be SESSION_REQUEST. In those cases
      * the name will be illegal, and we will not add it */
     if (strcmp(name, "Illegal")) {
-      numeric_name =
-        g_strdup_printf("%s %s (%s)", name, name + NETBIOS_NAME_LEN - 1,
-                        get_netbios_host_type(name_type));
+      numeric_name = g_strdup_printf("%s %s (%s)", name, name + NETBIOS_NAME_LEN - 1,
+                                      get_netbios_host_type(name_type));
 
-      add_name(numeric_name, name, &nt->node_id, nt);
+      add_name(numeric_name, name, &nt->src_node_id, nt->src_node_protos, nt);
       g_free(numeric_name);
     }
 
@@ -542,7 +551,7 @@ static gboolean get_nbss_name(name_add_t *nt)
   }
 
   return TRUE;
-}                               /* get_nbss_name */
+}
 
 static gboolean get_nbdgm_name(name_add_t *nt)
 {
@@ -552,7 +561,7 @@ static gboolean get_nbdgm_name(name_add_t *nt)
   gboolean name_found = FALSE;
   int name_type;
   int len;
-  guint i = 0;
+  guint i;
 
   if (nt->packet_size < nt->offset + 1)
     return FALSE; /* not a real nbgdm packet */
@@ -567,21 +576,18 @@ static gboolean get_nbdgm_name(name_add_t *nt)
     nt->offset += 4;
     len = ethereal_nbns_name((const gchar *)nt->p, nt->offset, nt->packet_size, name, sizeof(name), &name_type);
 
-    if (nt->dir == INBOUND)
-      ethereal_nbns_name((const gchar *)nt->p, nt->offset + len, nt->packet_size, name, sizeof(name), &name_type);
+    ethereal_nbns_name((const gchar *)nt->p, nt->offset + len, nt->packet_size, name, sizeof(name), &name_type);
     name_found = TRUE;
   }
   else if (mesg_type == 0x14 || mesg_type == 0x15 || mesg_type == 0x16) {
-    if (nt->dir == INBOUND) {
-      len = ethereal_nbns_name((const gchar *)nt->p, nt->offset, nt->packet_size, name, sizeof(name), &name_type);
-      name_found = TRUE;
-    }
+    len = ethereal_nbns_name((const gchar *)nt->p, nt->offset, nt->packet_size, name, sizeof(name), &name_type);
+    name_found = TRUE;
   }
 
   if (name_found) {
     /* We just want the name, not the space padding behind it */
 
-    for (; i <= (NETBIOS_NAME_LEN - 2) && name[i] != ' '; i++)
+    for (i=0; name[i] && i <= (NETBIOS_NAME_LEN - 2) && name[i] != ' '; i++)
       ;
     name[i] = '\0';
 
@@ -592,16 +598,16 @@ static gboolean get_nbdgm_name(name_add_t *nt)
         g_strdup_printf("%s %s (%s)", name, name + NETBIOS_NAME_LEN - 1,
                         get_netbios_host_type(name_type));
 
-      add_name(numeric_name, name, &nt->node_id, nt);
+      add_name(numeric_name, name, &nt->dst_node_id, nt->dst_node_protos, nt);
       g_free(numeric_name);
     }
   }
   return FALSE; /* no other names */
-}                               /* get_nbdgm_name */
+}
 
 
 static void add_name(const gchar *numeric_name, const gchar *resolved_name,
-                     const node_id_t *node_id, const name_add_t *nt)
+                     const node_id_t *node_id, protostack_t *node_protos, const name_add_t *nt)
 {
   protocol_t *protocol = NULL;
   GList *name_item = NULL;
@@ -612,9 +618,9 @@ static void add_name(const gchar *numeric_name, const gchar *resolved_name,
      note: protocol_stack_find returns a const ptr, but this function
      modifies it. At this point, is safe
    */
-  protocol = (protocol_t *)protocol_stack_find(nt->decoder.protos,
+  protocol = (protocol_t *)protocol_stack_find(node_protos,
                                                nt->decoder.level,
-                                               nt->decoder.tokens->protonames[nt->decoder.level]);
+                                               nt->decoder.packet_protos->protonames[nt->decoder.level]);
 
   key.node_id = *node_id;
 

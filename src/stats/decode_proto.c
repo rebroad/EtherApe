@@ -105,10 +105,8 @@ static void decode_proto_add_fmt(decode_proto_t *dp, const gchar *fmt, ...);
 /* advances current packet start to prepare for next protocol */
 static void add_offset(decode_proto_t *dp, guint offset);
 
-static void add_node_packet(const guint8 *packet,
-                            guint raw_size,
-                            packet_info_t *packet_info,
-                            const node_id_t *node_id,
+static void add_node_packet(node_t *node,
+                            packet_info_t *packet,
                             packet_direction direction);
 
 /* decoder func proto */
@@ -252,6 +250,8 @@ void packet_acquired(guint8 *cap_bytes, guint cap_size, guint orig_size)
   packet_info_t *packet;
   link_id_t link_id;
   decode_proto_t decp;
+  node_t *src_node;
+  node_t *dst_node;
 
   if (!lkentry || !lkentry->fun) {
     g_error(_("Data link entry not initialized"));
@@ -272,10 +272,26 @@ void packet_acquired(guint8 *cap_bytes, guint cap_size, guint orig_size)
   appdata.n_packets++;
   appdata.total_mem_packets++;
 
-  /* Add this packet information to the src and dst nodes. If they
-   * don't exist, create them */
-  add_node_packet(cap_bytes, cap_size, packet, &decp.src_node_id, OUTBOUND);
-  add_node_packet(cap_bytes, cap_size, packet, &decp.dst_node_id, INBOUND);
+  src_node = nodes_catalog_find(&decp.src_node_id);
+  if (src_node == NULL) {
+    /* creates the new node, adding it to the catalog */
+    src_node = nodes_catalog_new(&decp.src_node_id);
+    g_assert(src_node);
+  }
+  dst_node = nodes_catalog_find(&decp.dst_node_id);
+  if (dst_node == NULL) {
+    /* creates the new node, adding it to the catalog */
+    dst_node = nodes_catalog_new(&decp.dst_node_id);
+    g_assert(dst_node);
+  }
+
+  /* Add this packet information to the src and dst nodes */
+  add_node_packet(src_node, packet, OUTBOUND);
+  add_node_packet(dst_node, packet, INBOUND);
+
+  /* Update names list for these nodes */
+  get_packet_names(&src_node->node_stats.stats_protos, &dst_node->node_stats.stats_protos, 
+                   cap_bytes, cap_size, &packet->prot_desc, lkentry->dlt_linktype);
 
   /* And now we update link traffic information for this packet 
      packets originating from lesser addresses are arbitrarily marked outbound
@@ -302,20 +318,10 @@ void packet_acquired(guint8 *cap_bytes, guint cap_size, guint orig_size)
 /* We update node information for each new packet that arrives in the
  * network. If the node the packet refers to is unknown, we
  * create it. */
-static void add_node_packet(const guint8 *raw_packet,
-                            guint raw_size,
+static void add_node_packet(node_t *node,
                             packet_info_t *packet,
-                            const node_id_t *node_id,
                             packet_direction direction)
 {
-  node_t *node;
-
-  node = nodes_catalog_find(node_id);
-  if (node == NULL) {
-    /* creates the new node, adding it to the catalog */
-    node = nodes_catalog_new(node_id);
-    g_assert(node);
-  }
 
   traffic_stats_add_packet(&node->node_stats, packet, direction);
 
@@ -324,10 +330,6 @@ static void add_node_packet(const guint8 *raw_packet,
    * node is active again */
   if (node->node_stats.pkt_list.length == 1)
     new_nodes_add(node);
-
-  /* Update names list for this node */
-  get_packet_names(&node->node_stats.stats_protos, raw_packet, raw_size,
-                   &packet->prot_desc, direction, lkentry->dlt_linktype);
 } 
 
 static void decode_protocol_stack(decode_proto_t *dp, packet_protos_t *protostack_tofill,

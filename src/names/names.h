@@ -21,10 +21,11 @@
 void init_names(void);
 void cleanup_names(void);
 
-void get_packet_names(protostack_t *pstk,
+/* decode names from packet for both nodes */
+void get_packet_names(protostack_t *src_node_pstk,
+                      protostack_t *dst_node_pstk,
                       const guint8 *packet,
                       guint16 size,
-                      const packet_protos_t *prot_stack,
-                      packet_direction direction,
+                      const packet_protos_t *packet_prot_stack,
                       int link_type);
 
