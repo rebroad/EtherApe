@@ -87,12 +87,7 @@ struct pref_struct
    * disappears from the diagram */
   gdouble gui_link_timeout_time;
 
-  /* After this time has passed with no traffic for a link, it
-  * is deleted from memory */
-  gdouble link_timeout_time;
-
-  /* after this time has passed without traffic on a protocol, it's removed
-   * from the link protocol stats */
+  /* after this time has passed without traffic, the link is removed */
   gdouble proto_link_timeout_time;
 
   guint32 refresh_period;       /* Time between diagram refreshes */

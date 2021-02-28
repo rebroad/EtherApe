@@ -37,7 +37,6 @@ void on_inner_ring_scale_slider_adjustment_changed(GtkAdjustment *adj);
 void on_node_to_spin_adjustment_changed(GtkAdjustment *adj);
 void on_gui_node_to_spin_adjustment_changed(GtkAdjustment *adj);
 void on_proto_node_to_spin_adjustment_changed(GtkAdjustment *adj);
-void on_link_to_spin_adjustment_changed(GtkAdjustment *adj);
 void on_gui_link_to_spin_adjustment_changed(GtkAdjustment *adj);
 void on_proto_link_to_spin_adjustment_changed(GtkAdjustment *adj);
 void on_proto_to_spin_adjustment_changed(GtkAdjustment *adj);

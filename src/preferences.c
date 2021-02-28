@@ -167,9 +167,8 @@ static const struct preference preferences[] = {
 
   MKPREF(node_timeout_time, double, 120000.0),
   MKPREF(gui_node_timeout_time, double, 60000.0),
-  MKPREF(proto_node_timeout_time, double, 0),
+  MKPREF(proto_node_timeout_time, double, 120000.0),
 
-  MKPREF(link_timeout_time, double, 20000.0),
   MKPREF(gui_link_timeout_time, double, 20000.0),
   MKPREF(proto_link_timeout_time, double, 600000.0),
 
@@ -234,6 +233,7 @@ static gboolean check_obsolete_config(GKeyFile *gkey)
   /* list of obsolete keys to check */
   static const char *older_configs[] = { 
                                         "link_node_ratio",
+                                        "link_timeout_time",
                                         /* must be the last element */
                                         NULL  
                                         };

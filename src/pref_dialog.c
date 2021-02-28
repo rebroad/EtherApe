@@ -108,8 +108,6 @@ void initialize_pref_controls(void)
   spin = GTK_SPIN_BUTTON(gtk_builder_get_object(appdata.xml, "proto_node_to_spin"));
   gtk_spin_button_set_value(spin, pref.proto_node_timeout_time/MILLI);
 
-  spin = GTK_SPIN_BUTTON(gtk_builder_get_object(appdata.xml, "link_to_spin"));
-  gtk_spin_button_set_value(spin, pref.link_timeout_time/MILLI);
   spin = GTK_SPIN_BUTTON(gtk_builder_get_object(appdata.xml, "gui_link_to_spin"));
   gtk_spin_button_set_value(spin, pref.gui_link_timeout_time/MILLI);
   spin = GTK_SPIN_BUTTON(gtk_builder_get_object(appdata.xml, "proto_link_to_spin"));
@@ -203,10 +201,6 @@ void initialize_pref_controls(void)
   g_signal_connect(G_OBJECT(gtk_spin_button_get_adjustment(GTK_SPIN_BUTTON(widget))),
                    "value_changed",
                    G_CALLBACK(on_proto_node_to_spin_adjustment_changed), NULL);
-  widget = GTK_WIDGET(gtk_builder_get_object(appdata.xml, "link_to_spin"));
-  g_signal_connect(G_OBJECT(gtk_spin_button_get_adjustment(GTK_SPIN_BUTTON(widget))),
-                   "value_changed",
-                   G_CALLBACK(on_link_to_spin_adjustment_changed), NULL);
   widget = GTK_WIDGET(gtk_builder_get_object(appdata.xml, "gui_link_to_spin"));
   g_signal_connect(G_OBJECT(gtk_spin_button_get_adjustment(GTK_SPIN_BUTTON(widget))),
                    "value_changed",
@@ -302,11 +296,6 @@ void on_gui_node_to_spin_adjustment_changed(GtkAdjustment *adj)
 void on_proto_node_to_spin_adjustment_changed(GtkAdjustment *adj)
 {
   pref.proto_node_timeout_time = gtk_adjustment_get_value(adj)*MILLI;   /* value in ms */
-}
-
-void on_link_to_spin_adjustment_changed(GtkAdjustment *adj)
-{
-  pref.link_timeout_time = gtk_adjustment_get_value(adj)*MILLI; /* value in ms */
 }
 
 void on_gui_link_to_spin_adjustment_changed(GtkAdjustment *adj)

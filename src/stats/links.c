@@ -216,9 +216,9 @@ static gint update_link(link_id_t *link_id, link_t *link, gpointer delete_list_p
   else {
     /* no packets remaining on link - if link expiration active, see if the
      * link is expired */
-    if (pref.link_timeout_time) {
+    if (pref.proto_link_timeout_time) {
       diffms = subtract_times_ms(&appdata.now, &link->link_stats.stats.last_time);
-      if (diffms >= pref.link_timeout_time) {
+      if (diffms >= pref.proto_link_timeout_time) {
         /* link expired, remove */
         GList * *delete_list = (GList * *)delete_list_ptr;
 

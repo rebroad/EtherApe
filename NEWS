@@ -14,6 +14,7 @@
        'link' as in the past releases. 'link' xml elements now refer to 
        node-to-node statistics.
      * removed node-link ratio preference.
+     * merged link protocol and traffic timeout preferences.
 
    Changes summary:
      * fix for ticket #100, thanks to Salam for reporting it.
@@ -27,6 +28,7 @@
        or just to calcolate quickly statistics of a dump file).
      * new no-display mode (command line only), disables diagram updates (again, mostly
        for testing).
+     * merged link protocol and traffic timeouts.
 
 
   Overview of changes in EtherApe 0.9.19 (Friday, May 15, 2020):
