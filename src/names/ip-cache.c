@@ -74,11 +74,12 @@ static gboolean ipcache_prune(gpointer data)
     .now = time(NULL), .to_free = NULL,
   };
 
-  g_tree_foreach(ipcache_tree, find_expired, &ctx);
+  if (ipcache_tree) {
+    g_tree_foreach(ipcache_tree, find_expired, &ctx);
 
-  g_slist_foreach(ctx.to_free, del_expired, NULL);
-  g_slist_free(ctx.to_free);
-
+    g_slist_foreach(ctx.to_free, del_expired, NULL);
+    g_slist_free(ctx.to_free);
+  }
   return TRUE;
 }
 
@@ -104,6 +105,8 @@ void ipcache_clear(void)
 
 long ipcache_active_entries(void)
 {
+  if (!ipcache_tree)
+    return 0;
   return g_tree_nnodes(ipcache_tree);
 }
 
@@ -113,6 +116,9 @@ const char *ipcache_lookup(const address_t *addr)
 
   if (!pref.name_res)
     return address_to_str(addr); /* name resolution globally disabled */
+
+  if (!ipcache_tree)
+    return NULL;
 
   item = g_tree_lookup(ipcache_tree, addr);
   if (item) {

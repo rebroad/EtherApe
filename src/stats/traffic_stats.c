@@ -153,9 +153,6 @@ static gboolean traffic_stats_purge_expired_packets(traffic_stats_t *pkt_stat, d
 /* recalculate averages */
 void traffic_stats_calc_averages(traffic_stats_t *pkt_stat, double avg_time)
 {
-  if (g_queue_is_empty(&pkt_stat->pkt_list))
-    return;
-
   basic_stats_avg(&pkt_stat->stats, avg_time);
   basic_stats_avg(&pkt_stat->stats_in, avg_time);
   basic_stats_avg(&pkt_stat->stats_out, avg_time);
@@ -169,9 +166,10 @@ gboolean traffic_stats_update(traffic_stats_t *pkt_stat, double avg_time, double
   gdouble ms_from_oldest = avg_time;
   g_assert(pkt_stat);
 
-  if (!traffic_stats_purge_expired_packets(pkt_stat, avg_time, proto_expire_time))
+  if (!traffic_stats_purge_expired_packets(pkt_stat, avg_time, proto_expire_time)) {
+    traffic_stats_calc_averages(pkt_stat, ms_from_oldest);
     return FALSE;   /* no packets remaining */
-
+  }
 
 #if CHECK_EXPIRATION
   /* the last packet of the list is the oldest */

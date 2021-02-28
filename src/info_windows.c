@@ -690,7 +690,7 @@ gboolean update_info_windows(gpointer dummy)
   struct timeval nowtime;
 
   status = get_capture_status();
-  if (status != PLAY && status != STOP)
+  if (status == PAUSE)
     return G_SOURCE_CONTINUE;
 
   /* Update info windows at most twice a second */

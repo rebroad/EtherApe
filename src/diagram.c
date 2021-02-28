@@ -712,7 +712,15 @@ static void update_diagram(GooCanvas *canvas)
     if (pref.headless)
       gtk_main_quit();
 
-    return;
+#if DEBUG_TIMINGS
+    /* after capture stops, update the time in 100ms steps for debugging */
+    static struct timeval incr;
+    incr.tv_sec = 0;
+    incr.tv_usec = 100000;
+    timeradd(&appdata.now, &incr, &appdata.now);
+#else
+    return;  /* after replaying do not update the display anymore */
+#endif        
   }
 
   /*
@@ -745,14 +753,14 @@ static void update_diagram(GooCanvas *canvas)
 
   if (!pref.headless) {
 
-    /* update nodes */
-    diagram_update_nodes(canvas);
+    /* update background image */
+    diagram_update_background_image(canvas);
 
     /* update links */
     diagram_update_links(canvas);
 
-    /* update background image */
-    diagram_update_background_image(canvas);
+    /* update nodes */
+    diagram_update_nodes(canvas);
 
     /* update proto legend */
     update_legend();
@@ -1491,7 +1499,7 @@ static gint check_new_link(link_id_t *link_id, link_t *link, GooCanvas *canvas)
   }
 
   return FALSE;
-}                               /* check_new_link */
+}
 
 
 /* - calls update_links, so that the related link updates its average
@@ -1540,11 +1548,19 @@ static gint canvas_link_update(link_id_t *link_id, canvas_link_t *canvas_link,
   main_prot = traffic_stats_most_used_proto(&link->link_stats, pref.stack_level);
   if (main_prot) {
     double diffms;
+    double ratio;
     canvas_link->color = *protohash_color(main_prot);
 
-    /* scale color down to 10% at link timeout */
     diffms = subtract_times_ms(&appdata.now, &link->link_stats.stats.last_time);
-    scale = pow(0.10, diffms / pref.gui_link_timeout_time);
+    ratio = diffms / pref.averaging_time;
+    scale = pow(0.5, ratio);
+    if (scale < 0.1) {
+      /* too dark, just hide */
+      goo_canvas_item_hide(canvas_link->src_item);
+      goo_canvas_item_hide(canvas_link->dst_item);
+      return FALSE;
+    }
+
 
     scaledColor.red = scale * canvas_link->color.red;
     scaledColor.green = scale * canvas_link->color.green;
@@ -1572,7 +1588,7 @@ static gint canvas_link_update(link_id_t *link_id, canvas_link_t *canvas_link,
                     canvas_link->dst_item);
 
   return FALSE;
-}                               /* update_canvas_links */
+} 
 
 /* given the src and dst node centers, plus a size, draws a triangle in the
  * specified color on the provided canvas item*/
