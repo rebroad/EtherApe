@@ -1859,7 +1859,7 @@ Daniel Nylander
                                     <property name="visible">True</property>
                                     <property name="can_focus">False</property>
                                     <property name="halign">start</property>
-                                    <property name="label" translatable="yes">Diagram</property>
+                                    <property name="label" translatable="yes">Nodes</property>
                                     <property name="use_underline">True</property>
                                   </object>
                                   <packing>
@@ -1893,127 +1893,6 @@ Daniel Nylander
                               </packing>
                             </child>
                             <child>
-                              <object class="GtkBox" id="vbox41">
-                                <property name="visible">True</property>
-                                <property name="can_focus">False</property>
-                                <property name="orientation">vertical</property>
-                                <child>
-                                  <object class="GtkLabel" id="label104">
-                                    <property name="visible">True</property>
-                                    <property name="can_focus">False</property>
-                                    <property name="halign">start</property>
-                                    <property name="label" translatable="yes">Traffic Statistics</property>
-                                  </object>
-                                  <packing>
-                                    <property name="expand">False</property>
-                                    <property name="fill">False</property>
-                                    <property name="position">0</property>
-                                  </packing>
-                                </child>
-                                <child>
-                                  <object class="GtkSpinButton" id="node_to_spin">
-                                    <property name="visible">True</property>
-                                    <property name="can_focus">True</property>
-                                    <property name="tooltip_text" translatable="yes">Delete this node from memory after this much time. 0 means never timeout.</property>
-                                    <property name="primary_icon_activatable">False</property>
-                                    <property name="secondary_icon_activatable">False</property>
-                                    <property name="adjustment">adjustment7</property>
-                                    <property name="climb_rate">1</property>
-                                    <property name="update_policy">if-valid</property>
-                                  </object>
-                                  <packing>
-                                    <property name="expand">False</property>
-                                    <property name="fill">False</property>
-                                    <property name="position">1</property>
-                                  </packing>
-                                </child>
-                              </object>
-                              <packing>
-                                <property name="expand">True</property>
-                                <property name="fill">True</property>
-                                <property name="position">1</property>
-                              </packing>
-                            </child>
-                            <child>
-                              <object class="GtkBox" id="vbox42">
-                                <property name="visible">True</property>
-                                <property name="can_focus">False</property>
-                                <property name="orientation">vertical</property>
-                                <child>
-                                  <object class="GtkLabel" id="label105">
-                                    <property name="visible">True</property>
-                                    <property name="can_focus">False</property>
-                                    <property name="halign">start</property>
-                                    <property name="label" translatable="yes">Protocol Statistics</property>
-                                  </object>
-                                  <packing>
-                                    <property name="expand">False</property>
-                                    <property name="fill">False</property>
-                                    <property name="position">0</property>
-                                  </packing>
-                                </child>
-                                <child>
-                                  <object class="GtkSpinButton" id="proto_node_to_spin">
-                                    <property name="visible">True</property>
-                                    <property name="can_focus">True</property>
-                                    <property name="tooltip_text" translatable="yes">Expire protocol statistics for a node after this much time. 0 means never timeout.</property>
-                                    <property name="primary_icon_activatable">False</property>
-                                    <property name="secondary_icon_activatable">False</property>
-                                    <property name="adjustment">adjustment8</property>
-                                    <property name="climb_rate">1</property>
-                                    <property name="update_policy">if-valid</property>
-                                  </object>
-                                  <packing>
-                                    <property name="expand">False</property>
-                                    <property name="fill">False</property>
-                                    <property name="position">1</property>
-                                  </packing>
-                                </child>
-                              </object>
-                              <packing>
-                                <property name="expand">True</property>
-                                <property name="fill">True</property>
-                                <property name="position">2</property>
-                              </packing>
-                            </child>
-                          </object>
-                        </child>
-                      </object>
-                    </child>
-                    <child type="label">
-                      <object class="GtkLabel" id="label106">
-                        <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                        <property name="label" translatable="yes">&lt;i&gt;Node Timeouts (s)&lt;/i&gt;</property>
-                        <property name="use_markup">True</property>
-                      </object>
-                    </child>
-                  </object>
-                  <packing>
-                    <property name="left_attach">0</property>
-                    <property name="top_attach">1</property>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkFrame" id="frame17">
-                    <property name="visible">True</property>
-                    <property name="can_focus">False</property>
-                    <property name="label_xalign">0</property>
-                    <child>
-                      <object class="GtkAlignment" id="alignment4">
-                        <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                        <property name="top_padding">5</property>
-                        <property name="bottom_padding">5</property>
-                        <property name="left_padding">5</property>
-                        <property name="right_padding">5</property>
-                        <child>
-                          <object class="GtkBox" id="hbox9">
-                            <property name="visible">True</property>
-                            <property name="can_focus">False</property>
-                            <property name="spacing">10</property>
-                            <property name="homogeneous">True</property>
-                            <child>
                               <object class="GtkBox" id="vbox48">
                                 <property name="visible">True</property>
                                 <property name="can_focus">False</property>
@@ -2023,7 +1902,7 @@ Daniel Nylander
                                     <property name="visible">True</property>
                                     <property name="can_focus">False</property>
                                     <property name="halign">start</property>
-                                    <property name="label" translatable="yes">Diagram</property>
+                                    <property name="label" translatable="yes">Links</property>
                                     <property name="use_underline">True</property>
                                   </object>
                                   <packing>
@@ -2053,6 +1932,85 @@ Daniel Nylander
                               <packing>
                                 <property name="expand">True</property>
                                 <property name="fill">True</property>
+                                <property name="position">1</property>
+                              </packing>
+                            </child>
+                          </object>
+                        </child>
+                      </object>
+                    </child>
+                    <child type="label">
+                      <object class="GtkLabel" id="label106">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="label" translatable="yes">&lt;i&gt;Diagram Timeouts (s)&lt;/i&gt;</property>
+                        <property name="use_markup">True</property>
+                      </object>
+                    </child>
+                  </object>
+                  <packing>
+                    <property name="left_attach">0</property>
+                    <property name="top_attach">1</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkFrame" id="frame17">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="label_xalign">0</property>
+                    <child>
+                      <object class="GtkAlignment" id="alignment4">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="top_padding">5</property>
+                        <property name="bottom_padding">5</property>
+                        <property name="left_padding">5</property>
+                        <property name="right_padding">5</property>
+                        <child>
+                          <object class="GtkBox" id="hbox9">
+                            <property name="visible">True</property>
+                            <property name="can_focus">False</property>
+                            <property name="spacing">10</property>
+                            <property name="homogeneous">True</property>
+                            <child>
+                              <object class="GtkBox" id="vbox42">
+                                <property name="visible">True</property>
+                                <property name="can_focus">False</property>
+                                <property name="orientation">vertical</property>
+                                <child>
+                                  <object class="GtkLabel" id="label105">
+                                    <property name="visible">True</property>
+                                    <property name="can_focus">False</property>
+                                    <property name="halign">start</property>
+                                    <property name="label" translatable="yes">Nodes</property>
+                                  </object>
+                                  <packing>
+                                    <property name="expand">False</property>
+                                    <property name="fill">False</property>
+                                    <property name="position">0</property>
+                                  </packing>
+                                </child>
+                                <child>
+                                  <object class="GtkSpinButton" id="proto_node_to_spin">
+                                    <property name="visible">True</property>
+                                    <property name="can_focus">True</property>
+                                    <property name="tooltip_text" translatable="yes">Expire protocol statistics for a node after this much time. 0 means never timeout.</property>
+                                    <property name="primary_icon_activatable">False</property>
+                                    <property name="secondary_icon_activatable">False</property>
+                                    <property name="adjustment">adjustment8</property>
+                                    <property name="climb_rate">1</property>
+                                    <property name="update_policy">if-valid</property>
+                                  </object>
+                                  <packing>
+                                    <property name="expand">False</property>
+                                    <property name="fill">False</property>
+                                    <property name="position">1</property>
+                                  </packing>
+                                </child>
+                              </object>
+                              <packing>
+                                <property name="expand">True</property>
+                                <property name="fill">True</property>
                                 <property name="position">0</property>
                               </packing>
                             </child>
@@ -2066,7 +2024,7 @@ Daniel Nylander
                                     <property name="visible">True</property>
                                     <property name="can_focus">False</property>
                                     <property name="halign">start</property>
-                                    <property name="label" translatable="yes">Statistics</property>
+                                    <property name="label" translatable="yes">Links</property>
                                     <property name="use_underline">True</property>
                                   </object>
                                   <packing>
@@ -2079,11 +2037,11 @@ Daniel Nylander
                                   <object class="GtkSpinButton" id="proto_link_to_spin">
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
-                                    <property name="tooltip_text" translatable="yes">Remove this link from the diagram after this much time. 0 means never timeout.</property>
+                                    <property name="tooltip_text" translatable="yes">Remove this link from from statistics after this much time without traffic. 0 means never timeout.</property>
                                     <property name="text" translatable="yes">10</property>
                                     <property name="primary_icon_activatable">False</property>
                                     <property name="secondary_icon_activatable">False</property>
-                                    <property name="adjustment">adjustment9</property>
+                                    <property name="adjustment">adjustment11</property>
                                     <property name="climb_rate">1</property>
                                     <property name="update_policy">if-valid</property>
                                     <property name="value">10</property>
@@ -2109,7 +2067,7 @@ Daniel Nylander
                       <object class="GtkLabel" id="label118">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="label" translatable="yes">&lt;i&gt;Link Timeouts (s)&lt;/i&gt;</property>
+                        <property name="label" translatable="yes">&lt;i&gt;Statistics Timeouts (s)&lt;/i&gt;</property>
                         <property name="use_markup">True</property>
                       </object>
                     </child>
@@ -2136,7 +2094,7 @@ Daniel Nylander
                           <object class="GtkBox" id="hbox7">
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
-                            <property name="spacing">5</property>
+                            <property name="spacing">10</property>
                             <property name="homogeneous">True</property>
                             <child>
                               <object class="GtkBox" id="vbox46">
@@ -2182,15 +2140,7 @@ Daniel Nylander
                               </packing>
                             </child>
                             <child>
-                              <object class="GtkLabel" id="label120">
-                                <property name="visible">True</property>
-                                <property name="can_focus">False</property>
-                              </object>
-                              <packing>
-                                <property name="expand">False</property>
-                                <property name="fill">False</property>
-                                <property name="position">2</property>
-                              </packing>
+                              <placeholder/>
                             </child>
                           </object>
                         </child>
@@ -2397,9 +2347,6 @@ Daniel Nylander
     <property name="default_height">300</property>
     <property name="has_resize_grip">True</property>
     <signal name="delete-event" handler="on_node_info_delete_event" swapped="no"/>
-    <child>
-      <placeholder/>
-    </child>
     <child>
       <placeholder/>
     </child>
@@ -2775,9 +2722,6 @@ Daniel Nylander
       <placeholder/>
     </child>
     <child>
-      <placeholder/>
-    </child>
-    <child>
       <object class="GtkBox" id="vbox7">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
@@ -2839,9 +2783,6 @@ Daniel Nylander
   <object class="GtkWindow" id="prot_info">
     <property name="can_focus">False</property>
     <signal name="delete-event" handler="on_prot_info_delete_event" swapped="no"/>
-    <child>
-      <placeholder/>
-    </child>
     <child>
       <placeholder/>
     </child>
@@ -3025,9 +2966,6 @@ Daniel Nylander
     <property name="default_width">550</property>
     <property name="default_height">300</property>
     <signal name="delete-event" handler="on_delete_protocol_window" swapped="no"/>
-    <child>
-      <placeholder/>
-    </child>
     <child>
       <placeholder/>
     </child>

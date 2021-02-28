@@ -1252,41 +1252,32 @@ Conversely, --min-delay can help analyze many short lived connections.</para>
         </varlistentry>
 
         <varlistentry>
-          <term><guilabel>Node Timeouts (s)</guilabel></term>
+          <term><guilabel>Diagram Timeouts (s)</guilabel></term>
 
           <listitem>
-            <para>This section aggregates all node timeout settings.</para>
+            <para>This section aggregates all timeouts related to nodes and links visibility.</para>
 
             <variablelist>
               <varlistentry>
-                <term><guilabel>Diagram</guilabel></term>
+                <term><guilabel>Nodes</guilabel></term>
 
                 <listitem>
-                  <para>After this time without traffic, the node is removed
+                  <para>After this time without traffic, a node is removed
                   from diagram. Node data are still held in memory until the
-                  <guilabel>Traffic</guilabel> timeout expires, so if new
+                  Node Statistics Timeout expires, so if new
                   traffic comes accumulated statistics are still valid. Zero
-                  disables the timer (i.e. a node never expires).</para>
+                  disables the timer (i.e. a node will be always shown).</para>
                 </listitem>
               </varlistentry>
 
               <varlistentry>
-                <term><guilabel>Traffic</guilabel></term>
+                <term><guilabel>Links</guilabel></term>
 
                 <listitem>
-                  <para>After this time without traffic, the node is removed
-                  from memory, clearing all statistics. A zero value disables
-                  the timeout.</para>
-                </listitem>
-              </varlistentry>
-
-              <varlistentry>
-                <term><guilabel>Protocol Info</guilabel></term>
-
-                <listitem>
-                  <para>After this time without traffic on a protocol, its
-                  statistics are removed from the node. A zero value disables
-                  the timeout.</para>
+                  <para>After this time without traffic, a link is removed
+                  from diagram. Link data are still held in memory until the
+                  relevant statistics timeout expires, so if new
+                  traffic comes accumulated statistics are still valid.</para>
                 </listitem>
               </varlistentry>
             </variablelist>
@@ -1294,26 +1285,33 @@ Conversely, --min-delay can help analyze many short lived connections.</para>
         </varlistentry>
 
         <varlistentry>
-          <term><guilabel>Link Diagram Timeout (s)</guilabel></term>
+          <term><guilabel>Statistics Timeouts (s)</guilabel></term>
+              <para>These timeouts govern statistics expiration. When one
+              of these timeout expires, an item is removed and its
+              statistics gone.</para>
 
-          <listitem>
-            <para>After this time without traffic, the link is removed
-            from diagram. Link data are still held in memory until the
-            <guilabel>Global Statistics Timeout (s)</guilabel> timeout expires, so if new
-            traffic comes accumulated statistics are still valid.</para>
-          </listitem>
-        </varlistentry>
+            <variablelist>
+              <varlistentry>
+                <term><guilabel>Nodes</guilabel></term>
+                <listitem>
+                    <para>This timeout governs statistics expiration for nodes.</para>
+                    <para>After this time without traffic, a node is
+                    removed from memory, clearing all statistics. A zero value
+                    disables the timeout.</para>
+                </listitem>
+              </varlistentry>
 
-        <varlistentry>
-          <term><guilabel>Global Statistics Timeout (s)</guilabel></term>
-
-          <listitem>
-              <para>This timeout governs statistics expiration for links 
-              and global protocols.</para>
-              <para>After this time without traffic, the link or protocol is
-              removed from memory, clearing all statistics. A zero value
-              disables the timeout.</para>
-          </listitem>
+              <varlistentry>
+                <term><guilabel>Others</guilabel></term>
+                <listitem>
+                    <para>This timeout governs statistics expiration for links 
+                    and global protocols.</para>
+                    <para>After this time without traffic, a link or protocol is
+                    removed from memory, clearing all statistics. A zero value
+                    disables the timeout.</para>
+                </listitem>
+              </varlistentry>
+            </variablelist>
         </varlistentry>
       </variablelist>
 

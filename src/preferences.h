@@ -73,10 +73,6 @@ struct pref_struct
 
   /* After this time has passed with no traffic for a node, it
   * is deleted from memory */
-  gdouble node_timeout_time;
-
-  /* after this time has passed without traffic on a protocol, it's removed
-   * from the node protocol stats */
   gdouble proto_node_timeout_time;
 
   gchar * *colors;       /* list of colors to be used on the diagram. Format is

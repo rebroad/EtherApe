@@ -15,6 +15,7 @@
        node-to-node statistics.
      * removed node-link ratio preference.
      * merged link protocol and traffic timeout preferences.
+     * merged node protocol and traffic timeout preferences.
 
    Changes summary:
      * fix for ticket #100, thanks to Salam for reporting it.

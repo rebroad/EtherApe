@@ -228,9 +228,9 @@ static gboolean node_update(node_id_t *node_id, node_t *node, gpointer delete_li
   else {
     /* no packets remaining on node - if node expiration active, see if the
      * node is expired */
-    if (pref.node_timeout_time) {
+    if (pref.proto_node_timeout_time) {
       diffms = subtract_times_ms(&appdata.now, &node->node_stats.stats.last_time);
-      if (diffms >= pref.node_timeout_time) {
+      if (diffms >= pref.proto_node_timeout_time) {
         /* node expired, remove */
         GList * *delete_list = (GList * *)delete_list_ptr;
 

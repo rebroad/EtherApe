@@ -165,14 +165,13 @@ static const struct preference preferences[] = {
   MKPREF(node_size_variable, int, INST_OUTBOUND),
   MKPREF(size_mode, int, LINEAR),
 
-  MKPREF(node_timeout_time, double, 120000.0),
   MKPREF(gui_node_timeout_time, double, 60000.0),
   MKPREF(proto_node_timeout_time, double, 120000.0),
 
-  MKPREF(gui_link_timeout_time, double, 20000.0),
-  MKPREF(proto_link_timeout_time, double, 600000.0),
+  MKPREF(gui_link_timeout_time, double, 3000.0),
+  MKPREF(proto_link_timeout_time, double, 200000.0),
 
-  MKPREF(proto_timeout_time, double, 60000.0),
+  MKPREF(proto_timeout_time, double, 600000.0),
   MKPREF(refresh_period, int, 100),
   MKPREF(averaging_time, double, 2000.0),
 
@@ -234,6 +233,7 @@ static gboolean check_obsolete_config(GKeyFile *gkey)
   static const char *older_configs[] = { 
                                         "link_node_ratio",
                                         "link_timeout_time",
+                                        "node_timeout_time",
                                         /* must be the last element */
                                         NULL  
                                         };

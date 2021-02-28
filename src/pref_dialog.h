@@ -34,7 +34,6 @@ void on_refresh_spin_adjustment_changed(GtkAdjustment *adj,
                                         GtkWidget *canvas);
 void on_node_radius_slider_adjustment_changed(GtkAdjustment *adj);
 void on_inner_ring_scale_slider_adjustment_changed(GtkAdjustment *adj);
-void on_node_to_spin_adjustment_changed(GtkAdjustment *adj);
 void on_gui_node_to_spin_adjustment_changed(GtkAdjustment *adj);
 void on_proto_node_to_spin_adjustment_changed(GtkAdjustment *adj);
 void on_gui_link_to_spin_adjustment_changed(GtkAdjustment *adj);
