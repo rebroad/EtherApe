@@ -89,6 +89,7 @@ int main(int argc, char *argv[])
   gchar *position_file_path = NULL;
   gchar *cl_privdrop_user = NULL;
   poptContext poptcon;
+  gboolean no_obsolete;
 
   struct poptOption optionsTable[] = {
     {"diagram-only", 'd', POPT_ARG_NONE, &(pref.diagram_only), 0,
@@ -140,7 +141,7 @@ int main(int argc, char *argv[])
   appdata_init(&appdata);
 
   /* Load saved preferences */
-  load_config(&pref);
+  no_obsolete = load_config(&pref);
   protohash_read_prefvect(pref.colors);
   centered_node_speclist = parse_nodeset_spec_list(pref.centered_nodes);
 
@@ -301,6 +302,16 @@ int main(int argc, char *argv[])
   init_menus();
 
   gui_start_capture();
+
+  if (!no_obsolete) {
+    GtkWidget *dialog;
+    dialog = gtk_message_dialog_new(NULL, GTK_DIALOG_DESTROY_WITH_PARENT,
+                                          GTK_MESSAGE_ERROR, GTK_BUTTONS_CLOSE,
+                                          _("Obsolete setting found.\n"
+                                            "Please review and save your preferences to upgrade"));
+    gtk_dialog_run(GTK_DIALOG(dialog));
+    gtk_widget_destroy(dialog);
+  }
 
   /* MAIN LOOP */
   gtk_main();

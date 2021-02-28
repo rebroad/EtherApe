@@ -107,7 +107,7 @@ extern struct pref_struct pref;
 extern GList *centered_node_speclist;
 
 /* preferences methods */
-void load_config(struct pref_struct *p);
+gboolean load_config(struct pref_struct *p);
 void save_config(const struct pref_struct *p);
 void free_config(struct pref_struct *t);
 void copy_config(struct pref_struct *tgt, const struct pref_struct *src);

@@ -229,13 +229,38 @@ static void default_config(struct pref_struct *p)
   }
 }
 
-/* loads configuration from .gnome/Etherape */
-void load_config(struct pref_struct *p)
+/* checks for obsolete configuration */
+static gboolean check_obsolete_config(GKeyFile *gkey)
+{
+  static const char *older_configs[] = { 
+                                        /* must be the last element */
+                                        NULL  
+                                        };
+  int i;
+
+  for (i = 0; older_configs[i]; ++i) {
+    gchar *tmp;
+    tmp = g_key_file_get_string(gkey, pref_group, older_configs[i], NULL);
+    if (!tmp) 
+      continue;  /* ok, key not found */
+    
+    /* obsolete key found - error */
+    g_free(tmp);
+    return FALSE;
+  }
+
+  return TRUE;
+}
+
+
+/* loads configuration from .gnome/Etherape - returns FALSE if config contains obsolete items */
+gboolean load_config(struct pref_struct *p)
 {
   gchar *pref_file;
   GKeyFile *gkey;
   int i;
   void *addr;
+  gboolean no_obsolete;
 
   /* first set up defaults */
   default_config(p);
@@ -250,10 +275,13 @@ void load_config(struct pref_struct *p)
     pref_file = old_config_file_name();
     if (!g_key_file_load_from_file(gkey, pref_file, G_KEY_FILE_NONE, NULL)) {
       g_free(pref_file);
-      return;
+      return TRUE;
     }
   }
   g_free(pref_file);
+
+  /* first check for obsolete settings */
+  no_obsolete = check_obsolete_config(gkey);
 
   for (i = 0; i < NUM_PREFS; i++) {
     addr = (char *)p + preferences[i].offset;
@@ -284,6 +312,7 @@ void load_config(struct pref_struct *p)
   p->colors = protohash_compact(p->colors);
 
   g_key_file_free(gkey);
+  return no_obsolete;
 }
 
 /* saves configuration to .gnome/Etherape */
