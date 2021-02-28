@@ -3,9 +3,9 @@
 "http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd" [
   <!ENTITY appname          "EtherApe">
   <!ENTITY app "<application>EtherApe</application>">
-  <!ENTITY appversion   "0.9.14">
-  <!ENTITY manrevision  "0.7">
-  <!ENTITY date "March 2016">
+  <!ENTITY appversion   "0.9.20">
+  <!ENTITY manrevision  "0.8">
+  <!ENTITY date "March 2021">
 ]>
 <!--
       (Do not remove this comment block.)
@@ -46,7 +46,11 @@
       <year>2013</year>
       <year>2014</year>
       <year>2015</year>
-      <year>2016</year>
+      <year>2017</year>
+      <year>2018</year>
+      <year>2019</year>
+      <year>2020</year>
+      <year>2021</year>
       <holder>Juan Toledo</holder>
       <holder>Riccardo Ghetta</holder>
     </copyright>
@@ -126,6 +130,14 @@
         </revdescription>
       </revision>
     
+      <revision>
+        <revnumber>&appname; Manual V0.8</revnumber>
+        <date>March 2021</date>
+        <revdescription>
+          <para role="author">Riccardo Ghetta
+          <email>bchiara@users.sf.net</email></para>
+        </revdescription>
+      </revision>
     
     </revhistory>
 
@@ -912,7 +924,7 @@ Conversely, --min-delay can help analyze many short lived connections.</para>
         </varlistentry>
 
         <varlistentry>
-          <term><guilabel>Node Size Variable</guilabel></term>
+          <term><guilabel>Size Variable</guilabel></term>
 
           <listitem>
             <para>Use this drop-down list box to specify wich variable governs
@@ -1012,13 +1024,50 @@ Conversely, --min-delay can help analyze many short lived connections.</para>
         </varlistentry>
 
         <varlistentry>
+          <term><guilabel>Inner Ring Scale</guilabel></term>
+
+          <listitem>
+            <para>This slider specifies the relative diameter of the inner ring with 'central nodes' 
+                   with the outer ring.  Defaults to 0.5, i.e. central ring will diameter will be half 
+                   of outer ring's</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><guilabel>Central Node(s)</guilabel></term>
+
+          <listitem>
+            <para>This control usually is blank, but can be filled with a comma-separated list of node
+            addresses (IP, CIDR expressions, globs) or names.</para>
+            <para>The identified nodes will be placed in a inner ring, with the other nodes around.</para>
+            <para>This setting can be used, as an example, to distinguish local from internet traffic.</para>
+            <itemizedlist>
+              <para>Examples of allowed expressions:</para>
+              <listitem>
+                <para>plain address: 172.16.2.0</para>
+              </listitem>
+              <listitem>
+                <para>full name: myhost.example.com</para>
+              </listitem>
+              <listitem>
+                <para>CIDR: 172.16.2.0/24 or fe80::/16</para>
+              </listitem>
+              <listitem>
+                <para>GLOB: *.example.com</para>
+              </listitem>
+
+            </itemizedlist>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
           <term><guilabel>Capture filter</guilabel></term>
 
           <listitem>
             <para>This drop-down combo box specifies the capture filter to use
             using the standard pcap syntax.</para>
 
-            <para>Default: <guilabel>ip</guilabel></para>
+            <para>Default: <guilabel>ip or ip6</guilabel></para>
           </listitem>
         </varlistentry>
 
@@ -1078,6 +1127,38 @@ Conversely, --min-delay can help analyze many short lived connections.</para>
             numeric addresses (like the -b command line option).</para>
 
             <para>Default: <guilabel>checked</guilabel>.</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><guilabel>Use Background Image</guilabel></term>
+
+          <listitem>
+            <para>If checked, the images file specified by <guilabel>Background Image</guilabel> 
+            will be loaded and shown as canvas background.</para>
+
+            <para>Default: <guilabel>unchecked</guilabel>.</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><guilabel>Background Image</guilabel></term>
+
+          <listitem>
+            <para>An image file to load and display as canvas background.</para>
+
+            <para>Default: <guilabel>empty</guilabel>.</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><guilabel>Display pcap stats</guilabel></term>
+
+          <listitem>
+            <para>Controls the display of capture statistics. Chosing <guilabel>(Off)</guilabel> 
+            disables it.</para>
+
+            <para>Default: <guilabel>(Off)</guilabel>.</para>
           </listitem>
         </varlistentry>
 
@@ -1286,6 +1367,7 @@ Conversely, --min-delay can help analyze many short lived connections.</para>
 
         <varlistentry>
           <term><guilabel>Statistics Timeouts (s)</guilabel></term>
+          <listitem>
               <para>These timeouts govern statistics expiration. When one
               of these timeout expires, an item is removed and its
               statistics gone.</para>
@@ -1302,17 +1384,39 @@ Conversely, --min-delay can help analyze many short lived connections.</para>
               </varlistentry>
 
               <varlistentry>
-                <term><guilabel>Others</guilabel></term>
+                <term><guilabel>Links</guilabel></term>
                 <listitem>
-                    <para>This timeout governs statistics expiration for links 
-                    and global protocols.</para>
-                    <para>After this time without traffic, a link or protocol is
+                    <para>This timeout governs statistics expiration for links.</para>
+                    <para>After this time without traffic, a link is
                     removed from memory, clearing all statistics. A zero value
                     disables the timeout.</para>
                 </listitem>
               </varlistentry>
             </variablelist>
+          </listitem>
         </varlistentry>
+
+        <varlistentry>
+          <term><guilabel>Global Protocol Timeouts (s)</guilabel></term>
+          <listitem>
+              <para>These timeouts govern the protocol window expiration. When one
+              of these timeout expires, an item is removed and its
+              statistics gone.</para>
+
+            <variablelist>
+              <varlistentry>
+                <term><guilabel>Statistics</guilabel></term>
+                <listitem>
+                    <para>This timeout governs statistics expiration for global protocols.</para>
+                    <para>After this time without traffic, a protocol is
+                    removed from memory, clearing all statistics. A zero value
+                    disables the timeout.</para>
+                </listitem>
+              </varlistentry>
+            </variablelist>
+          </listitem>
+        </varlistentry>
+
       </variablelist>
 
       <figure id="figure-pref-timings">

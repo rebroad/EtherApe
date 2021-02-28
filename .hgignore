@@ -6,9 +6,9 @@ gnome-doc-utils.make
 Makefile.in
 Makefile
 autom4te.cache/*
-src/.deps/*
-src/.libs/*
-src/.indent
+.deps/*
+.libs/*
+.indent
 src/etherape
 config.*
 configure
@@ -25,5 +25,7 @@ stamp-h1
 omf_timestamp
 po/POTFILES
 po/remove-potcdate.sed
-.deps/
 .dirstamp
+.anjuta/
+.vscode/
+etherape.code-workspace
