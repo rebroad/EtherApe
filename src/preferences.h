@@ -41,7 +41,6 @@ struct pref_struct
                                          * select with certain precision this
                                          * value, the GUI uses the log10 of the
                                          * multiplier */
-  gdouble link_node_ratio;      /* link width to node radius ratio */
   gdouble inner_ring_scale; /* scale of inner ring in proportion to outer ring */
   size_mode_t size_mode;        /* Default mode for node size and
                                  * link width calculation */

@@ -93,16 +93,10 @@ void initialize_pref_controls(void)
                            log(pref.node_radius_multiplier) / log(10));
   g_signal_emit_by_name(G_OBJECT(gtk_range_get_adjustment(GTK_RANGE(widget))),
                         "changed");
-  widget = GTK_WIDGET(gtk_builder_get_object(appdata.xml, "link_width_slider"));
-  gtk_adjustment_set_value(gtk_range_get_adjustment(GTK_RANGE(widget)),
-                           pref.link_node_ratio);
-  g_signal_emit_by_name(G_OBJECT(gtk_range_get_adjustment(GTK_RANGE(widget))),
-                        "changed");
   widget = GTK_WIDGET(gtk_builder_get_object(appdata.xml, "inner_ring_scale_slider"));
   gtk_adjustment_set_value(gtk_range_get_adjustment(GTK_RANGE(widget)),
                            pref.inner_ring_scale);
-  g_signal_emit_by_name(G_OBJECT(gtk_range_get_adjustment(GTK_RANGE(widget))),
-                        "changed");
+  g_signal_emit_by_name(G_OBJECT(gtk_range_get_adjustment(GTK_RANGE(widget))), "changed");
   spin = GTK_SPIN_BUTTON(gtk_builder_get_object(appdata.xml, "averaging_spin"));
   gtk_spin_button_set_value(spin, pref.averaging_time);
   spin = GTK_SPIN_BUTTON(gtk_builder_get_object(appdata.xml, "refresh_spin"));
@@ -184,10 +178,6 @@ void initialize_pref_controls(void)
   g_signal_connect(G_OBJECT(gtk_range_get_adjustment(GTK_RANGE(widget))),
                    "value_changed",
                    G_CALLBACK(on_node_radius_slider_adjustment_changed), NULL);
-  widget = GTK_WIDGET(gtk_builder_get_object(appdata.xml, "link_width_slider"));
-  g_signal_connect(G_OBJECT(gtk_range_get_adjustment(GTK_RANGE(widget))),
-                   "value_changed",
-                   G_CALLBACK(on_link_width_slider_adjustment_changed), NULL);
   widget = GTK_WIDGET(gtk_builder_get_object(appdata.xml, "inner_ring_scale_slider"));
   g_signal_connect(G_OBJECT(gtk_range_get_adjustment(GTK_RANGE(widget))),
                    "value_changed",
@@ -277,15 +267,6 @@ void on_node_radius_slider_adjustment_changed(GtkAdjustment *adj)
   g_log(G_LOG_DOMAIN, G_LOG_LEVEL_DEBUG,
         _("Adjustment value: %g. Radius multiplier %g"),
         value, pref.node_radius_multiplier);
-}
-
-void on_link_width_slider_adjustment_changed(GtkAdjustment *adj)
-{
-  double value = gtk_adjustment_get_value(adj);
-  pref.link_node_ratio = value;
-  g_log(G_LOG_DOMAIN, G_LOG_LEVEL_DEBUG,
-        _("Adjustment value: %g. Link-node ratio %g"),
-        value, pref.link_node_ratio);
 }
 
 void on_inner_ring_scale_slider_adjustment_changed(GtkAdjustment *adj)

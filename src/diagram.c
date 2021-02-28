@@ -1697,8 +1697,8 @@ static gdouble get_link_size(const basic_stats_t *link_stats)
         result = sqrt(data + 1);
         break;
   }
-  return 1.0 + pref.node_radius_multiplier * pref.link_node_ratio * result;
-}                               /* get_link_size */
+  return 1.0 + pref.node_radius_multiplier * result;
+}
 
 
 

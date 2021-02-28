@@ -162,7 +162,6 @@ static const struct preference preferences[] = {
 
   MKPREF(inner_ring_scale, double, 0.5),
   MKPREF(node_radius_multiplier, double, 0.0005),
-  MKPREF(link_node_ratio, double, 1.0),
   MKPREF(node_size_variable, int, INST_OUTBOUND),
   MKPREF(size_mode, int, LINEAR),
 
@@ -232,7 +231,9 @@ static void default_config(struct pref_struct *p)
 /* checks for obsolete configuration */
 static gboolean check_obsolete_config(GKeyFile *gkey)
 {
+  /* list of obsolete keys to check */
   static const char *older_configs[] = { 
+                                        "link_node_ratio",
                                         /* must be the last element */
                                         NULL  
                                         };

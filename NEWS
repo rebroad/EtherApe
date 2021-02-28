@@ -13,6 +13,7 @@
      * the link-level xml element is now called 'link-id', instead of simply 
        'link' as in the past releases. 'link' xml elements now refer to 
        node-to-node statistics.
+     * removed node-link ratio preference.
 
    Changes summary:
      * fix for ticket #100, thanks to Salam for reporting it.
@@ -20,6 +21,8 @@
      * patch to remove artifact when resizing, thanks to Ronald Henderson
      * xml output now containes also link and global protocols statistics.
      * link fades with averaging times
+     * node-link ratio slider removed, ratio always fixed at 1 (links sizes are aligned
+       with nodes)
      * improve statistics repeatability esp. when setting max-delay=0 (useful for tests
        or just to calcolate quickly statistics of a dump file).
      * new no-display mode (command line only), disables diagram updates (again, mostly

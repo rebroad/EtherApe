@@ -1012,15 +1012,6 @@ Conversely, --min-delay can help analyze many short lived connections.</para>
         </varlistentry>
 
         <varlistentry>
-          <term><guilabel>Link Width - Node Radius Ratio</guilabel></term>
-
-          <listitem>
-            <para>This slider specifies the ratio between node and link sizes.</para>
-            <para>Default: <guilabel>1</guilabel>.</para>
-          </listitem>
-        </varlistentry>
-
-        <varlistentry>
           <term><guilabel>Capture filter</guilabel></term>
 
           <listitem>
