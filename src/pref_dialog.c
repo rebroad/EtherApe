@@ -452,7 +452,6 @@ typedef struct _EATreePos
   GtkListStore *gs;
 } EATreePos;
 
-
 /* fill ep with the listore for the color treeview, creating it if necessary
    Returns FALSE if something goes wrong
 */
@@ -490,23 +489,15 @@ static gboolean get_color_store(EATreePos *ep)
   return TRUE;
 }
 
-
-void on_color_add_button_clicked(GtkButton *button, gpointer user_data)
+void on_color_edit_dialog_show(GtkWidget *wdg, gpointer user_data)
 {
-  GtkWidget *dlg =
-    GTK_WIDGET(gtk_builder_get_object(appdata.xml, "colorselectiondialog"));
-  g_object_set_data(G_OBJECT(dlg), "isadd", GINT_TO_POINTER(TRUE));
-  gtk_widget_show(dlg);
-}                               /* on_color_add_button_clicked */
-
-void on_color_change_button_clicked(GtkButton *button, gpointer user_data)
-{
-  GtkTreePath *gpath;
-  GtkTreeViewColumn *gcol;
-  GtkTreeIter it;
+  gchar *protocol_string;
   GdkRGBA *color;
-  GtkColorSelectionDialog *dlg;
-  GtkColorSelection *csel;
+  GtkTreePath *gpath = NULL;
+  GtkTreeViewColumn *gcol = NULL;
+  GtkTreeIter it;
+  GtkComboBox *cbox;
+  GtkColorChooser *chos;
   EATreePos ep;
 
   if (!get_color_store(&ep))
@@ -514,25 +505,41 @@ void on_color_change_button_clicked(GtkButton *button, gpointer user_data)
 
   /* gets the row (path) at cursor */
   gtk_tree_view_get_cursor(ep.gv, &gpath, &gcol);
-  if (!gpath)
-    return; /* no row selected */
+  if (gpath) {
+    /* row selected */
+    if (!gtk_tree_model_get_iter(GTK_TREE_MODEL(ep.gs), &it, gpath))
+      return; /* path not found */
 
-  /* get iterator from path */
-  if (!gtk_tree_model_get_iter(GTK_TREE_MODEL(ep.gs), &it, gpath))
-    return;
+    gtk_tree_model_get(GTK_TREE_MODEL(ep.gs), &it, 1, &color, 2, &protocol_string, -1);
 
-  gtk_tree_model_get(GTK_TREE_MODEL(ep.gs), &it, 1, &color, -1);
+    cbox = GTK_COMBO_BOX(gtk_builder_get_object(appdata.xml, "protocol_entry"));
+    cbox_add_select(cbox, protocol_string);
 
-  dlg = GTK_COLOR_SELECTION_DIALOG(
-    gtk_builder_get_object(appdata.xml, "colorselectiondialog"));
+    chos = GTK_COLOR_CHOOSER(gtk_builder_get_object(appdata.xml, "color_entry"));
+    gtk_color_chooser_set_rgba(chos, color);
 
-  csel = GTK_COLOR_SELECTION(gtk_color_selection_dialog_get_color_selection(dlg));
-  gtk_color_selection_set_current_rgba(csel, color);
-  gtk_color_selection_set_previous_rgba(csel, color);
+    g_free(protocol_string);
+  }
+}
 
-  g_object_set_data(G_OBJECT(dlg), "isadd", GINT_TO_POINTER(FALSE));
-  gtk_widget_show(GTK_WIDGET(dlg));
-}                               /* on_color_change_button_clicked */
+
+void on_color_add_button_clicked(GtkButton *button, gpointer user_data)
+{
+  GtkWidget *dlg = GTK_WIDGET(gtk_builder_get_object(appdata.xml, "color_edit_dialog"));
+  if (dlg) {
+    g_object_set_data(G_OBJECT(dlg), "isadd", GINT_TO_POINTER(TRUE));
+    gtk_widget_show(dlg);
+  }
+} 
+
+void on_color_edit_button_clicked(GtkButton *button, gpointer user_data)
+{
+  GtkWidget *dlg = GTK_WIDGET(gtk_builder_get_object(appdata.xml, "color_edit_dialog"));
+  if (dlg) {
+    g_object_set_data(G_OBJECT(dlg), "isadd", GINT_TO_POINTER(FALSE));
+    gtk_widget_show(dlg);
+  }
+} 
 
 void on_color_remove_button_clicked(GtkButton *button, gpointer user_data)
 {
@@ -552,21 +559,16 @@ void on_color_remove_button_clicked(GtkButton *button, gpointer user_data)
   if (!gtk_tree_model_get_iter(GTK_TREE_MODEL(ep.gs), &it, gpath))
     return; /* path not found */
 
-#if GTK_CHECK_VERSION(2, 2, 0)
   if (gtk_list_store_remove(ep.gs, &it)) {
     /* iterator still valid, selects current pos */
     gpath = gtk_tree_model_get_path(GTK_TREE_MODEL(ep.gs), &it);
     gtk_tree_view_set_cursor(ep.gv, gpath, NULL, 0);
     gtk_tree_path_free(gpath);
   }
-#else
-  /* gtk < 2.2 had gtk_list_store_remove void */
-  gtk_list_store_remove(ep.gs, &it);
-#endif
 
   colors_changed = TRUE;
   color_list_to_pref();
-}                               /* on_color_remove_button_clicked */
+}
 
 void on_colordiag_ok_clicked(GtkButton *button, gpointer user_data)
 {
@@ -619,82 +621,72 @@ void on_colordiag_ok_clicked(GtkButton *button, gpointer user_data)
 
   color_list_to_pref();
   colors_changed = TRUE;
-}                               /* on_colordiag_ok_clicked */
-
-
-
-void on_protocol_edit_button_clicked(GtkButton *button, gpointer user_data)
-{
-  GtkWidget *protocol_edit_dialog = NULL;
-  protocol_edit_dialog = GTK_WIDGET(gtk_builder_get_object(appdata.xml, "protocol_edit_dialog"));
-  gtk_widget_show(protocol_edit_dialog);
-}                               /* on_protocol_edit_button_clicked */
-
-void on_protocol_edit_dialog_show(GtkWidget *wdg, gpointer user_data)
-{
-  gchar *protocol_string;
-  GtkTreePath *gpath = NULL;
-  GtkTreeViewColumn *gcol = NULL;
-  GtkTreeIter it;
-  GtkComboBox *cbox;
-  EATreePos ep;
-
-  if (!get_color_store(&ep))
-    return;
-
-  /* gets the row (path) at cursor */
-  gtk_tree_view_get_cursor(ep.gv, &gpath, &gcol);
-  if (!gpath)
-    return; /* no row selected */
-
-  if (!gtk_tree_model_get_iter(GTK_TREE_MODEL(ep.gs), &it, gpath))
-    return; /* path not found */
-
-  gtk_tree_model_get(GTK_TREE_MODEL(ep.gs), &it, 2, &protocol_string, -1);
-
-  cbox = GTK_COMBO_BOX(gtk_builder_get_object(appdata.xml, "protocol_entry"));
-  cbox_add_select(cbox, protocol_string);
-
-  g_free(protocol_string);
 }
 
-
-void on_protocol_edit_ok_clicked(GtkButton *button, gpointer user_data)
+void on_color_edit_ok_clicked(GtkButton *button, gpointer user_data)
 {
   const gchar *combo_string;
   gchar *proto_string;
+  GdkRGBA color;
   GtkTreePath *gpath = NULL;
   GtkTreeViewColumn *gcol = NULL;
   GtkTreeIter it;
   GtkComboBox *cbox;
+  GtkColorChooser *chos;
+  gint isadd;
   EATreePos ep;
+  GtkWidget *dlg;
+  
+  dlg = GTK_WIDGET(gtk_builder_get_object(appdata.xml, "color_edit_dialog"));
+  if (!dlg)
+    return;
+
   if (!get_color_store(&ep))
     return;
 
-  /* gets the row (path) at cursor */
-  gtk_tree_view_get_cursor(ep.gv, &gpath, &gcol);
-  if (!gpath)
-    return; /* no row selected */
-
-  if (!gtk_tree_model_get_iter(GTK_TREE_MODEL(ep.gs), &it, gpath))
-    return; /* path not found */
+  /* modify or add ? */
+  isadd = GPOINTER_TO_INT(g_object_get_data(G_OBJECT(dlg), "isadd"));
 
   cbox = GTK_COMBO_BOX(gtk_builder_get_object(appdata.xml, "protocol_entry"));
   combo_string = gtk_entry_get_text(GTK_ENTRY(gtk_bin_get_child(GTK_BIN(cbox))));
   proto_string = g_utf8_strup(g_strdup(combo_string), -1);
   proto_string = remove_spaces(proto_string);
-
   cbox_add_select(cbox, proto_string);
-  gtk_list_store_set(ep.gs, &it, 2, proto_string, -1);
+
+  chos = GTK_COLOR_CHOOSER(gtk_builder_get_object(appdata.xml, "color_entry"));
+  gtk_color_chooser_get_rgba(chos, &color);
+
+  /* gets the row (path) at cursor */
+  gtk_tree_view_get_cursor(ep.gv, &gpath, &gcol);
+  if (isadd) {
+    if (gpath) {
+      /* row sel, add/change color */
+      GtkTreeIter itsibling;
+      if (!gtk_tree_model_get_iter(GTK_TREE_MODEL(ep.gs), &itsibling, gpath))
+        return; /* path not found */
+      gtk_list_store_insert_before(ep.gs, &it, &itsibling);
+    }
+    else
+      gtk_list_store_append(ep.gs, &it); /* no row selected, append */
+  }
+  else {
+    if (!gpath ||
+        !gtk_tree_model_get_iter(GTK_TREE_MODEL(ep.gs), &it, gpath))
+      return; /* path or node not found */
+  }
+
+  gtk_list_store_set(ep.gs, &it, 
+                     0, COLSPACES, 
+                     1, &color, 
+                     2, proto_string, 
+                     -1);
 
   g_free(proto_string);
-  gtk_widget_hide(GTK_WIDGET(gtk_builder_get_object(appdata.xml, "protocol_edit_dialog")));
+  gtk_widget_hide(dlg);
 
   colors_changed = TRUE;
   color_list_to_pref();
-}                               /* on_protocol_edit_ok_clicked */
-
-
+}
 
 static void pref_to_color_list(void)
 {

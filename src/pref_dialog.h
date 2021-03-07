@@ -50,10 +50,9 @@ void on_background_image_path_selected(GtkFileChooserButton *filechooser, gpoint
 
 /* proto color tab callbacks */
 void on_color_add_button_clicked(GtkButton *button, gpointer user_data);
-void on_color_change_button_clicked(GtkButton *button, gpointer user_data);
+void on_color_edit_button_clicked(GtkButton *button, gpointer user_data);
 void on_color_remove_button_clicked(GtkButton *button, gpointer user_data);
+void on_color_edit_dialog_show(GtkWidget *wdg, gpointer user_data);
+void on_color_edit_ok_clicked(GtkButton *button, gpointer user_data);
 void on_colordiag_ok_clicked(GtkButton *button, gpointer user_data);
-void on_protocol_edit_button_clicked(GtkButton *button, gpointer user_data);
-void on_protocol_edit_dialog_show(GtkWidget *wdg, gpointer user_data);
-void on_protocol_edit_ok_clicked(GtkButton *button, gpointer user_data);
 
