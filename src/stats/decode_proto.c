@@ -19,7 +19,7 @@
  */
 
 #ifdef HAVE_CONFIG_H
-#include "../../config.h"
+#include "config.h"
 #endif
 
 #include "appdata.h"
@@ -443,10 +443,10 @@ static void get_eth_type(decode_proto_t *dp)
 
   /* node ids */
   dp->dst_node_id.node_type = LINK6;
-  g_memmove(dp->dst_node_id.addr.eth, dp->cur_packet + 0,
+  memmove(dp->dst_node_id.addr.eth, dp->cur_packet + 0,
             sizeof(dp->dst_node_id.addr.eth));
   dp->src_node_id.node_type = LINK6;
-  g_memmove(dp->src_node_id.addr.eth, dp->cur_packet + 6,
+  memmove(dp->src_node_id.addr.eth, dp->cur_packet + 6,
             sizeof(dp->src_node_id.addr.eth));
 
   add_offset(dp, size_offset + 2);
@@ -493,10 +493,10 @@ static void get_fddi_type(decode_proto_t *dp)
 
   /* node ids */
   dp->dst_node_id.node_type = LINK6;
-  g_memmove(dp->dst_node_id.addr.eth, dp->cur_packet + 1,
+  memmove(dp->dst_node_id.addr.eth, dp->cur_packet + 1,
             sizeof(dp->dst_node_id.addr.eth));
   dp->src_node_id.node_type = LINK6;
-  g_memmove(dp->src_node_id.addr.eth, dp->cur_packet + 7,
+  memmove(dp->src_node_id.addr.eth, dp->cur_packet + 7,
             sizeof(dp->src_node_id.addr.eth));
 
   /* Ok, this is only temporary while I truly dissect LLC
@@ -519,10 +519,10 @@ static void get_ieee802_5_type(decode_proto_t *dp)
 
   /* node ids */
   dp->dst_node_id.node_type = LINK6;
-  g_memmove(dp->dst_node_id.addr.eth, dp->cur_packet + 2,
+  memmove(dp->dst_node_id.addr.eth, dp->cur_packet + 2,
             sizeof(dp->dst_node_id.addr.eth));
   dp->src_node_id.node_type = LINK6;
-  g_memmove(dp->src_node_id.addr.eth, dp->cur_packet + 8,
+  memmove(dp->src_node_id.addr.eth, dp->cur_packet + 8,
             sizeof(dp->src_node_id.addr.eth));
 
   if (dp->cur_len < 22)
@@ -744,7 +744,7 @@ static void get_wlan(decode_proto_t *dp)
     return;
   }
   dp->dst_node_id.node_type = LINK6;
-  g_memmove(dp->dst_node_id.addr.eth, dp->cur_packet + dstofs,
+  memmove(dp->dst_node_id.addr.eth, dp->cur_packet + dstofs,
             sizeof(dp->dst_node_id.addr.eth));
 
   if (type == 1) {
@@ -758,7 +758,7 @@ static void get_wlan(decode_proto_t *dp)
         return;
       }
       dp->src_node_id.node_type = LINK6;
-      g_memmove(dp->src_node_id.addr.eth, dp->cur_packet + srcofs,
+      memmove(dp->src_node_id.addr.eth, dp->cur_packet + srcofs,
                 sizeof(dp->src_node_id.addr.eth));
       add_offset(dp, 16);
     }
@@ -774,7 +774,7 @@ static void get_wlan(decode_proto_t *dp)
     return;
   }
   dp->src_node_id.node_type = LINK6;
-  g_memmove(dp->src_node_id.addr.eth, dp->cur_packet + srcofs,
+  memmove(dp->src_node_id.addr.eth, dp->cur_packet + srcofs,
             sizeof(dp->src_node_id.addr.eth));
 
   if (fromtods != 3)
@@ -984,12 +984,12 @@ static void get_ip(decode_proto_t *dp)
           dp->dst_node_id.node_type = IP;
           address_clear(&dp->dst_node_id.addr.ip);
           dp->dst_node_id.addr.ip.type = AF_INET;
-          g_memmove(dp->dst_node_id.addr.ip.addr_v4, dp->cur_packet + 16,
+          memmove(dp->dst_node_id.addr.ip.addr_v4, dp->cur_packet + 16,
                     sizeof(dp->dst_node_id.addr.ip.addr_v4));
           dp->src_node_id.node_type = IP;
           address_clear(&dp->src_node_id.addr.ip);
           dp->src_node_id.addr.ip.type = AF_INET;
-          g_memmove(dp->src_node_id.addr.ip.addr_v4, dp->cur_packet + 12,
+          memmove(dp->src_node_id.addr.ip.addr_v4, dp->cur_packet + 12,
                     sizeof(dp->src_node_id.addr.ip.addr_v4));
         }
 
@@ -1007,11 +1007,11 @@ static void get_ip(decode_proto_t *dp)
           /* we want higher level node ids */
           dp->dst_node_id.node_type = IP;
           dp->dst_node_id.addr.ip.type = AF_INET6;
-          g_memmove(dp->dst_node_id.addr.ip.addr_v6, dp->cur_packet + 24,
+          memmove(dp->dst_node_id.addr.ip.addr_v6, dp->cur_packet + 24,
                     sizeof(dp->dst_node_id.addr.ip.addr_v6));
           dp->src_node_id.node_type = IP;
           dp->src_node_id.addr.ip.type = AF_INET6;
-          g_memmove(dp->src_node_id.addr.ip.addr_v6, dp->cur_packet + 8,
+          memmove(dp->src_node_id.addr.ip.addr_v6, dp->cur_packet + 8,
                     sizeof(dp->src_node_id.addr.ip.addr_v6));
         }
 

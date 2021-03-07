@@ -21,7 +21,7 @@
 /* disable deprecated gnome functions */
 /* #define G_DISABLE_DEPRECATED 1 */
 
-#include "../config.h"
+#include "config.h"
 
 
 #ifdef HAVE_SYS_TIME_H

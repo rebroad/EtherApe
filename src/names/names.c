@@ -16,7 +16,7 @@
  */
 
 #ifdef HAVE_CONFIG_H
-#include "../../config.h"
+#include "config.h"
 #endif
 
 #include <netinet/in.h>
@@ -229,13 +229,13 @@ static void fill_node_id(node_id_t *node_id, apemode_t apemode, const name_add_t
 
   if (TCP == apemode) {
     node_id->addr.tcp.host.type = type;
-    g_memmove(dt, nt->p + nt->offset + disp, sz);
+    memmove(dt, nt->p + nt->offset + disp, sz);
     node_id->addr.tcp.port = ntohs(*(guint16 *)(nt->p + nt->offset + portdisp));
   }
   else {
     if (IP == apemode)
       node_id->addr.ip.type = type;
-    g_memmove(dt, nt->p + nt->offset + disp, sz);
+    memmove(dt, nt->p + nt->offset + disp, sz);
   }
 }
 

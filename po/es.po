@@ -13,7 +13,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 0.9.12\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-06-01 12:25+0200\n"
+"POT-Creation-Date: 2021-03-07 11:01+0100\n"
 "PO-Revision-Date: 2011-06-01 02:13+0200\n"
 "Last-Translator: Javier Fernandez-Sanguino <jfs@debian.org>\n"
 "Language-Team: Spanish <es@li.org>\n"
@@ -47,53 +47,53 @@ msgstr ""
 "en la lista %ld). Entradas de caché IP %ld. Objetos de canvas: %ld. "
 "Refresco: %u ms"
 
-#: src/diagram.c:613
+#: src/diagram.c:618
 msgid "(Capture statistics unavailable in offline mode.)"
 msgstr ""
 
-#: src/diagram.c:668
+#: src/diagram.c:673
 #, c-format
 msgid "Bogus statspos_t (%d) pref.pcap_stats_pos"
 msgstr ""
 
-#: src/diagram.c:695
+#: src/diagram.c:700
 #, c-format
 msgid "SIGUSR1 received: exporting to %s"
 msgstr "Se recibió SIGUSR1: exportando a %s"
 
-#: src/diagram.c:949
+#: src/diagram.c:976
 msgid "Canvas node null"
 msgstr "Modo «null» de canvas"
 
 # src/diagram.c:579
-#: src/diagram.c:958
+#: src/diagram.c:985
 #, c-format
 msgid "Creating canvas_node: %s. Number of nodes %d"
 msgstr "Creando nodo de diagrama: %s. Número de nodos: %d"
 
 # src/diagram.c:681
-#: src/diagram.c:1021
+#: src/diagram.c:1049
 msgid "Unknown value or node_size_variable"
 msgstr "Valor desconocido en node_size_variable"
 
 # src/diagram.c:681
-#: src/diagram.c:1647
+#: src/diagram.c:1686
 msgid "Unknown value for link_size_variable"
 msgstr "Valor desconocido en link_size_variable"
 
 # src/diagram.c:1227
-#: src/diagram.c:1690
+#: src/diagram.c:1732
 #, c-format
 msgid "Link main protocol: %s"
 msgstr "Protocolo principal del enlace: %s"
 
 # src/diagram.c:1230
-#: src/diagram.c:1693
+#: src/diagram.c:1734
 #, fuzzy
 msgid "Link main protocol: unknown"
 msgstr "Protocolo principal del enlace desconocido"
 
-#: src/diagram.c:1756
+#: src/diagram.c:1797
 msgid ""
 "'recv': packets received; 'drop': packets dropped by OS buffering; 'ifdrop': "
 "packets dropped by interface or driver."
@@ -122,7 +122,7 @@ msgid "No prot_info_window in on_prot_info_delete_event"
 msgstr "No prot_info_window en on_prot_info_delete_event"
 
 # src/glade-strings:47
-#: src/info_windows.c:419 src/pref_dialog.c:528
+#: src/info_windows.c:419 src/pref_dialog.c:487
 #, fuzzy
 msgid "Protocol"
 msgstr "Protocolos"
@@ -179,143 +179,155 @@ msgid "Link timed out"
 msgstr "Expiró el enlace"
 
 # src/main.c:49
-#: src/main.c:95
+#: src/main.c:96
 msgid "don't display any node text identification"
 msgstr "no mostrar ninguna identificación de texto del nodo"
 
-#: src/main.c:97
+#: src/main.c:98
 msgid "replay packets from file"
 msgstr "reproducir paquetes de un fichero"
 
-#: src/main.c:97
+#: src/main.c:98
 msgid "<file to replay>"
 msgstr "<fichero a reproducir>"
 
 # src/main.c:43
-#: src/main.c:99
+#: src/main.c:100
 msgid "set capture filter"
 msgstr "definir el filtro de captura"
 
 # src/main.c:43
-#: src/main.c:99
+#: src/main.c:100
 msgid "<capture filter>"
 msgstr "<filtro de captura>"
 
 # src/main.c:41
-#: src/main.c:101
+#: src/main.c:102
 msgid "set interface to listen to"
 msgstr "definir el interfaz a escuchar"
 
 # src/main.c:41
-#: src/main.c:101
+#: src/main.c:102
 msgid "<interface name>"
 msgstr "<nombre del interfaz>"
 
-#: src/main.c:103
+#: src/main.c:104
 msgid "export to named file at end of replay"
 msgstr "exportar a un fichero con nombre al final de la reproducción"
 
-#: src/main.c:103 src/main.c:105
+#: src/main.c:104 src/main.c:106
 msgid "<file to export to>"
 msgstr "<fichero al que exportar>"
 
-#: src/main.c:105
+#: src/main.c:106
 msgid "export to named file on receiving USR1"
 msgstr "exportar al fichero indicado al recibir USR1"
 
-#: src/main.c:107
+#: src/main.c:108
 msgid "Manually position nodes based on File"
 msgstr ""
 
-#: src/main.c:107
+#: src/main.c:108
 msgid "<list of nodes and their columns>"
 msgstr ""
 
 # src/main.c:53
-#: src/main.c:109
+#: src/main.c:110
 msgid "don't move nodes around (deprecated)"
 msgstr "no recolocar los nodos (obsoleto)"
 
 # src/main.c:55
-#: src/main.c:111
+#: src/main.c:112
 msgid "limits nodes displayed"
 msgstr "limita el número de nodos mostrados"
 
 # src/main.c:55
-#: src/main.c:111
+#: src/main.c:112
 msgid "<number of nodes>"
 msgstr "<número de nodos>"
 
 # src/main.c:39
-#: src/main.c:113
+#: src/main.c:114
 msgid "mode of operation"
 msgstr "modo de operación"
 
-#: src/main.c:113
+#: src/main.c:114
 msgid "<link|ip|tcp>"
 msgstr "<link|ip|tcp>"
 
 # src/main.c:47
-#: src/main.c:115
+#: src/main.c:116
 msgid "don't convert addresses to names"
 msgstr "no convertir las direcciones en nombres"
 
-#: src/main.c:117
+#: src/main.c:118
 msgid "Disable informational messages"
 msgstr "Deshabilitar mensajes informativos"
 
-#: src/main.c:119
+#: src/main.c:120
 msgid "minimum packet delay in ms for reading capture files [cli only]"
 msgstr "mínima demora de paquetes en ms al leer archivos de captura (sólo cli)"
 
-#: src/main.c:120 src/main.c:123
+#: src/main.c:121 src/main.c:124
 msgid "<delay>"
 msgstr "<demora>"
 
-#: src/main.c:122
+#: src/main.c:123
 msgid "maximum packet delay in ms for reading capture files [cli only]"
 msgstr "máxima de paquetes en ms al leer archivos de captura (sólo cli)"
 
-#: src/main.c:125
+#: src/main.c:126
 msgid "uses the named libglade file for widgets"
 msgstr "utiliza el archivo libglade indicado para los widgets"
 
 # src/main.c:43
-#: src/main.c:125
+#: src/main.c:126
 msgid "<glade file>"
 msgstr "<archivo glade>"
 
-#: src/main.c:127
+#: src/main.c:128
+msgid ""
+"calculate statistics, but don't display nodes. If replaying, exit at end "
+"[cli only]"
+msgstr ""
+
+#: src/main.c:130
 msgid "run as the given user"
 msgstr ""
 
 # src/main.c:45
-#: src/main.c:127
+#: src/main.c:130
 #, fuzzy
 msgid "<username>"
 msgstr "<nombre de archivo>"
 
 # src/main.c:157
-#: src/main.c:211
+#: src/main.c:215
 msgid "Unrecognized mode. Do etherape --help for a list of modes"
 msgstr ""
 "Modo desconocido. Ejecute etherape --help para mostrar una lista de modos"
 
-#: src/main.c:293
+#: src/main.c:297
 msgid "DNS resolver initialization failed"
 msgstr ""
 
-#: src/main.c:342
+#: src/main.c:310
+msgid ""
+"Obsolete setting found.\n"
+"Please review and save your preferences to upgrade"
+msgstr ""
+
+#: src/main.c:356
 #, c-format
 msgid "Invalid position-file line: %s"
 msgstr ""
 
-#: src/main.c:346
+#: src/main.c:360
 #, c-format
 msgid "Column number %ld out of range"
 msgstr ""
 
-#: src/main.c:370
+#: src/main.c:384
 #, c-format
 msgid "Failed to read position file %s: %s"
 msgstr ""
@@ -464,66 +476,61 @@ msgstr "Nombre:"
 msgid "Address"
 msgstr ""
 
-#: src/pref_dialog.c:278
+#: src/pref_dialog.c:256
 #, c-format
 msgid "Adjustment value: %g. Radius multiplier %g"
 msgstr ""
 
-#: src/pref_dialog.c:287
-#, c-format
-msgid "Adjustment value: %g. Link-node ratio %g"
-msgstr ""
-
-#: src/pref_dialog.c:296
+#: src/pref_dialog.c:265
 #, c-format
 msgid "Adjustment value: %g. Inner ring scale %g"
 msgstr ""
 
 # src/glade-strings:101
-#: src/pref_dialog.c:524
+#: src/pref_dialog.c:483
 #, fuzzy
 msgid "Color"
 msgstr "Colores"
 
 # src/main.c:386
-#: src/preferences.c:342
+#: src/preferences.c:373
 #, c-format
 msgid "Preferences saved to %s"
 msgstr "Preferencias guardadas en %s"
 
-#: src/preferences.c:346
+#: src/preferences.c:377
 #, c-format
 msgid "Error saving preferences to '%s': %s"
 msgstr "Error al guardar las preferencias a '%s': %s"
 
-#: src/capture/capctl.c:87 src/capture/capctl.c:120
+#: src/capture/capctl.c:88 src/capture/capctl.c:121
 msgid "Failed to receive message from packet-capture process"
 msgstr ""
 
-#: src/capture/capctl.c:96
+#: src/capture/capctl.c:97
 msgid "Failed to send message to packet-capture process"
 msgstr ""
 
-#: src/capture/capctl.c:102
+#: src/capture/capctl.c:103
 msgid "Failed to receive packet from packet-capture process"
 msgstr ""
 
-#: src/capture/capctl.c:129
+#: src/capture/capctl.c:130
 #, c-format
 msgid "Failed to set %s environment variable to '%s': %s"
 msgstr ""
 
-#: src/capture/capctl.c:141
+#: src/capture/capctl.c:142
 #, c-format
 msgid "Unknown user '%s'"
 msgstr ""
 
-#: src/capture/capctl.c:146
+#: src/capture/capctl.c:147
 #, c-format
 msgid "Failed to switch to user '%s' (uid=%lu, gid=%lu): %s"
 msgstr ""
 
-#: src/capture/capctl.c:455
+#: src/capture/capctl.c:460
 #, fuzzy, c-format
 msgid ""
 "%s uses unsupported link type %d, cannot proceed.  Please choose another "
@@ -532,7 +539,7 @@ msgstr ""
 "El dispositivo %s utiliza el tipo de enlace no soportado %d, no se puede "
 "reproducir. Escoja otra interfaz."
 
-#: src/capture/capctl.c:465
+#: src/capture/capctl.c:470
 #, fuzzy
 msgid ""
 "This device does not support link-layer mode.  Please use IP or TCP modes."
@@ -540,7 +547,7 @@ msgstr ""
 "Este dispositivo no soporta el modo de capa de enlace. Utilice el modo IP o "
 "TCP."
 
-#: src/names/names.c:107
+#: src/names/names.c:109
 #, c-format
 msgid ""
 "not enough captured data, terminating protocol decode for '%s' (level %d)"
@@ -548,7 +555,7 @@ msgstr ""
 "no existen suficientes datos en la captura, interrumpiendo la decodificación "
 "del protocolo debido a '%s' (nivel %d)"
 
-#: src/names/names.c:111
+#: src/names/names.c:113
 #, c-format
 msgid "not enough captured data, terminating protocol decode at level %d"
 msgstr ""
@@ -556,98 +563,98 @@ msgstr ""
 "de protocolo en el nivel %d"
 
 # src/capture.c:711
-#: src/names/names.c:217
+#: src/names/names.c:221
 msgid "Unsupported ape mode in fill_node_id"
 msgstr "Modo «ape» no soportado en fill_node_id"
 
 # src/capture.c:146
 #  The case for PPP or SLIP, for instance
-#: src/stats/decode_proto.c:190
+#: src/stats/decode_proto.c:192
 #, c-format
 msgid "Link type is %s"
 msgstr "El tipo de enlace es %s"
 
-#: src/stats/decode_proto.c:261
+#: src/stats/decode_proto.c:257
 msgid "Data link entry not initialized"
 msgstr "Entrada de enlace de datos no inicializada"
 
-#: src/stats/decode_proto.c:540
+#: src/stats/decode_proto.c:556
 msgid "Radiotap:captured size too small, packet discarded"
 msgstr ""
 "Radiotap: El tamaño de la captura es demasiado pequeño, paquete descartado"
 
-#: src/stats/decode_proto.c:568
+#: src/stats/decode_proto.c:584
 msgid "PPI:captured size too small, packet discarded"
 msgstr "PPI: El tamaño de la captura es demasiado pequeño, paquete descartado"
 
-#: src/stats/decode_proto.c:596
+#: src/stats/decode_proto.c:612
 #, c-format
 msgid "PPI:unsupported link type %u, packet discarded"
 msgstr "PPI:tipo de enlace %u no soportado, paquete descartado"
 
-#: src/stats/decode_proto.c:674
+#: src/stats/decode_proto.c:690
 #, fuzzy
 msgid "wlan:captured size too small (less than 10 bytes), packet discarded"
 msgstr "wlan: El tamaño de la captura es demasiado pequeño, paquete descartado"
 
-#: src/stats/decode_proto.c:697
+#: src/stats/decode_proto.c:713
 #, c-format
 msgid "Invalid tofromds field in WLAN packet: 0x%x"
 msgstr "Valor inválido en el campo «tofromds» del paquet WLAN: 0x%x"
 
-#: src/stats/decode_proto.c:727 src/stats/decode_proto.c:756
+#: src/stats/decode_proto.c:743 src/stats/decode_proto.c:772
 #, fuzzy, c-format
 msgid "wlan:captured size too small (read %u, needed %u), packet discarded"
 msgstr "wlan: El tamaño de la captura es demasiado pequeño, paquete descartado"
 
-#: src/stats/decode_proto.c:740
+#: src/stats/decode_proto.c:756
 #, fuzzy, c-format
 msgid "wlan:captured size too small (read %u, needed %u), RTS packet discarded"
 msgstr "wlan: El tamaño de la captura es demasiado pequeño, paquete descartado"
 
-#: src/stats/decode_proto.c:789
+#: src/stats/decode_proto.c:805
 #, fuzzy, c-format
 msgid "wlan:frame type 0x%x is reserved, decode aborted"
 msgstr "wlan: tipo de trama desconocida 0x%x, se interrumpió la decodificación"
 
-#: src/stats/decode_proto.c:793
+#: src/stats/decode_proto.c:809
 #, c-format
 msgid "wlan:unknown frame type 0x%x, decode aborted"
 msgstr "wlan: tipo de trama desconocida 0x%x, se interrumpió la decodificación"
 
-#: src/stats/links.c:196
+#: src/stats/links.c:228
 msgid "Queuing link for remove"
 msgstr "Añadiendo el enlace a la cola de eliminaciones"
 
 # src/capture.c:882
-#: src/stats/links.c:245
+#: src/stats/links.c:284
 #, c-format
 msgid "New link: %s. Number of links %d"
 msgstr "Nuevo enlace: %s. Número de enlaces: %d"
 
-#: src/stats/links.c:325
+#: src/stats/links.c:364
 #, c-format
 msgid "Updated links. Active links %d"
 msgstr "Enlaces actualizados. Hay %d enlaces activos"
 
 # src/capture.c:844
-#: src/stats/node.c:110
+#: src/stats/node.c:108
 #, c-format
 msgid "New node: %s. Number of nodes %d"
 msgstr "Nuevo nodo: %s. Número de nodos: %d"
 
 # src/capture.c:844
-#: src/stats/node.c:142
+#: src/stats/node.c:132
 #, c-format
 msgid "delete node: %s. Number of nodes %d"
 msgstr "Borrando nodo: %s. Número de nodos: %d"
 
-#: src/stats/node.c:255
+#: src/stats/node.c:239
 #, c-format
 msgid "Queuing node '%s' for remove"
 msgstr "Añadiendo el nodo '%s' a la cola de eliminaciones"
 
-#: src/stats/node.c:556
+#: src/stats/node.c:543
 #, c-format
 msgid "Updated nodes. Active nodes %d"
 msgstr "Nodos actualizados. Hay %d nodos activos"
@@ -675,7 +682,7 @@ msgstr "hace %d'%d\""
 msgid "A Graphical Network Browser."
 msgstr "Un monitor gráfico de red."
 
-#: glade/etherape.ui:36
+#: glade/etherape.ui:39
 #, fuzzy
 msgid ""
 "Vincent van Adrighem <vincent@dirck.mine.nu>\n"
@@ -692,317 +699,318 @@ msgstr ""
 "Daniel Nylander\n"
 
 # src/glade-strings:116
-#: glade/etherape.ui:171
+#: glade/etherape.ui:181
 msgid "_File"
 msgstr "_Archivo"
 
 # src/glade-strings:46
-#: glade/etherape.ui:190
+#: glade/etherape.ui:200
 msgid "_export"
 msgstr "_exportar"
 
 # src/glade-strings:8
-#: glade/etherape.ui:229
+#: glade/etherape.ui:239
 msgid "_Capture"
 msgstr "_Captura"
 
 # src/glade-strings:9
-#: glade/etherape.ui:238
+#: glade/etherape.ui:248
 msgid "_Mode"
 msgstr "_Modo"
 
-#: glade/etherape.ui:250
+#: glade/etherape.ui:260
 msgid "_Link Layer"
 msgstr "Capa de en_lace"
 
 # src/glade-strings:17
-#: glade/etherape.ui:269
+#: glade/etherape.ui:279
 msgid "_IP"
 msgstr "_IP"
 
 # src/glade-strings:19
-#: glade/etherape.ui:283
+#: glade/etherape.ui:293
 msgid "_TCP"
 msgstr "_TCP"
 
 # src/glade-strings:22
-#: glade/etherape.ui:299
+#: glade/etherape.ui:309
 msgid "_Interfaces"
 msgstr "_Interfaces"
 
 # src/glade-strings:26
-#: glade/etherape.ui:338
+#: glade/etherape.ui:348
 msgid "_Pause"
 msgstr "P_ausa"
 
 # src/glade-strings:28
-#: glade/etherape.ui:350
+#: glade/etherape.ui:360
 msgid "St_op"
 msgstr "_Parar"
 
 # src/glade-strings:116
-#: glade/etherape.ui:369
+#: glade/etherape.ui:379
 msgid "_View"
 msgstr "_Ver"
 
 # src/glade-strings:30
-#: glade/etherape.ui:379
+#: glade/etherape.ui:389
 msgid "_Protocols"
 msgstr "_Protocolos"
 
 # src/glade-strings:155
-#: glade/etherape.ui:388
+#: glade/etherape.ui:398
 msgid "_Nodes"
 msgstr "_Nodos"
 
-#: glade/etherape.ui:403
+#: glade/etherape.ui:413
 msgid "_Full Screen"
 msgstr ""
 
 # src/glade-strings:32
-#: glade/etherape.ui:414
+#: glade/etherape.ui:424
 msgid "_Toolbar"
 msgstr "Barra de _herramientas"
 
 # src/glade-strings:34
-#: glade/etherape.ui:425
+#: glade/etherape.ui:435
 msgid "_Legend"
 msgstr "_Leyenda"
 
 # src/glade-strings:36
-#: glade/etherape.ui:436
+#: glade/etherape.ui:446
 msgid "_Status Bar"
 msgstr "Barra de _estado"
 
-#: glade/etherape.ui:450
+#: glade/etherape.ui:460
 msgid "Refresh"
 msgstr ""
 
-#: glade/etherape.ui:469
+#: glade/etherape.ui:478
 msgid "_Help"
 msgstr "_Ayuda"
 
 # src/glade-strings:23 src/glade-strings:37
-#: glade/etherape.ui:517
+#: glade/etherape.ui:526
 msgid "Start capture"
 msgstr "Comenzar captura"
 
 # src/glade-strings:38
-#: glade/etherape.ui:518
+#: glade/etherape.ui:527
 msgid "Start"
 msgstr "Comenzar"
 
-#: glade/etherape.ui:532
+#: glade/etherape.ui:541
 msgid "Next"
 msgstr "Siguiente"
 
 # src/glade-strings:25 src/glade-strings:39
-#: glade/etherape.ui:547
+#: glade/etherape.ui:556
 msgid "Pause capture"
 msgstr "Pausar captura"
 
 # src/glade-strings:40
-#: glade/etherape.ui:548
+#: glade/etherape.ui:557
 msgid "Pause"
 msgstr "Pausa"
 
 # src/glade-strings:27 src/glade-strings:41
-#: glade/etherape.ui:563
+#: glade/etherape.ui:572
 msgid "Stop capture"
 msgstr "Parar captura"
 
 # src/glade-strings:42
-#: glade/etherape.ui:564
+#: glade/etherape.ui:573
 msgid "Stop"
 msgstr "Parar"
 
 # src/glade-strings:43
-#: glade/etherape.ui:589
+#: glade/etherape.ui:598
 msgid "Preferences (Ctrl-P)"
 msgstr "Preferencias (Ctrl-P)"
 
 # src/glade-strings:44
-#: glade/etherape.ui:590
+#: glade/etherape.ui:599
 msgid "Pref."
 msgstr "Pref."
 
 # src/glade-strings:45
-#: glade/etherape.ui:606
+#: glade/etherape.ui:615
 msgid "Display the protocols window"
 msgstr "Mostrar la ventana de protocolos"
 
 # src/glade-strings:46
-#: glade/etherape.ui:607
+#: glade/etherape.ui:616
 msgid "Prot."
 msgstr "Prot."
 
 # src/glade-strings:155
-#: glade/etherape.ui:621 glade/etherape.ui:2819
+#: glade/etherape.ui:630 glade/etherape.ui:1862 glade/etherape.ui:1985
+#: glade/etherape.ui:2717
 msgid "Nodes"
 msgstr "Nodos"
 
 # src/glade-strings:47
-#: glade/etherape.ui:685
+#: glade/etherape.ui:694
 msgid "Protocols"
 msgstr "Protocolos"
 
 # src/glade-strings:156
-#: glade/etherape.ui:736
+#: glade/etherape.ui:745
 msgid "Select color"
 msgstr "Seleccione un color"
 
 # src/glade-strings:63
-#: glade/etherape.ui:821
+#: glade/etherape.ui:833
 msgid "Topmost recognized protocol"
 msgstr "Protocolo más alto reconocido"
 
 # src/glade-strings:64
-#: glade/etherape.ui:824
+#: glade/etherape.ui:836
 msgid "Level 2 (Eg: ETH_II)"
 msgstr "Nivel 2 (ej. ETH_II)"
 
 # src/glade-strings:65
-#: glade/etherape.ui:827
+#: glade/etherape.ui:839
 msgid "Level 3 (Eg: IP)"
 msgstr "Nivel 3 (ej. IP)"
 
 # src/glade-strings:66
-#: glade/etherape.ui:830
+#: glade/etherape.ui:842
 msgid "Level 4 (Eg: TCP)"
 msgstr "Nivel 4 (ej. TCP)"
 
 # src/glade-strings:67
-#: glade/etherape.ui:833
+#: glade/etherape.ui:845
 msgid "Level 5 (Eg: HTTP)"
 msgstr "Nivel 5 (ej. HTTP)"
 
 # src/glade-strings:70
-#: glade/etherape.ui:844
+#: glade/etherape.ui:856
 msgid "Instant. traffic (In+Out)"
 msgstr "Tráfico inst. (Entrada/Salida)"
 
 # src/glade-strings:71
-#: glade/etherape.ui:847
+#: glade/etherape.ui:859
 msgid "Instant. traffic (Inbound)"
 msgstr "Tráfico inst. (Entrada)"
 
 # src/glade-strings:72
-#: glade/etherape.ui:850
+#: glade/etherape.ui:862
 msgid "Instant. traffic (Outbound)"
 msgstr "Tráfico inst. (Salida)"
 
 # src/glade-strings:70
-#: glade/etherape.ui:853
+#: glade/etherape.ui:865
 #, fuzzy
 msgid "Instant. packets (In+Out)"
 msgstr "Tráfico inst. (Entrada/Salida)"
 
 # src/glade-strings:73
-#: glade/etherape.ui:856
+#: glade/etherape.ui:868
 msgid "Accum. traffic (In+Out)"
 msgstr "Tráfico acumulado (Entrada/Salida)"
 
 # src/glade-strings:74
-#: glade/etherape.ui:859
+#: glade/etherape.ui:871
 msgid "Accum. traffic (Inbound)"
 msgstr "Tráfico acumulado (Entrada)"
 
 # src/glade-strings:75
-#: glade/etherape.ui:862
+#: glade/etherape.ui:874
 msgid "Accum. traffic (Outbound)"
 msgstr "Tráfico acumulado (Salida)"
 
 # src/glade-strings:73
-#: glade/etherape.ui:865
+#: glade/etherape.ui:877
 #, fuzzy
 msgid "Accum. packets (In+Out)"
 msgstr "Tráfico acumulado (Entrada/Salida)"
 
 # src/glade-strings:54
-#: glade/etherape.ui:868
+#: glade/etherape.ui:880
 #, fuzzy
 msgid "Average pkt size (In+Out)"
 msgstr "Tamaño medio"
 
-#: glade/etherape.ui:879
+#: glade/etherape.ui:891
 msgid "(Off)"
 msgstr ""
 
-#: glade/etherape.ui:882
+#: glade/etherape.ui:894
 msgid "Upper left"
 msgstr ""
 
-#: glade/etherape.ui:885
+#: glade/etherape.ui:897
 msgid "Upper right"
 msgstr ""
 
-#: glade/etherape.ui:888
+#: glade/etherape.ui:900
 msgid "Lower left"
 msgstr ""
 
-#: glade/etherape.ui:891
+#: glade/etherape.ui:903
 msgid "Lower right"
 msgstr ""
 
 # src/glade-strings:84
-#: glade/etherape.ui:902
+#: glade/etherape.ui:914
 msgid "Linear"
 msgstr "Lineal"
 
 # src/glade-strings:85
-#: glade/etherape.ui:905
+#: glade/etherape.ui:917
 msgid "Logarithmic"
 msgstr "Logarítmico"
 
 # src/glade-strings:86
-#: glade/etherape.ui:908
+#: glade/etherape.ui:920
 msgid "Square Root"
 msgstr "Raiz Cuadrada"
 
 # src/glade-strings:57
-#: glade/etherape.ui:914
+#: glade/etherape.ui:926
 msgid "EtherApe: Preferences"
 msgstr "EtherApe: Preferencias"
 
 # src/glade-strings:58
-#: glade/etherape.ui:930
+#: glade/etherape.ui:945
 msgid "Save"
 msgstr "Guardar"
 
-#: glade/etherape.ui:935
+#: glade/etherape.ui:950
 msgid "Saves changes to preferences file"
 msgstr "Guardar cambios en el archivo de preferencias"
 
-#: glade/etherape.ui:952
+#: glade/etherape.ui:967
 msgid "Confirm changes"
 msgstr "Confirmar los cambios"
 
-#: glade/etherape.ui:969
+#: glade/etherape.ui:984
 msgid "Cancel changes"
 msgstr "Cancelar los cambios"
 
 # src/glade-strings:61
-#: glade/etherape.ui:1011
+#: glade/etherape.ui:1026
 msgid "Protocol Stack _Level"
 msgstr "Nive_l de pila de protocolos"
 
 # src/glade-strings:62
-#: glade/etherape.ui:1025
+#: glade/etherape.ui:1040
 msgid "Set what level of the protocol stack is displayed in the legend"
 msgstr "Fijar el nivel de la pila de protocolos que se muestra en el diagrama"
 
-#: glade/etherape.ui:1055
+#: glade/etherape.ui:1070
 msgid "The statistic used to compute node and link sizes"
 msgstr ""
 "La estadística utilizada para calcular el tamaño de los nodos y enlaces"
 
 # src/glade-strings:68
-#: glade/etherape.ui:1057
+#: glade/etherape.ui:1072
 msgid "Size _Variable"
 msgstr "Tamaño _variable"
 
 # src/glade-strings:69
-#: glade/etherape.ui:1071
+#: glade/etherape.ui:1086
 #, fuzzy
 msgid ""
 "Set the kind of instantaneous or accumulated traffic that the node radius "
@@ -1010,43 +1018,35 @@ msgid ""
 msgstr ""
 "Fija el tipo de tráfico instantáneo o acumulado que indica el radio del nodo"
 
-#: glade/etherape.ui:1102
+#: glade/etherape.ui:1117
 msgid "_Inner Ring Scale"
 msgstr ""
 
-#: glade/etherape.ui:1116
+#: glade/etherape.ui:1131
 msgid "Inner ring radius as a fraction of outer ring size"
 msgstr ""
 
-#: glade/etherape.ui:1143
+#: glade/etherape.ui:1158
 msgid "Display pcap _stats:"
 msgstr ""
 
-#: glade/etherape.ui:1156
+#: glade/etherape.ui:1171
 msgid ""
 "Set where to display pcap stats: packets received, dropped by OS buffering, "
 "and dropped by the interface or driver"
 msgstr ""
 
-#: glade/etherape.ui:1188
-msgid "Link _Width - Node Radius Ratio"
-msgstr "_Tamaño de enlace - Ratio del radio de nodo"
-
-#: glade/etherape.ui:1202
-msgid "Ratio between link width and node radius"
-msgstr "El ratio entre el ancho del enlace y el radio del nodo"
-
-#: glade/etherape.ui:1228
+#: glade/etherape.ui:1203
 msgid "Node _Radius Multiplier"
 msgstr "Multiplicador de _radio de nodo"
 
 # src/glade-strings:82
-#: glade/etherape.ui:1269
+#: glade/etherape.ui:1244
 msgid "Size _Mode"
 msgstr "Ajuste de _modo"
 
 # src/glade-strings:83
-#: glade/etherape.ui:1282
+#: glade/etherape.ui:1257
 msgid ""
 "Choose how node radius and link width are calculated as a function of "
 "average traffic"
@@ -1055,25 +1055,25 @@ msgstr ""
 "a partir del tráfico medio"
 
 # src/glade-strings:88
-#: glade/etherape.ui:1310
+#: glade/etherape.ui:1285
 msgid "_Hide node names"
 msgstr "_Ocultar nombres de nodos"
 
 # src/glade-strings:87
-#: glade/etherape.ui:1314
+#: glade/etherape.ui:1289
 msgid "Toggle whether the node names are displayed on top of the nodes"
 msgstr "Cambia si se han de mostrar o no los nombres de los nodos"
 
 # src/glade-strings:89
-#: glade/etherape.ui:1327
+#: glade/etherape.ui:1302
 msgid "_Group unknown ports"
 msgstr "A_grupar puertos desconocidos"
 
-#: glade/etherape.ui:1354
+#: glade/etherape.ui:1329
 msgid "_Name Resolution"
 msgstr "Resolución D_NS"
 
-#: glade/etherape.ui:1358
+#: glade/etherape.ui:1333
 msgid ""
 "Enable name resolution. If unchecked, all addresses are in numeric form."
 msgstr ""
@@ -1081,70 +1081,70 @@ msgstr ""
 "direcciones con sus valores numéricos."
 
 # src/glade-strings:102
-#: glade/etherape.ui:1388
+#: glade/etherape.ui:1363
 msgid "_Capture filter"
 msgstr "Filtro de _captura"
 
 # src/main.c:43
-#: glade/etherape.ui:1401
+#: glade/etherape.ui:1376
 msgid "Sets the capture filter"
 msgstr "Configura el filtro de captura"
 
 # src/glade-strings:108
-#: glade/etherape.ui:1432
+#: glade/etherape.ui:1407
 msgid "Node Label _Font"
 msgstr "_Fuente de etiquetas de nodos"
 
 # src/glade-strings:108
-#: glade/etherape.ui:1447
+#: glade/etherape.ui:1422
 msgid "Node Label Font"
 msgstr "Fuente de etiquetas de nodos"
 
-#: glade/etherape.ui:1473
+#: glade/etherape.ui:1448
 msgid "Node Label C_olor"
 msgstr "C_olor de etiqueta de nodo"
 
 # src/glade-strings:60
-#: glade/etherape.ui:1488
+#: glade/etherape.ui:1463
 msgid "Choose the color used to display node labels"
 msgstr "Elija el color utilizado para mostrar las etiquetas de los nodos"
 
-#: glade/etherape.ui:1489
+#: glade/etherape.ui:1464
 msgid "Pick a Color "
 msgstr "Escoja un color"
 
-#: glade/etherape.ui:1514
+#: glade/etherape.ui:1489
 msgid "C_entral Node"
 msgstr ""
 
-#: glade/etherape.ui:1527
+#: glade/etherape.ui:1502
 msgid "Optional central node"
 msgstr ""
 
-#: glade/etherape.ui:1557
+#: glade/etherape.ui:1532
 msgid "Background Image"
 msgstr ""
 
-#: glade/etherape.ui:1568
+#: glade/etherape.ui:1543
 msgid "Use _background image"
 msgstr ""
 
-#: glade/etherape.ui:1572
+#: glade/etherape.ui:1547
 msgid "Enable selection of a background image for the main display"
 msgstr ""
 
 # src/glade-strings:90
-#: glade/etherape.ui:1607 glade/etherape.ui:1884 glade/etherape.ui:2048
+#: glade/etherape.ui:1585
 msgid "Diagram"
 msgstr "Diagrama"
 
 # src/glade-strings:94
-#: glade/etherape.ui:1656
+#: glade/etherape.ui:1634
 msgid "Add color"
 msgstr "Añadir color"
 
 # src/glade-strings:93
-#: glade/etherape.ui:1660
+#: glade/etherape.ui:1638
 msgid ""
 "Add a new color to the list of colors that can be used to represent protocols"
 msgstr ""
@@ -1152,52 +1152,52 @@ msgstr ""
 "representar protocolos"
 
 # src/glade-strings:95
-#: glade/etherape.ui:1672
+#: glade/etherape.ui:1650
 msgid "Remove color"
 msgstr "Quitar color"
 
 # src/glade-strings:98
-#: glade/etherape.ui:1687
+#: glade/etherape.ui:1665
 msgid "Change color"
 msgstr "Cambiar color"
 
 # src/glade-strings:63
-#: glade/etherape.ui:1691
+#: glade/etherape.ui:1669
 msgid "Changes selected row color"
 msgstr "Cambia el color seleccionado en la columna"
 
 # src/glade-strings:96
-#: glade/etherape.ui:1702
+#: glade/etherape.ui:1680
 msgid "Edit protocol"
 msgstr "Editar protocolo"
 
 # src/glade-strings:101
-#: glade/etherape.ui:1740
+#: glade/etherape.ui:1718
 msgid "Colors"
 msgstr "Colores"
 
 # src/glade-strings:76
-#: glade/etherape.ui:1774
+#: glade/etherape.ui:1752
 msgid "Diagram Refresh _Period (ms)"
 msgstr "_Periodo de refresco de diagrama (ms)"
 
 # src/glade-strings:77
-#: glade/etherape.ui:1787
+#: glade/etherape.ui:1765
 msgid "Refresh diagram every this many miliseconds"
 msgstr "Refrescar el diagrama cada estos milisegundos"
 
 # src/glade-strings:104
-#: glade/etherape.ui:1817
+#: glade/etherape.ui:1795
 msgid "Averaging Time (ms)"
 msgstr "Tiempo de medida (ms)"
 
 # src/glade-strings:103
-#: glade/etherape.ui:1829
+#: glade/etherape.ui:1807
 msgid "Packet information is averaged for this amount of time"
 msgstr "Hacer media de la información durante este tiempo"
 
 # src/glade-strings:79
-#: glade/etherape.ui:1897
+#: glade/etherape.ui:1875
 msgid ""
 "Remove this node from the diagram after this much time. 0 means never "
 "timeout."
@@ -1205,39 +1205,12 @@ msgstr ""
 "Borrar este nodo del diagrama después de pasado este tiempo. 0 significa no "
 "expirar nunca"
 
-#: glade/etherape.ui:1927 glade/etherape.ui:2091
-msgid "Traffic Statistics"
-msgstr "Estadísticas de tráfico"
-
-# src/glade-strings:107
-#: glade/etherape.ui:1939
-msgid ""
-"Delete this node from memory after this much time. 0 means never timeout."
+#: glade/etherape.ui:1905 glade/etherape.ui:2027
+msgid "Links"
 msgstr ""
-"Borrar este nodo de la memoria después de pasado este tiempo. 0 significa no "
-"expirar nunca"
-
-# src/glade-strings:61
-#: glade/etherape.ui:1969 glade/etherape.ui:2133
-msgid "Protocol Statistics"
-msgstr "Estadísticas de protocolo"
-
-# src/glade-strings:105
-#: glade/etherape.ui:1981 glade/etherape.ui:2145
-msgid ""
-"Expire protocol statistics for a node after this much time. 0 means never "
-"timeout."
-msgstr ""
-"Expirar las estadísticas de protocolo para un nodo pasado este tiempo. 0 "
-"significa no expirar nunca."
-
-# src/glade-strings:108
-#: glade/etherape.ui:2009
-msgid "<i>Node Timeouts (s)</i>"
-msgstr "<i>Expiración de nodos (s)</i>"
 
 # src/glade-strings:79
-#: glade/etherape.ui:2061
+#: glade/etherape.ui:1918
 msgid ""
 "Remove this link from the diagram after this much time. 0 means never "
 "timeout."
@@ -1245,136 +1218,191 @@ msgstr ""
 "Borrar este enlace del diagrama pasado este tiempo. 0 significa no expirar "
 "nunca."
 
-# src/glade-strings:107
-#: glade/etherape.ui:2103
-msgid ""
-"Delete this link from memory after this much time. 0 means never timeout."
-msgstr ""
-"Borrar este enlace de la memoria después de este tiempo. 0 significa no "
-"expirar nunca."
-
 # src/glade-strings:106
-#: glade/etherape.ui:2173
-msgid "<i>Link Timeouts (s)</i>"
+#: glade/etherape.ui:1946
+#, fuzzy
+msgid "<i>Diagram Timeouts (s)</i>"
 msgstr "<i>Expiración de enlaces (s)</i>"
 
+# src/glade-strings:105
+#: glade/etherape.ui:1997
+msgid ""
+"Expire protocol statistics for a node after this much time. 0 means never "
+"timeout."
+msgstr ""
+"Expirar las estadísticas de protocolo para un nodo pasado este tiempo. 0 "
+"significa no expirar nunca."
+
+# src/glade-strings:79
+#: glade/etherape.ui:2040
+#, fuzzy
+msgid ""
+"Remove this link from from statistics after this much time without traffic. "
+"0 means never timeout."
+msgstr ""
+"Borrar este enlace del diagrama pasado este tiempo. 0 significa no expirar "
+"nunca."
+
+#: glade/etherape.ui:2041
+msgid "10"
+msgstr ""
+
+# src/glade-strings:106
+#: glade/etherape.ui:2070
+#, fuzzy
+msgid "<i>Statistics Timeouts (s)</i>"
+msgstr "<i>Expiración de enlaces (s)</i>"
+
+#: glade/etherape.ui:2109
+#, fuzzy
+msgid "Statistics"
+msgstr "Estadísticas de tráfico"
+
 # src/glade-strings:107
-#: glade/etherape.ui:2211
+#: glade/etherape.ui:2122
 msgid "Remove this protocol from memory after this much time. "
 msgstr "Borrar este protocolo de la memoria pasado este tiempo."
 
 # src/glade-strings:108
-#: glade/etherape.ui:2261
+#: glade/etherape.ui:2153
 msgid "<i>Global Protocol Timeouts (s)</i>"
 msgstr "<i>Expiración global de protocolos (s)</i>"
 
-#: glade/etherape.ui:2280
+#: glade/etherape.ui:2172
 msgid "Timings"
 msgstr "Temporizadores"
 
-#: glade/etherape.ui:2310
+#: glade/etherape.ui:2202
 msgid "WWW"
 msgstr "WWW"
 
 # src/glade-strings:160
-#: glade/etherape.ui:2316
+#: glade/etherape.ui:2208
 msgid "EtherApe: assign protocol"
 msgstr "EtherApe: asignar protocolos"
 
 # src/glade-strings:161
-#: glade/etherape.ui:2398
+#: glade/etherape.ui:2293
 msgid "Type protocol name..."
 msgstr "Escriba el nombre del protocolo..."
 
 # src/glade-strings:161
-#: glade/etherape.ui:2412
+#: glade/etherape.ui:2307
 msgid "Type the protocol name"
 msgstr "Escriba el nombre del protocolo"
 
 # src/glade-strings:120
-#: glade/etherape.ui:2533
+#: glade/etherape.ui:2431
 msgid "Numeric Name:"
 msgstr "Nombre numérico"
 
-#: glade/etherape.ui:2545
+#: glade/etherape.ui:2443
 msgid "Resolved Name:"
 msgstr "Nombre resuelto:"
 
 # src/glade-strings:9
-#: glade/etherape.ui:2556
+#: glade/etherape.ui:2454
 msgid "node A"
 msgstr "nodo A"
 
 # src/glade-strings:9
-#: glade/etherape.ui:2567
+#: glade/etherape.ui:2465
 msgid "node B"
 msgstr "nodo B"
 
-#: glade/etherape.ui:2625
+#: glade/etherape.ui:2523
 msgid "Total"
 msgstr "Total"
 
 # src/glade-strings:132
-#: glade/etherape.ui:2637
+#: glade/etherape.ui:2535
 msgid "Inbound"
 msgstr "Entrante"
 
 # src/glade-strings:130
-#: glade/etherape.ui:2650
+#: glade/etherape.ui:2548
 msgid "Outbound"
 msgstr "Saliente"
 
 # src/glade-strings:124 src/glade-strings:151
-#: glade/etherape.ui:2663 glade/etherape.ui:2976
+#: glade/etherape.ui:2561 glade/etherape.ui:2880
 msgid "Instantaneous"
 msgstr "Instantáneo"
 
 # src/glade-strings:126 src/glade-strings:153
-#: glade/etherape.ui:2675 glade/etherape.ui:3017
+#: glade/etherape.ui:2573 glade/etherape.ui:2921
 msgid "Accumulated"
 msgstr "Acumulado"
 
 # src/glade-strings:54
-#: glade/etherape.ui:2731
+#: glade/etherape.ui:2629
 msgid "Average size"
 msgstr "Tamaño medio"
 
-#: glade/etherape.ui:2834
+#: glade/etherape.ui:2735
 msgid "_Show all nodes"
 msgstr "_Mostrar todos los nodos"
 
-#: glade/etherape.ui:2839
+#: glade/etherape.ui:2740
 msgid "Controls display of nodes timed out from diagram, but still in memory"
 msgstr ""
 "Controla cuándo se representan los nodos que han expirado del diagrama pero "
 "están aún en memoria"
 
 # src/glade-strings:52 src/glade-strings:148
-#: glade/etherape.ui:2899
+#: glade/etherape.ui:2803
 msgid "name"
 msgstr "nombre"
 
 # src/glade-strings:149
-#: glade/etherape.ui:2924
+#: glade/etherape.ui:2828
 msgid "Last Heard: "
 msgstr "Última vez:"
 
 # src/glade-strings:150
-#: glade/etherape.ui:2937
+#: glade/etherape.ui:2841
 msgid "label73"
 msgstr "label73"
 
 # src/glade-strings:125 src/glade-strings:127 src/glade-strings:129
 # src/glade-strings:131 src/glade-strings:133 src/glade-strings:135
 # src/glade-strings:152 src/glade-strings:154
-#: glade/etherape.ui:2990 glade/etherape.ui:3031
+#: glade/etherape.ui:2894 glade/etherape.ui:2935
 msgid "test label"
 msgstr "etiqueta de prueba"
 
 # src/glade-strings:136
-#: glade/etherape.ui:3061
+#: glade/etherape.ui:2965
 msgid "EtherApe: Protocols"
 msgstr "EtherApe: Protocolos"
+
+#~ msgid "Link _Width - Node Radius Ratio"
+#~ msgstr "_Tamaño de enlace - Ratio del radio de nodo"
+
+#~ msgid "Ratio between link width and node radius"
+#~ msgstr "El ratio entre el ancho del enlace y el radio del nodo"
+
+# src/glade-strings:107
+#~ msgid ""
+#~ "Delete this node from memory after this much time. 0 means never timeout."
+#~ msgstr ""
+#~ "Borrar este nodo de la memoria después de pasado este tiempo. 0 significa "
+#~ "no expirar nunca"
+
+# src/glade-strings:61
+#~ msgid "Protocol Statistics"
+#~ msgstr "Estadísticas de protocolo"
+
+# src/glade-strings:108
+#~ msgid "<i>Node Timeouts (s)</i>"
+#~ msgstr "<i>Expiración de nodos (s)</i>"
+
+# src/glade-strings:107
+#~ msgid ""
+#~ "Delete this link from memory after this much time. 0 means never timeout."
+#~ msgstr ""
+#~ "Borrar este enlace de la memoria después de este tiempo. 0 significa no "
+#~ "expirar nunca."
 
 # src/glade-strings:7
 #  append_etype_prot
