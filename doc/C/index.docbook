@@ -428,10 +428,6 @@
 	    <itemizedlist>
                 <listitem>
                   <para><menuchoice>
-                      <shortcut>
-                        <keycap>Ctrl-O</keycap>
-                      </shortcut>
-
                       <guimenuitem>Open</guimenuitem>
                     </menuchoice> opens an external capture file. If you want
                   to capture on a live interface, see the <link
@@ -456,7 +452,12 @@ Conversely, --min-delay can help analyze many short lived connections.</para>
 
                 <listitem>
                   <para><menuchoice>
-                      <guimenuitem>Preferences</guimenuitem>
+                      <guimenuitem>
+                        Preferences
+                        <shortcut>
+                          <keycap>Ctrl-P</keycap>
+                        </shortcut>
+                      </guimenuitem>
                     </menuchoice> opens the <link
                   linkend="etherape-prefs">Preferences</link> dialog.</para>
                 </listitem>
@@ -533,7 +534,12 @@ Conversely, --min-delay can help analyze many short lived connections.</para>
 
                 <listitem>
                   <para><menuchoice>
-                      <guimenuitem>Start</guimenuitem>
+                      <guimenuitem>
+                        Start
+                        <shortcut>
+                          <keycap>Ctrl-S</keycap>
+                        </shortcut>
+                      </guimenuitem>
                     </menuchoice> begins capturing on the selected live
                   interface.</para>
                 </listitem>
@@ -546,14 +552,24 @@ Conversely, --min-delay can help analyze many short lived connections.</para>
 
                 <listitem>
                   <para><menuchoice>
-                      <guimenuitem>Pause</guimenuitem>
+                      <guimenuitem>
+                        Pause
+                        <shortcut>
+                          <keycap>Ctrl-Q</keycap>
+                        </shortcut>
+                      </guimenuitem>
                     </menuchoice> temporarily halts the capture, freezing both
                   the diagram and any detail window.</para>
                 </listitem>
 
                 <listitem>
                   <para><menuchoice>
-                      <guimenuitem>Stop</guimenuitem>
+                      <guimenuitem>
+                        Stop
+                        <shortcut>
+                          <keycap>Ctrl-O</keycap>
+                        </shortcut>
+                      </guimenuitem>
                     </menuchoice> terminates the capture, clearing diagram and
                   traffic statistics. Closes also all detail windows .
                   <warning>

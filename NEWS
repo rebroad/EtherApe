@@ -19,8 +19,9 @@
 
    Changes summary:
      * fix for ticket #100, thanks to Salam for reporting it.
-     * diagram refresh command, thanks to Ronald Henderson
-     * patch to remove artifact when resizing, thanks to Ronald Henderson
+     * diagram refresh command, thanks to Ronald W. Henderson
+     * patch to remove artifact when resizing, thanks to Ronald W. Henderson
+     * reorder keyboard shortcuts, thanks to Ronald W. Henderson
      * xml output now containes also link and global protocols statistics.
      * link fades with averaging times
      * node-link ratio slider removed, ratio always fixed at 1 (links sizes are aligned
