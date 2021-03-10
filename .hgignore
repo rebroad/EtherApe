@@ -29,3 +29,8 @@ po/remove-potcdate.sed
 .anjuta/
 .vscode/
 etherape.code-workspace
+build/
+clang/
+*~
+PKGBUILD
+etherape.desktop
