@@ -756,11 +756,11 @@ static void update_diagram(GooCanvas *canvas)
     /* update background image */
     diagram_update_background_image(canvas);
 
-    /* update links */
-    diagram_update_links(canvas);
-
     /* update nodes */
     diagram_update_nodes(canvas);
+
+    /* update links */
+    diagram_update_links(canvas);
 
     /* update proto legend */
     update_legend();

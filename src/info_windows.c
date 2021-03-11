@@ -305,6 +305,8 @@ static gint protocols_table_compare(GtkTreeModel *gs, GtkTreeIter *a, GtkTreeIte
   gdouble diffms;
   gint idcol;
   GtkSortType order;
+  const port_service_t *ps1, *ps2;
+  uint port1, port2;
 
   /* reads the proto ptr from 6th columns */
   const protocol_list_item_t *prot1, *prot2;
@@ -320,10 +322,27 @@ static gint protocols_table_compare(GtkTreeModel *gs, GtkTreeIter *a, GtkTreeIte
   switch (idcol)
   {
       case PROTO_COLUMN_COLOR: /* color */
-      case PROTO_COLUMN_PORT: /* port */
       case PROTO_COLUMN_NAME: /* name */
       default:
         ret = strcmp(prot1->name, prot2->name);
+        break;
+      case PROTO_COLUMN_PORT: /* port */
+        ps1 = services_port_find(prot1->name);
+        ps2 = services_port_find(prot2->name);
+        if (ps1)
+          port1 = ps1->port;
+        else
+          port1 = 0;		/* Use port: 0 for sorting if no port value is available */
+        if (ps2)
+          port2 = ps2->port;
+        else
+          port2 = 0;
+        if (port1 == port2)
+          ret = 0;
+        else if (port1 < port2)
+          ret = -1;
+        else
+          ret = 1;
         break;
       case PROTO_COLUMN_INSTANTANEOUS:
         t1 = prot1->rowstats.average;
