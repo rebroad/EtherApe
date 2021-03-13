@@ -428,7 +428,7 @@ gchar *links_catalog_xml(void)
   xth.msg = g_strdup("");
 
   links_catalog_foreach(link_xml_tvs, &xth);
-  xml = xmltag("links", "\n<accumulated>%.0f</accumulated>\n<packets>%lu<packets>\n%s", xth.total_size, xth.total_packets, xth.msg);
+  xml = xmltag("links", "\n<accumulated>%.0f</accumulated>\n<packets>%lu</packets>\n%s", xth.total_size, xth.total_packets, xth.msg);
   g_free(xth.msg);
   return xml;
 }
