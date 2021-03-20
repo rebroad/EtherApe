@@ -18,7 +18,7 @@
  */
 
 #ifndef __EXPORT_H__
-#define __EXPORT__
+#define __EXPORT_H__
 
 #include "appdata.h"
 

@@ -107,7 +107,7 @@ AC_ARG_ENABLE(gdk-input-add,
   [AC_HELP_STRING([--disable-gdk-input-add],[Use timers for live capture instead of gdk_input_add.])],
   [use_gdk_input_add=$enableval], [use_gdk_input_add=yes])
 
-AC_COMPILE_IFELSE([AC_LANG_SOURCE([[int main(int argc, char *argv[]){return __APPLE__ + __MACH__;}]])],
+AC_COMPILE_IFELSE([AC_LANG_SOURCE([[int main(int argc, char **argv){return __APPLE__ + __MACH__;}]])],
   use_gdk_input_add=no)
 
 if test $use_gdk_input_add = no; then
@@ -207,7 +207,7 @@ dnl see if the linker allows "--export-dynamic"
 AC_MSG_CHECKING([if the linker allows -Wl,--export-dynamic])
 tmp_LDFLAGS=$LDFLAGS
 LDFLAGS="$LDFLAGS -Wl,--export-dynamic"
-AC_LINK_IFELSE([AC_LANG_SOURCE([int main(int argc, char *argv[]){return 0;}])],
+AC_LINK_IFELSE([AC_LANG_SOURCE([int main(int argc, char **argv){return 0;}])],
   AC_MSG_RESULT([yes]),
   AC_MSG_RESULT([no])
   LDFLAGS=$tmp_LDFLAGS)
