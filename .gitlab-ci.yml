@@ -6,19 +6,17 @@ include:
 image:
     opensuse/leap
 
-before_script:
-  - zypper up -y -l
-  - zypper in -y --no-recommends file gcc autoconf pkg-config gettext-runtime libpcap-devel libtool popt-devel yelp-tools itstool goocanvas-devel gettext-tools fdupes  sed xz make gzip
-
-#   git-core update-desktop-files autoconf-archive
-
-# for now no tests are run
+# for now no tests are run, test stage used only for security CI
 stages:
   - build
   - test
 
-build-step:
+build-job:
   stage: build
+  before_script:
+    - zypper up -y -l
+    - zypper in -y --no-recommends file gcc autoconf pkg-config gettext-runtime libpcap-devel libtool popt-devel yelp-tools itstool goocanvas-devel gettext-tools fdupes  sed xz make gzip
+#   git-core update-desktop-files autoconf-archive
   script:
     - ./autogen.sh
     - mkdir build
