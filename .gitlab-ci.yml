@@ -15,6 +15,7 @@ before_script:
 # for now no tests are run
 stages:
   - build
+  - test
 
 build-step:
   stage: build
