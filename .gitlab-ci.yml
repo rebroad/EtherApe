@@ -1,0 +1,25 @@
+# gitlab CI configuration file for etherape
+
+image:
+    opensuse/leap
+
+before_script:
+  - zypper up -y -l
+  - zypper in -y --no-recommends file gcc autoconf pkg-config gettext-runtime libpcap-devel libtool popt-devel yelp-tools itstool goocanvas-devel gettext-tools fdupes  sed xz make gzip
+
+#   git-core update-desktop-files autoconf-archive
+
+# for now no tests are run
+stages:
+  - build
+
+build-step:
+  stage: build
+  script:
+    - ./autogen.sh
+    - mkdir build
+    - cd build
+    - ../configure
+    - make V=1 VERBOSE=1
+    - make distchek
+

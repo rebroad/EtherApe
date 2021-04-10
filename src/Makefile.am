@@ -49,7 +49,7 @@ etherape_SOURCES = \
 	$(etherape_stats_SOURCES) \
 	$(etherape_names_SOURCES) \
 	$(etherape_capture_SOURCES) \
-	$(top_srcdir)/config.h \
+	$(top_builddir)/config.h \
 	main.c main.h \
 	common.h \
 	appdata.c appdata.h\
