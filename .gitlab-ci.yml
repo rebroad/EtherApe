@@ -1,5 +1,8 @@
 # gitlab CI configuration file for etherape
 
+include:
+  - template: Security/SAST.gitlab-ci.yml
+
 image:
     opensuse/leap
 
