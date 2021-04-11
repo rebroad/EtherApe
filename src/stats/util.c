@@ -69,6 +69,8 @@ char *safe_strncpy(char *dst, const char *src, size_t maxlen)
 {
   if (maxlen < 1)
     return dst;
+  assert(src);
+  assert(dst);
   strncpy(dst, src, maxlen - 1);       /* no need to copy that last char */
   dst[maxlen - 1] = '\0';
   return dst;
@@ -77,10 +79,12 @@ char *safe_strncpy(char *dst, const char *src, size_t maxlen)
 /* safe strncat */
 char *safe_strncat(char *dst, const char *src, size_t maxlen)
 {
+  assert(dst);
+  assert(src);
   size_t lendst = strlen(dst);
   if (lendst >= maxlen)
     return dst; /* already full, nothing to do */
-  strncat(dst, src, maxlen - strlen(dst));
+  strncat(dst, src, maxlen - lendst);
   dst[maxlen - 1] = '\0';
   return dst;
 }
