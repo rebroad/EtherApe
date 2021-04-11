@@ -58,6 +58,7 @@
 #define INET6_ADDRSTRLEN  46
 #endif
 #include <locale.h>
+#include <assert.h>
 
 #include "appdata.h"
 #include "util.h"
