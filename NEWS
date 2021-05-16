@@ -1,6 +1,6 @@
                             Changelog for EtherApe
 
-  Overview of changes in EtherApe 0.9.20 ():
+  Overview of changes in EtherApe 0.9.20 (Sunday, May 16, 2021):
 
    Link fading now follows the averaging timer, giving a better feel of packet 
    flow.
