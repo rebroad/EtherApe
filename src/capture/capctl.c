@@ -635,9 +635,6 @@ void cleanup_capture(void)
     }
   }
 
-  if (appdata.source.type == ST_FILE)
-    g_assert(!filecap_state.pcap);
-
   /*
    * This happens unconditionally because even if we've been replaying from a
    * capture file, the live-capture process is still sitting around in the

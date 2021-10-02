@@ -382,7 +382,7 @@ void services_init(void)
   while ((ent = getservent())) {
     if (g_ascii_strcasecmp(ent->s_proto, "tcp") &&
         g_ascii_strcasecmp(ent->s_proto, "udp"))
-      g_my_info(_("%s protocol not supported"), ent->s_proto);
+      g_my_debug(_("%s protocol not supported (%s/%s)"), ent->s_proto, ent->s_name, ent->s_proto);
     else {
       port_service = port_service_new(ntohs(ent->s_port), ent->s_name);
       g_tree_replace(ent->s_proto[0] == 't' ? tcp_services : udp_services,
