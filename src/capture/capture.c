@@ -192,12 +192,8 @@ static void handle_startcap(const struct capctl_req_t *req)
   }
 
   if (!req->startcap.devlen) {
-    devname = pcap_lookupdev(errbuf);
-    if (!devname) {
-      senderrmsg(errbuf);
-      return;
-    }
-    devname = xstrdup(devname);
+    senderrmsg("zero device length");
+    return;
   }
   else
     devname = recvstr(req->startcap.devlen);

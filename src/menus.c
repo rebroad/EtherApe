@@ -57,6 +57,10 @@ void init_menus(void)
   if (err_str)
     g_string_free(err_str, TRUE);
 
+  /* if not already set, first interface is the default capture device */
+  if (!appdata.source.interface)
+    appdata.source.interface = g_strdup((gchar *)(interfaces->data));
+
   widget = GTK_WIDGET(gtk_builder_get_object(appdata.xml, "interfaces_menu"));
 
   info_string = g_string_new(_("Available interfaces for capture:"));

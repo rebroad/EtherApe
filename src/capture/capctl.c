@@ -250,6 +250,7 @@ GList *get_capture_interfaces(GString *err)
 
   for (devname = raw_msg; *devname; devname += strlen(devname) + 1)
     ifs = g_list_prepend(ifs, g_strdup(devname));
+  ifs = g_list_reverse(ifs);  /* restore original order */
 
   g_free(raw_msg);
   g_string_assign(err, "");
@@ -291,12 +292,15 @@ static gchar *start_live_capture(unsigned int *linktype, int *select_fd)
   struct capctl_resp_t resp;
   gchar *new_devname;
 
+  if (!appdata.source.interface || !strlen(appdata.source.interface))
+    return g_strdup(_("no capture interface specified, capture aborted"));
+
   zeroreq(&req);
 
   g_assert(appdata.source.type == ST_LIVE);
 
   req.type = CRQ_STARTCAP;
-  req.startcap.devlen = appdata.source.interface ? strlen(appdata.source.interface) : 0;
+  req.startcap.devlen = strlen(appdata.source.interface);
 
   sendreq(&req);
   if (appdata.source.interface)
