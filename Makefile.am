@@ -34,7 +34,6 @@ DISTCLEANFILES=
 EXTRA_DIST = config.rpath mkinstalldirs  \
 	README.bugs		\
 	FAQ			\
-	OVERVIEW		\
 	ChangeLog		\
 	etherape.spec		\
 	etherape.spec.in	\

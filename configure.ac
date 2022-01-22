@@ -1,11 +1,11 @@
 #                                               -*- Autoconf -*-
 # Process this file with autoconf to produce a configure script.
 
-AC_PREREQ(2.53)
+AC_PREREQ([2.69])
 AC_INIT([etherape],[0.9.20])
 AC_CONFIG_SRCDIR([config.h.in])
 AC_CONFIG_MACRO_DIR([m4])
-AC_CONFIG_HEADER([config.h])
+AC_CONFIG_HEADERS([config.h])
 AM_INIT_AUTOMAKE([-Wall foreign])
 
 # defines
@@ -20,9 +20,8 @@ AC_PROG_CC
 AC_PROG_CPP
 AC_PROG_INSTALL
 AC_PROG_LN_S
-AM_PROG_CC_C_O
 AC_PROG_MAKE_SET
-AC_PROG_LIBTOOL
+LT_INIT
 #AC_PROG_INTLTOOL(0.27)
 
 # Checks for libraries.
@@ -33,31 +32,11 @@ AC_SUBST(ETHERAPE_LIBS)
 AX_PTHREAD
 
 # Checks for header files.
-AC_HEADER_STDC
 AC_CHECK_HEADERS([arpa/inet.h fcntl.h netdb.h netinet/in.h stdlib.h string.h sys/ioctl.h sys/socket.h sys/time.h sys/wait.h unistd.h math.h])
-
 AC_CHECK_HEADERS([sys/socket.h])
-AC_CHECK_HEADERS([net/if.h], [], [],
- [#include <stdio.h>
-  #if STDC_HEADERS
-  # include <stdlib.h>
-  # include <stddef.h>
-  #else
-  # if HAVE_STDLIB_H
-  # include <stdlib.h>
-  # endif
-  #endif
-  #if HAVE_SYS_SOCKET_H
-  # include <sys/socket.h>
-  #endif
-])
-
 
 # Checks for typedefs, structures, and compiler characteristics.
-AC_C_CONST
 AC_TYPE_SIZE_T
-AC_HEADER_TIME
-AC_STRUCT_TM
 
 AC_ARG_ENABLE([warnings],
   AS_HELP_STRING([--disable-warnings], [Disable compiler warnings @<:@default=enabled@:>@]))
@@ -104,7 +83,7 @@ fi
 
 # checks for osx or disable-gdk-input-add
 AC_ARG_ENABLE(gdk-input-add,
-  [AC_HELP_STRING([--disable-gdk-input-add],[Use timers for live capture instead of gdk_input_add.])],
+  [AS_HELP_STRING([--disable-gdk-input-add],[Use timers for live capture instead of gdk_input_add.])],
   [use_gdk_input_add=$enableval], [use_gdk_input_add=yes])
 
 AC_COMPILE_IFELSE([AC_LANG_SOURCE([[int main(int argc, char **argv){return __APPLE__ + __MACH__;}]])],
@@ -149,10 +128,15 @@ fi
 AM_CONDITIONAL([HAVE_LIBCARES], [test $with_c_ares = yes])
 
 # Check for the pcap library.
+#AC_ARG_ENABLE(static-pcap,
+#  [  --enable-static-pcap    Used to build the rpm within Debian. ],
+#  STATIC_PCAP=yes)
+#AC_ETHEREAL_PCAP_CHECK
+
 AC_ARG_ENABLE(static-pcap,
   [  --enable-static-pcap    Used to build the rpm within Debian. ],
-  STATIC_PCAP=yes)
-AC_ETHEREAL_PCAP_CHECK
+  [PKG_CHECK_MODULES_STATIC([pcap], [libpcap])],
+  [PKG_CHECK_MODULES([pcap], [libpcap])])
 
 # check for other libraries (needed for AC_CHECK_FUNCS)
 AC_SEARCH_LIBS(pow, [m])
@@ -171,7 +155,7 @@ AC_CHECK_FUNCS([g_ptr_array_insert])
 dnl Add the languages which your application supports here.
 ALL_LINGUAS="es fr nl tr sv it de ru"
 AM_GNU_GETTEXT([external])
-AM_GNU_GETTEXT_VERSION([0.11.5])
+AM_GNU_GETTEXT_VERSION([0.18.3])
 GETTEXT_PACKAGE=etherape
 AC_SUBST(GETTEXT_PACKAGE)
 AC_DEFINE_UNQUOTED(GETTEXT_PACKAGE, "$GETTEXT_PACKAGE")

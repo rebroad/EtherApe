@@ -34,3 +34,4 @@ clang/
 *~
 PKGBUILD
 etherape.desktop
+po/Makevars.template

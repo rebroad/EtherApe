@@ -13,6 +13,7 @@ etherape_CPPFLAGS  = \
 	$(WARN_CFLAGS) \
 	$(PTHREAD_CFLAGS) \
 	$(ETHERAPE_CFLAGS) \
+	$(pcap_CFLAGS) \
 	$(CANVAS_CFLAGS)
 
 bin_PROGRAMS = etherape
@@ -71,11 +72,11 @@ else
 etherape_SOURCES += names/thread_resolve.c names/thread_resolve.h
 endif
 
-etherape_LDADD = $(ETHERAPE_LIBS) $(PCAP_LIBS) $(PTHREAD_LIBS) $(PTHREAD_CFLAGS)
-etherape_LDFLAGS = $(ETHERAPE_LDFLAGS) 
+etherape_LDADD = $(ETHERAPE_LIBS) $(pcap_LIBS) $(PTHREAD_LIBS)
+etherape_LDFLAGS = $(ETHERAPE_LDFLAGS) $(PTHREAD_CFLAGS)
 
 .indent: $(etherape_SOURCES) $(etherape_INCLUDES)
-	uncrustify --no-backup -c ../uncrustify.cfg $? 
+	uncrustify --no-backup -c $(top_srcdir)/uncrustify.cfg $? 
 	touch .indent
 indent: .indent 
 
