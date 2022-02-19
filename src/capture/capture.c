@@ -378,7 +378,7 @@ static void handle_packet(void)
     assert(pktbuf.buffered <= sizeof(pktbuf.buf));
 
     memcpy(pktbuf.buf, hdr, sizeof(*hdr));
-    memcpy(pktbuf.buf + sizeof(*hdr), data, hdr->caplen);
+    memcpy(pktbuf.buf + sizeof(*hdr), data, min(hdr->caplen, MAXCAPSIZE));
 
     flush_pktbuf();
   }

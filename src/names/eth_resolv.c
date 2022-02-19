@@ -56,7 +56,7 @@ static void add_ether_ent(const struct ether_addr *addr, const char *hostname)
 {
   struct ether_ent *ent = g_malloc(sizeof(*ent) + strlen(hostname) + 1);
   ent->addr = *addr;
-  strcpy(ent->hostname, hostname);
+  safe_strncpy(ent->hostname, hostname, strlen(hostname) + 1);
   g_tree_insert(ethers, &ent->addr, ent);
 }
 
